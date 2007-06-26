@@ -1,0 +1,34 @@
+<templates xmlns="http://www.fixprotocol.org/ns/template-definition"
+	ns="http://www.fixprotocol.org/ns/templates/sample">
+	<template name="MDRefreshSample">
+		<messageRef name="MDIncrementalRefresh"/>
+		<string name="8"><constant value="FIX4.4"/></string>
+		<u32 name="9"><constant value="1"/></u32>
+		<string name="35"><constant value="X"/></string>
+		<string name="49"><constant value="CME"/></string>
+		<u32 name="34"><increment value="1"/></u32>
+		<string name="52"><delta/></string>
+		<u32 name="75"><copy/></u32>
+		<sequence name="MDEntries">
+			<length name="268"/>
+			<decimal name="270"><delta/></decimal>
+			<i32 name="271"><delta/></i32>
+			<u32 name="273"><delta/></u32>
+			<u32 name="346" presence="optional"/>
+			<u32 name="1023"><increment value="1"/></u32>
+			<string name="279"><copy/></string>
+			<string name="269"><copy/></string>
+			<string name="107"><copy/></string>
+			<string name="48"><delta/></string>
+			<string name="276"><copy/></string>
+			<string name="274"><copy/></string>
+			<decimal name="451"><copy/></decimal>
+			<string name="277"><default value="F"/></string>
+			<u32 name="1020" presence="optional"/>
+			<i32 name="537"><default value="1"/></i32>
+			<string name="1024"><default value="0"/></string>
+			<string name="336"><default value="2"/></string>
+		</sequence>
+		<string name="10"/>
+	</template>
+</templates>
