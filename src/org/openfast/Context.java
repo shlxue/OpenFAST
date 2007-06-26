@@ -1,65 +1,95 @@
+/*
+The contents of this file are subject to the Mozilla Public License
+Version 1.1 (the "License"); you may not use this file except in
+compliance with the License. You may obtain a copy of the License at
+http://www.mozilla.org/MPL/
+
+Software distributed under the License is distributed on an "AS IS"
+basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+License for the specific language governing rights and limitations
+under the License.
+
+The Original Code is OpenFAST.
+
+The Initial Developer of the Original Code is The LaSalle Technology
+Group, LLC.  Portions created by The LaSalle Technology Group, LLC
+are Copyright (C) The LaSalle Technology Group, LLC. All Rights Reserved.
+
+Contributor(s): Jacob Northey <jacob@lasalletech.com>
+                Craig Otis <cotis@lasalletech.com>
+*/
+
+
 package org.openfast;
+
+import org.openfast.error.ErrorHandler;
+
+import org.openfast.session.SessionConstants;
+
+import org.openfast.template.Group;
+import org.openfast.template.MessageTemplate;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.openfast.error.ErrorHandler;
-import org.openfast.session.SessionConstants;
-import org.openfast.template.Group;
-import org.openfast.template.MessageTemplate;
 
 public class Context {
-	private Map templates = new HashMap();
-	private int lastTemplateId;
-	private Map dictionaries = new HashMap();
-	private ErrorHandler errorHandler = ErrorHandler.DEFAULT;
+    private Map templates = new HashMap();
+    private int lastTemplateId;
+    private Map dictionaries = new HashMap();
+    private ErrorHandler errorHandler = ErrorHandler.DEFAULT;
 
-	public Context() {
-		dictionaries.put("global", new GlobalDictionary());
-		dictionaries.put("template", new TemplateDictionary());
-	}
-	
-	public MessageTemplate getTemplate(int templateId) {
-		if (!templates.containsKey(new Integer(templateId))) {
-			errorHandler.error(SessionConstants.TEMPLATE_NOT_SUPPORTED, "The template with id " + templateId + " has not been registered.");
-			return null;	
-		}
-		return (MessageTemplate) templates.get(new Integer(templateId));
-	}
+    public Context() {
+        dictionaries.put("global", new GlobalDictionary());
+        dictionaries.put("template", new TemplateDictionary());
+    }
 
-	public void registerTemplate(int templateId, Group template) {
-		templates.put(new Integer(templateId), template);
-	}
+    public MessageTemplate getTemplate(int templateId) {
+        if (!templates.containsKey(new Integer(templateId))) {
+            errorHandler.error(SessionConstants.TEMPLATE_NOT_SUPPORTED,
+                "The template with id " + templateId +
+                " has not been registered.");
 
-	public int getLastTemplateId() {
-		return lastTemplateId;
-	}
+            return null;
+        }
 
-	public void setLastTemplateId(int templateId) {
-		lastTemplateId = templateId;
-	}
+        return (MessageTemplate) templates.get(new Integer(templateId));
+    }
 
-	public ScalarValue lookup(String dictionary, Group template, String key) {
-		return getDictionary(dictionary).lookup(template, key);
-	}
+    public void registerTemplate(int templateId, Group template) {
+        templates.put(new Integer(templateId), template);
+    }
 
-	private Dictionary getDictionary(String dictionary) {
-		return (Dictionary) dictionaries.get(dictionary);
-	}
+    public int getLastTemplateId() {
+        return lastTemplateId;
+    }
 
-	public void store(String dictionary, Group template, String key, ScalarValue valueToEncode) {
-		getDictionary(dictionary).store(template, key, valueToEncode);
-	}
+    public void setLastTemplateId(int templateId) {
+        lastTemplateId = templateId;
+    }
 
-	public void reset() {
-		for (Iterator iter = dictionaries.values().iterator(); iter.hasNext();) {
-			Dictionary dict = (Dictionary) iter.next();
-			dict.reset();
-		}
-	}
+    public ScalarValue lookup(String dictionary, Group template, String key) {
+        return getDictionary(dictionary).lookup(template, key);
+    }
 
-	public void setErrorHandler(ErrorHandler errorHandler) {
-		this.errorHandler = errorHandler;
-	}
+    private Dictionary getDictionary(String dictionary) {
+        return (Dictionary) dictionaries.get(dictionary);
+    }
+
+    public void store(String dictionary, Group template, String key,
+        ScalarValue valueToEncode) {
+        getDictionary(dictionary).store(template, key, valueToEncode);
+    }
+
+    public void reset() {
+        for (Iterator iter = dictionaries.values().iterator(); iter.hasNext();) {
+            Dictionary dict = (Dictionary) iter.next();
+            dict.reset();
+        }
+    }
+
+    public void setErrorHandler(ErrorHandler errorHandler) {
+        this.errorHandler = errorHandler;
+    }
 }
