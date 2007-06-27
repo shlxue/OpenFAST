@@ -22,6 +22,12 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast.template;
 
+/**
+ * 
+ * This is the FieldSet interface.  This contains methods to find the field value by an index number as well as
+ * keeps track of the number of fields in total.
+ *
+ */
 public interface FieldSet {
     Field getField(int index);
 

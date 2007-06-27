@@ -28,10 +28,19 @@ import org.openfast.NumericValue;
 public class LongValue extends NumericValue {
     public final long value;
 
+    /**
+     * LongValue Constructor
+     * @param value The value of the LongValue as type long
+     */
     public LongValue(long value) {
         this.value = value;
     }
 
+    /**
+     * Compares a LongValue object with another LongValue object
+     * @param LongValue Object
+     * @return True if the two objects are the same, false otherwise
+     */
     public boolean equals(Object obj) {
         if ((obj == null) || !(obj instanceof LongValue)) {
             return false;
@@ -40,46 +49,93 @@ public class LongValue extends NumericValue {
         return equals((LongValue) obj);
     }
 
+    /**
+     * Compares the value parameter of two LongValues
+     * @param otherValue The LongValue that is to be compared
+     * @return Returns true if the two values are the same, false otherwise
+     */
     private boolean equals(LongValue otherValue) {
         return value == otherValue.value;
     }
 
+    /**
+     * Compares a string that is converted to an integer to the value of LogValue
+     * @param defaultValue The string to be convereted to an integer and compared
+     * @return Returns true if the string and the value are equal, false otherwise
+     */
     public boolean equalsValue(String defaultValue) {
         return Integer.parseInt(defaultValue) == value;
     }
 
+    /**
+     * Increment 'value' and create a new LongValue with the new value
+     * @return Returns a new LongValue with the value that is one more then before
+     */
     public NumericValue increment() {
         return new LongValue(value + 1);
     }
 
+    /**
+     * Decrement 'value' and create a new LongValue with the new value
+     * @return Returns a new LongValue with the value that is one less then before
+     */
     public NumericValue decrement() {
         return new LongValue(value - 1);
     }
 
+    /**
+     * @return Returns a string of the value of LongValue
+     */
     public String toString() {
         return String.valueOf(value);
     }
 
+    /**
+     * Subtracts two NumericValues values and creates a new LongValue with the new value
+     * @param subend The NumericValue to be subtracted
+     * @return Returns a new LongValue with the value as the difference between the two NumericValues
+     */
     public NumericValue subtract(NumericValue subend) {
         return new LongValue(this.value - subend.getLong());
     }
 
+    /**
+     * 
+     * Adds two Numeric Values values and creates a new LongValue with the new value
+     * @param addend The NumericValue to be added
+     * @return Returns a new LongValue with the value as he addition between the two NumericValues
+     * 
+     */
     public NumericValue add(NumericValue addend) {
         return new LongValue(this.value + addend.getLong());
     }
 
+    /**
+     * @return Returns the value of LongValue as a string
+     */
     public String serialize() {
         return String.valueOf(value);
     }
 
+    /**
+     * Finds if the passed value is the same as the Value of LongValue
+     * @param value The integer to be compared
+     * @return Returns true if the integer value passd is the same as the value of LongValue
+     */
     public boolean equals(int value) {
         return value == this.value;
     }
 
+    /**
+     * @return Returns the value of LongValue as a long
+     */
     public long getLong() {
         return value;
     }
 
+    /**
+     * @return Returns the value of LongValue as an integer
+     */
     public int getInt() {
         return (int) value;
     }

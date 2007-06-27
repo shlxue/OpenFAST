@@ -44,15 +44,36 @@ public class Sequence extends Field implements FieldSet {
     private final Scalar length;
     private boolean implicitLength;
 
+    /**
+     * Sequence Constructor - Sets the implicitLength to true
+     * @param name The name of the sequence as a string
+     * @param fields Field array
+     * @param optional An optional boolean
+     * 
+     */
     public Sequence(String name, Field[] fields, boolean optional) {
         this(name, createLength(optional), fields, optional);
         implicitLength = true;
     }
 
+    /**
+     * Sequence Constructor - Calls the first constructor, passing the optional boolean as false
+     * @param name The name of the sequence as a string
+     * @param length The length of the sequence as a Scalar value
+     * @param fields Field array
+     */
     public Sequence(String name, Scalar length, Field[] fields) {
         this(name, length, fields, false);
     }
 
+    /**
+     * Sequence Constructor - If no length, a length is created and the implicitLength is set to true.  A new Group is also created with
+     * with the respected information.
+     * @param name Name of the sequence, a string
+     * @param length Length of the sequence, a Scalar value
+     * @param fields Field array
+     * @param optional Optional boolean
+     */
     public Sequence(String name, Scalar length, Field[] fields, boolean optional) {
         super(name, optional);
         this.group = new Group(name, fields, optional);
@@ -65,35 +86,73 @@ public class Sequence extends Field implements FieldSet {
         }
     }
 
+    /**
+     * Creates a Scalar value length
+     * @param optional Optional boolean value
+     * @return A Scalar value
+     */
     private static Scalar createLength(boolean optional) {
         return new Scalar(createUniqueName(), Type.UNSIGNED_INTEGER,
             Operator.NONE, optional);
     }
 
+    /**
+     * Creates a null string
+     * @return returns a null string
+     */
     public static String createUniqueName() {
         return null;
     }
 
+    /**
+     * Find the number of fields in the current group
+     * @return Returns an integer of the number of fields
+     */
     public int getFieldCount() {
         return group.getFieldCount();
     }
 
+    /**
+     * Find a specific field
+     * @param index The field index that is passed
+     * @return Returns a Field object of the requested index
+     */
     public Field getField(int index) {
         return group.getField(index);
     }
 
+    /**
+     * Find the length of a Scalar value
+     * @return The length of the Scalar value
+     */
     public Scalar getLength() {
         return length;
     }
 
+    /**
+     * 
+     * @return True if there is a current MapBit, false otherwise
+     */
     public boolean usesPresenceMapBit() {
         return length.usesPresenceMapBit();
     }
 
+    /**
+     * @param encoding Byte array
+     * @param fieldValue FieldValue object
+     * @return True if there is a Map Bit set, false otherwise
+     */
     public boolean isPresenceMapBitSet(byte[] encoding, FieldValue fieldValue) {
         return length.isPresenceMapBitSet(encoding, fieldValue);
     }
 
+    /**
+     * Store the data passed to a byte array
+     * @param value The FieldValue
+     * @param template The Group that is to be stored
+     * @param context Which context is to be stored
+     * @return Returns the buffer of the byte array
+     */
     public byte[] encode(FieldValue value, Group template, Context context) {
         if (value == null) {
             return length.encode(null, template, context);
@@ -120,6 +179,14 @@ public class Sequence extends Field implements FieldSet {
         return buffer.toByteArray();
     }
 
+    /**
+     * Decode the specified stream of data
+     * @param in The input stream to be decoded
+     * @param template Which Group template is to be decoded
+     * @param context Which Context is to be decoded
+     * @param present 
+     * @return Returns the number of FieldValues decoded
+     */
     public FieldValue decode(InputStream in, Group template, Context context,
         boolean present) {
         SequenceValue sequenceValue = new SequenceValue(this);
@@ -138,26 +205,49 @@ public class Sequence extends Field implements FieldSet {
         return sequenceValue;
     }
 
+    /**
+     * @return Returns the class of the current SequenceValue
+     */
     public Class getValueType() {
         return SequenceValue.class;
     }
 
+    /**
+     * @param value String of the new SequenceValue to create
+     * @return Returns a new SequenceValue with the specified value
+     */
     public FieldValue createValue(String value) {
         return new SequenceValue(this);
     }
 
+    /**
+     * @return Returns the string 'sequence'
+     */
     public String getTypeName() {
         return "sequence";
     }
 
+    /**
+     * 
+     * @return Return the current Group
+     */
     public Group getGroup() {
         return group;
     }
 
+    /**
+     * 
+     * @param fieldName String of the FieldName that is to be found
+     * @return Returns true if there is a field with the specified name, false otherwise
+     */
     public boolean hasField(String fieldName) {
         return group.hasField(fieldName);
     }
 
+    /**
+     * 
+     * @return Returns the implicitLength, true or false - whichever is set
+     */
     public boolean isImplicitLength() {
         return implicitLength;
     }

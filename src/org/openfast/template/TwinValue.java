@@ -24,16 +24,25 @@ package org.openfast.template;
 
 import org.openfast.ScalarValue;
 
-
 public class TwinValue extends ScalarValue {
     public final ScalarValue first;
     public final ScalarValue second;
 
+    /**
+     * TwinValue Constructor - takes two ScalarValues
+     * @param first ScalarValue
+     * @param second ScalarValue
+     */
     public TwinValue(ScalarValue first, ScalarValue second) {
         this.first = first;
         this.second = second;
     }
 
+    /**
+     * Compares a TwinValue object with another TwinValue object
+     * @param TwinValue Object
+     * @return True if the two objects are the same, false otherwise
+     */
     public boolean equals(Object obj) {
         if ((obj == null) || !(obj instanceof TwinValue)) {
             return false;
@@ -42,10 +51,19 @@ public class TwinValue extends ScalarValue {
         return equals((TwinValue) obj);
     }
 
+    /**
+     * Compares the current TwinValue ScalarValues with another TwinValue ScalarValues
+     * @param other A TwinValue object
+     * @return True if the the first and second ScalarValues equal the compared TwinValue ScalarValues, false otherwise
+     */
     private boolean equals(TwinValue other) {
         return (first.equals(other.first) && second.equals(other.second));
     }
 
+    /**
+     * Converts the ScalarValues first and second to string 
+     * @return string in the form (first ScalarValue, second ScalarValue)
+     */
     public String toString() {
         return first.toString() + ", " + second.toString();
     }
