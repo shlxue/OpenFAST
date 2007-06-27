@@ -22,6 +22,8 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast.template;
 
+import org.openfast.BitVector;
+import org.openfast.BitVectorBuilder;
 import org.openfast.Context;
 import org.openfast.FieldValue;
 
@@ -93,9 +95,10 @@ public abstract class Field {
      * @param value The FieldValue value to be encoded
      * @param template The template of the Group to be encoded
      * @param context The context of the Context to be encoded
+     * @param presenceMapBuilder 
      */
     public abstract byte[] encode(FieldValue value, Group template,
-        Context context);
+        Context context, BitVectorBuilder presenceMapBuilder);
 
     /**
      * FieldValue decode method declaration
@@ -138,4 +141,13 @@ public abstract class Field {
      * getTypeName method declaration
      */
     public abstract String getTypeName();
+
+	public int encodePresenceMap(BitVector presenceMap, int presenceMapIndex, byte[] encoding, FieldValue fieldValue) {
+		if (usesPresenceMapBit()) {
+			if (isPresenceMapBitSet(encoding, fieldValue))
+				presenceMap.set(presenceMapIndex);
+			return presenceMapIndex++;
+		}
+		return presenceMapIndex;
+	}
 }

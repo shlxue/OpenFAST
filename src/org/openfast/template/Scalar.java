@@ -22,6 +22,8 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast.template;
 
+import org.openfast.BitVector;
+import org.openfast.BitVectorBuilder;
 import org.openfast.Context;
 import org.openfast.FieldValue;
 import org.openfast.ScalarValue;
@@ -89,12 +91,11 @@ public class Scalar extends Field {
         return operatorName;
     }
 
-    public byte[] encode(FieldValue value, Group template, Context context) {
+    public byte[] encode(FieldValue value, Group template, Context context, BitVectorBuilder presenceMapBuilder) {
         try {
             ScalarValue priorValue = (ScalarValue) context.lookup(getDictionary(),
                     template, getKey());
-            ScalarValue valueToEncode = operator.getValueToEncode((ScalarValue) value,
-                    priorValue, this);
+            ScalarValue valueToEncode = operator.getValueToEncode((ScalarValue) value, priorValue, this, presenceMapBuilder);
 
             // TODO - move this operator specific code out
             if (!((operatorName == Operator.DELTA) && (value == null))) {
@@ -139,7 +140,11 @@ public class Scalar extends Field {
     public ScalarValue decode(ScalarValue previousValue) {
         return operator.decodeEmptyValue(previousValue, this);
     }
-
+    
+    public int encodePresenceMap(BitVector presenceMap, int presenceMapIndex, byte[] encoding, FieldValue fieldValue) {
+    	return operator.encodePresenceMap(presenceMap, presenceMapIndex, encoding, fieldValue, optional);
+    }
+    
     public boolean usesPresenceMapBit() {
         return operator.usesPresenceMapBit(optional);
     }

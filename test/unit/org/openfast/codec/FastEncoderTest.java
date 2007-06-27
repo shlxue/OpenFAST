@@ -29,13 +29,13 @@ import org.openfast.IntegerValue;
 import org.openfast.Message;
 import org.openfast.ScalarValue;
 import org.openfast.StringValue;
-import org.openfast.TestUtil;
 
 import org.openfast.template.Field;
 import org.openfast.template.MessageTemplate;
 import org.openfast.template.Scalar;
 import org.openfast.template.operator.Operator;
 import org.openfast.template.type.Type;
+import org.openfast.test.TestUtil;
 
 
 public class FastEncoderTest extends TestCase {

@@ -22,6 +22,7 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast.template.operator;
 
+import org.openfast.BitVectorBuilder;
 import org.openfast.IntegerValue;
 import org.openfast.ScalarValue;
 
@@ -44,12 +45,12 @@ public class TwinOperatorTest extends OpenFastTestCase {
 
     public void testGetValueToEncode() {
         TwinValue value = (TwinValue) operator.getValueToEncode(d(9427.55),
-                ScalarValue.UNDEFINED, field);
+                ScalarValue.UNDEFINED, field, new BitVectorBuilder(2));
         assertEquals(-2, ((IntegerValue) value.first).value);
         assertEquals(942755, ((IntegerValue) value.second).value);
 
         value = (TwinValue) operator.getValueToEncode(d(9427.61),
-                twin(i(-2), i(942755)), field);
+                d(9427.55), field, new BitVectorBuilder(2));
         assertEquals(null, value.first);
         assertEquals(942761, ((IntegerValue) value.second).value);
     }

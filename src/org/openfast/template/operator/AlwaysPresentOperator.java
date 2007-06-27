@@ -22,6 +22,10 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast.template.operator;
 
+import org.openfast.BitVectorBuilder;
+import org.openfast.ScalarValue;
+import org.openfast.template.Scalar;
+
 public abstract class AlwaysPresentOperator extends Operator {
     protected AlwaysPresentOperator(String name, String[] types) {
         super(name, types);
@@ -29,5 +33,9 @@ public abstract class AlwaysPresentOperator extends Operator {
 
     public boolean usesPresenceMapBit(boolean optional) {
         return false;
+    }
+    
+    public ScalarValue getValueToEncode(ScalarValue value, ScalarValue priorValue, Scalar scalar, BitVectorBuilder presenceMapBuilder) {
+    	return getValueToEncode(value, priorValue, scalar);
     }
 }

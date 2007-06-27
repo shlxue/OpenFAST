@@ -61,7 +61,7 @@ public class XMLMessageTemplateLoaderTest extends TestCase {
         assertEquals(7, messageTemplate.getFieldCount());
         assertScalarField(messageTemplate, 1, Type.DECIMAL, "bid",
             new TwinOperator(Operator.COPY, Operator.DELTA),
-            new TwinValue(ScalarValue.UNDEFINED, new IntegerValue(-2)));
+            new TwinValue(new IntegerValue(-2), ScalarValue.UNDEFINED));
         assertScalarField(messageTemplate, 2, Type.DECIMAL, "ask",
             new TwinOperator(Operator.NONE, Operator.DELTA),
             new TwinValue(ScalarValue.UNDEFINED, ScalarValue.UNDEFINED));
@@ -70,7 +70,7 @@ public class XMLMessageTemplateLoaderTest extends TestCase {
             new TwinValue(ScalarValue.UNDEFINED, ScalarValue.UNDEFINED));
         assertScalarField(messageTemplate, 4, Type.DECIMAL, "low",
             new TwinOperator(Operator.COPY, Operator.DELTA),
-            new TwinValue(new IntegerValue(10), new IntegerValue(-2)));
+            new TwinValue(new IntegerValue(-2), new IntegerValue(10)));
         assertScalarField(messageTemplate, 5, Type.DECIMAL, "open",
             Operator.COPY);
         assertScalarField(messageTemplate, 6, Type.DECIMAL, "close",

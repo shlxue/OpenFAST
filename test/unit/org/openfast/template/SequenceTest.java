@@ -24,16 +24,17 @@ package org.openfast.template;
 
 import junit.framework.TestCase;
 
+import org.openfast.BitVectorBuilder;
 import org.openfast.ByteUtil;
 import org.openfast.Context;
 import org.openfast.FieldValue;
 import org.openfast.IntegerValue;
 import org.openfast.ScalarValue;
 import org.openfast.SequenceValue;
-import org.openfast.TestUtil;
 
 import org.openfast.template.operator.Operator;
 import org.openfast.template.type.Type;
+import org.openfast.test.TestUtil;
 
 import java.io.InputStream;
 
@@ -63,7 +64,7 @@ public class SequenceTest extends TestCase {
                 new IntegerValue(3), new IntegerValue(4)
             });
 
-        byte[] actual = sequence1.encode(sequenceValue, template, context);
+        byte[] actual = sequence1.encode(sequenceValue, template, context, new BitVectorBuilder(1));
         String expected = "10000010 11100000 10000001 10000010 11100000 10000011 10000100";
         TestUtil.assertBitVectorEquals(expected, actual);
     }

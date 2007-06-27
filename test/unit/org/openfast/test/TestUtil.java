@@ -20,7 +20,9 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 */
 
 
-package org.openfast;
+package org.openfast.test;
+
+import org.openfast.ByteUtil;
 
 import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;

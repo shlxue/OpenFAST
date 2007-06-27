@@ -22,6 +22,8 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast.template.operator;
 
+import org.openfast.BitVector;
+import org.openfast.BitVectorBuilder;
 import org.openfast.FieldValue;
 import org.openfast.NumericValue;
 import org.openfast.ScalarValue;
@@ -71,36 +73,7 @@ public abstract class Operator {
             }
         };
 
-    protected static final Operator CONSTANT_ALL = new Operator(CONSTANT,
-            Type.ALL_TYPES) {
-            public ScalarValue getValueToEncode(ScalarValue value,
-                ScalarValue priorValue, Scalar field) {
-                return null; // Never encode constant value.
-            }
-
-            public ScalarValue decodeValue(ScalarValue newValue,
-                ScalarValue previousValue, Scalar field) {
-                return field.getDefaultValue();
-            }
-
-            public boolean isPresenceMapBitSet(byte[] encoding,
-                FieldValue fieldValue) {
-                return fieldValue != null;
-            }
-
-            public ScalarValue decodeEmptyValue(ScalarValue previousValue,
-                Scalar field) {
-                if (!field.isOptional()) {
-                    return field.getDefaultValue();
-                }
-
-                return null;
-            }
-
-            public boolean usesPresenceMapBit(boolean optional) {
-                return optional;
-            }
-        };
+    protected static final Operator CONSTANT_ALL = new ConstantOperator(CONSTANT, Type.ALL_TYPES);
 
     protected static final Operator DEFAULT_ALL = new Operator(DEFAULT,
             Type.ALL_TYPES) {
@@ -373,4 +346,22 @@ public abstract class Operator {
     public boolean usesPresenceMapBit(boolean optional) {
         return true;
     }
+
+	public int encodePresenceMap(BitVector presenceMap, int presenceMapIndex, byte[] encoding, FieldValue fieldValue, boolean optional) {
+		if (usesPresenceMapBit(optional)) {
+			if (isPresenceMapBitSet(encoding, fieldValue))
+				presenceMap.set(presenceMapIndex);
+			presenceMapIndex++;
+		}
+		return presenceMapIndex;
+	}
+
+	public ScalarValue getValueToEncode(ScalarValue value, ScalarValue priorValue, Scalar scalar, BitVectorBuilder presenceMapBuilder) {
+		ScalarValue valueToEncode = getValueToEncode(value, priorValue, scalar);
+		if (valueToEncode == null)
+			presenceMapBuilder.skip();
+		else
+			presenceMapBuilder.set();
+		return valueToEncode;
+	}
 }

@@ -25,38 +25,32 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
  */
 package org.openfast.template.type;
 
-import org.openfast.DecimalValue;
-import org.openfast.IntegerValue;
-import org.openfast.ScalarValue;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
+
+import org.openfast.ByteUtil;
+import org.openfast.DecimalValue;
+import org.openfast.ScalarValue;
+import org.openfast.template.TwinValue;
 
 
 final class TwinFieldDecimal extends Type {
     TwinFieldDecimal() { }
 
     public byte[] encodeValue(ScalarValue v) {
-        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-        DecimalValue value = (DecimalValue) v;
-
-        try {
-            buffer.write(Type.INTEGER.encode(new IntegerValue(value.exponent)));
-            buffer.write(Type.INTEGER.encode(new IntegerValue(value.mantissa)));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        return buffer.toByteArray();
+    	if (v.isNull())
+    		return NULL_VALUE_ENCODING;
+        TwinValue value = (TwinValue) v;
+        if (value.first != null && value.second != null)
+        	return ByteUtil.combine(Type.INTEGER.encode(value.first), Type.INTEGER.encode(value.second));
+        if (value.second != null)
+        	return Type.INTEGER.encode(value.second);
+        if (value.first != null)
+        	return Type.INTEGER.encode(value.first);
+        return new byte[] {};
     }
 
     public ScalarValue decode(InputStream in) {
-        int exponent = ((IntegerValue) Type.INTEGER.decode(in)).value;
-
-        int mantissa = ((IntegerValue) Type.INTEGER.decode(in)).value;
-
-        return new DecimalValue(mantissa, exponent);
+        return new TwinValue(Type.INTEGER.decode(in), Type.INTEGER.decode(in));
     }
 
     public ScalarValue parse(String value) {

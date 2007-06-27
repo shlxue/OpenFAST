@@ -22,17 +22,20 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast.template.operator;
 
+import org.openfast.BitVectorBuilder;
 import org.openfast.DecimalValue;
 import org.openfast.IntegerValue;
 import org.openfast.ScalarValue;
-
 import org.openfast.template.Scalar;
 import org.openfast.template.TwinValue;
 import org.openfast.template.type.Type;
 
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
 
 public class TwinOperator extends Operator {
-    private Operator exponentOperator;
+    private static final TwinValue DEFAULT = new TwinValue(new IntegerValue(0), new IntegerValue(0));
+	private Operator exponentOperator;
     private Operator mantissaOperator;
 
     public TwinOperator(String exponentOperator, String mantissaOperator) {
@@ -47,17 +50,9 @@ public class TwinOperator extends Operator {
 
     public ScalarValue decodeValue(ScalarValue val, ScalarValue priorVal,
         Scalar field) {
-        if ((val == ScalarValue.NULL) || (val == null)) {
-            return null;
-        }
+        if (val == null) return null;
 
-        TwinValue priorValue;
-
-        if (priorVal == ScalarValue.UNDEFINED) {
-            priorValue = new TwinValue(new IntegerValue(0), new IntegerValue(0));
-        } else {
-            priorValue = (TwinValue) priorVal;
-        }
+        TwinValue priorValue = (priorVal == ScalarValue.UNDEFINED) ? DEFAULT : (TwinValue) priorVal;
 
         TwinValue value = (TwinValue) val;
         IntegerValue exponent = (value.first == null)
@@ -74,21 +69,18 @@ public class TwinOperator extends Operator {
         return new DecimalValue(mantissa.value, exponent.value);
     }
 
-    public ScalarValue getValueToEncode(ScalarValue val, ScalarValue priorVal,
-        Scalar field) {
-        if (priorVal == null) {
-            throw new IllegalStateException(ERR_D9);
-        }
-
+    public ScalarValue getValueToEncode(ScalarValue val, ScalarValue priorVal, Scalar field, BitVectorBuilder presenceMapBuilder) {
+        ScalarValue priorValue = priorVal.isUndefined() ? field.getDefaultValue() : toTwin(priorVal);
+        ScalarValue firstPrior = priorValue.isUndefined() ? ScalarValue.UNDEFINED : ((TwinValue) priorValue).first;
+        ScalarValue secondPrior = priorValue.isUndefined() ? ScalarValue.UNDEFINED : ((TwinValue) priorValue).second;
         if (val == null) {
             if (field.isOptional()) {
-                return ScalarValue.NULL;
+                return exponentOperator.getValueToEncode(null, firstPrior, field, presenceMapBuilder);
             } else {
                 throw new IllegalArgumentException(
                     "Mandatory fields can't be null.");
             }
         }
-
         DecimalValue value = (DecimalValue) val;
 
         if (priorVal.isUndefined() && field.getDefaultValue().isUndefined()) {
@@ -96,22 +88,23 @@ public class TwinOperator extends Operator {
                 new IntegerValue(value.mantissa));
         }
 
-        TwinValue priorValue = priorVal.isUndefined()
-            ? (TwinValue) field.getDefaultValue() : (TwinValue) priorVal;
 
         if (priorValue.equals(val)) {
             return null;
         }
 
-        ScalarValue exponentValue = exponentOperator.getValueToEncode(new IntegerValue(
-                    value.exponent), priorValue.first, field);
-        ScalarValue mantissaValue = mantissaOperator.getValueToEncode(new IntegerValue(
-                    value.mantissa), priorValue.second, field);
+        ScalarValue exponentValue = exponentOperator.getValueToEncode(new IntegerValue(value.exponent), firstPrior, field, presenceMapBuilder);
+        ScalarValue mantissaValue = mantissaOperator.getValueToEncode(new IntegerValue(value.mantissa), secondPrior, field, presenceMapBuilder);
 
         return new TwinValue(exponentValue, mantissaValue);
     }
 
-    public boolean equals(Object obj) {
+    private TwinValue toTwin(ScalarValue priorVal) {
+    	DecimalValue val = (DecimalValue) priorVal;
+		return new TwinValue(new IntegerValue(val.exponent), new IntegerValue(val.mantissa));
+	}
+
+	public boolean equals(Object obj) {
         if ((obj == null) || !(obj instanceof TwinOperator)) {
             return false;
         }
@@ -123,4 +116,8 @@ public class TwinOperator extends Operator {
         return exponentOperator.equals(other.exponentOperator) &&
         mantissaOperator.equals(other.mantissaOperator);
     }
+
+	public ScalarValue getValueToEncode(ScalarValue value, ScalarValue priorValue, Scalar field) {
+		throw new NotImplementedException();
+	}
 }

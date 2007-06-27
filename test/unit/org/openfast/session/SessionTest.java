@@ -28,7 +28,6 @@ import org.openfast.ByteUtil;
 import org.openfast.GroupValue;
 import org.openfast.Message;
 import org.openfast.StringValue;
-import org.openfast.TestUtil;
 
 import org.openfast.error.ErrorHandler;
 import org.openfast.error.FastException;
@@ -38,6 +37,7 @@ import org.openfast.template.MessageTemplate;
 import org.openfast.template.type.Type;
 
 import org.openfast.test.ObjectMother;
+import org.openfast.test.TestUtil;
 
 import org.openfast.util.LocalFastConnectionFactory;
 import org.openfast.util.RecordingInputStream;

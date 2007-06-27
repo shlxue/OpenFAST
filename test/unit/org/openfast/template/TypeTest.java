@@ -22,7 +22,7 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast.template;
 
-import junit.framework.TestCase;
+import java.io.InputStream;
 
 import org.openfast.BitVector;
 import org.openfast.BitVectorValue;
@@ -32,14 +32,12 @@ import org.openfast.DecimalValue;
 import org.openfast.IntegerValue;
 import org.openfast.ScalarValue;
 import org.openfast.StringValue;
-import org.openfast.TestUtil;
-
 import org.openfast.template.type.Type;
+import org.openfast.test.OpenFastTestCase;
+import org.openfast.test.TestUtil;
 
-import java.io.InputStream;
 
-
-public class TypeTest extends TestCase {
+public class TypeTest extends OpenFastTestCase {
     /*** SIGNED INTEGER ***/
     public void testSignedIntegerEncoding() {
         TestUtil.assertBitVectorEquals("10111111",
@@ -250,36 +248,33 @@ public class TypeTest extends TestCase {
     /*** TWIN FIELD SCALED NUMBER ***/
     public void testTwinFieldScaledNumberEncoding() {
         TestUtil.assertBitVectorEquals("10000000 10000100",
-            Type.TF_SCALED_NUMBER.encode(new DecimalValue(4)));
+            Type.TF_SCALED_NUMBER.encode(twin(i(0), i(4))));
         TestUtil.assertBitVectorEquals("10000010 10000100",
-            Type.TF_SCALED_NUMBER.encode(new DecimalValue(400)));
+            Type.TF_SCALED_NUMBER.encode(twin(i(2), i(4))));
         TestUtil.assertBitVectorEquals("11111111 10000100",
-            Type.TF_SCALED_NUMBER.encode(new DecimalValue(0.4)));
+            Type.TF_SCALED_NUMBER.encode(twin(i(-1), i(4))));
         TestUtil.assertBitVectorEquals("10000011 11111111",
-            Type.TF_SCALED_NUMBER.encode(new DecimalValue(-1000)));
+            Type.TF_SCALED_NUMBER.encode(twin(i(3), i(-1))));
         //newly added tests
         TestUtil.assertBitVectorEquals("10000000 00000101 10111110",
-            Type.TF_SCALED_NUMBER.encode(new DecimalValue(702)));
+            Type.TF_SCALED_NUMBER.encode(twin(i(0), i(702))));
         TestUtil.assertBitVectorEquals("10000001 00000101 10111110",
-            Type.TF_SCALED_NUMBER.encode(new DecimalValue(7020)));
+            Type.TF_SCALED_NUMBER.encode(twin(i(1), i(702))));
         TestUtil.assertBitVectorEquals("10000000 11001011",
-            Type.TF_SCALED_NUMBER.encode(new DecimalValue(-53)));
+            Type.TF_SCALED_NUMBER.encode(twin(i(0), i(-53))));
     }
 
     public void testTwinFieldScaledNumberDecoding() {
-        assertEquals(DecimalValue.NULL,
-            Type.TF_SCALED_NUMBER.decode(ByteUtil.createByteStream(
-                    "11000000 10000000")));
-        assertEquals(new DecimalValue(4),
+        assertEquals(twin(i(0), i(4)),
             Type.TF_SCALED_NUMBER.decode(ByteUtil.createByteStream(
                     "10000000 10000100")));
-        assertEquals(new DecimalValue(400),
+        assertEquals(twin(i(2), i(4)),
             Type.TF_SCALED_NUMBER.decode(ByteUtil.createByteStream(
                     "10000010 10000100")));
-        assertEquals(new DecimalValue(0.4),
+        assertEquals(twin(i(-1), i(4)),
             Type.TF_SCALED_NUMBER.decode(ByteUtil.createByteStream(
                     "11111111 10000100")));
-        assertEquals(new DecimalValue(-1000),
+        assertEquals(twin(i(3), i(-1)),
             Type.TF_SCALED_NUMBER.decode(ByteUtil.createByteStream(
                     "10000011 11111111")));
     }

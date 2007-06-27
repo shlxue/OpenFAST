@@ -32,6 +32,7 @@ import org.openfast.template.MessageTemplate;
 import org.openfast.template.Scalar;
 import org.openfast.template.operator.Operator;
 import org.openfast.template.type.Type;
+import org.openfast.test.TestUtil;
 
 import java.io.IOException;
 import java.io.PipedInputStream;

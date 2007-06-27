@@ -22,6 +22,7 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast.template;
 
+import org.openfast.BitVectorBuilder;
 import org.openfast.Context;
 import org.openfast.FieldValue;
 import org.openfast.GroupValue;
@@ -153,9 +154,9 @@ public class Sequence extends Field implements FieldSet {
      * @param context Which context is to be stored
      * @return Returns the buffer of the byte array
      */
-    public byte[] encode(FieldValue value, Group template, Context context) {
+    public byte[] encode(FieldValue value, Group template, Context context, BitVectorBuilder presenceMapBuilder) {
         if (value == null) {
-            return length.encode(null, template, context);
+            return length.encode(null, template, context, presenceMapBuilder);
         }
 
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
@@ -164,7 +165,7 @@ public class Sequence extends Field implements FieldSet {
 
         //		System.out.print(getName() + "[");
         try {
-            buffer.write(length.encode(new IntegerValue(len), template, context));
+            buffer.write(length.encode(new IntegerValue(len), template, context, presenceMapBuilder));
 
             Iterator iter = val.iterator();
 

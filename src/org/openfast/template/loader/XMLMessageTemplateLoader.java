@@ -76,18 +76,24 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
             return new MessageTemplate[] {  };
         }
 
-        NodeList templateTags = document.getDocumentElement()
-                                        .getElementsByTagName("template");
-        MessageTemplate[] templates = new MessageTemplate[templateTags.getLength()];
-
-        for (int i = 0; i < templateTags.getLength(); i++) {
-            Element templateTag = (Element) templateTags.item(i);
-            templates[i] = new MessageTemplate(templateTag.getAttribute("name"),
-                    parseFields(templateTag));
-            templates[i].setMessageReference(getMessageReference(templateTag));
+        Element root = document.getDocumentElement();
+		if (root.getNodeName().equals("template")) {
+        	return new MessageTemplate[] { new MessageTemplate(root.getAttribute("name"), parseFields(root)) };
+        } else {
+	        NodeList templateTags = root
+	                                        .getElementsByTagName("template");
+	        
+	        MessageTemplate[] templates = new MessageTemplate[templateTags.getLength()];
+	
+	        for (int i = 0; i < templateTags.getLength(); i++) {
+	            Element templateTag = (Element) templateTags.item(i);
+	            templates[i] = new MessageTemplate(templateTag.getAttribute("name"),
+	                    parseFields(templateTag));
+	            templates[i].setMessageReference(getMessageReference(templateTag));
+	        }
+	        return templates;
         }
 
-        return templates;
     }
 
     private String getMessageReference(Element templateTag) {
@@ -192,7 +198,7 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
 
         return new Scalar(name, Type.DECIMAL,
             new TwinOperator(exponentOperator, mantissaOperator),
-            new TwinValue(mantissaDefaultValue, exponentDefaultValue), optional);
+            new TwinValue(exponentDefaultValue, mantissaDefaultValue), optional);
     }
 
     private Scalar createScalar(Element fieldNode, String name, boolean optional, String typeName) {

@@ -29,11 +29,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.openfast.BitVector;
+import org.openfast.BitVectorBuilder;
 import org.openfast.BitVectorValue;
 import org.openfast.Context;
 import org.openfast.FieldValue;
 import org.openfast.GroupValue;
-import org.openfast.template.operator.Operator;
 import org.openfast.template.type.Type;
 
 
@@ -55,54 +55,46 @@ public class Group extends Field {
         this.fieldNameMap = constructFieldNameMap(fields);
     }
 
+	public byte[] encode(FieldValue value, Group template, Context context, BitVectorBuilder presenceMapBuilder) {
+		byte[] encoding = encode(value, template, context);
+		if (optional) {
+			if (encoding.length != 0)
+				presenceMapBuilder.set();
+			else
+				presenceMapBuilder.skip();
+		}
+		return encoding;
+	}
+    
     /**
      * 
      */
     public byte[] encode(FieldValue value, Group template, Context context) {
         if (value == null) {
-            return new byte[] {  };
+            return new byte[] { };
         }
 
         GroupValue groupValue = (GroupValue) value;
-        ByteArrayOutputStream buffer;
-        BitVector presenceMap = new BitVector(fields.length);
+        BitVectorBuilder presenceMapBuilder = new BitVectorBuilder(fields.length);
 
         try {
-            buffer = new ByteArrayOutputStream();
-
             byte[][] fieldEncodings = new byte[fields.length][];
-            int presenceMapIndex = 0;
 
             for (int fieldIndex = 0; fieldIndex < fields.length;
                     fieldIndex++) {
                 FieldValue fieldValue = groupValue.getValue(fieldIndex);
                 Field field = getField(fieldIndex);
-                byte[] encoding = field.encode(fieldValue, template, context);
-
-                if (field.usesPresenceMapBit()) {
-                    if ((field.isPresenceMapBitSet(encoding, fieldValue) &&
-                            (encoding.length != 0)) ||
-                            (field instanceof Scalar &&
-                            (((Scalar) field).getOperatorName() == Operator.CONSTANT) &&
-                            (fieldValue != null))) {
-                        presenceMap.set(presenceMapIndex);
-                    }
-
-                    presenceMapIndex++;
-                }
-
+                byte[] encoding = field.encode(fieldValue, template, context, presenceMapBuilder);
                 fieldEncodings[fieldIndex] = encoding;
             }
 
-            buffer.write(presenceMap.getTruncatedBytes());
-
+            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+            buffer.write(presenceMapBuilder.getBitVector().getTruncatedBytes());
             for (int i = 0; i < fieldEncodings.length; i++) {
                 if (fieldEncodings[i] != null) {
                     buffer.write(fieldEncodings[i]);
                 }
             }
-
-            //			System.out.println(this.getName() + ": " + ByteUtil.convertByteArrayToBitString(buffer.toByteArray()));
             return buffer.toByteArray();
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -147,12 +139,7 @@ public class Group extends Field {
                     "Error occurred while decoding field \"" + field.getName() +
                     "\" in group \"" + getName() + "\"", e);
             }
-
-            //			if (values[fieldIndex] != null)
-            //				System.out.print(", ");
         }
-
-        //		System.out.print("]");
         return values;
     }
 

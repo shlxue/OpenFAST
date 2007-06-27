@@ -22,6 +22,7 @@ package org.openfast.template.operator;
 
 import junit.framework.TestCase;
 
+import org.openfast.BitVectorBuilder;
 import org.openfast.IntegerValue;
 import org.openfast.ScalarValue;
 import org.openfast.StringValue;
@@ -80,9 +81,9 @@ public class OperatorTest extends TestCase {
 	public void testConstantValueOperator()
 	{
 		Scalar field = new Scalar("", Type.ASCII_STRING, Operator.CONSTANT, new StringValue("5"), false);
-		assertEquals(null, Operator.CONSTANT_ALL.getValueToEncode(null, null, field));	
+		assertEquals(null, Operator.CONSTANT_ALL.getValueToEncode(null, null, field, new BitVectorBuilder(1)));	
 		Scalar field1 = new Scalar("", Type.ASCII_STRING, Operator.CONSTANT, new StringValue("99"), false);
-		assertEquals(null, Operator.CONSTANT_ALL.getValueToEncode(null, null, field1));
+		assertEquals(null, Operator.CONSTANT_ALL.getValueToEncode(null, null, field1, new BitVectorBuilder(1)));
 		//newly added implementation
 		Scalar field2 = new Scalar("", Type.ASCII_STRING, Operator.CONSTANT, new StringValue("4"), true);
 		assertEquals(null, Operator.CONSTANT_ALL.decodeEmptyValue(new StringValue("4"), field2));

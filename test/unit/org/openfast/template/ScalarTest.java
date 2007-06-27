@@ -24,15 +24,16 @@ package org.openfast.template;
 
 import junit.framework.TestCase;
 
+import org.openfast.BitVectorBuilder;
 import org.openfast.Context;
 import org.openfast.IntegerValue;
 import org.openfast.ScalarValue;
-import org.openfast.TestUtil;
 
 import org.openfast.error.FastConstants;
 import org.openfast.error.FastException;
 import org.openfast.template.operator.Operator;
 import org.openfast.template.type.Type;
+import org.openfast.test.TestUtil;
 
 
 public class ScalarTest extends TestCase {
@@ -49,7 +50,7 @@ public class ScalarTest extends TestCase {
         Scalar scalar = new Scalar("a", Type.U32, Operator.COPY,
                 ScalarValue.UNDEFINED, false);
 
-        byte[] encoding = scalar.encode(new IntegerValue(1), null, context);
+        byte[] encoding = scalar.encode(new IntegerValue(1), null, context, new BitVectorBuilder(1));
         TestUtil.assertBitVectorEquals("10000001", encoding);
     }
 
@@ -59,9 +60,9 @@ public class ScalarTest extends TestCase {
     public void testCopyEncodeWithPreviousValue() {
         Scalar scalar = new Scalar("a", Type.U32, Operator.COPY,
                 ScalarValue.UNDEFINED, false);
-        scalar.encode(new IntegerValue(1), null, context);
+        scalar.encode(new IntegerValue(1), null, context, new BitVectorBuilder(1));
 
-        byte[] encoding = scalar.encode(new IntegerValue(1), null, context);
+        byte[] encoding = scalar.encode(new IntegerValue(1), null, context, new BitVectorBuilder(1));
         TestUtil.assertBitVectorEquals("", encoding);
     }
     

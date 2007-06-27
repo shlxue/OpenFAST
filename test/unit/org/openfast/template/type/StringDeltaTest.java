@@ -27,9 +27,9 @@ import junit.framework.TestCase;
 import org.openfast.ByteUtil;
 import org.openfast.IntegerValue;
 import org.openfast.StringValue;
-import org.openfast.TestUtil;
 
 import org.openfast.template.TwinValue;
+import org.openfast.test.TestUtil;
 
 import java.io.InputStream;
 

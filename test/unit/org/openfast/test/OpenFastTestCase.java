@@ -30,11 +30,13 @@ import org.openfast.DecimalValue;
 import org.openfast.IntegerValue;
 import org.openfast.ScalarValue;
 import org.openfast.StringValue;
-import org.openfast.TestUtil;
 
+import org.openfast.template.MessageTemplate;
 import org.openfast.template.TwinValue;
+import org.openfast.template.loader.XMLMessageTemplateLoader;
 import org.openfast.template.type.Type;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 
@@ -75,5 +77,10 @@ public abstract class OpenFastTestCase extends TestCase {
 
 	protected ScalarValue string(String value) {
 		return new StringValue(value);
+	}
+
+	protected MessageTemplate template(String templateXml) {
+		MessageTemplate[] templates = new XMLMessageTemplateLoader().load(new ByteArrayInputStream(templateXml.getBytes()));
+		return templates[0];
 	}
 }
