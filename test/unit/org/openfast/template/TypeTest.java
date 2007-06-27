@@ -67,7 +67,6 @@ public class TypeTest extends TestCase {
             Type.INTEGER.encode(new IntegerValue(8193)));
         TestUtil.assertBitVectorEquals("01111111 00111111 11111111",
             Type.INTEGER.encode(new IntegerValue(-8193)));
-        assertEquals("Type [signed integer]", Type.INTEGER.toString());
         assertEquals(false, Type.INTEGER.isNullable());
     }
 
@@ -109,8 +108,6 @@ public class TypeTest extends TestCase {
             Type.NULLABLE_INTEGER.encode(new IntegerValue(547)));
         TestUtil.assertBitVectorEquals("11111011",
             Type.NULLABLE_INTEGER.encode(new IntegerValue(-5)));
-        assertEquals("Type [signed null integer]",
-            Type.NULLABLE_INTEGER.toString());
         assertEquals(true, Type.NULLABLE_INTEGER.isNullable());
     }
 
@@ -162,7 +159,6 @@ public class TypeTest extends TestCase {
             Type.UINT.encode(new LongValue(274877906943L)));
         TestUtil.assertBitVectorEquals("00100010 00101111 01011111 01011101 01111100 10100000",
             Type.UINT.encode(new LongValue(1181048340000L)));
-        assertEquals("Type [unsigned integer]", Type.UINT.toString());
     }
 
     public void testUnsignedIntegerDecoding() {
@@ -207,8 +203,6 @@ public class TypeTest extends TestCase {
             Type.NULLABLE_UNSIGNED_INTEGER.encode(new IntegerValue(1)));
         TestUtil.assertBitVectorEquals("00111001 01000101 10100100",
             Type.NULLABLE_UNSIGNED_INTEGER.encode(new IntegerValue(942755)));
-        assertEquals("Type [nullable unsigned integer]",
-            Type.NULLABLE_UNSIGNED_INTEGER.toString());
     }
 
     public void testNullableUnsignedIntegerDecoding() {
@@ -251,8 +245,6 @@ public class TypeTest extends TestCase {
             Type.SF_SCALED_NUMBER.encode(new DecimalValue(5)));
         TestUtil.assertBitVectorEquals("10000001 10000101",
             Type.SF_SCALED_NUMBER.encode(new DecimalValue(50)));
-        assertEquals("Type [single field scaled number]",
-            Type.SF_SCALED_NUMBER.toString());
     }
 
     /*** TWIN FIELD SCALED NUMBER ***/
@@ -274,8 +266,6 @@ public class TypeTest extends TestCase {
             Type.TF_SCALED_NUMBER.encode(new DecimalValue(7020)));
         TestUtil.assertBitVectorEquals("10000000 11001011",
             Type.TF_SCALED_NUMBER.encode(new DecimalValue(-53)));
-        assertEquals("Type [twin field scaled number]",
-            Type.TF_SCALED_NUMBER.toString());
     }
 
     public void testTwinFieldScaledNumberDecoding() {
@@ -308,7 +298,6 @@ public class TypeTest extends TestCase {
         TestUtil.assertBitVectorEquals("11111010", encoding);
         encoding = Type.STRING_TYPE.encode(new StringValue("ABC"));
         TestUtil.assertBitVectorEquals("01000001 01000010 11000011", encoding);
-        assertEquals("Type [string]", Type.STRING_TYPE.toString());
     }
 
     public void testStringDecoding() {
@@ -338,7 +327,6 @@ public class TypeTest extends TestCase {
         bitVector.set(2);
         encoding = Type.BIT_VECTOR.encode(new BitVectorValue(bitVector));
         TestUtil.assertBitVectorEquals("01110101 10101000", encoding);
-        assertEquals("Type [bit vector]", Type.BIT_VECTOR.toString());
     }
 
     public void testBitVectorDecoding() {
@@ -365,7 +353,6 @@ public class TypeTest extends TestCase {
         byte[] vector2 = new byte[] { 0x57, 0x4e };
         encoding = Type.BYTE_VECTOR_TYPE.encode(new ByteVectorValue(vector2));
         TestUtil.assertBitVectorEquals("10000010 01010111 01001110", encoding);
-        assertEquals("Type [byte vector]", Type.BYTE_VECTOR_TYPE.toString());
     }
 
     public void testByteVectorDecoding() {

@@ -30,7 +30,7 @@ import org.openfast.template.Scalar;
 
 
 public abstract class OptionallyPresentOperator extends Operator {
-    protected OptionallyPresentOperator(String name, Integer[] types) {
+    protected OptionallyPresentOperator(String name, String[] types) {
         super(name, types);
     }
 

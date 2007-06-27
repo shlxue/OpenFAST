@@ -92,8 +92,8 @@ public class Sequence extends Field implements FieldSet {
      * @return A Scalar value
      */
     private static Scalar createLength(boolean optional) {
-        return new Scalar(createUniqueName(), Type.UNSIGNED_INTEGER,
-            Operator.NONE, optional);
+        return new Scalar(createUniqueName(), Type.U32,
+            Operator.NONE, ScalarValue.UNDEFINED, optional);
     }
 
     /**

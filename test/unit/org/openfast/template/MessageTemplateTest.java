@@ -24,6 +24,7 @@ package org.openfast.template;
 
 import junit.framework.TestCase;
 
+import org.openfast.ScalarValue;
 import org.openfast.template.operator.Operator;
 import org.openfast.template.type.Type;
 
@@ -31,9 +32,9 @@ import org.openfast.template.type.Type;
 public class MessageTemplateTest extends TestCase {
     public void testEncodeMessageUsingTemplate() {
         Field[] fields = new Field[2];
-        fields[0] = new Scalar("code", Type.STRING, Operator.COPY, false);
-        fields[1] = new Scalar("value", Type.UNSIGNED_INTEGER, Operator.DELTA,
-                false);
+        fields[0] = new Scalar("code", Type.STRING, Operator.COPY, ScalarValue.UNDEFINED, false);
+        fields[1] = new Scalar("value", Type.U32, Operator.DELTA,
+                ScalarValue.UNDEFINED, false);
 
         //		MessageTemplate template = new MessageTemplate(null, fields);
     }

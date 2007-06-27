@@ -33,10 +33,7 @@ import java.io.InputStream;
 
 
 public final class NullableSignedInteger extends IntegerType {
-    NullableSignedInteger(Integer type, String name, String[] names,
-        boolean nullable) {
-        super(type, name, names, nullable);
-    }
+    NullableSignedInteger() { }
 
     public byte[] encodeValue(ScalarValue value) {
         if (value.isNull()) {
@@ -65,5 +62,9 @@ public final class NullableSignedInteger extends IntegerType {
         }
 
         return numericValue;
+    }
+    
+    public boolean isNullable() {
+    	return true;
     }
 }

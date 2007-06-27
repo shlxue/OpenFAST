@@ -31,14 +31,7 @@ import org.openfast.util.Util;
 
 
 public abstract class IntegerType extends Type {
-    protected IntegerType(Integer type, String name, String[] names) {
-        super(type, name, names);
-    }
-
-    public IntegerType(Integer type, String name, String[] names,
-        boolean nullable) {
-        super(type, name, names, nullable);
-    }
+    protected IntegerType() { }
 
     protected static ScalarValue createValue(long value) {
         if (Util.isBiggerThanInt(value)) {

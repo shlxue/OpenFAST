@@ -23,7 +23,7 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 package org.openfast.template.operator;
 
 public abstract class AlwaysPresentOperator extends Operator {
-    protected AlwaysPresentOperator(String name, Integer[] types) {
+    protected AlwaysPresentOperator(String name, String[] types) {
         super(name, types);
     }
 

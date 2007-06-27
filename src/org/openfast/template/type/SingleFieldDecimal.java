@@ -37,9 +37,7 @@ import java.io.InputStream;
 
 
 final class SingleFieldDecimal extends Type {
-    SingleFieldDecimal() {
-        super(DECIMAL, "single field scaled number", new String[] { "decimal" });
-    }
+    SingleFieldDecimal() { }
 
     public byte[] encodeValue(ScalarValue v) {
         if (v == ScalarValue.NULL) {

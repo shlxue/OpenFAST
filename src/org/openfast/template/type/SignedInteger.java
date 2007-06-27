@@ -25,17 +25,15 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
  */
 package org.openfast.template.type;
 
-import org.openfast.NumericValue;
-import org.openfast.ScalarValue;
-
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.openfast.NumericValue;
+import org.openfast.ScalarValue;
+
 
 public final class SignedInteger extends IntegerType {
-    SignedInteger(Integer type, String name, String[] names) {
-        super(type, name, names);
-    }
+    SignedInteger() { }
 
     public byte[] encodeValue(ScalarValue value) {
         long longValue = ((NumericValue) value).getLong();

@@ -27,6 +27,7 @@ import org.openfast.FieldValue;
 import org.openfast.GroupValue;
 import org.openfast.IntegerValue;
 import org.openfast.Message;
+import org.openfast.ScalarValue;
 import org.openfast.SequenceValue;
 import org.openfast.StringValue;
 
@@ -51,8 +52,8 @@ public class ObjectMother {
         if (quoteTemplate == null) {
             quoteTemplate = new MessageTemplate(null,
                     new Field[] {
-                        new Scalar("bid", Type.DECIMAL, Operator.DELTA, false),
-                        new Scalar("ask", Type.DECIMAL, Operator.DELTA, false)
+                        new Scalar("bid", Type.DECIMAL, Operator.DELTA, ScalarValue.UNDEFINED, false),
+                        new Scalar("ask", Type.DECIMAL, Operator.DELTA, ScalarValue.UNDEFINED, false)
                     });
         }
 
@@ -87,13 +88,13 @@ public class ObjectMother {
             allocationInstruction = new MessageTemplate("AllocInstrctn",
                     new Field[] {
                         allocations(), instrument(),
-                        new Scalar("ID", Type.STRING, Operator.DELTA, false),
-                        new Scalar("Side", Type.UNSIGNED_INTEGER,
-                            Operator.COPY, false),
+                        new Scalar("ID", Type.STRING, Operator.DELTA, ScalarValue.UNDEFINED, false),
+                        new Scalar("Side", Type.U32,
+                            Operator.COPY, ScalarValue.UNDEFINED, false),
                         new Scalar("Quantity", Type.DECIMAL, Operator.DELTA,
-                            false),
+                            ScalarValue.UNDEFINED, false),
                         new Scalar("Average Price", Type.DECIMAL,
-                            Operator.DELTA, false)
+                            Operator.DELTA, ScalarValue.UNDEFINED, false)
                     });
         }
 
@@ -104,12 +105,12 @@ public class ObjectMother {
         if (allocations == null) {
             allocations = new Sequence("Allocations",
                     new Field[] {
-                        new Scalar("Account", Type.STRING, Operator.COPY, false),
-                        new Scalar("Price", Type.DECIMAL, Operator.DELTA, false),
+                        new Scalar("Account", Type.STRING, Operator.COPY, ScalarValue.UNDEFINED, false),
+                        new Scalar("Price", Type.DECIMAL, Operator.DELTA, ScalarValue.UNDEFINED, false),
                         new Scalar("Quantity", Type.DECIMAL, Operator.DELTA,
-                            false),
+                            ScalarValue.UNDEFINED, false),
                         new Scalar("Average Price", Type.DECIMAL,
-                            Operator.DELTA, false)
+                            Operator.DELTA, ScalarValue.UNDEFINED, false)
                     }, false);
         }
 
@@ -120,8 +121,8 @@ public class ObjectMother {
         if (instrument == null) {
             instrument = new Group("Instrmt",
                     new Field[] {
-                        new Scalar("Symbol", Type.STRING, Operator.COPY, false),
-                        new Scalar("MMY", Type.STRING, Operator.DELTA, false),
+                        new Scalar("Symbol", Type.STRING, Operator.COPY, ScalarValue.UNDEFINED, false),
+                        new Scalar("MMY", Type.STRING, Operator.DELTA, ScalarValue.UNDEFINED, false),
                     }, false);
         }
 

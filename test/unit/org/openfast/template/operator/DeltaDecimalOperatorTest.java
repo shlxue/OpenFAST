@@ -33,7 +33,7 @@ import org.openfast.template.type.Type;
 
 public class DeltaDecimalOperatorTest extends TestCase {
     public void testGetValueToEncodeForMandatory() {
-        Scalar field = new Scalar("", Type.DECIMAL, Operator.DELTA, false);
+        Scalar field = new Scalar("", Type.DECIMAL, Operator.DELTA, ScalarValue.UNDEFINED, false);
         Operator operator = field.getOperator();
 
         DecimalValue value = (DecimalValue) operator.getValueToEncode(d(9427.55),
@@ -56,7 +56,7 @@ public class DeltaDecimalOperatorTest extends TestCase {
     }
 
     public void testGetValueToEncodeForOptional() {
-        Scalar field = new Scalar("", Type.DECIMAL, Operator.DELTA, true);
+        Scalar field = new Scalar("", Type.DECIMAL, Operator.DELTA, ScalarValue.UNDEFINED, true);
         Operator operator = field.getOperator();
 
         DecimalValue value = (DecimalValue) operator.getValueToEncode(d(9427.55),
@@ -129,7 +129,7 @@ public class DeltaDecimalOperatorTest extends TestCase {
 
     public void testEncodeDecimalValueWithEmptyPriorValue() {
         try {
-            Scalar field = new Scalar("", Type.DECIMAL, Operator.DELTA, false);
+            Scalar field = new Scalar("", Type.DECIMAL, Operator.DELTA, ScalarValue.UNDEFINED, false);
             field.getOperator()
                  .getValueToEncode(null, ScalarValue.UNDEFINED, field);
             fail();

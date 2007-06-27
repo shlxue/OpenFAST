@@ -34,9 +34,7 @@ import java.io.InputStream;
 
 
 final class StringType extends Type {
-    StringType(Integer type, String name, String[] names) {
-        super(type, name, names);
-    }
+    StringType() { }
 
     public byte[] encodeValue(ScalarValue value) {
         if ((value == null) || value.isNull()) {

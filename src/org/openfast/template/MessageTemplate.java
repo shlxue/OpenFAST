@@ -28,6 +28,7 @@ import org.openfast.FieldValue;
 import org.openfast.GroupValue;
 import org.openfast.IntegerValue;
 import org.openfast.Message;
+import org.openfast.ScalarValue;
 
 import org.openfast.template.operator.Operator;
 import org.openfast.template.type.Type;
@@ -44,8 +45,8 @@ public class MessageTemplate extends Group implements FieldSet {
 
     private static Field[] addTemplateIdField(Field[] fields) {
         Field[] newFields = new Field[fields.length + 1];
-        newFields[0] = new Scalar("templateId", Type.UNSIGNED_INTEGER,
-                Operator.COPY, false);
+        newFields[0] = new Scalar("templateId", Type.U32,
+                Operator.COPY, ScalarValue.UNDEFINED, false);
         System.arraycopy(fields, 0, newFields, 1, fields.length);
 
         return newFields;

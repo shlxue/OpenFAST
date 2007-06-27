@@ -45,78 +45,57 @@ public abstract class Type {
         };
     protected static final byte STOP_BIT = (byte) 0x80;
     static final byte[] NULL_VALUE_ENCODING = new byte[] { STOP_BIT };
-    private static final Map TYPE_NAME_MAP = new HashMap();
 
     // Type Enumerations
-    public static final Integer UNSIGNED_INTEGER = new Integer(0);
-    public static final Integer SIGNED_INTEGER = new Integer(1);
-    public static final Integer DECIMAL = new Integer(2);
-    public static final Integer STRING = new Integer(3);
-    public static final Integer BYTE_VECTOR = new Integer(4);
+    public static final String U32 = "u32";
+    public static final String I32 = "i32";
+    public static final String DECIMAL = "decimal";
+    public static final String STRING = "string";
+    public static final String BYTE_VECTOR = "byte";
 
     // Type Collections
-    public static final Integer[] ALL_TYPES = new Integer[] {
-            UNSIGNED_INTEGER, SIGNED_INTEGER, DECIMAL, STRING, BYTE_VECTOR
+    public static final String[] ALL_TYPES = new String[] {
+            U32, I32, DECIMAL, STRING, BYTE_VECTOR
         };
-    public static final Integer[] INTEGER_TYPES = new Integer[] {
-            Type.UNSIGNED_INTEGER, Type.SIGNED_INTEGER
+    public static final String[] INTEGER_TYPES = new String[] {
+            Type.U32, Type.I32
         };
 
     // Type Definitions
-    public static final Type UINT = new UnsignedInteger(UNSIGNED_INTEGER,
-            "unsigned integer", new String[] { "u8", "u16", "u32", "u64" });
-    public static final Type NULLABLE_UNSIGNED_INTEGER = new NullableUnsignedInteger(UNSIGNED_INTEGER,
-            "nullable unsigned integer", new String[] {  }, true);
-    public static final Type INTEGER = new SignedInteger(SIGNED_INTEGER,
-            "signed integer", new String[] { "i8", "i16", "i32", "i64" });
-    public static final Type NULLABLE_INTEGER = new NullableSignedInteger(SIGNED_INTEGER,
-            "signed null integer", new String[] {  }, true);
-    public static final Type STRING_TYPE = new StringType(STRING, "string",
-            new String[] { "string" });
-    public static final Type NULLABLE_STRING_TYPE = new NullableStringType(STRING,
-            "nullable string", new String[] { "" }, true);
-    public static final Type BIT_VECTOR = new BitVectorType(null, "bit vector",
-            new String[] { "bitvector", "bit" });
-    public static final Type BYTE_VECTOR_TYPE = new ByteVectorType(BYTE_VECTOR,
-            "byte vector", new String[] { "bytevector", "byte" });
+    public static final Type UINT = new UnsignedInteger();
+    public static final Type NULLABLE_UNSIGNED_INTEGER = new NullableUnsignedInteger();
+    public static final Type INTEGER = new SignedInteger();
+    public static final Type NULLABLE_INTEGER = new NullableSignedInteger();
+    public static final Type STRING_TYPE = new StringType();
+    public static final Type NULLABLE_STRING_TYPE = new NullableStringType();
+    public static final Type BIT_VECTOR = new BitVectorType();
+    public static final Type BYTE_VECTOR_TYPE = new ByteVectorType();
     public static final Type SF_SCALED_NUMBER = new SingleFieldDecimal();
     public static final Type NULLABLE_SF_SCALED_NUMBER = new NullableSingleFieldDecimal();
-    public static final Type TF_SCALED_NUMBER = new TwinFieldDecimal(DECIMAL,
-            "twin field scaled number", new String[] {  });
-    public static final Type STRING_DELTA = new StringDelta(STRING,
-            "Delta String", new String[] {  });
-    public static final Type NULLABLE_STRING_DELTA = new NullableStringDelta(STRING,
-            "Nullable Delta String", new String[] {  });
+    public static final Type TF_SCALED_NUMBER = new TwinFieldDecimal();
+    public static final Type STRING_DELTA = new StringDelta();
+    public static final Type NULLABLE_STRING_DELTA = new NullableStringDelta();
     private static final Map TYPE_MAP = new HashMap();
+	private static final Map NAME_MAP = new HashMap();
 
     static {
-        TYPE_MAP.put(new Key(SIGNED_INTEGER, Boolean.TRUE), NULLABLE_INTEGER);
-        TYPE_MAP.put(new Key(SIGNED_INTEGER, Boolean.FALSE), INTEGER);
-        TYPE_MAP.put(new Key(UNSIGNED_INTEGER, Boolean.TRUE),
+        TYPE_MAP.put(new Key(I32, Boolean.TRUE), NULLABLE_INTEGER);
+        TYPE_MAP.put(new Key(I32, Boolean.FALSE), INTEGER);
+        TYPE_MAP.put(new Key(U32, Boolean.TRUE),
             NULLABLE_UNSIGNED_INTEGER);
-        TYPE_MAP.put(new Key(UNSIGNED_INTEGER, Boolean.FALSE), UINT);
+        TYPE_MAP.put(new Key(U32, Boolean.FALSE), UINT);
         TYPE_MAP.put(new Key(DECIMAL, Boolean.TRUE), NULLABLE_SF_SCALED_NUMBER);
         TYPE_MAP.put(new Key(DECIMAL, Boolean.FALSE), SF_SCALED_NUMBER);
         TYPE_MAP.put(new Key(STRING, Boolean.TRUE), NULLABLE_STRING_TYPE);
         TYPE_MAP.put(new Key(STRING, Boolean.FALSE), STRING_TYPE);
         TYPE_MAP.put(new Key(BYTE_VECTOR, Boolean.TRUE), BYTE_VECTOR_TYPE);
         TYPE_MAP.put(new Key(BYTE_VECTOR, Boolean.FALSE), BYTE_VECTOR_TYPE);
-    }
-
-    private final String typeName;
-    private final boolean nullable;
-
-    public Type(Integer type, String typeName, String[] typeNames) {
-        this(type, typeName, typeNames, false);
-    }
-
-    public Type(Integer type, String typeName, String[] typeNames,
-        boolean nullable) {
-        this.typeName = typeName;
-        this.nullable = nullable;
-
-        for (int i = 0; i < typeNames.length; i++)
-            TYPE_NAME_MAP.put(typeNames[i], type);
+        
+        NAME_MAP.put(U32, "unsigned integer");
+        NAME_MAP.put(I32, "signed integer");
+        NAME_MAP.put(DECIMAL, "decimal");
+        NAME_MAP.put(STRING, "string");
+        NAME_MAP.put(BYTE_VECTOR, "byte vector");
     }
 
     public abstract byte[] encodeValue(ScalarValue value);
@@ -132,15 +111,11 @@ public abstract class Type {
 
     public abstract ScalarValue decode(InputStream in);
 
-    public String toString() {
-        return "Type [" + typeName + "]";
-    }
-
     public boolean isNullable() {
-        return nullable;
+    	return false;
     }
 
-    public static Type getType(Integer type, boolean optional, Operator operator) {
+    public static Type getType(String type, boolean optional, Operator operator) {
         Key key = new Key(type, Boolean.valueOf(optional));
 
         if (operator instanceof TwinOperator) {
@@ -164,14 +139,9 @@ public abstract class Type {
         return (Type) TYPE_MAP.get(key);
     }
 
-    public static Integer getTypeEnum(String typeName) {
-        if (!TYPE_NAME_MAP.containsKey(typeName)) {
-            throw new IllegalArgumentException("The type \"" + typeName +
-                "\" is not registered.");
-        }
-
-        return (Integer) TYPE_NAME_MAP.get(typeName);
-    }
-
     public abstract ScalarValue getDefaultValue();
+
+	public static String getTypeName(Integer type) {
+		return (String) NAME_MAP.get(type);
+	}
 }

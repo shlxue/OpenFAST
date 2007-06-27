@@ -35,75 +35,39 @@ import java.io.InputStream;
 public class Scalar extends Field {
     private final Type type;
     private final Operator operator;
-    private final Integer typeName;
+    private final String typeName;
     private final String operatorName;
     private String dictionary;
     private ScalarValue defaultValue = ScalarValue.UNDEFINED;
     private final ScalarValue initialValue;
 
-    public Scalar(String name, Integer type, String operator, boolean optional) {
-        super(name, optional);
-        this.typeName = type;
-        this.operator = Operator.getOperator(operator, type);
-        this.type = Type.getType(type, optional, this.operator);
-        this.operatorName = operator;
-        this.dictionary = "global";
-        this.initialValue = ((defaultValue == null) ||
-            defaultValue.isUndefined()) ? this.type.getDefaultValue()
-                                        : defaultValue;
+    public Scalar(String name, String typeName, String operator, ScalarValue defaultValue, boolean optional) {
+        this(name, typeName, Operator.getOperator(operator, typeName), defaultValue, optional);
     }
 
-    // OLD CONSTRUCTORS
-    private Scalar(String name, String operator, ScalarValue defaultValue,
-        Integer typeEnum, boolean optional) {
-        super(name, optional);
-        this.typeName = typeEnum;
-        this.operator = Operator.getOperator(operator, typeEnum);
-        this.type = Type.getType(typeEnum, optional, this.operator);
-        this.operatorName = operator;
-        this.defaultValue = defaultValue;
-        this.dictionary = "global";
-        this.initialValue = ((defaultValue == null) ||
-            defaultValue.isUndefined()) ? type.getDefaultValue() : defaultValue;
-    }
-
-    public Scalar(String name, Integer type, Operator operator,
-        ScalarValue defaultValue, boolean optional) {
+    public Scalar(String name, String typeName, Operator operator, ScalarValue defaultValue, boolean optional) {
         super(name, optional);
         this.operator = operator;
         this.operatorName = operator.getName();
         this.dictionary = "global";
         this.defaultValue = defaultValue;
-        this.typeName = type;
-        this.type = Type.getType(type, optional, operator);
+        this.typeName = typeName;
+        this.type = Type.getType(typeName, optional, operator);
         this.initialValue = ((defaultValue == null) ||
             defaultValue.isUndefined()) ? this.type.getDefaultValue()
                                         : defaultValue;
     }
 
-    public Scalar(String name, String typeName, String operator,
-        boolean optional) {
-        this(name, typeName, operator, ScalarValue.UNDEFINED, optional);
+    public Scalar(String name, String typeName, String operator, String defaultValue, boolean optional) {
+        this(name, typeName, operator, getValue(typeName, defaultValue), optional);
     }
 
-    public Scalar(String name, Integer type, String operator,
-        ScalarValue defaultValue, boolean optional) {
-        this(name, operator, defaultValue, type, optional);
-    }
+	private static ScalarValue getValue(String typeName, String defaultValue) {
+		if (defaultValue == null) return ScalarValue.UNDEFINED;
+		return ScalarValue.getValue(typeName, defaultValue);
+	}
 
-    public Scalar(String name, String typeName, String operator,
-        ScalarValue defaultValue, boolean optional) {
-        this(name, operator, defaultValue, Type.getTypeEnum(typeName), optional);
-    }
-
-    public Scalar(String name, String typeName, String operator,
-        String defaultValue, boolean optional) {
-        this(name, operator,
-            ScalarValue.getValue(Type.getTypeEnum(typeName), defaultValue),
-            Type.getTypeEnum(typeName), optional);
-    }
-
-    public Integer getType() {
+    public String getType() {
         return typeName;
     }
 
@@ -198,13 +162,6 @@ public class Scalar extends Field {
 
     public void setDictionary(String dictionary) {
         this.dictionary = dictionary;
-    }
-
-    public void setDefaultValue(ScalarValue defaultValue) {
-        this.defaultValue = defaultValue;
-    }
-
-    public void setDefaultValue(String value) {
     }
 
     public String toString() {

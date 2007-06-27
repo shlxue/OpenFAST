@@ -171,7 +171,7 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
             String value = ((Element) operatorNode).getAttribute("value");
 
             if ((value != null) && !value.equals("")) {
-                mantissaDefaultValue = ScalarValue.getValue(Type.UNSIGNED_INTEGER,
+                mantissaDefaultValue = ScalarValue.getValue(Type.U32,
                         value);
             }
         }
@@ -183,7 +183,7 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
             String value = ((Element) operatorNode).getAttribute("value");
 
             if ((value != null) && !value.equals("")) {
-                exponentDefaultValue = ScalarValue.getValue(Type.UNSIGNED_INTEGER,
+                exponentDefaultValue = ScalarValue.getValue(Type.U32,
                         value);
             }
         }
@@ -193,21 +193,17 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
             new TwinValue(mantissaDefaultValue, exponentDefaultValue), optional);
     }
 
-    private Scalar createScalar(Element fieldNode, String name,
-        boolean optional, String typeName) {
+    private Scalar createScalar(Element fieldNode, String name, boolean optional, String typeName) {
+    	String operator = Operator.NONE;
+    	String defaultValue = null;
         Element operatorElement = getOperatorElement(fieldNode);
 
-        if (operatorElement == null) {
-            return new Scalar(name, typeName, Operator.NONE, optional);
+        if (operatorElement != null) {
+	        if (operatorElement.hasAttribute("value"))
+	            defaultValue = operatorElement.getAttribute("value");
+	        operator = operatorElement.getNodeName();
         }
-
-        if (operatorElement.hasAttribute("value")) {
-            return new Scalar(name, typeName, operatorElement.getNodeName(),
-                operatorElement.getAttribute("value"), optional);
-        }
-
-        return new Scalar(name, typeName, operatorElement.getNodeName(),
-            optional);
+        return new Scalar(name, typeName, operator, defaultValue, optional);
     }
 
     private Element getOperatorElement(Element fieldNode) {

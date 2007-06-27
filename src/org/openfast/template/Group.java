@@ -22,23 +22,19 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast.template;
 
-import org.openfast.BitVector;
-import org.openfast.BitVectorValue;
-import org.openfast.ByteUtil;
-import org.openfast.Context;
-import org.openfast.FieldValue;
-import org.openfast.GroupValue;
-
-import org.openfast.template.operator.Operator;
-import org.openfast.template.type.Type;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.openfast.BitVector;
+import org.openfast.BitVectorValue;
+import org.openfast.Context;
+import org.openfast.FieldValue;
+import org.openfast.GroupValue;
+import org.openfast.template.operator.Operator;
+import org.openfast.template.type.Type;
 
 
 public class Group extends Field {

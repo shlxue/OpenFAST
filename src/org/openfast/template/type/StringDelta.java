@@ -31,9 +31,7 @@ import java.io.InputStream;
 
 
 public class StringDelta extends Type {
-    public StringDelta(Integer type, String typeName, String[] typeNames) {
-        super(type, typeName, typeNames);
-    }
+    public StringDelta() { }
 
     public ScalarValue decode(InputStream in) {
         ScalarValue subtractionLength = Type.INTEGER.decode(in);

@@ -35,9 +35,7 @@ import java.io.InputStream;
 
 
 final class TwinFieldDecimal extends Type {
-    TwinFieldDecimal(Integer type, String name, String[] names) {
-        super(type, name, names);
-    }
+    TwinFieldDecimal() { }
 
     public byte[] encodeValue(ScalarValue v) {
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();

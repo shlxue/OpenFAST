@@ -108,41 +108,41 @@ public class XMLMessageTemplateLoaderTest extends TestCase {
 
         /********************************** TEMPLATE FIELDS **********************************/
         int index = 0;
-        assertScalarField(messageTemplate, index++, Type.UNSIGNED_INTEGER,
+        assertScalarField(messageTemplate, index++, Type.U32,
             "templateId", Operator.COPY);
         assertScalarField(messageTemplate, index++, Type.STRING, "8",
             Operator.CONSTANT);
-        assertScalarField(messageTemplate, index++, Type.UNSIGNED_INTEGER, "9",
+        assertScalarField(messageTemplate, index++, Type.U32, "9",
             Operator.CONSTANT);
         assertScalarField(messageTemplate, index++, Type.STRING, "35",
             Operator.CONSTANT);
         assertScalarField(messageTemplate, index++, Type.STRING, "49",
             Operator.CONSTANT);
-        assertScalarField(messageTemplate, index++, Type.UNSIGNED_INTEGER,
+        assertScalarField(messageTemplate, index++, Type.U32,
             "34", Operator.INCREMENT);
         assertScalarField(messageTemplate, index++, Type.STRING, "52",
             Operator.DELTA);
-        assertScalarField(messageTemplate, index++, Type.UNSIGNED_INTEGER,
+        assertScalarField(messageTemplate, index++, Type.U32,
             "75", Operator.COPY);
 
         /************************************* SEQUENCE **************************************/
         assertSequence(messageTemplate, index, 17);
 
         Sequence sequence = (Sequence) messageTemplate.getField(index++);
-        assertSequenceLengthField(sequence, "268", Type.UNSIGNED_INTEGER,
+        assertSequenceLengthField(sequence, "268", Type.U32,
             Operator.NONE);
 
         /********************************** SEQUENCE FIELDS **********************************/
         int seqIndex = 0;
         assertScalarField(sequence, seqIndex++, Type.DECIMAL, "270",
             Operator.DELTA);
-        assertScalarField(sequence, seqIndex++, Type.SIGNED_INTEGER, "271",
+        assertScalarField(sequence, seqIndex++, Type.I32, "271",
             Operator.DELTA);
-        assertScalarField(sequence, seqIndex++, Type.UNSIGNED_INTEGER, "273",
+        assertScalarField(sequence, seqIndex++, Type.U32, "273",
             Operator.DELTA);
-        assertOptionalScalarField(sequence, seqIndex++, Type.UNSIGNED_INTEGER,
+        assertOptionalScalarField(sequence, seqIndex++, Type.U32,
             "346", Operator.NONE);
-        assertScalarField(sequence, seqIndex++, Type.UNSIGNED_INTEGER, "1023",
+        assertScalarField(sequence, seqIndex++, Type.U32, "1023",
             Operator.INCREMENT);
         assertScalarField(sequence, seqIndex++, Type.STRING, "279",
             Operator.COPY);
@@ -160,9 +160,9 @@ public class XMLMessageTemplateLoaderTest extends TestCase {
             Operator.COPY);
         assertScalarField(sequence, seqIndex++, Type.STRING, "277",
             Operator.DEFAULT);
-        assertOptionalScalarField(sequence, seqIndex++, Type.UNSIGNED_INTEGER,
+        assertOptionalScalarField(sequence, seqIndex++, Type.U32,
             "1020", Operator.NONE);
-        assertScalarField(sequence, seqIndex++, Type.SIGNED_INTEGER, "537",
+        assertScalarField(sequence, seqIndex++, Type.I32, "537",
             Operator.DEFAULT);
         assertScalarField(sequence, seqIndex++, Type.STRING, "1024",
             Operator.DEFAULT);
@@ -174,23 +174,23 @@ public class XMLMessageTemplateLoaderTest extends TestCase {
     }
 
     private void assertScalarField(FieldSet fieldSet, int fieldIndex,
-        Integer type, String name, Operator operator, ScalarValue defaultValue) {
+        String typeName, String name, Operator operator, ScalarValue defaultValue) {
         Scalar field = (Scalar) fieldSet.getField(fieldIndex);
-        assertScalarField(field, type, name);
+        assertScalarField(field, typeName, name);
         assertEquals(operator, field.getOperator());
         assertEquals(defaultValue, field.getDefaultValue());
     }
 
     private void assertScalarField(FieldSet fieldSet, int fieldIndex,
-        Integer type, String name, String operatorType) {
+        String typeName, String name, String operatorType) {
         Scalar field = (Scalar) fieldSet.getField(fieldIndex);
-        assertScalarField(field, type, name);
+        assertScalarField(field, typeName, name);
         assertEquals(operatorType, field.getOperator().getName());
     }
 
     private void assertSequenceLengthField(Sequence sequence, String name,
-        Integer type, String operator) {
-        assertEquals(type, sequence.getLength().getType());
+        String typeName, String operator) {
+        assertEquals(typeName, sequence.getLength().getType());
         assertEquals(name, sequence.getLength().getName());
         assertEquals(operator, sequence.getLength().getOperator().getName());
     }
@@ -208,15 +208,15 @@ public class XMLMessageTemplateLoaderTest extends TestCase {
     }
 
     private void assertOptionalScalarField(FieldSet fieldSet, int fieldIndex,
-        Integer type, String name, String operator) {
+        String typeName, String name, String operator) {
         Scalar field = (Scalar) fieldSet.getField(fieldIndex);
-        assertScalarField(field, type, name);
+        assertScalarField(field, typeName, name);
         assertEquals(operator, field.getOperator().getName());
         assertTrue(field.isOptional());
     }
 
-    private void assertScalarField(Scalar field, Integer type, String name) {
+    private void assertScalarField(Scalar field, String typeName, String name) {
         assertEquals(name, field.getName());
-        assertEquals(type, field.getType());
+        assertEquals(typeName, field.getType());
     }
 }

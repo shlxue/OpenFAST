@@ -45,12 +45,12 @@ public class DictionaryTest extends TestCase {
     }
 
     public void testMultipleDictionaryTypes() throws Exception {
-        Scalar bid = new Scalar("bid", Type.DECIMAL, Operator.COPY, false);
+        Scalar bid = new Scalar("bid", Type.DECIMAL, Operator.COPY, ScalarValue.UNDEFINED, false);
         bid.setDictionary(Dictionary.TEMPLATE);
 
         MessageTemplate quote = new MessageTemplate("quote", new Field[] { bid });
 
-        Scalar bidR = new Scalar("bid", Type.DECIMAL, Operator.COPY, false);
+        Scalar bidR = new Scalar("bid", Type.DECIMAL, Operator.COPY, ScalarValue.UNDEFINED, false);
         MessageTemplate request = new MessageTemplate("request",
                 new Field[] { bidR });
 

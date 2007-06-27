@@ -278,11 +278,10 @@ public abstract class Operator {
             }
         };
 
-    public static final Operator DELTA_STRING = new DeltaStringOperator(DELTA,
-            new Integer[] { Type.STRING });
+    public static final Operator DELTA_STRING = new DeltaStringOperator();
     protected static final Operator DELTA_DECIMAL = new DeltaDecimalOperator();
     protected static final Operator TAIL_STRING = new Operator("tail",
-            new Integer[] { Type.STRING }) {
+            new String[] { Type.STRING }) {
             public ScalarValue getValueToEncode(ScalarValue value,
                 ScalarValue priorValue, Scalar field) {
                 if (value == null) {
@@ -355,7 +354,7 @@ public abstract class Operator {
 
     private final String name;
 
-    protected Operator(String name, Integer[] types) {
+    protected Operator(String name, String[] types) {
         this.name = name;
 
         for (int i = 0; i < types.length; i++) {
@@ -375,12 +374,13 @@ public abstract class Operator {
         return "operator:" + name;
     }
 
-    public static Operator getOperator(String name, Integer type) {
+    public static Operator getOperator(String name, String type) {
         Key key = new Key(name, type);
 
         if (!OPERATOR_MAP.containsKey(key)) {
-            throw new IllegalArgumentException("The operator \"" + name +
-                "\" does not exist for the type specified.");
+        	FastConstants.handleError(FastConstants.OPERATOR_TYPE_INCOMP, "The operator \"" + name +
+                    "\" does not exist for the type " + type);
+            throw new IllegalArgumentException();
         }
 
         return (Operator) OPERATOR_MAP.get(key);

@@ -40,7 +40,7 @@ public class DeltaStringOperatorTest extends TestCase {
     }
 
     public void testGetValueToEncodeMandatory() {
-        field = new Scalar(null, Type.STRING, Operator.DELTA, false);
+        field = new Scalar(null, Type.STRING, Operator.DELTA, ScalarValue.UNDEFINED, false);
 
         assertEquals(tv(0, "ABCD"), encode("ABCD", ScalarValue.UNDEFINED));
         assertEquals(tv(1, "E"), encode("ABCE", s("ABCD")));
@@ -50,7 +50,7 @@ public class DeltaStringOperatorTest extends TestCase {
     }
 
     public void testDecodeValueMandatory() {
-        field = new Scalar(null, Type.STRING, Operator.DELTA, false);
+        field = new Scalar(null, Type.STRING, Operator.DELTA, ScalarValue.UNDEFINED, false);
 
         assertEquals(new StringValue("ABCD"),
             decode(tv(0, "ABCD"), ScalarValue.UNDEFINED));

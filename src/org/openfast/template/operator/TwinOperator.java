@@ -36,11 +36,9 @@ public class TwinOperator extends Operator {
     private Operator mantissaOperator;
 
     public TwinOperator(String exponentOperator, String mantissaOperator) {
-        super("twin", new Integer[] { Type.DECIMAL });
-        this.exponentOperator = Operator.getOperator(exponentOperator,
-                Type.SIGNED_INTEGER);
-        this.mantissaOperator = Operator.getOperator(mantissaOperator,
-                Type.SIGNED_INTEGER);
+        super("twin", new String[] { Type.DECIMAL });
+        this.exponentOperator = Operator.getOperator(exponentOperator, Type.I32);
+        this.mantissaOperator = Operator.getOperator(mantissaOperator, Type.I32);
     }
 
     public ScalarValue decodeEmptyValue(ScalarValue previousValue, Scalar field) {

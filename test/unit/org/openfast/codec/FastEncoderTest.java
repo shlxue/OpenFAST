@@ -27,6 +27,7 @@ import junit.framework.TestCase;
 import org.openfast.Context;
 import org.openfast.IntegerValue;
 import org.openfast.Message;
+import org.openfast.ScalarValue;
 import org.openfast.StringValue;
 import org.openfast.TestUtil;
 
@@ -69,7 +70,7 @@ public class FastEncoderTest extends TestCase {
     public void testEncodeSimpleMessage() {
         MessageTemplate template = new MessageTemplate(null,
                 new Field[] {
-                    new Scalar("1", Type.UNSIGNED_INTEGER, Operator.COPY, false)
+                    new Scalar("1", Type.U32, Operator.COPY, ScalarValue.UNDEFINED, false)
                 });
         Context context = new Context();
         context.registerTemplate(113, template);
@@ -85,12 +86,12 @@ public class FastEncoderTest extends TestCase {
     public void testEncodeMessageWithAllFieldTypes() {
         MessageTemplate template = new MessageTemplate(null,
                 new Field[] {
-                    new Scalar("1", Type.STRING, Operator.COPY, false),
-                    new Scalar("2", Type.BYTE_VECTOR, Operator.COPY, false),
-                    new Scalar("3", Type.DECIMAL, Operator.COPY, false),
-                    new Scalar("4", Type.SIGNED_INTEGER, Operator.COPY, false),
-                    new Scalar("5", Type.STRING, Operator.COPY, false),
-                    new Scalar("6", Type.UNSIGNED_INTEGER, Operator.COPY, false),
+                    new Scalar("1", Type.STRING, Operator.COPY, ScalarValue.UNDEFINED, false),
+                    new Scalar("2", Type.BYTE_VECTOR, Operator.COPY, ScalarValue.UNDEFINED, false),
+                    new Scalar("3", Type.DECIMAL, Operator.COPY, ScalarValue.UNDEFINED, false),
+                    new Scalar("4", Type.I32, Operator.COPY, ScalarValue.UNDEFINED, false),
+                    new Scalar("5", Type.STRING, Operator.COPY, ScalarValue.UNDEFINED, false),
+                    new Scalar("6", Type.U32, Operator.COPY, ScalarValue.UNDEFINED, false),
                 });
         Context context = new Context();
         context.registerTemplate(113, template);
@@ -112,19 +113,19 @@ public class FastEncoderTest extends TestCase {
     public void testEncodeMessageWithOverlongPmap() {
         MessageTemplate template = new MessageTemplate(null,
                 new Field[] {
-                    new Scalar("1", Type.UNSIGNED_INTEGER, Operator.COPY,
+                    new Scalar("1", Type.U32, Operator.COPY,
                         new IntegerValue(1), false),
-                    new Scalar("1", Type.UNSIGNED_INTEGER, Operator.COPY,
+                    new Scalar("1", Type.U32, Operator.COPY,
                         new IntegerValue(1), false),
-                    new Scalar("1", Type.UNSIGNED_INTEGER, Operator.COPY,
+                    new Scalar("1", Type.U32, Operator.COPY,
                         new IntegerValue(1), false),
-                    new Scalar("1", Type.UNSIGNED_INTEGER, Operator.COPY,
+                    new Scalar("1", Type.U32, Operator.COPY,
                         new IntegerValue(1), false),
-                    new Scalar("1", Type.UNSIGNED_INTEGER, Operator.COPY,
+                    new Scalar("1", Type.U32, Operator.COPY,
                         new IntegerValue(1), false),
-                    new Scalar("1", Type.UNSIGNED_INTEGER, Operator.COPY,
+                    new Scalar("1", Type.U32, Operator.COPY,
                         new IntegerValue(1), false),
-                    new Scalar("1", Type.UNSIGNED_INTEGER, Operator.COPY,
+                    new Scalar("1", Type.U32, Operator.COPY,
                         new IntegerValue(1), false)
                 });
 
@@ -151,15 +152,15 @@ public class FastEncoderTest extends TestCase {
     public void testEncodeMessageWithSignedIntegerFieldTypesAndAllOperators() {
         MessageTemplate template = new MessageTemplate(null,
                 new Field[] {
-                    new Scalar("1", Type.SIGNED_INTEGER, Operator.COPY, false),
-                    new Scalar("2", Type.SIGNED_INTEGER, Operator.DELTA, false),
-                    new Scalar("3", Type.SIGNED_INTEGER, Operator.INCREMENT,
+                    new Scalar("1", Type.I32, Operator.COPY, ScalarValue.UNDEFINED, false),
+                    new Scalar("2", Type.I32, Operator.DELTA, ScalarValue.UNDEFINED, false),
+                    new Scalar("3", Type.I32, Operator.INCREMENT,
                         new IntegerValue(10), false),
-                    new Scalar("4", Type.SIGNED_INTEGER, Operator.INCREMENT,
-                        false),
-                    new Scalar("5", Type.SIGNED_INTEGER, Operator.CONSTANT,
+                    new Scalar("4", Type.I32, Operator.INCREMENT,
+                        ScalarValue.UNDEFINED, false),
+                    new Scalar("5", Type.I32, Operator.CONSTANT,
                         new IntegerValue(1), false), /* NON-TRANSFERRABLE */
-                new Scalar("6", Type.SIGNED_INTEGER, Operator.DEFAULT,
+                new Scalar("6", Type.I32, Operator.DEFAULT,
                         new IntegerValue(2), false)
                 });
         Context context = new Context();
@@ -201,15 +202,15 @@ public class FastEncoderTest extends TestCase {
     public void testEncodeMessageWithUnsignedIntegerFieldTypesAndAllOperators() {
         MessageTemplate template = new MessageTemplate(null,
                 new Field[] {
-                    new Scalar("1", Type.UNSIGNED_INTEGER, Operator.COPY, false),
-                    new Scalar("2", Type.UNSIGNED_INTEGER, Operator.DELTA, false),
-                    new Scalar("3", Type.SIGNED_INTEGER, Operator.INCREMENT,
+                    new Scalar("1", Type.U32, Operator.COPY, ScalarValue.UNDEFINED, false),
+                    new Scalar("2", Type.U32, Operator.DELTA, ScalarValue.UNDEFINED, false),
+                    new Scalar("3", Type.I32, Operator.INCREMENT,
                         new IntegerValue(10), false),
-                    new Scalar("4", Type.SIGNED_INTEGER, Operator.INCREMENT,
-                        false),
-                    new Scalar("5", Type.SIGNED_INTEGER, Operator.CONSTANT,
+                    new Scalar("4", Type.I32, Operator.INCREMENT,
+                        ScalarValue.UNDEFINED, false),
+                    new Scalar("5", Type.I32, Operator.CONSTANT,
                         new IntegerValue(1), false), /* NON-TRANSFERRABLE */
-                new Scalar("6", Type.SIGNED_INTEGER, Operator.DEFAULT,
+                new Scalar("6", Type.I32, Operator.DEFAULT,
                         new IntegerValue(2), false)
                 });
         Context context = new Context();
@@ -251,8 +252,8 @@ public class FastEncoderTest extends TestCase {
     public void testEncodeMessageWithStringFieldTypesAndAllOperators() {
         MessageTemplate template = new MessageTemplate(null,
                 new Field[] {
-                    new Scalar("1", Type.STRING, Operator.COPY, false),
-                    new Scalar("2", Type.STRING, Operator.DELTA, false),
+                    new Scalar("1", Type.STRING, Operator.COPY, ScalarValue.UNDEFINED, false),
+                    new Scalar("2", Type.STRING, Operator.DELTA, ScalarValue.UNDEFINED, false),
                     new Scalar("3", Type.STRING, Operator.CONSTANT,
                         new StringValue("e"), false), /* NON-TRANSFERRABLE */
                 new Scalar("4", Type.STRING, Operator.DEFAULT,

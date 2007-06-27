@@ -35,9 +35,7 @@ import java.io.InputStream;
 
 
 public final class UnsignedInteger extends IntegerType {
-    UnsignedInteger(Integer type, String name, String[] names) {
-        super(type, name, names);
-    }
+    UnsignedInteger() { }
 
     public byte[] encodeValue(ScalarValue scalarValue) {
         long value;

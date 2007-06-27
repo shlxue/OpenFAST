@@ -38,7 +38,7 @@ public class MessageTest extends TestCase {
     public void testEquals() {
         MessageTemplate template = new MessageTemplate(null,
                 new Field[] {
-                    new Scalar("1", Type.UNSIGNED_INTEGER, Operator.COPY, false)
+                    new Scalar("1", Type.U32, Operator.COPY, ScalarValue.UNDEFINED, false)
                 });
         GroupValue message = new Message(template, 2);
         message.setInteger(1, 1);
@@ -52,7 +52,7 @@ public class MessageTest extends TestCase {
     public void testNotEquals() {
         MessageTemplate template = new MessageTemplate(null,
                 new Field[] {
-                    new Scalar("1", Type.UNSIGNED_INTEGER, Operator.COPY, false)
+                    new Scalar("1", Type.U32, Operator.COPY, ScalarValue.UNDEFINED, false)
                 });
         Message message = new Message(template, 2);
         message.setInteger(1, 2);

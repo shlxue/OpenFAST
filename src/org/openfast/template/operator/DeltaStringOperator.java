@@ -30,13 +30,14 @@ import org.openfast.StringValue;
 
 import org.openfast.template.Scalar;
 import org.openfast.template.TwinValue;
+import org.openfast.template.type.Type;
 
 import org.openfast.util.Util;
 
 
 final class DeltaStringOperator extends AlwaysPresentOperator {
-    DeltaStringOperator(String name, Integer[] types) {
-        super(name, types);
+    DeltaStringOperator() {
+        super(Operator.DELTA, new String[] { Type.STRING });
     }
 
     public ScalarValue getValueToEncode(ScalarValue value,

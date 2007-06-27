@@ -37,10 +37,7 @@ import java.io.InputStream;
 
 
 final class NullableSingleFieldDecimal extends Type {
-    NullableSingleFieldDecimal() {
-        super(DECIMAL, "twin field scaled number", new String[] { "decimal" },
-            true);
-    }
+    NullableSingleFieldDecimal() { }
 
     public byte[] encodeValue(ScalarValue v) {
         if (v == ScalarValue.NULL) {
@@ -85,5 +82,9 @@ final class NullableSingleFieldDecimal extends Type {
 
     public ScalarValue getDefaultValue() {
         return new DecimalValue(0.0);
+    }
+    
+    public boolean isNullable() {
+    	return true;
     }
 }

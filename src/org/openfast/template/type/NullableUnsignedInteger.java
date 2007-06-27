@@ -33,10 +33,7 @@ import java.io.InputStream;
 
 
 public final class NullableUnsignedInteger extends IntegerType {
-    NullableUnsignedInteger(Integer type, String name, String[] names,
-        boolean nullable) {
-        super(type, name, names, nullable);
-    }
+    NullableUnsignedInteger() { }
 
     public byte[] encodeValue(ScalarValue v) {
         if (v.isNull()) {
@@ -54,5 +51,9 @@ public final class NullableUnsignedInteger extends IntegerType {
         }
 
         return value.decrement();
+    }
+    
+    public boolean isNullable() {
+    	return true;
     }
 }

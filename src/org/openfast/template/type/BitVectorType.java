@@ -35,9 +35,7 @@ import java.io.InputStream;
 
 
 public final class BitVectorType extends Type {
-    BitVectorType(Integer type, String name, String[] names) {
-        super(type, name, names);
-    }
+    BitVectorType() { }
 
     public byte[] encodeValue(ScalarValue value) {
         return ((BitVectorValue) value).value.getBytes();

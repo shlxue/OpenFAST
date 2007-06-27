@@ -34,7 +34,7 @@ import org.openfast.template.type.Type;
 
 final class DeltaDecimalOperator extends AlwaysPresentOperator {
     DeltaDecimalOperator() {
-        super(DELTA, new Integer[] { Type.DECIMAL });
+        super(DELTA, new String[] { Type.DECIMAL });
     }
 
     public ScalarValue getValueToEncode(ScalarValue val, ScalarValue priorVal,

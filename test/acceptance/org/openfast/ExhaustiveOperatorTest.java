@@ -61,7 +61,7 @@ public class ExhaustiveOperatorTest extends TestCase {
     }
 
     public void testEmptyOperatorWithOptionalField() throws Exception {
-        Scalar field = new Scalar("", Type.UNSIGNED_INTEGER, Operator.NONE,
+        Scalar field = new Scalar("", Type.U32, Operator.NONE,
                 ScalarValue.UNDEFINED, true);
         MessageTemplate template = registerTemplate(field);
 
@@ -80,7 +80,7 @@ public class ExhaustiveOperatorTest extends TestCase {
 
     public void testEmptyOperatorWithOptionalFieldOnNullValue()
         throws Exception {
-        Scalar field = new Scalar("", Type.UNSIGNED_INTEGER, Operator.NONE,
+        Scalar field = new Scalar("", Type.U32, Operator.NONE,
                 ScalarValue.UNDEFINED, true);
         MessageTemplate template = registerTemplate(field);
 
@@ -99,7 +99,7 @@ public class ExhaustiveOperatorTest extends TestCase {
 
     public void testEmptyOperatorWithSequenceOfMessages()
         throws IOException {
-        Scalar field = new Scalar("", Type.UNSIGNED_INTEGER, Operator.NONE,
+        Scalar field = new Scalar("", Type.U32, Operator.NONE,
                 ScalarValue.UNDEFINED, true);
         MessageTemplate template = registerTemplate(field);
 
@@ -127,8 +127,8 @@ public class ExhaustiveOperatorTest extends TestCase {
     }
 
     public void testEmptyOperatorWithMandatoryField() throws IOException {
-        Scalar field = new Scalar("", Type.UNSIGNED_INTEGER, Operator.NONE,
-                false);
+        Scalar field = new Scalar("", Type.U32, Operator.NONE,
+                ScalarValue.UNDEFINED, false);
         MessageTemplate template = registerTemplate(field);
 
         // NOTE: The field is not set.
@@ -157,7 +157,7 @@ public class ExhaustiveOperatorTest extends TestCase {
 
     public void testConstantOperatorWithOptionalField()
         throws IOException {
-        Scalar field = new Scalar("", Type.UNSIGNED_INTEGER, Operator.CONSTANT,
+        Scalar field = new Scalar("", Type.U32, Operator.CONSTANT,
                 new IntegerValue(16), true);
         MessageTemplate template = registerTemplate(field);
 
@@ -180,7 +180,7 @@ public class ExhaustiveOperatorTest extends TestCase {
 
     public void testConstantOperatorWithMandatoryField()
         throws IOException {
-        Scalar field = new Scalar("", Type.UNSIGNED_INTEGER, Operator.CONSTANT,
+        Scalar field = new Scalar("", Type.U32, Operator.CONSTANT,
                 new IntegerValue(16), false);
         MessageTemplate template = registerTemplate(field);
 
@@ -204,7 +204,7 @@ public class ExhaustiveOperatorTest extends TestCase {
     }
 
     public void testDefaultOperatorWithOptionalField() {
-        Scalar field = new Scalar("", Type.UNSIGNED_INTEGER, Operator.DEFAULT,
+        Scalar field = new Scalar("", Type.U32, Operator.DEFAULT,
                 new IntegerValue(16), true);
         MessageTemplate template = registerTemplate(field);
 
@@ -232,7 +232,7 @@ public class ExhaustiveOperatorTest extends TestCase {
     }
 
     public void testDefaultOperatorWithMandatoryField() {
-        Scalar field = new Scalar("", Type.UNSIGNED_INTEGER, Operator.DEFAULT,
+        Scalar field = new Scalar("", Type.U32, Operator.DEFAULT,
                 new IntegerValue(16), false);
         MessageTemplate template = registerTemplate(field);
 
@@ -253,7 +253,7 @@ public class ExhaustiveOperatorTest extends TestCase {
     }
 
     public void testCopyOperatorWithOptionalField() {
-        Scalar field = new Scalar("", Type.UNSIGNED_INTEGER, Operator.COPY,
+        Scalar field = new Scalar("", Type.U32, Operator.COPY,
                 new IntegerValue(16), true);
         MessageTemplate template = registerTemplate(field);
 
@@ -288,7 +288,7 @@ public class ExhaustiveOperatorTest extends TestCase {
     }
 
     public void testCopyOperatorWithMandatoryField() {
-        Scalar field = new Scalar("", Type.UNSIGNED_INTEGER, Operator.COPY,
+        Scalar field = new Scalar("", Type.U32, Operator.COPY,
                 new IntegerValue(16), false);
         MessageTemplate template = registerTemplate(field);
 
@@ -316,7 +316,7 @@ public class ExhaustiveOperatorTest extends TestCase {
     }
 
     public void testIncrementOperatorWithOptionalField() {
-        Scalar field = new Scalar("", Type.UNSIGNED_INTEGER,
+        Scalar field = new Scalar("", Type.U32,
                 Operator.INCREMENT, new IntegerValue(16), true);
         MessageTemplate template = registerTemplate(field);
 
@@ -351,7 +351,7 @@ public class ExhaustiveOperatorTest extends TestCase {
     }
 
     public void testIncrementOperatorWithMandatoryField() {
-        Scalar field = new Scalar("", Type.UNSIGNED_INTEGER,
+        Scalar field = new Scalar("", Type.U32,
                 Operator.INCREMENT, new IntegerValue(16), false);
         MessageTemplate template = registerTemplate(field);
 
@@ -380,7 +380,7 @@ public class ExhaustiveOperatorTest extends TestCase {
     }
 
     public void testDeltaOperatorWithOptionalField() {
-        Scalar field = new Scalar("", Type.UNSIGNED_INTEGER, Operator.DELTA,
+        Scalar field = new Scalar("", Type.U32, Operator.DELTA,
                 new IntegerValue(16), true);
         MessageTemplate template = registerTemplate(field);
 
@@ -415,7 +415,7 @@ public class ExhaustiveOperatorTest extends TestCase {
     }
 
     public void testDeltaOperatorWithMandatoryField() {
-        Scalar field = new Scalar("", Type.UNSIGNED_INTEGER,
+        Scalar field = new Scalar("", Type.U32,
                 Operator.INCREMENT, new IntegerValue(16), false);
         MessageTemplate template = registerTemplate(field);
 

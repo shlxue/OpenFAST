@@ -36,10 +36,7 @@ import java.io.InputStream;
 final class NullableStringType extends Type {
     private static final byte[] NULLABLE_EMPTY_STRING = new byte[] { 0x00, 0x00 };
 
-    NullableStringType(Integer type, String name, String[] names,
-        boolean nullable) {
-        super(type, name, names, nullable);
-    }
+    NullableStringType() { }
 
     public byte[] encodeValue(ScalarValue value) {
         if (value.isNull()) {
@@ -86,5 +83,9 @@ final class NullableStringType extends Type {
 
     public ScalarValue getDefaultValue() {
         return new StringValue("");
+    }
+    
+    public boolean isNullable() {
+    	return true;
     }
 }

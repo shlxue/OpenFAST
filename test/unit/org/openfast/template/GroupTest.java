@@ -29,6 +29,7 @@ import org.openfast.Context;
 import org.openfast.FieldValue;
 import org.openfast.GroupValue;
 import org.openfast.IntegerValue;
+import org.openfast.ScalarValue;
 import org.openfast.TestUtil;
 
 import org.openfast.template.operator.Operator;
@@ -48,10 +49,10 @@ public class GroupTest extends TestCase {
     }
 
     public void testEncode() {
-        Scalar firstName = new Scalar("First Name", Type.UNSIGNED_INTEGER,
-                Operator.COPY, true);
-        Scalar lastName = new Scalar("Last Name", Type.UNSIGNED_INTEGER,
-                Operator.NONE, false);
+        Scalar firstName = new Scalar("First Name", Type.U32,
+                Operator.COPY, ScalarValue.UNDEFINED, true);
+        Scalar lastName = new Scalar("Last Name", Type.U32,
+                Operator.NONE, ScalarValue.UNDEFINED, false);
 
         Group theGroup = new Group("guy", new Field[] { firstName, lastName },
                 false);
@@ -70,10 +71,10 @@ public class GroupTest extends TestCase {
         String message = "11000000 10000010 10000010";
         InputStream in = new ByteArrayInputStream(ByteUtil.convertBitStringToFastByteArray(
                     message));
-        Scalar firstname = new Scalar("firstName", Type.UNSIGNED_INTEGER,
-                Operator.COPY, true);
-        Scalar lastName = new Scalar("lastName", Type.UNSIGNED_INTEGER,
-                Operator.NONE, false);
+        Scalar firstname = new Scalar("firstName", Type.U32,
+                Operator.COPY, ScalarValue.UNDEFINED, true);
+        Scalar lastName = new Scalar("lastName", Type.U32,
+                Operator.NONE, ScalarValue.UNDEFINED, false);
 
         //		MessageInputStream in = new MessageInputStream(new ByteArrayInputStream(message.getBytes()));
         Group group = new Group("person", new Field[] { firstname, lastName },

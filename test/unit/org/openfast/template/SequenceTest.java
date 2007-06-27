@@ -28,6 +28,7 @@ import org.openfast.ByteUtil;
 import org.openfast.Context;
 import org.openfast.FieldValue;
 import org.openfast.IntegerValue;
+import org.openfast.ScalarValue;
 import org.openfast.SequenceValue;
 import org.openfast.TestUtil;
 
@@ -47,10 +48,10 @@ public class SequenceTest extends TestCase {
     }
 
     public void testEncode() {
-        Scalar firstName = new Scalar("First Name", Type.SIGNED_INTEGER,
-                Operator.COPY, false);
-        Scalar lastName = new Scalar("Last Name", Type.SIGNED_INTEGER,
-                Operator.COPY, false);
+        Scalar firstName = new Scalar("First Name", Type.I32,
+                Operator.COPY, ScalarValue.UNDEFINED, false);
+        Scalar lastName = new Scalar("Last Name", Type.I32,
+                Operator.COPY, ScalarValue.UNDEFINED, false);
         Sequence sequence1 = new Sequence("Contacts",
                 new Field[] { firstName, lastName }, false);
 
@@ -71,10 +72,10 @@ public class SequenceTest extends TestCase {
         String actual = "10000010 11100000 10000001 10000010 11100000 10000011 10000100";
         InputStream stream = ByteUtil.createByteStream(actual);
 
-        Scalar firstNumber = new Scalar("First Number", Type.SIGNED_INTEGER,
-                Operator.COPY, false);
-        Scalar lastNumber = new Scalar("Second Number", Type.SIGNED_INTEGER,
-                Operator.COPY, false);
+        Scalar firstNumber = new Scalar("First Number", Type.I32,
+                Operator.COPY, ScalarValue.UNDEFINED, false);
+        Scalar lastNumber = new Scalar("Second Number", Type.I32,
+                Operator.COPY, ScalarValue.UNDEFINED, false);
         Sequence sequence1 = new Sequence("Contants",
                 new Field[] { firstNumber, lastNumber }, false);
 

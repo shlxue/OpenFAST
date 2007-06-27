@@ -31,9 +31,7 @@ import java.io.InputStream;
 
 
 public class NullableStringDelta extends Type {
-    public NullableStringDelta(Integer type, String typeName, String[] typeNames) {
-        super(type, typeName, typeNames);
-    }
+    public NullableStringDelta() { }
 
     public ScalarValue decode(InputStream in) {
         ScalarValue subtractionLength = Type.NULLABLE_INTEGER.decode(in);
@@ -70,5 +68,9 @@ public class NullableStringDelta extends Type {
 
     public ScalarValue parse(String value) {
         return new StringValue(value);
+    }
+    
+    public boolean isNullable() {
+    	return true;
     }
 }

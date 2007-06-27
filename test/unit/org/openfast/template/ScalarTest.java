@@ -26,6 +26,7 @@ import junit.framework.TestCase;
 
 import org.openfast.Context;
 import org.openfast.IntegerValue;
+import org.openfast.ScalarValue;
 import org.openfast.TestUtil;
 
 import org.openfast.template.operator.Operator;
@@ -43,8 +44,8 @@ public class ScalarTest extends TestCase {
      * Test method for 'org.openfast.template.Scalar.encode(FieldValue, FieldValue)'
      */
     public void testCopyEncodeWithNoPreviousValue() {
-        Scalar scalar = new Scalar("a", Type.UNSIGNED_INTEGER, Operator.COPY,
-                false);
+        Scalar scalar = new Scalar("a", Type.U32, Operator.COPY,
+                ScalarValue.UNDEFINED, false);
 
         byte[] encoding = scalar.encode(new IntegerValue(1), null, context);
         TestUtil.assertBitVectorEquals("10000001", encoding);
@@ -54,8 +55,8 @@ public class ScalarTest extends TestCase {
      * Test method for 'org.openfast.template.Scalar.encode(FieldValue, FieldValue)'
      */
     public void testCopyEncodeWithPreviousValue() {
-        Scalar scalar = new Scalar("a", Type.UNSIGNED_INTEGER, Operator.COPY,
-                false);
+        Scalar scalar = new Scalar("a", Type.U32, Operator.COPY,
+                ScalarValue.UNDEFINED, false);
         scalar.encode(new IntegerValue(1), null, context);
 
         byte[] encoding = scalar.encode(new IntegerValue(1), null, context);

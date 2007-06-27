@@ -53,18 +53,18 @@ public class Session implements ErrorHandler {
     public static final int FAST_RESET_TEMPLATE_ID = 120;
     private final static MessageTemplate FAST_ALERT_TEMPLATE = new MessageTemplate("",
             new Field[] {
-                new Scalar("Severity", Type.UNSIGNED_INTEGER, Operator.NONE,
-                    false),
-                new Scalar("Code", Type.UNSIGNED_INTEGER, Operator.NONE, false),
-                new Scalar("Value", Type.UNSIGNED_INTEGER, Operator.NONE,
+                new Scalar("Severity", Type.U32, Operator.NONE,
+                    ScalarValue.UNDEFINED, false),
+                new Scalar("Code", Type.U32, Operator.NONE, ScalarValue.UNDEFINED, false),
+                new Scalar("Value", Type.U32, Operator.NONE,
                     ScalarValue.UNDEFINED, true),
-                new Scalar("Description", Type.STRING, Operator.NONE, false),
+                new Scalar("Description", Type.STRING, Operator.NONE, ScalarValue.UNDEFINED, false),
             });
     private final static MessageTemplate FAST_RESET_TEMPLATE = new MessageTemplate("",
             new Field[] {  });
     private final static MessageTemplate FAST_HELLO_TEMPLATE = new MessageTemplate("",
             new Field[] {
-                new Scalar("SenderName", Type.STRING, Operator.NONE, false)
+                new Scalar("SenderName", Type.STRING, Operator.NONE, ScalarValue.UNDEFINED, false)
             });
     public static final Message RESET = new Message(FAST_RESET_TEMPLATE,
             FAST_RESET_TEMPLATE_ID) {

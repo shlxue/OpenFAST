@@ -60,14 +60,14 @@ public class ScalarValue implements FieldValue {
         return false;
     }
 
-    public static ScalarValue getValue(Integer type, String value) {
-        if ((type == Type.SIGNED_INTEGER) || (type == Type.UNSIGNED_INTEGER)) {
+    public static ScalarValue getValue(String typeName, String value) {
+        if ((typeName.equals(Type.I32)) || (typeName.equals(Type.U32))) {
             return new IntegerValue(Integer.parseInt(value));
-        } else if (type == Type.DECIMAL) {
+        } else if (typeName.equals(Type.DECIMAL)) {
             return new DecimalValue(Double.parseDouble(value));
-        } else if (type == Type.STRING) {
+        } else if (typeName.equals(Type.STRING)) {
             return new StringValue(value);
-        } else if (type == Type.BYTE_VECTOR) {
+        } else if (typeName.equals(Type.BYTE_VECTOR)) {
             throw new NotImplementedException();
         }
 

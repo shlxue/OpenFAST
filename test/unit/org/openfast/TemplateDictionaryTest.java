@@ -37,7 +37,7 @@ public class TemplateDictionaryTest extends TestCase {
         Dictionary dictionary = new TemplateDictionary();
         Group template = new MessageTemplate("Position",
                 new Field[] {
-                    new Scalar("exchange", Type.STRING, Operator.COPY, false)
+                    new Scalar("exchange", Type.STRING, Operator.COPY, ScalarValue.UNDEFINED, false)
                 });
         ScalarValue value = new StringValue("NYSE");
         dictionary.store(template, "exchange", value);
@@ -46,7 +46,7 @@ public class TemplateDictionaryTest extends TestCase {
 
         Group quoteTemplate = new MessageTemplate("Quote",
                 new Field[] {
-                    new Scalar("bid", Type.DECIMAL, Operator.DELTA, false)
+                    new Scalar("bid", Type.DECIMAL, Operator.DELTA, ScalarValue.UNDEFINED, false)
                 });
         assertEquals(ScalarValue.UNDEFINED,
             dictionary.lookup(quoteTemplate, "exchange"));
@@ -56,7 +56,7 @@ public class TemplateDictionaryTest extends TestCase {
         Dictionary dictionary = new TemplateDictionary();
         Group template = new MessageTemplate("Position",
                 new Field[] {
-                    new Scalar("exchange", Type.STRING, Operator.COPY, false)
+                    new Scalar("exchange", Type.STRING, Operator.COPY, ScalarValue.UNDEFINED, false)
                 });
         ScalarValue value = new StringValue("NYSE");
         ScalarValue marketValue = new DecimalValue(100000.00);
@@ -72,7 +72,7 @@ public class TemplateDictionaryTest extends TestCase {
         Dictionary dictionary = new TemplateDictionary();
         Group template = new MessageTemplate("Position",
                 new Field[] {
-                    new Scalar("exchange", Type.STRING, Operator.COPY, false)
+                    new Scalar("exchange", Type.STRING, Operator.COPY, ScalarValue.UNDEFINED, false)
                 });
         ScalarValue value = new StringValue("NYSE");
         dictionary.store(template, "exchange", value);
@@ -87,7 +87,7 @@ public class TemplateDictionaryTest extends TestCase {
         Dictionary dictionary = new TemplateDictionary();
         Group template = new MessageTemplate("Position",
                 new Field[] {
-                    new Scalar("exchange", Type.STRING, Operator.COPY, false)
+                    new Scalar("exchange", Type.STRING, Operator.COPY, ScalarValue.UNDEFINED, false)
                 });
         ScalarValue value = new StringValue("NYSE");
         dictionary.store(template, "exchange", value);
