@@ -42,6 +42,12 @@ public class Group extends Field {
     protected final Map fieldIndexMap;
     protected final Map fieldNameMap;
 
+    /**
+     * 
+     * @param name
+     * @param fields
+     * @param optional
+     */
     public Group(String name, Field[] fields, boolean optional) {
         super(name, optional);
         this.fields = fields;
@@ -49,6 +55,9 @@ public class Group extends Field {
         this.fieldNameMap = constructFieldNameMap(fields);
     }
 
+    /**
+     * 
+     */
     public byte[] encode(FieldValue value, Group template, Context context) {
         if (value == null) {
             return new byte[] {  };
@@ -100,6 +109,9 @@ public class Group extends Field {
         }
     }
 
+    /**
+     * 
+     */
     public FieldValue decode(InputStream in, Group group, Context context,
         boolean present) {
         return new GroupValue(this, decodeFieldValues(in, group, context));
@@ -144,6 +156,13 @@ public class Group extends Field {
         return values;
     }
 
+    /**
+     * 
+     * @param pmap
+     * @param i
+     * @param field
+     * @return
+     */
     private boolean isPresent(BitVector pmap, int i, Field field) {
         if (!field.usesPresenceMapBit()) {
             return true;
@@ -152,38 +171,77 @@ public class Group extends Field {
         return pmap.isSet(i);
     }
 
+    /**
+     * Determine if there is a Map of the passed byte array and fieldValue
+     * @param encoding The byte array to be checked
+     * @param fieldValue The fieldValue to be checked
+     * @return Returns true if there is a PrecenceMapBit of the specified 
+     * byte array and field, false otherwise
+     */
     public boolean isPresenceMapBitSet(byte[] encoding, FieldValue fieldValue) {
         return encoding.length != 0;
     }
 
+    /**
+     * @return Returns the optional boolean of the MapBit
+     */
     public boolean usesPresenceMapBit() {
         return optional;
     }
 
+    /**
+     * Find the number of total fields
+     * @return Returns the number of fields
+     */
     public int getFieldCount() {
         return fields.length;
     }
 
+    /**
+     * Find the field object of the index passed
+     * @param index The index within the field that is being searched for
+     * @return Returns a field object of the specified index 
+     */
     public Field getField(int index) {
         return fields[index];
     }
 
+    /**
+     * @return Returns the class of the GroupValue
+     */
     public Class getValueType() {
         return GroupValue.class;
     }
 
+    /**
+     * @param The value that the fieldValue that is to be created
+     * @return Returns a new GroupValue
+     */
     public FieldValue createValue(String value) {
         return new GroupValue(this, new FieldValue[fields.length]);
     }
 
+    /**
+     * @return Returns the string 'group'
+     */
     public String getTypeName() {
         return "group";
     }
 
+    /**
+     * Find the field object of the passed field name
+     * @param fieldName The field name of the field object that is to be returned
+     * @return Returns the field object of the passed field name
+     */
     public Field getField(String fieldName) {
         return (Field) fieldNameMap.get(fieldName);
     }
 
+    /**
+     * Creates a map of the passed field array by the field name and the field index number
+     * @param fields The name of the field array that is going to be placed into a new map object
+     * @return Returns a map object of the field array passed to it
+     */
     protected Map constructFieldNameMap(Field[] fields) {
         Map map = new HashMap();
 
@@ -193,6 +251,11 @@ public class Group extends Field {
         return map;
     }
 
+    /**
+     * Creates a map of the passed field array by the field index number, numbered 0 to n
+     * @param fields The name of the field array that is going to be placed into a new map object
+     * @return Returns a map object of the field array passed to it
+     */
     protected Map constructFieldIndexMap(Field[] fields) {
         Map map = new HashMap();
 
@@ -202,26 +265,55 @@ public class Group extends Field {
         return map;
     }
 
+    /**
+     * Find the index of the passed field name as an integer
+     * @param fieldName The field name that is being searched for
+     * @return Returns an integer of the field index of the specified field name
+     */
     public int getFieldIndex(String fieldName) {
         return ((Integer) fieldIndexMap.get(getField(fieldName))).intValue();
     }
 
+    /**
+     * Get the Sequence of the passed fieldName
+     * @param fieldName The field name that is being searched for
+     * @return Returns a sequence object of the specified fieldName
+     */
     public Sequence getSequence(String fieldName) {
         return (Sequence) getField(fieldName);
     }
 
+    /**
+     * Get the Scalar Value of the passed fieldName
+     * @param fieldName The field name that is being searched for
+     * @return Returns a Scalar value of the specified fieldName
+     */
     public Scalar getScalar(String fieldName) {
         return (Scalar) getField(fieldName);
     }
 
+    /**
+     * Find the group with the passed fieldName
+     * @param fieldName The field name that is being searched for
+     * @return Returns a Group object of the specified field name
+     */
     public Group getGroup(String fieldName) {
         return (Group) getField(fieldName);
     }
 
+    /**
+     * Determine if the map has a specified field name.  
+     * @param fieldName The name of the fieldName that is being searched for
+     * @return Returns true if there is the field name that was passed in the Map, false otherwise
+     */
     public boolean hasField(String fieldName) {
         return fieldNameMap.containsKey(fieldName);
     }
 
+    /**
+     *
+     * @return Returns an array of Fields
+     */
     public Field[] getFields() {
         return fields;
     }
