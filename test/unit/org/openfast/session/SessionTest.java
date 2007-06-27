@@ -110,7 +110,7 @@ public class SessionTest extends TestCase {
         String expectedServerOutput = "11000000 01111101 10000000 01110011 01100101 01110010 01110110 01100101 11110010 " +
             //                             --PMAP-- ----TID=16001---- ---1=2-- --2=11-- -3=NULL- -4=<ERR MESSAGE>
             "11000000 01111101 10000001 10000010 10001011 10000000 " +
-            ByteUtil.convertByteArrayToBitString(Type.STRING_TYPE.encode(
+            ByteUtil.convertByteArrayToBitString(Type.ASCII_STRING_TYPE.encode(
                     new StringValue("Template not supported")));
         serverSession.in.readMessage();
         assertEquals(expectedServerInput,

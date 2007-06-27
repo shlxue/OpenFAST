@@ -8,7 +8,7 @@ import org.openfast.IntegerValue;
 import org.openfast.ScalarValue;
 import org.openfast.error.FastConstants;
 
-public class NullableByteVectorType extends NotStopBitEncodedType {
+public class NullableByteVector extends NotStopBitEncodedType {
 
 	public ScalarValue decode(InputStream in) {
         ScalarValue decode = Type.NULLABLE_UNSIGNED_INTEGER.decode(in);

@@ -286,21 +286,21 @@ public class TypeTest extends TestCase {
 
     /*** STRING ***/
     public void testStringEncoding() {
-        byte[] encoding = Type.STRING_TYPE.encode(new StringValue("hey"));
+        byte[] encoding = Type.ASCII_STRING_TYPE.encode(new StringValue("hey"));
         TestUtil.assertBitVectorEquals("01101000 01100101 11111001", encoding);
         //newly dded tests
-        encoding = Type.STRING_TYPE.encode(new StringValue("lasalle"));
+        encoding = Type.ASCII_STRING_TYPE.encode(new StringValue("lasalle"));
         TestUtil.assertBitVectorEquals("01101100 01100001 01110011 01100001 01101100 01101100 11100101",
             encoding);
-        encoding = Type.STRING_TYPE.encode(new StringValue("z"));
+        encoding = Type.ASCII_STRING_TYPE.encode(new StringValue("z"));
         TestUtil.assertBitVectorEquals("11111010", encoding);
-        encoding = Type.STRING_TYPE.encode(new StringValue("ABC"));
+        encoding = Type.ASCII_STRING_TYPE.encode(new StringValue("ABC"));
         TestUtil.assertBitVectorEquals("01000001 01000010 11000011", encoding);
     }
 
     public void testStringDecoding() {
         InputStream in = ByteUtil.createByteStream("01101000 01100101 11111001");
-        assertEquals("hey", ((StringValue) Type.STRING_TYPE.decode(in)).value);
+        assertEquals("hey", ((StringValue) Type.ASCII_STRING_TYPE.decode(in)).value);
     }
 
     /*** BIT VECTOR ***/

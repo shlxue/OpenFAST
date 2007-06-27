@@ -193,4 +193,8 @@ public class Scalar extends Field {
     public ScalarValue getInitialValue() {
         return initialValue;
     }
+    
+    public Type getCodecStrategy() {
+    	return type;
+    }
 }

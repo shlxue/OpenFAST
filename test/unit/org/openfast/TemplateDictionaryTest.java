@@ -37,7 +37,7 @@ public class TemplateDictionaryTest extends TestCase {
         Dictionary dictionary = new TemplateDictionary();
         Group template = new MessageTemplate("Position",
                 new Field[] {
-                    new Scalar("exchange", Type.STRING, Operator.COPY, ScalarValue.UNDEFINED, false)
+                    new Scalar("exchange", Type.ASCII_STRING, Operator.COPY, ScalarValue.UNDEFINED, false)
                 });
         ScalarValue value = new StringValue("NYSE");
         dictionary.store(template, "exchange", value);
@@ -56,7 +56,7 @@ public class TemplateDictionaryTest extends TestCase {
         Dictionary dictionary = new TemplateDictionary();
         Group template = new MessageTemplate("Position",
                 new Field[] {
-                    new Scalar("exchange", Type.STRING, Operator.COPY, ScalarValue.UNDEFINED, false)
+                    new Scalar("exchange", Type.ASCII_STRING, Operator.COPY, ScalarValue.UNDEFINED, false)
                 });
         ScalarValue value = new StringValue("NYSE");
         ScalarValue marketValue = new DecimalValue(100000.00);
@@ -72,7 +72,7 @@ public class TemplateDictionaryTest extends TestCase {
         Dictionary dictionary = new TemplateDictionary();
         Group template = new MessageTemplate("Position",
                 new Field[] {
-                    new Scalar("exchange", Type.STRING, Operator.COPY, ScalarValue.UNDEFINED, false)
+                    new Scalar("exchange", Type.ASCII_STRING, Operator.COPY, ScalarValue.UNDEFINED, false)
                 });
         ScalarValue value = new StringValue("NYSE");
         dictionary.store(template, "exchange", value);
@@ -87,7 +87,7 @@ public class TemplateDictionaryTest extends TestCase {
         Dictionary dictionary = new TemplateDictionary();
         Group template = new MessageTemplate("Position",
                 new Field[] {
-                    new Scalar("exchange", Type.STRING, Operator.COPY, ScalarValue.UNDEFINED, false)
+                    new Scalar("exchange", Type.ASCII_STRING, Operator.COPY, ScalarValue.UNDEFINED, false)
                 });
         ScalarValue value = new StringValue("NYSE");
         dictionary.store(template, "exchange", value);

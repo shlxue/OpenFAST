@@ -50,11 +50,13 @@ public abstract class Type {
     public static final String I64 = "i64";
     public static final String DECIMAL = "decimal";
     public static final String STRING = "string";
+    public static final String ASCII_STRING = "ascii";
+    public static final String UNICODE_STRING = "unicode";
     public static final String BYTE_VECTOR = "byte";
 
     // Type Collections
     public static final String[] ALL_TYPES = new String[] {
-    		U8, U16, U32, U64, I8, I16, I32, I64, DECIMAL, STRING, BYTE_VECTOR
+    		U8, U16, U32, U64, I8, I16, I32, I64, DECIMAL, STRING, ASCII_STRING, UNICODE_STRING, BYTE_VECTOR
         };
     public static final String[] INTEGER_TYPES = new String[] {
             U8, U16, U32, U64, I8, I16, I32, I64
@@ -63,8 +65,8 @@ public abstract class Type {
     // Type Definitions
     public static final Type UINT = new UnsignedInteger();
     public static final Type INTEGER = new SignedInteger();
-    public static final Type STRING_TYPE = new AsciiStringType();
-    public static final Type UNICODE_STRING = new UnicodeString();
+    public static final Type ASCII_STRING_TYPE = new AsciiString();
+    public static final Type UNICODE_STRING_TYPE = new UnicodeString();
     public static final Type BIT_VECTOR = new BitVectorType();
     public static final Type BYTE_VECTOR_TYPE = new ByteVectorType();
     public static final Type SF_SCALED_NUMBER = new SingleFieldDecimal();
@@ -73,9 +75,9 @@ public abstract class Type {
     
     public static final Type NULLABLE_UNSIGNED_INTEGER = new NullableUnsignedInteger();
     public static final Type NULLABLE_INTEGER = new NullableSignedInteger();
-    public static final Type NULLABLE_STRING_TYPE = new NullableStringType();
+    public static final Type NULLABLE_ASCII_STRING = new NullableAsciiString();
     public static final Type NULLABLE_UNICODE_STRING = new NullableUnicodeString();
-    public static final Type NULLABLE_BYTE_VECTOR_TYPE = new NullableByteVectorType();
+    public static final Type NULLABLE_BYTE_VECTOR_TYPE = new NullableByteVector();
     public static final Type NULLABLE_SF_SCALED_NUMBER = new NullableSingleFieldDecimal();
     public static final Type NULLABLE_STRING_DELTA = new NullableStringDelta();
     
@@ -92,8 +94,12 @@ public abstract class Type {
         registerUInt(U64);
         TYPE_MAP.put(new Key(DECIMAL, Boolean.TRUE), NULLABLE_SF_SCALED_NUMBER);
         TYPE_MAP.put(new Key(DECIMAL, Boolean.FALSE), SF_SCALED_NUMBER);
-        TYPE_MAP.put(new Key(STRING, Boolean.TRUE), NULLABLE_STRING_TYPE);
-        TYPE_MAP.put(new Key(STRING, Boolean.FALSE), STRING_TYPE);
+        TYPE_MAP.put(new Key(ASCII_STRING, Boolean.TRUE), NULLABLE_ASCII_STRING);
+        TYPE_MAP.put(new Key(ASCII_STRING, Boolean.FALSE), ASCII_STRING_TYPE);
+        TYPE_MAP.put(new Key(STRING, Boolean.TRUE), NULLABLE_ASCII_STRING);
+        TYPE_MAP.put(new Key(STRING, Boolean.FALSE), ASCII_STRING_TYPE);
+        TYPE_MAP.put(new Key(UNICODE_STRING, Boolean.TRUE), NULLABLE_UNICODE_STRING);
+        TYPE_MAP.put(new Key(UNICODE_STRING, Boolean.FALSE), UNICODE_STRING_TYPE);
         TYPE_MAP.put(new Key(BYTE_VECTOR, Boolean.TRUE), BYTE_VECTOR_TYPE);
         TYPE_MAP.put(new Key(BYTE_VECTOR, Boolean.FALSE), BYTE_VECTOR_TYPE);
     }

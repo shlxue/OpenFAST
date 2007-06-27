@@ -58,13 +58,13 @@ public class Session implements ErrorHandler {
                 new Scalar("Code", Type.U32, Operator.NONE, ScalarValue.UNDEFINED, false),
                 new Scalar("Value", Type.U32, Operator.NONE,
                     ScalarValue.UNDEFINED, true),
-                new Scalar("Description", Type.STRING, Operator.NONE, ScalarValue.UNDEFINED, false),
+                new Scalar("Description", Type.ASCII_STRING, Operator.NONE, ScalarValue.UNDEFINED, false),
             });
     private final static MessageTemplate FAST_RESET_TEMPLATE = new MessageTemplate("",
             new Field[] {  });
     private final static MessageTemplate FAST_HELLO_TEMPLATE = new MessageTemplate("",
             new Field[] {
-                new Scalar("SenderName", Type.STRING, Operator.NONE, ScalarValue.UNDEFINED, false)
+                new Scalar("SenderName", Type.ASCII_STRING, Operator.NONE, ScalarValue.UNDEFINED, false)
             });
     public static final Message RESET = new Message(FAST_RESET_TEMPLATE,
             FAST_RESET_TEMPLATE_ID) {

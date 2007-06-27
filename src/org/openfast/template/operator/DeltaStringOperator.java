@@ -37,7 +37,7 @@ import org.openfast.util.Util;
 
 final class DeltaStringOperator extends AlwaysPresentOperator {
     DeltaStringOperator() {
-        super(Operator.DELTA, new String[] { Type.STRING });
+        super(Operator.DELTA, new String[] { Type.ASCII_STRING });
     }
 
     public ScalarValue getValueToEncode(ScalarValue value,

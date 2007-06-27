@@ -65,7 +65,7 @@ public class ScalarValue implements FieldValue {
             return new IntegerValue(Integer.parseInt(value));
         } else if (typeName.equals(Type.DECIMAL)) {
             return new DecimalValue(Double.parseDouble(value));
-        } else if (typeName.equals(Type.STRING)) {
+        } else if (typeName.equals(Type.ASCII_STRING)) {
             return new StringValue(value);
         } else if (typeName.equals(Type.BYTE_VECTOR)) {
             throw new NotImplementedException();

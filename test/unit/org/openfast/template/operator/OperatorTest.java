@@ -79,12 +79,12 @@ public class OperatorTest extends TestCase {
 	
 	public void testConstantValueOperator()
 	{
-		Scalar field = new Scalar("", Type.STRING, Operator.CONSTANT, new StringValue("5"), false);
+		Scalar field = new Scalar("", Type.ASCII_STRING, Operator.CONSTANT, new StringValue("5"), false);
 		assertEquals(null, Operator.CONSTANT_ALL.getValueToEncode(null, null, field));	
-		Scalar field1 = new Scalar("", Type.STRING, Operator.CONSTANT, new StringValue("99"), false);
+		Scalar field1 = new Scalar("", Type.ASCII_STRING, Operator.CONSTANT, new StringValue("99"), false);
 		assertEquals(null, Operator.CONSTANT_ALL.getValueToEncode(null, null, field1));
 		//newly added implementation
-		Scalar field2 = new Scalar("", Type.STRING, Operator.CONSTANT, new StringValue("4"), true);
+		Scalar field2 = new Scalar("", Type.ASCII_STRING, Operator.CONSTANT, new StringValue("4"), true);
 		assertEquals(null, Operator.CONSTANT_ALL.decodeEmptyValue(new StringValue("4"), field2));
 	}
 	

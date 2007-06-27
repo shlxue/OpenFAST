@@ -252,7 +252,7 @@ public abstract class Operator {
     public static final Operator DELTA_STRING = new DeltaStringOperator();
     protected static final Operator DELTA_DECIMAL = new DeltaDecimalOperator();
     protected static final Operator TAIL_STRING = new Operator("tail",
-            new String[] { Type.STRING }) {
+            new String[] { Type.ASCII_STRING }) {
             public ScalarValue getValueToEncode(ScalarValue value,
                 ScalarValue priorValue, Scalar field) {
                 if (value == null) {

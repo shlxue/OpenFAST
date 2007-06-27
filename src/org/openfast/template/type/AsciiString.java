@@ -33,20 +33,19 @@ import java.io.IOException;
 import java.io.InputStream;
 
 
-final class NullableStringType extends Type {
-    private static final byte[] NULLABLE_EMPTY_STRING = new byte[] { 0x00, 0x00 };
-
-    NullableStringType() { }
+final class AsciiString extends Type {
+    AsciiString() { }
 
     public byte[] encodeValue(ScalarValue value) {
-        if (value.isNull()) {
-            return Type.NULL_VALUE_ENCODING;
+        if ((value == null) || value.isNull()) {
+            throw new IllegalStateException(
+                "Only nullable strings can represent null values.");
         }
 
         String string = ((StringValue) value).value;
 
         if ((string != null) && (string.length() == 0)) {
-            return NULLABLE_EMPTY_STRING;
+            return Type.NULL_VALUE_ENCODING;
         }
 
         return string.getBytes();
@@ -69,8 +68,6 @@ final class NullableStringType extends Type {
         bytes[bytes.length - 1] &= 0x7f;
 
         if ((bytes.length == 1) && (bytes[0] == 0)) {
-            return ScalarValue.NULL;
-        } else if ((bytes.length == 2) && (bytes[0] == 0) && (bytes[1] == 0)) {
             return new StringValue("");
         }
 
@@ -83,9 +80,5 @@ final class NullableStringType extends Type {
 
     public ScalarValue getDefaultValue() {
         return new StringValue("");
-    }
-    
-    public boolean isNullable() {
-    	return true;
     }
 }

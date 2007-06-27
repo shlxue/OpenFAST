@@ -111,6 +111,37 @@ public class XMLMessageTemplateLoaderTest extends TestCase {
         assertEquals("integer", scalar.getKey());
     }
 
+    public void testLoadTemplateWithUnicodeString() {
+        String templateXml = "<templates xmlns=\"http://www.fixprotocol.org/ns/template-definition\"" +
+            "	ns=\"http://www.fixprotocol.org/ns/templates/sample\">" +
+            "	<template name=\"SampleTemplate\">" +
+            "		<string name=\"name\" charset=\"unicode\" presence=\"mandatory\"><copy /></string>" +
+            "		<string name=\"id\" charset=\"unicode\" presence=\"optional\"><copy /></string>" +
+            "		<string name=\"location\" charset=\"ascii\" presence=\"mandatory\"><copy /></string>" +
+            "		<string name=\"id2\" charset=\"ascii\" presence=\"optional\"><copy /></string>" +
+            "	</template>" + "</templates>";
+
+        XMLMessageTemplateLoader loader = new XMLMessageTemplateLoader();
+        MessageTemplate[] templates = loader.load(new ByteArrayInputStream(
+                    templateXml.getBytes()));
+        MessageTemplate messageTemplate = templates[0];
+
+        Scalar name = messageTemplate.getScalar("name");
+        Scalar id = messageTemplate.getScalar("id");
+        Scalar location = messageTemplate.getScalar("location");
+        Scalar id2 = messageTemplate.getScalar("id2");
+        
+        assertFalse(name.isOptional());
+        assertTrue(id.isOptional());
+        assertFalse(location.isOptional());
+        assertTrue(id2.isOptional());
+        
+        assertEquals(Type.UNICODE_STRING_TYPE, name.getCodecStrategy());
+        assertEquals(Type.NULLABLE_UNICODE_STRING, id.getCodecStrategy());
+        assertEquals(Type.ASCII_STRING_TYPE, location.getCodecStrategy());
+        assertEquals(Type.NULLABLE_ASCII_STRING, id2.getCodecStrategy());
+    }
+    
     public void testLoadMdIncrementalRefreshTemplate() {
         InputStream templateStream = this.getClass()
                                          .getResourceAsStream("mdIncrementalRefreshTemplate.xml");
@@ -126,17 +157,17 @@ public class XMLMessageTemplateLoaderTest extends TestCase {
         int index = 0;
         assertScalarField(messageTemplate, index++, Type.U32,
             "templateId", Operator.COPY);
-        assertScalarField(messageTemplate, index++, Type.STRING, "8",
+        assertScalarField(messageTemplate, index++, Type.ASCII_STRING, "8",
             Operator.CONSTANT);
         assertScalarField(messageTemplate, index++, Type.U32, "9",
             Operator.CONSTANT);
-        assertScalarField(messageTemplate, index++, Type.STRING, "35",
+        assertScalarField(messageTemplate, index++, Type.ASCII_STRING, "35",
             Operator.CONSTANT);
-        assertScalarField(messageTemplate, index++, Type.STRING, "49",
+        assertScalarField(messageTemplate, index++, Type.ASCII_STRING, "49",
             Operator.CONSTANT);
         assertScalarField(messageTemplate, index++, Type.U32,
             "34", Operator.INCREMENT);
-        assertScalarField(messageTemplate, index++, Type.STRING, "52",
+        assertScalarField(messageTemplate, index++, Type.ASCII_STRING, "52",
             Operator.DELTA);
         assertScalarField(messageTemplate, index++, Type.U32,
             "75", Operator.COPY);
@@ -160,32 +191,32 @@ public class XMLMessageTemplateLoaderTest extends TestCase {
             "346", Operator.NONE);
         assertScalarField(sequence, seqIndex++, Type.U32, "1023",
             Operator.INCREMENT);
-        assertScalarField(sequence, seqIndex++, Type.STRING, "279",
+        assertScalarField(sequence, seqIndex++, Type.ASCII_STRING, "279",
             Operator.COPY);
-        assertScalarField(sequence, seqIndex++, Type.STRING, "269",
+        assertScalarField(sequence, seqIndex++, Type.ASCII_STRING, "269",
             Operator.COPY);
-        assertScalarField(sequence, seqIndex++, Type.STRING, "107",
+        assertScalarField(sequence, seqIndex++, Type.ASCII_STRING, "107",
             Operator.COPY);
-        assertScalarField(sequence, seqIndex++, Type.STRING, "48",
+        assertScalarField(sequence, seqIndex++, Type.ASCII_STRING, "48",
             Operator.DELTA);
-        assertScalarField(sequence, seqIndex++, Type.STRING, "276",
+        assertScalarField(sequence, seqIndex++, Type.ASCII_STRING, "276",
             Operator.COPY);
-        assertScalarField(sequence, seqIndex++, Type.STRING, "274",
+        assertScalarField(sequence, seqIndex++, Type.ASCII_STRING, "274",
             Operator.COPY);
         assertScalarField(sequence, seqIndex++, Type.DECIMAL, "451",
             Operator.COPY);
-        assertScalarField(sequence, seqIndex++, Type.STRING, "277",
+        assertScalarField(sequence, seqIndex++, Type.ASCII_STRING, "277",
             Operator.DEFAULT);
         assertOptionalScalarField(sequence, seqIndex++, Type.U32,
             "1020", Operator.NONE);
         assertScalarField(sequence, seqIndex++, Type.I32, "537",
             Operator.DEFAULT);
-        assertScalarField(sequence, seqIndex++, Type.STRING, "1024",
+        assertScalarField(sequence, seqIndex++, Type.ASCII_STRING, "1024",
             Operator.DEFAULT);
-        assertScalarField(sequence, seqIndex++, Type.STRING, "336",
+        assertScalarField(sequence, seqIndex++, Type.ASCII_STRING, "336",
             Operator.DEFAULT);
 
-        assertScalarField(messageTemplate, index++, Type.STRING, "10",
+        assertScalarField(messageTemplate, index++, Type.ASCII_STRING, "10",
             Operator.NONE);
     }
 

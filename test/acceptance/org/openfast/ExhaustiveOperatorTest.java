@@ -444,7 +444,7 @@ public class ExhaustiveOperatorTest extends TestCase {
     }
 
     public void testTailOperatorWithOptionalField() {
-        Scalar field = new Scalar("", Type.STRING, Operator.TAIL,
+        Scalar field = new Scalar("", Type.ASCII_STRING, Operator.TAIL,
                 new StringValue("abc"), true);
         MessageTemplate template = registerTemplate(field);
 
@@ -480,7 +480,7 @@ public class ExhaustiveOperatorTest extends TestCase {
     }
 
     public void testTailOperatorWithMandatoryField() {
-        Scalar field = new Scalar("", Type.STRING, Operator.TAIL,
+        Scalar field = new Scalar("", Type.ASCII_STRING, Operator.TAIL,
                 new StringValue("abc"), false);
         MessageTemplate template = registerTemplate(field);
 

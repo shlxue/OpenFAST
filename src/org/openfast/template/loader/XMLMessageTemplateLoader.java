@@ -120,21 +120,23 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
 
     private Field parseField(Element fieldNode) {
         String name = fieldNode.getAttribute("name");
+        String type = fieldNode.getNodeName();
         boolean optional = false;
 
         if (fieldNode.hasAttribute("presence")) {
             optional = fieldNode.getAttribute("presence").equals("optional");
         }
 
-        if (fieldNode.getNodeName().equals("sequence")) {
+        if (type.equals("sequence")) {
             return parseSequence(fieldNode, optional);
-        }
-
-        if (fieldNode.getNodeName().equals("group")) {
+        } else if (type.equals("group")) {
             return parseGroup(fieldNode, optional);
-        }
-
-        if (fieldNode.getNodeName().equals("decimal")) {
+        } else if (type.equals("string")) {
+        	if (fieldNode.hasAttribute("charset"))
+        		type = fieldNode.getAttribute("charset");
+        	else
+        		type = "ascii";
+        } else if (type.equals("decimal")) {
             // Check for "decimal" special case where there are two separate operators for the mantissa and exponent
             NodeList fieldChildren = fieldNode.getChildNodes();
             Node mantissaNode = null;
@@ -154,7 +156,7 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
             }
         }
 
-        return createScalar(fieldNode, name, optional, fieldNode.getNodeName());
+        return createScalar(fieldNode, name, optional, type);
     }
 
     private Field createTwinFieldDecimal(Element fieldNode, String name,

@@ -35,7 +35,7 @@ public class StringDelta extends Type {
 
     public ScalarValue decode(InputStream in) {
         ScalarValue subtractionLength = Type.INTEGER.decode(in);
-        ScalarValue difference = Type.STRING_TYPE.decode(in);
+        ScalarValue difference = Type.ASCII_STRING_TYPE.decode(in);
 
         return new TwinValue(subtractionLength, difference);
     }
@@ -48,7 +48,7 @@ public class StringDelta extends Type {
 
         TwinValue diff = (TwinValue) value;
         byte[] subtractionLength = Type.INTEGER.encode(diff.first);
-        byte[] difference = Type.STRING_TYPE.encode(diff.second);
+        byte[] difference = Type.ASCII_STRING_TYPE.encode(diff.second);
         byte[] encoded = new byte[subtractionLength.length + difference.length];
         System.arraycopy(subtractionLength, 0, encoded, 0,
             subtractionLength.length);
