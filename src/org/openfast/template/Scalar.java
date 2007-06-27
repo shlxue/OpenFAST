@@ -26,6 +26,7 @@ import org.openfast.Context;
 import org.openfast.FieldValue;
 import org.openfast.ScalarValue;
 
+import org.openfast.error.FastConstants;
 import org.openfast.template.operator.Operator;
 import org.openfast.template.type.Type;
 
@@ -41,21 +42,30 @@ public class Scalar extends Field {
     private ScalarValue defaultValue = ScalarValue.UNDEFINED;
     private final ScalarValue initialValue;
 
-    public Scalar(String name, String typeName, String operator, ScalarValue defaultValue, boolean optional) {
-        this(name, typeName, Operator.getOperator(operator, typeName), defaultValue, optional);
-    }
-
     public Scalar(String name, String typeName, Operator operator, ScalarValue defaultValue, boolean optional) {
         super(name, optional);
         this.operator = operator;
         this.operatorName = operator.getName();
         this.dictionary = "global";
-        this.defaultValue = defaultValue;
+        this.defaultValue = (defaultValue == null) ? ScalarValue.UNDEFINED : defaultValue;
         this.typeName = typeName;
         this.type = Type.getType(typeName, optional, operator);
-        this.initialValue = ((defaultValue == null) ||
-            defaultValue.isUndefined()) ? this.type.getDefaultValue()
+        this.initialValue = ((defaultValue == null) || defaultValue.isUndefined()) 
+        								? this.type.getDefaultValue()
                                         : defaultValue;
+        validate();
+    }
+
+    private void validate() {
+    	// TODO - move this validation into the operator class.
+    	if (operatorName.equals(Operator.CONSTANT) && defaultValue.isUndefined())
+    		FastConstants.handleError(FastConstants.NO_INITIAL_VALUE_FOR_CONST, "The field \"" + name + "\" must have a default value defined.");
+    	if (operatorName.equals(Operator.DEFAULT) && !optional && defaultValue.isUndefined())
+    		FastConstants.handleError(FastConstants.NO_INITVAL_MNDTRY_DFALT, "The field \"" + name + "\" must have a default value defined.");
+	}
+
+	public Scalar(String name, String typeName, String operator, ScalarValue defaultValue, boolean optional) {
+        this(name, typeName, Operator.getOperator(operator, typeName), defaultValue, optional);
     }
 
     public Scalar(String name, String typeName, String operator, String defaultValue, boolean optional) {
@@ -86,6 +96,7 @@ public class Scalar extends Field {
             ScalarValue valueToEncode = operator.getValueToEncode((ScalarValue) value,
                     priorValue, this);
 
+            // TODO - move this operator specific code out
             if (!((operatorName == Operator.DELTA) && (value == null))) {
                 context.store(getDictionary(), template, getKey(),
                     (ScalarValue) value);
@@ -155,8 +166,6 @@ public class Scalar extends Field {
             context.store(getDictionary(), template, getKey(), value);
         }
 
-        //		if (value != null)
-        //			System.out.print(getName() + "=" + value);
         return value;
     }
 

@@ -39,8 +39,7 @@ public final class FastConstants {
             FastAlertSeverity.ERROR);
     public static final ErrorCode INITIAL_VALUE_INCOMP = new ErrorCode(STATIC,
             3, "ERR S3", "Incompatible initial value", FastAlertSeverity.ERROR);
-    public static final ErrorCode NO_INITIAL_VALUE = new ErrorCode(STATIC, 4,
-            "ERR S4", "No initial value", FastAlertSeverity.ERROR);
+    public static final ErrorCode NO_INITIAL_VALUE_FOR_CONST = new ErrorCode(STATIC, 4, "ERR S4", "Fields with constant operators must have a default value defined.", FastAlertSeverity.ERROR);
     public static final ErrorCode NO_INITVAL_MNDTRY_DFALT = new ErrorCode(STATIC,
             5, "ERR S5",
             "No initial value for mandatory field with default operator",
@@ -62,7 +61,13 @@ public final class FastConstants {
     public static final ErrorCode LARGE_DECIMAL = new ErrorCode(REPORTABLE, 1,
             "ERR R1", "Decimal exponent does not fit into range -63...63",
             FastAlertSeverity.ERROR);
-    private static ErrorHandler globalHandler = ErrorHandler.DEFAULT;
+    
+    // Errors not defined in the FAST specification
+	public static final ErrorCode IMPOSSIBLE_EXCEPTION = new ErrorCode(DYNAMIC, 101, "IMPOSSIBLE", "This should never happen.", FastAlertSeverity.ERROR);
+	public static final ErrorCode IO_ERROR = new ErrorCode(DYNAMIC, 102, "IOERROR", "An IO error occurred.", FastAlertSeverity.FATAL);
+    
+	
+	private static ErrorHandler globalHandler = ErrorHandler.DEFAULT;
 
     public static void setGlobalHandler(ErrorHandler handler) {
         if (handler == null) {
@@ -75,4 +80,8 @@ public final class FastConstants {
     public static void handleError(ErrorCode error, String message) {
         globalHandler.error(error, message);
     }
+
+	public static void handleError(ErrorCode error, String message, Throwable source) {
+		globalHandler.error(error, message, source);
+	}
 }

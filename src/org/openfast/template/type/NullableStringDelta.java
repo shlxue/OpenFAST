@@ -35,10 +35,7 @@ public class NullableStringDelta extends Type {
 
     public ScalarValue decode(InputStream in) {
         ScalarValue subtractionLength = Type.NULLABLE_INTEGER.decode(in);
-
-        if (subtractionLength == ScalarValue.NULL) {
-            return null;
-        }
+        if (subtractionLength == null) return null;
 
         ScalarValue difference = Type.STRING_TYPE.decode(in);
 
@@ -46,10 +43,8 @@ public class NullableStringDelta extends Type {
     }
 
     public byte[] encodeValue(ScalarValue value) {
-        if ((value == null) || (value == ScalarValue.NULL)) {
-            return Type.NULL_VALUE_ENCODING;
-        }
-
+        if (value.isNull()) return Type.NULL_VALUE_ENCODING;
+        
         TwinValue diff = (TwinValue) value;
         byte[] subtractionLength = Type.NULLABLE_INTEGER.encode(diff.first);
         byte[] difference = Type.STRING_TYPE.encode(diff.second);

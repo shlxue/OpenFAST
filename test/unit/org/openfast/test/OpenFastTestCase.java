@@ -25,9 +25,11 @@ package org.openfast.test;
 import junit.framework.TestCase;
 
 import org.openfast.ByteUtil;
+import org.openfast.ByteVectorValue;
 import org.openfast.DecimalValue;
 import org.openfast.IntegerValue;
 import org.openfast.ScalarValue;
+import org.openfast.StringValue;
 import org.openfast.TestUtil;
 
 import org.openfast.template.TwinValue;
@@ -55,7 +57,7 @@ public abstract class OpenFastTestCase extends TestCase {
 
     protected static void assertEncodeDecode(ScalarValue value,
         String bitString, Type type) {
-        assertEquals(bitString, type.encode(value));
+        assertEquals(bitString, type.encode(value == null ? ScalarValue.NULL : value));
         assertEquals(value, type.decode(ByteUtil.createByteStream(bitString)));
     }
 
@@ -63,7 +65,15 @@ public abstract class OpenFastTestCase extends TestCase {
         return ByteUtil.createByteStream(bitString);
     }
 
-    protected DecimalValue d(int mantissa, int exponent) {
+    protected static ByteVectorValue byt(byte[] value) {
+		return new ByteVectorValue(value);
+	}
+
+	protected DecimalValue d(int mantissa, int exponent) {
         return new DecimalValue(mantissa, exponent);
     }
+
+	protected ScalarValue string(String value) {
+		return new StringValue(value);
+	}
 }

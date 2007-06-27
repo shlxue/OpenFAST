@@ -196,14 +196,19 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
     private Scalar createScalar(Element fieldNode, String name, boolean optional, String typeName) {
     	String operator = Operator.NONE;
     	String defaultValue = null;
+    	String key = null;
         Element operatorElement = getOperatorElement(fieldNode);
-
         if (operatorElement != null) {
 	        if (operatorElement.hasAttribute("value"))
 	            defaultValue = operatorElement.getAttribute("value");
 	        operator = operatorElement.getNodeName();
+	        if (operatorElement.hasAttribute("key"))
+	        	key = operatorElement.getAttribute("key");
         }
-        return new Scalar(name, typeName, operator, defaultValue, optional);
+        Scalar scalar = new Scalar(name, typeName, operator, defaultValue, optional);
+        if (key != null)
+        	scalar.setKey(key);
+		return scalar;
     }
 
     private Element getOperatorElement(Element fieldNode) {

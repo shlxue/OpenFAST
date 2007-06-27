@@ -29,6 +29,8 @@ import org.openfast.IntegerValue;
 import org.openfast.ScalarValue;
 import org.openfast.TestUtil;
 
+import org.openfast.error.FastConstants;
+import org.openfast.error.FastException;
 import org.openfast.template.operator.Operator;
 import org.openfast.template.type.Type;
 
@@ -62,4 +64,25 @@ public class ScalarTest extends TestCase {
         byte[] encoding = scalar.encode(new IntegerValue(1), null, context);
         TestUtil.assertBitVectorEquals("", encoding);
     }
+    
+	public void testInvalidConstantField() throws Exception {
+		 try {
+			 new Scalar("malformed", Type.U32, Operator.CONSTANT, ScalarValue.UNDEFINED, false);
+			 fail();
+		 } catch (FastException e) {
+			 assertEquals(FastConstants.NO_INITIAL_VALUE_FOR_CONST, e.getCode());
+			 assertEquals("The field \"malformed\" must have a default value defined.", e.getMessage());
+		 }
+	}
+	
+	public void testInvalidDefaultField() throws Exception {
+		new Scalar("malformed", Type.U32, Operator.DEFAULT, ScalarValue.UNDEFINED, true); // optional okay
+		try {
+			new Scalar("malformed", Type.U32, Operator.DEFAULT, ScalarValue.UNDEFINED, false); // mandatory not okay
+			fail();
+		} catch (FastException e) {
+			assertEquals(FastConstants.NO_INITVAL_MNDTRY_DFALT, e.getCode());
+			assertEquals("The field \"malformed\" must have a default value defined.", e.getMessage());
+		}
+	}
 }

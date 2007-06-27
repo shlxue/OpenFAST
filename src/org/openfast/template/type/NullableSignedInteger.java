@@ -54,7 +54,7 @@ public final class NullableSignedInteger extends IntegerType {
         long value = numericValue.getLong();
 
         if (value == 0) {
-            return ScalarValue.NULL;
+            return null;
         }
 
         if (value > 0) {

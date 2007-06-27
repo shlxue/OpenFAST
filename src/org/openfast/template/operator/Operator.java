@@ -124,36 +124,7 @@ public abstract class Operator {
             }
         };
 
-    protected static final Operator COPY_ALL = new CopyOperator(); // {
-                                                                   //		public ScalarValue getValueToEncode(ScalarValue value, ScalarValue priorValue, Scalar field) {
-                                                                   //
-                                                                   //			if (value == null)
-                                                                   //				if (field.isOptional())
-                                                                   //					if (priorValue == ScalarValue.UNDEFINED)
-                                                                   //						return null;
-                                                                   //					else
-                                                                   //						return null;
-                                                                   //				else
-                                                                   //					throw new IllegalStateException();
-                                                                   //			if (priorValue != null && priorValue.isUndefined() && value.equals(field.getDefaultValue())) return null;
-                                                                   //			return (value.equals(priorValue)) ? null : value;
-                                                                   //		}
-                                                                   //
-                                                                   //		public ScalarValue decodeValue(ScalarValue newValue, ScalarValue previousValue, Scalar field) {
-                                                                   //			return newValue;
-                                                                   //		}
-                                                                   //
-                                                                   //		public ScalarValue decodeEmptyValue(ScalarValue previousValue, Scalar field) {
-                                                                   //			if (previousValue.isUndefined())
-                                                                   //				if (field.getDefaultValue().isUndefined())
-                                                                   //					if (field.isOptional())
-                                                                   //						return ScalarValue.UNDEFINED;
-                                                                   //					else
-                                                                   //						FastConstants.handleError(FastConstants.NO_DEFAULT_VALUE, "");
-                                                                   //				else
-                                                                   //					return field.getDefaultValue();
-                                                                   //			return previousValue;
-                                                                   //		}};
+    protected static final Operator COPY_ALL = new CopyOperator();
     protected static final Operator INCREMENT_INTEGER = new Operator(INCREMENT,
             Type.INTEGER_TYPES) {
             // TODO - refactor for efficiency

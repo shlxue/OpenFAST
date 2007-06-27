@@ -70,10 +70,6 @@ final class SingleFieldDecimal extends Type {
                 "Encountered exponent of size " + exponent);
         }
 
-        if (exponent == Type.NULL_SCALED_NUMBER) {
-            return DecimalValue.NULL;
-        }
-
         int mantissa = ((IntegerValue) Type.INTEGER.decode(in)).value;
         DecimalValue decimalValue = new DecimalValue(mantissa, exponent);
 

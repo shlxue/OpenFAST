@@ -22,42 +22,14 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast.template.type;
 
-import junit.framework.TestCase;
-
-import org.openfast.ByteUtil;
-import org.openfast.IntegerValue;
-import org.openfast.ScalarValue;
-import org.openfast.StringValue;
-import org.openfast.TestUtil;
-
-import org.openfast.template.TwinValue;
-
-import java.io.InputStream;
+import org.openfast.test.OpenFastTestCase;
 
 
-public class NullableStringDeltaTest extends TestCase {
-    public void testEncodeValue() {
-        TestUtil.assertBitVectorEquals("10000000",
-            Type.NULLABLE_STRING_DELTA.encodeValue(ScalarValue.NULL));
-        TestUtil.assertBitVectorEquals("10000010 11000001",
-            Type.NULLABLE_STRING_DELTA.encodeValue(
-                new TwinValue(new IntegerValue(1), new StringValue("A"))));
-        TestUtil.assertBitVectorEquals("11111111 11000001",
-            Type.NULLABLE_STRING_DELTA.encodeValue(
-                new TwinValue(new IntegerValue(-1), new StringValue("A"))));
-    }
-
-    public void testDecode() {
-        InputStream in = ByteUtil.createByteStream("10000001 11000001");
-        assertEquals(new TwinValue(new IntegerValue(0), new StringValue("A")),
-            Type.NULLABLE_STRING_DELTA.decode(in));
-        in = ByteUtil.createByteStream("10000010 11000001");
-        assertEquals(new TwinValue(new IntegerValue(1), new StringValue("A")),
-            Type.NULLABLE_STRING_DELTA.decode(in));
-        in = ByteUtil.createByteStream("11111111 11000001");
-        assertEquals(new TwinValue(new IntegerValue(-1), new StringValue("A")),
-            Type.NULLABLE_STRING_DELTA.decode(in));
-        in = ByteUtil.createByteStream("10000000");
-        assertEquals(null, Type.NULLABLE_STRING_DELTA.decode(in));
-    }
+public class NullableStringDeltaTest extends OpenFastTestCase {
+	
+	public void testEncodeDecode() {
+		assertEncodeDecode(null, "10000000", Type.NULLABLE_STRING_DELTA);
+		assertEncodeDecode(twin(i(1), string("A")), "10000010 11000001", Type.NULLABLE_STRING_DELTA);
+		assertEncodeDecode(twin(i(-1), string("A")), "11111111 11000001", Type.NULLABLE_STRING_DELTA);
+	}
 }

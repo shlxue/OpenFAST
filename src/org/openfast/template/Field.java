@@ -34,7 +34,7 @@ import java.io.InputStream;
  */
 public abstract class Field {
     protected final String name;
-    protected final String key;
+    protected String key;
     protected final boolean optional;
 
     /**
@@ -83,6 +83,10 @@ public abstract class Field {
     public String getKey() {
         return key;
     }
+
+	public void setKey(String key) {
+		this.key = key;
+	}
 
     /**
      * byte[] encode method declaration

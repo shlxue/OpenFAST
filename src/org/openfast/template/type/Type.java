@@ -36,74 +36,83 @@ import java.util.Map;
 
 
 public abstract class Type {
-    static final int NULL_SCALED_NUMBER = -64;
-    protected static final byte[] NULL_SF_DECIMAL_VALUE_ENCODING = new byte[] {
-            (byte) 0xc0
-        };
-    protected static final byte[] NULL_TF_DECIMAL_VALUE_ENCODING = new byte[] {
-            (byte) 0xc0, (byte) 0x80
-        };
     protected static final byte STOP_BIT = (byte) 0x80;
     static final byte[] NULL_VALUE_ENCODING = new byte[] { STOP_BIT };
 
     // Type Enumerations
+    public static final String U8 = "u8";
+    public static final String U16 = "u16";
     public static final String U32 = "u32";
+    public static final String U64 = "u64";
+    public static final String I8 = "i8";
+    public static final String I16 = "i16";
     public static final String I32 = "i32";
+    public static final String I64 = "i64";
     public static final String DECIMAL = "decimal";
     public static final String STRING = "string";
     public static final String BYTE_VECTOR = "byte";
 
     // Type Collections
     public static final String[] ALL_TYPES = new String[] {
-            U32, I32, DECIMAL, STRING, BYTE_VECTOR
+    		U8, U16, U32, U64, I8, I16, I32, I64, DECIMAL, STRING, BYTE_VECTOR
         };
     public static final String[] INTEGER_TYPES = new String[] {
-            Type.U32, Type.I32
+            U8, U16, U32, U64, I8, I16, I32, I64
         };
 
     // Type Definitions
     public static final Type UINT = new UnsignedInteger();
-    public static final Type NULLABLE_UNSIGNED_INTEGER = new NullableUnsignedInteger();
     public static final Type INTEGER = new SignedInteger();
-    public static final Type NULLABLE_INTEGER = new NullableSignedInteger();
-    public static final Type STRING_TYPE = new StringType();
-    public static final Type NULLABLE_STRING_TYPE = new NullableStringType();
+    public static final Type STRING_TYPE = new AsciiStringType();
+    public static final Type UNICODE_STRING = new UnicodeString();
     public static final Type BIT_VECTOR = new BitVectorType();
     public static final Type BYTE_VECTOR_TYPE = new ByteVectorType();
     public static final Type SF_SCALED_NUMBER = new SingleFieldDecimal();
-    public static final Type NULLABLE_SF_SCALED_NUMBER = new NullableSingleFieldDecimal();
     public static final Type TF_SCALED_NUMBER = new TwinFieldDecimal();
     public static final Type STRING_DELTA = new StringDelta();
+    
+    public static final Type NULLABLE_UNSIGNED_INTEGER = new NullableUnsignedInteger();
+    public static final Type NULLABLE_INTEGER = new NullableSignedInteger();
+    public static final Type NULLABLE_STRING_TYPE = new NullableStringType();
+    public static final Type NULLABLE_UNICODE_STRING = new NullableUnicodeString();
+    public static final Type NULLABLE_BYTE_VECTOR_TYPE = new NullableByteVectorType();
+    public static final Type NULLABLE_SF_SCALED_NUMBER = new NullableSingleFieldDecimal();
     public static final Type NULLABLE_STRING_DELTA = new NullableStringDelta();
+    
     private static final Map TYPE_MAP = new HashMap();
-	private static final Map NAME_MAP = new HashMap();
 
     static {
-        TYPE_MAP.put(new Key(I32, Boolean.TRUE), NULLABLE_INTEGER);
-        TYPE_MAP.put(new Key(I32, Boolean.FALSE), INTEGER);
-        TYPE_MAP.put(new Key(U32, Boolean.TRUE),
-            NULLABLE_UNSIGNED_INTEGER);
-        TYPE_MAP.put(new Key(U32, Boolean.FALSE), UINT);
+        registerInt(I8);
+        registerInt(I16);
+        registerInt(I32);
+        registerInt(I64);
+        registerUInt(U8);
+        registerUInt(U16);
+        registerUInt(U32);
+        registerUInt(U64);
         TYPE_MAP.put(new Key(DECIMAL, Boolean.TRUE), NULLABLE_SF_SCALED_NUMBER);
         TYPE_MAP.put(new Key(DECIMAL, Boolean.FALSE), SF_SCALED_NUMBER);
         TYPE_MAP.put(new Key(STRING, Boolean.TRUE), NULLABLE_STRING_TYPE);
         TYPE_MAP.put(new Key(STRING, Boolean.FALSE), STRING_TYPE);
         TYPE_MAP.put(new Key(BYTE_VECTOR, Boolean.TRUE), BYTE_VECTOR_TYPE);
         TYPE_MAP.put(new Key(BYTE_VECTOR, Boolean.FALSE), BYTE_VECTOR_TYPE);
-        
-        NAME_MAP.put(U32, "unsigned integer");
-        NAME_MAP.put(I32, "signed integer");
-        NAME_MAP.put(DECIMAL, "decimal");
-        NAME_MAP.put(STRING, "string");
-        NAME_MAP.put(BYTE_VECTOR, "byte vector");
     }
+
+	private static void registerUInt(String type) {
+		TYPE_MAP.put(new Key(type, Boolean.TRUE), NULLABLE_UNSIGNED_INTEGER);
+        TYPE_MAP.put(new Key(type, Boolean.FALSE), UINT);
+	}
+
+	private static void registerInt(String type) {
+		TYPE_MAP.put(new Key(type, Boolean.TRUE), NULLABLE_INTEGER);
+        TYPE_MAP.put(new Key(type, Boolean.FALSE), INTEGER);
+	}
 
     public abstract byte[] encodeValue(ScalarValue value);
 
     public byte[] encode(ScalarValue value) {
         byte[] encoding = encodeValue(value);
         encoding[encoding.length - 1] |= 0x80; // add stop bit;
-
         return encoding;
     }
 
@@ -140,8 +149,4 @@ public abstract class Type {
     }
 
     public abstract ScalarValue getDefaultValue();
-
-	public static String getTypeName(Integer type) {
-		return (String) NAME_MAP.get(type);
-	}
 }

@@ -25,53 +25,35 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
  */
 package org.openfast.template.type;
 
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+
+import org.openfast.ByteVectorValue;
 import org.openfast.ScalarValue;
 import org.openfast.StringValue;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import org.openfast.error.FastConstants;
+import org.openfast.error.FastException;
 
 
-final class StringType extends Type {
-    StringType() { }
+final class UnicodeString extends NotStopBitEncodedType {
+    UnicodeString() { }
 
     public byte[] encodeValue(ScalarValue value) {
-        if ((value == null) || value.isNull()) {
-            throw new IllegalStateException(
-                "Only nullable strings can represent null values.");
-        }
-
-        String string = ((StringValue) value).value;
-
-        if ((string != null) && (string.length() == 0)) {
-            return Type.NULL_VALUE_ENCODING;
-        }
-
-        return string.getBytes();
+        try {
+			byte[] utf8encoding = ((StringValue) value).value.getBytes("UTF8");
+			return Type.BYTE_VECTOR_TYPE.encode(new ByteVectorValue(utf8encoding));
+		} catch (UnsupportedEncodingException e) {
+			throw new FastException(FastConstants.IMPOSSIBLE_EXCEPTION, "Apparently Unicode is no longer supported by Java.", e);
+		}
     }
 
     public ScalarValue decode(InputStream in) {
-        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-        int byt;
-
+    	ByteVectorValue value = (ByteVectorValue) Type.BYTE_VECTOR_TYPE.decode(in);
         try {
-            do {
-                byt = in.read();
-                buffer.write(byt);
-            } while ((byt & 0x80) == 0);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        byte[] bytes = buffer.toByteArray();
-        bytes[bytes.length - 1] &= 0x7f;
-
-        if ((bytes.length == 1) && (bytes[0] == 0)) {
-            return new StringValue("");
-        }
-
-        return new StringValue(new String(bytes));
+			return new StringValue(new String(value.value, "UTF8"));
+		} catch (UnsupportedEncodingException e) {
+			throw new FastException(FastConstants.IMPOSSIBLE_EXCEPTION, "Apparently Unicode is no longer supported by Java.", e);
+		}
     }
 
     public ScalarValue parse(String value) {

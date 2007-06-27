@@ -25,45 +25,60 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
  */
 package org.openfast.template.type;
 
-import org.openfast.DecimalValue;
-import org.openfast.IntegerValue;
 import org.openfast.ScalarValue;
+import org.openfast.StringValue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 
-final class TwinFieldDecimal extends Type {
-    TwinFieldDecimal() { }
+final class AsciiStringType extends Type {
+    AsciiStringType() { }
 
-    public byte[] encodeValue(ScalarValue v) {
+    public byte[] encodeValue(ScalarValue value) {
+        if ((value == null) || value.isNull()) {
+            throw new IllegalStateException(
+                "Only nullable strings can represent null values.");
+        }
+
+        String string = ((StringValue) value).value;
+
+        if ((string != null) && (string.length() == 0)) {
+            return Type.NULL_VALUE_ENCODING;
+        }
+
+        return string.getBytes();
+    }
+
+    public ScalarValue decode(InputStream in) {
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-        DecimalValue value = (DecimalValue) v;
+        int byt;
 
         try {
-            buffer.write(Type.INTEGER.encode(new IntegerValue(value.exponent)));
-            buffer.write(Type.INTEGER.encode(new IntegerValue(value.mantissa)));
+            do {
+                byt = in.read();
+                buffer.write(byt);
+            } while ((byt & 0x80) == 0);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        return buffer.toByteArray();
-    }
+        byte[] bytes = buffer.toByteArray();
+        bytes[bytes.length - 1] &= 0x7f;
 
-    public ScalarValue decode(InputStream in) {
-        int exponent = ((IntegerValue) Type.INTEGER.decode(in)).value;
+        if ((bytes.length == 1) && (bytes[0] == 0)) {
+            return new StringValue("");
+        }
 
-        int mantissa = ((IntegerValue) Type.INTEGER.decode(in)).value;
-
-        return new DecimalValue(mantissa, exponent);
+        return new StringValue(new String(bytes));
     }
 
     public ScalarValue parse(String value) {
-        return new DecimalValue(Double.parseDouble(value));
+        return new StringValue(value);
     }
 
     public ScalarValue getDefaultValue() {
-        return new DecimalValue(0.0);
+        return new StringValue("");
     }
 }

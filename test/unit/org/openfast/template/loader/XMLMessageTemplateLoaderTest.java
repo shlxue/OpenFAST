@@ -94,6 +94,22 @@ public class XMLMessageTemplateLoaderTest extends TestCase {
 
         assertGroup(messageTemplate, 1, "guy");
     }
+    
+    public void testLoadTemplateWithKey() {
+        String templateXml = "<templates xmlns=\"http://www.fixprotocol.org/ns/template-definition\"" +
+            "	ns=\"http://www.fixprotocol.org/ns/templates/sample\">" +
+            "	<template name=\"SampleTemplate\">" +
+            "		<u32 name=\"value\"><copy key=\"integer\" /></u32>" +
+            "	</template>" + "</templates>";
+
+        XMLMessageTemplateLoader loader = new XMLMessageTemplateLoader();
+        MessageTemplate[] templates = loader.load(new ByteArrayInputStream(
+                    templateXml.getBytes()));
+        MessageTemplate messageTemplate = templates[0];
+
+        Scalar scalar = messageTemplate.getScalar("value");
+        assertEquals("integer", scalar.getKey());
+    }
 
     public void testLoadMdIncrementalRefreshTemplate() {
         InputStream templateStream = this.getClass()

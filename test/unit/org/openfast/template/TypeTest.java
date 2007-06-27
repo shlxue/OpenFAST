@@ -114,7 +114,7 @@ public class TypeTest extends TestCase {
     public void testSignedIntegerWithNullSupportDecoding() {
         InputStream in = ByteUtil.createByteStream("10000000");
         ScalarValue decodedValue = Type.NULLABLE_INTEGER.decode(in);
-        assertTrue(decodedValue.isNull());
+        assertNull(decodedValue);
 
         in = ByteUtil.createByteStream("10000001");
         decodedValue = ((IntegerValue) Type.NULLABLE_INTEGER.decode(in));
@@ -249,8 +249,6 @@ public class TypeTest extends TestCase {
 
     /*** TWIN FIELD SCALED NUMBER ***/
     public void testTwinFieldScaledNumberEncoding() {
-        TestUtil.assertBitVectorEquals("11000000 10000000",
-            Type.TF_SCALED_NUMBER.encode(DecimalValue.NULL));
         TestUtil.assertBitVectorEquals("10000000 10000100",
             Type.TF_SCALED_NUMBER.encode(new DecimalValue(4)));
         TestUtil.assertBitVectorEquals("10000010 10000100",
