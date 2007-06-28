@@ -101,7 +101,7 @@ public class ObjectMother {
         return allocationInstruction;
     }
 
-    private static Sequence allocations() {
+    public static Sequence allocations() {
         if (allocations == null) {
             allocations = new Sequence("Allocations",
                     new Field[] {

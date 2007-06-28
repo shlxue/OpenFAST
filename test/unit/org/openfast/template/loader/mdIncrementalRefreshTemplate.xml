@@ -1,7 +1,7 @@
 <templates xmlns="http://www.fixprotocol.org/ns/template-definition"
 	ns="http://www.fixprotocol.org/ns/templates/sample">
 	<template name="MDRefreshSample">
-		<messageRef name="MDIncrementalRefresh"/>
+		<typeRef name="MDIncrementalRefresh"/>
 		<string name="8"><constant value="FIX4.4"/></string>
 		<u32 name="9"><constant value="1"/></u32>
 		<string name="35"><constant value="X"/></string>
@@ -10,6 +10,7 @@
 		<string name="52"><delta/></string>
 		<u32 name="75"><copy/></u32>
 		<sequence name="MDEntries">
+			<typeRef name="MDEntries"/>
 			<length name="268"/>
 			<decimal name="270"><delta/></decimal>
 			<i32 name="271"><delta/></i32>

@@ -149,7 +149,7 @@ public class XMLMessageTemplateLoaderTest extends TestCase {
         MessageTemplate messageTemplate = loader.load(templateStream)[0];
 
         assertEquals("MDIncrementalRefresh",
-            messageTemplate.getMessageReference());
+            messageTemplate.getTypeReference());
         assertEquals("MDRefreshSample", messageTemplate.getName());
         assertEquals(10, messageTemplate.getFieldCount());
 
@@ -176,6 +176,7 @@ public class XMLMessageTemplateLoaderTest extends TestCase {
         assertSequence(messageTemplate, index, 17);
 
         Sequence sequence = (Sequence) messageTemplate.getField(index++);
+        assertEquals("MDEntries", sequence.getTypeReference());
         assertSequenceLengthField(sequence, "268", Type.U32,
             Operator.NONE);
 

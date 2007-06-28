@@ -30,6 +30,7 @@ import org.openfast.IntegerValue;
 import org.openfast.ScalarValue;
 import org.openfast.SequenceValue;
 
+import org.openfast.error.FastConstants;
 import org.openfast.template.operator.Operator;
 import org.openfast.template.type.Type;
 
@@ -44,6 +45,7 @@ public class Sequence extends Field implements FieldSet {
     private final Group group;
     private final Scalar length;
     private boolean implicitLength;
+	private String typeReference = FastConstants.ANY;
 
     /**
      * Sequence Constructor - Sets the implicitLength to true
@@ -155,6 +157,8 @@ public class Sequence extends Field implements FieldSet {
      * @return Returns the buffer of the byte array
      */
     public byte[] encode(FieldValue value, Group template, Context context, BitVectorBuilder presenceMapBuilder) {
+    	if (hasTypeReference())
+    		context.setCurrentApplicationType(getTypeReference());
         if (value == null) {
             return length.encode(null, template, context, presenceMapBuilder);
         }
@@ -252,4 +256,17 @@ public class Sequence extends Field implements FieldSet {
     public boolean isImplicitLength() {
         return implicitLength;
     }
+
+	public void setTypeReference(String typeReference) {
+		this.typeReference = typeReference;
+		this.group.setTypeReference(typeReference);
+	}
+
+	public String getTypeReference() {
+		return typeReference;
+	}
+	
+	public boolean hasTypeReference() {
+		return typeReference != null;
+	}
 }

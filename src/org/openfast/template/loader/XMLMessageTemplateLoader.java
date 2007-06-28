@@ -61,7 +61,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 public class XMLMessageTemplateLoader implements MessageTemplateLoader {
     private static final List NON_FIELD_ELEMENTS = Arrays.asList(new String[] {
-                "messageRef", "length"
+                "typeRef", "length"
             });
     private static final ErrorCode IO_ERROR = new ErrorCode(FastConstants.STATIC,
             -1, "IOERROR", "IO Error", FastAlertSeverity.ERROR);
@@ -73,43 +73,55 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
         Document document = parseXml(source);
 
         if (document == null) {
-            return new MessageTemplate[] {  };
+            return new MessageTemplate[] { };
         }
 
         Element root = document.getDocumentElement();
 		if (root.getNodeName().equals("template")) {
-        	return new MessageTemplate[] { new MessageTemplate(root.getAttribute("name"), parseFields(root)) };
+			return new MessageTemplate[] { parseTemplate(root) };
         } else {
-	        NodeList templateTags = root
-	                                        .getElementsByTagName("template");
-	        
+	        NodeList templateTags = root.getElementsByTagName("template");
 	        MessageTemplate[] templates = new MessageTemplate[templateTags.getLength()];
-	
 	        for (int i = 0; i < templateTags.getLength(); i++) {
 	            Element templateTag = (Element) templateTags.item(i);
-	            templates[i] = new MessageTemplate(templateTag.getAttribute("name"),
-	                    parseFields(templateTag));
-	            templates[i].setMessageReference(getMessageReference(templateTag));
+	            templates[i] = parseTemplate(templateTag);
 	        }
 	        return templates;
         }
 
     }
 
-    private String getMessageReference(Element templateTag) {
-        String messageReference = null;
-        NodeList messageReferenceTags = templateTag.getElementsByTagName(
-                "messageRef");
+    private Group parseGroup(Element groupElement, boolean isOptional, String dictionary) {
+    	if (groupElement.hasAttribute("dictionary"))
+    		dictionary = groupElement.getAttribute("dictionary");
+        Group group = new Group(getName(groupElement), parseFields(groupElement, dictionary), isOptional);
+        group.setTypeReference(getTypeReference(groupElement));
+		return group;
+    }
+    
+	private MessageTemplate parseTemplate(Element templateElement) {
+		String dictionary = "global";
+		if (templateElement.hasAttribute("dictionary"))
+			dictionary = templateElement.getAttribute("dictionary");
+		MessageTemplate messageTemplate = new MessageTemplate(templateElement.getAttribute("name"), parseFields(templateElement, dictionary));
+		messageTemplate.setTypeReference(getTypeReference(templateElement));
+		return messageTemplate;
+	}
 
-        if (messageReferenceTags.getLength() > 0) {
-            Element messageRef = (Element) messageReferenceTags.item(0);
-            messageReference = getName(messageRef);
+    private String getTypeReference(Element templateTag) {
+        String typeReference = null;
+        NodeList typeReferenceTags = templateTag.getElementsByTagName(
+                "typeRef");
+
+        if (typeReferenceTags.getLength() > 0) {
+            Element messageRef = (Element) typeReferenceTags.item(0);
+            typeReference = getName(messageRef);
         }
 
-        return messageReference;
+        return typeReference;
     }
 
-    private Field[] parseFields(Element template) {
+    private Field[] parseFields(Element template, String dictionary) {
         NodeList childNodes = template.getChildNodes();
         List fields = new ArrayList();
 
@@ -117,14 +129,14 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
             Node item = childNodes.item(i);
 
             if (isElement(item) && isMessageFieldElement(item)) {
-                fields.add(parseField((Element) item));
+                fields.add(parseField((Element) item, dictionary));
             }
         }
 
         return (Field[]) fields.toArray(new Field[] {  });
     }
 
-    private Field parseField(Element fieldNode) {
+    private Field parseField(Element fieldNode, String dictionary) {
         String name = fieldNode.getAttribute("name");
         String type = fieldNode.getNodeName();
         boolean optional = false;
@@ -134,9 +146,9 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
         }
 
         if (type.equals("sequence")) {
-            return parseSequence(fieldNode, optional);
+            return parseSequence(fieldNode, optional, dictionary);
         } else if (type.equals("group")) {
-            return parseGroup(fieldNode, optional);
+            return parseGroup(fieldNode, optional, dictionary);
         } else if (type.equals("string")) {
         	if (fieldNode.hasAttribute("charset"))
         		type = fieldNode.getAttribute("charset");
@@ -158,20 +170,23 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
 
             if ((mantissaNode != null) || (exponentNode != null)) {
                 return createTwinFieldDecimal(fieldNode, name, optional,
-                    mantissaNode, exponentNode);
+                    mantissaNode, exponentNode, dictionary);
             }
         }
 
-        return createScalar(fieldNode, name, optional, type);
+        return createScalar(fieldNode, name, optional, type, dictionary);
     }
 
     private Field createTwinFieldDecimal(Element fieldNode, String name,
-        boolean optional, Node mantissaNode, Node exponentNode) {
+        boolean optional, Node mantissaNode, Node exponentNode, String dictionary) {
         String mantissaOperator = "none";
         String exponentOperator = "none";
         ScalarValue mantissaDefaultValue = ScalarValue.UNDEFINED;
         ScalarValue exponentDefaultValue = ScalarValue.UNDEFINED;
-
+        
+        if (fieldNode.hasAttribute("dictionary"))
+        	dictionary = fieldNode.getAttribute("dictionary");
+        
         if ((mantissaNode != null) && mantissaNode.hasChildNodes()) {
             Node operatorNode = mantissaNode.getChildNodes().item(0);
             mantissaOperator = operatorNode.getNodeName();
@@ -196,15 +211,19 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
             }
         }
 
-        return new Scalar(name, Type.DECIMAL,
-            new TwinOperator(exponentOperator, mantissaOperator),
-            new TwinValue(exponentDefaultValue, mantissaDefaultValue), optional);
+        Scalar scalar = new Scalar(name, Type.DECIMAL,
+		            new TwinOperator(exponentOperator, mantissaOperator),
+		            new TwinValue(exponentDefaultValue, mantissaDefaultValue), optional);
+        scalar.setDictionary(dictionary);
+		return scalar;
     }
 
-    private Scalar createScalar(Element fieldNode, String name, boolean optional, String typeName) {
+    private Scalar createScalar(Element fieldNode, String name, boolean optional, String typeName, String dictionary) {
     	String operator = Operator.NONE;
     	String defaultValue = null;
     	String key = null;
+    	if (fieldNode.hasAttribute("dictionary"))
+    		dictionary = fieldNode.getAttribute("dictionary");
         Element operatorElement = getOperatorElement(fieldNode);
         if (operatorElement != null) {
 	        if (operatorElement.hasAttribute("value"))
@@ -216,6 +235,7 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
         Scalar scalar = new Scalar(name, typeName, operator, defaultValue, optional);
         if (key != null)
         	scalar.setKey(key);
+        scalar.setDictionary(dictionary);
 		return scalar;
     }
 
@@ -233,17 +253,17 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
         return null;
     }
 
-    private Group parseGroup(Element group, boolean isOptional) {
-        return new Group(getName(group), parseFields(group), isOptional);
+    private Sequence parseSequence(Element sequenceElement, boolean optional, String dictionary) {
+    	if (sequenceElement.hasAttribute("dictionary"))
+    		dictionary = sequenceElement.getAttribute("dictionary");
+        Sequence sequence = new Sequence(getName(sequenceElement),
+		            parseSequenceLengthField(sequenceElement, optional, dictionary),
+		            parseFields(sequenceElement, dictionary), optional);
+        sequence.setTypeReference(getTypeReference(sequenceElement));
+		return sequence;
     }
 
-    private Sequence parseSequence(Element sequence, boolean optional) {
-        return new Sequence(getName(sequence),
-            parseSequenceLengthField(sequence, optional),
-            parseFields(sequence), optional);
-    }
-
-    private Scalar parseSequenceLengthField(Element sequence, boolean optional) {
+    private Scalar parseSequenceLengthField(Element sequence, boolean optional, String dictionary) {
         NodeList lengthElements = sequence.getElementsByTagName("length");
 
         if (lengthElements.getLength() == 0) {
@@ -251,10 +271,12 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
         }
 
         Element length = (Element) lengthElements.item(0);
+        if (length.hasAttribute("dictionary"))
+        	dictionary = length.getAttribute("dictionary");
         String name = length.hasAttribute("name") ? length.getAttribute("name")
                                                   : Sequence.createUniqueName();
 
-        return createScalar(length, name, optional, "u32");
+        return createScalar(length, name, optional, "u32", dictionary);
     }
 
     /**
@@ -263,7 +285,7 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
      * @return Returns a string of the name of the Element sequence
      */
     private String getName(Element sequence) {
-        return sequence.getAttributeNode("name").getNodeValue();
+        return sequence.getAttribute("name");
     }
 
     /**

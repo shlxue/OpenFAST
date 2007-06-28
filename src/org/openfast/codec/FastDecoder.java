@@ -61,6 +61,7 @@ public class FastDecoder implements Coder {
         if (template == null) {
             return null;
         }
+        context.newMessage(template);
 
         context.setLastTemplateId(templateId);
 

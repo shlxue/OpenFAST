@@ -44,6 +44,7 @@ public class FastEncoder implements Coder {
      */
     public byte[] encode(Message message) {
         MessageTemplate template = context.getTemplate(message.getTemplateId());
+        context.newMessage(template);
 
         if (template == null) {
             return null;

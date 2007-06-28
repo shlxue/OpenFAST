@@ -66,6 +66,7 @@ public final class FastConstants {
     // Errors not defined in the FAST specification
 	public static final ErrorCode IMPOSSIBLE_EXCEPTION = new ErrorCode(DYNAMIC, 101, "IMPOSSIBLE", "This should never happen.", FastAlertSeverity.ERROR);
 	public static final ErrorCode IO_ERROR = new ErrorCode(DYNAMIC, 102, "IOERROR", "An IO error occurred.", FastAlertSeverity.FATAL);
+	public static final String ANY = "any";
     
 	
 	private static ErrorHandler globalHandler = ErrorHandler.DEFAULT;

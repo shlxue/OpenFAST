@@ -28,9 +28,9 @@ import org.openfast.template.Group;
 public interface Dictionary {
     public static final String TEMPLATE = "template";
 
-    ScalarValue lookup(Group template, String key);
+    ScalarValue lookup(Group template, String key, String applicationType);
 
-    void store(Group template, String key, ScalarValue valueToEncode);
+    void store(Group group, String applicationType, String key, ScalarValue valueToEncode);
 
     void reset();
 }

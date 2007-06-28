@@ -96,20 +96,20 @@ public class SessionTest extends TestCase {
     public void testUnregisteredTemplateError()
         throws FastConnectionException, InterruptedException {
         Session session = factory.connect("client");
-        MessageTemplate messageTemplate = new MessageTemplate(null,
+        MessageTemplate messageTemplate = new MessageTemplate("",
                 new Field[] {  });
         session.out.registerTemplate(1, messageTemplate);
         session.out.writeMessage(new Message(messageTemplate, 1));
 
         //                             --PMAP-- ----TID=16000---- -----------------name="client"-----------------------
         String expectedServerInput = "11000000 01111101 10000000 01100011 01101100 01101001 01100101 01101110 11110100 " +
-            //                             --PMAP-- -TID=1--
-            "11000000 10000001";
+        //                             --PMAP-- -TID=1--
+                                     "11000000 10000001";
 
         //                             --PMAP-- ----TID=16000---- -----------------name="server"-----------------------
         String expectedServerOutput = "11000000 01111101 10000000 01110011 01100101 01110010 01110110 01100101 11110010 " +
-            //                             --PMAP-- ----TID=16001---- ---1=2-- --2=11-- -3=NULL- -4=<ERR MESSAGE>
-            "11000000 01111101 10000001 10000010 10001011 10000000 " +
+        //                             --PMAP-- ----TID=16001---- ---1=2-- --2=11-- -3=NULL- -4=<ERR MESSAGE>
+                                      "11000000 01111101 10000001 10000010 10001011 10000000 " +
             ByteUtil.convertByteArrayToBitString(Type.ASCII_STRING_TYPE.encode(
                     new StringValue("Template not supported")));
         serverSession.in.readMessage();

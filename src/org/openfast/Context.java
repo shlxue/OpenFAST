@@ -22,27 +22,28 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast;
 
-import org.openfast.error.ErrorHandler;
-
-import org.openfast.session.SessionConstants;
-
-import org.openfast.template.Group;
-import org.openfast.template.MessageTemplate;
-
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.openfast.error.ErrorHandler;
+import org.openfast.error.FastConstants;
+import org.openfast.session.SessionConstants;
+import org.openfast.template.Group;
+import org.openfast.template.MessageTemplate;
+
 
 public class Context {
-    private Map templates = new HashMap();
+	private Map templates = new HashMap();
     private int lastTemplateId;
     private Map dictionaries = new HashMap();
     private ErrorHandler errorHandler = ErrorHandler.DEFAULT;
+	private String currentApplicationType;
 
     public Context() {
         dictionaries.put("global", new GlobalDictionary());
         dictionaries.put("template", new TemplateDictionary());
+        dictionaries.put("type", new ApplicationTypeDictionary());
     }
 
     public MessageTemplate getTemplate(int templateId) {
@@ -69,17 +70,20 @@ public class Context {
         lastTemplateId = templateId;
     }
 
-    public ScalarValue lookup(String dictionary, Group template, String key) {
-        return getDictionary(dictionary).lookup(template, key);
+    public ScalarValue lookup(String dictionary, Group group, String key) {
+    	if (group.hasTypeReference())
+    		currentApplicationType = group.getTypeReference();
+        return getDictionary(dictionary).lookup(group, key, currentApplicationType);
     }
 
     private Dictionary getDictionary(String dictionary) {
         return (Dictionary) dictionaries.get(dictionary);
     }
 
-    public void store(String dictionary, Group template, String key,
-        ScalarValue valueToEncode) {
-        getDictionary(dictionary).store(template, key, valueToEncode);
+    public void store(String dictionary, Group group, String key, ScalarValue valueToEncode) {
+    	if (group.hasTypeReference())
+    		currentApplicationType = group.getTypeReference();
+        getDictionary(dictionary).store(group, currentApplicationType, key, valueToEncode);
     }
 
     public void reset() {
@@ -92,4 +96,12 @@ public class Context {
     public void setErrorHandler(ErrorHandler errorHandler) {
         this.errorHandler = errorHandler;
     }
+
+	public void newMessage(MessageTemplate template) {
+		currentApplicationType = (template.hasTypeReference()) ? template.getTypeReference() : FastConstants.ANY;
+	}
+
+	public void setCurrentApplicationType(String typeReference) {
+		currentApplicationType = typeReference;
+	}
 }

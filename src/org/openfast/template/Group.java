@@ -38,6 +38,7 @@ import org.openfast.template.type.Type;
 
 
 public class Group extends Field {
+    private String typeReference = null;
     protected final Field[] fields;
     protected final Map fieldIndexMap;
     protected final Map fieldNameMap;
@@ -339,4 +340,26 @@ public class Group extends Field {
     public Field[] getFields() {
         return fields;
     }
+
+    /**
+     * Set the name of the type referenced by this group
+     * @param typeReference The name of the application type referenced by this goup
+     */
+    public void setTypeReference(String typeReference) {
+        this.typeReference = typeReference;
+    }
+    
+    /**
+     * 
+     * @return Returns the application type referenced by this group
+     */
+    public String getTypeReference() {
+        return typeReference;
+    }
+    
+    public boolean hasTypeReference() {
+    	return typeReference != null;
+    }
+    
+    
 }

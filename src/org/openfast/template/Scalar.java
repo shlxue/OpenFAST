@@ -238,8 +238,8 @@ public class Scalar extends Field {
      */
     public FieldValue decode(InputStream in, Group template, Context context,
         boolean present) {
-        ScalarValue previousValue = context.lookup(getDictionary(), template,
-                getKey());
+        ScalarValue previousValue = context.lookup(getDictionary(), template, getKey());
+        validateDictionaryTypeAgainstFieldType(previousValue, this.type);
         ScalarValue value;
 
         if (present) {
@@ -257,7 +257,11 @@ public class Scalar extends Field {
         return value;
     }
 
-    /**
+    private void validateDictionaryTypeAgainstFieldType(ScalarValue previousValue, Type type) {
+    	
+	}
+
+	/**
      * Sets the dictionary to the passed string
      * @param dictionary The string to be stored as the dictionary
      */

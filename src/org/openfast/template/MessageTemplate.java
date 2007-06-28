@@ -37,8 +37,6 @@ import java.io.InputStream;
 
 
 public class MessageTemplate extends Group implements FieldSet {
-    private String messageReference;
-
     public MessageTemplate(String name, Field[] fields) {
         super(name, addTemplateIdField(fields), false);
     }
@@ -58,14 +56,6 @@ public class MessageTemplate extends Group implements FieldSet {
     }
 
     /**
-     * Set the messageReference
-     * @param messageReference The string of the messageReference
-     */
-    public void setMessageReference(String messageReference) {
-        this.messageReference = messageReference;
-    }
-
-    /**
      * @param index The index to find the field
      * @return Returns the index of the field object
      */
@@ -78,14 +68,6 @@ public class MessageTemplate extends Group implements FieldSet {
      */
     public int getFieldCount() {
         return fields.length;
-    }
-
-    /**
-     * 
-     * @return Returns the string messageReference
-     */
-    public String getMessageReference() {
-        return messageReference;
     }
 
     public byte[] encode(GroupValue message, Context context) {

@@ -50,7 +50,7 @@ public class ScalarTest extends TestCase {
         Scalar scalar = new Scalar("a", Type.U32, Operator.COPY,
                 ScalarValue.UNDEFINED, false);
 
-        byte[] encoding = scalar.encode(new IntegerValue(1), null, context, new BitVectorBuilder(1));
+        byte[] encoding = scalar.encode(new IntegerValue(1), new Group("", new Field[] {scalar}, false), context, new BitVectorBuilder(1));
         TestUtil.assertBitVectorEquals("10000001", encoding);
     }
 
@@ -60,9 +60,9 @@ public class ScalarTest extends TestCase {
     public void testCopyEncodeWithPreviousValue() {
         Scalar scalar = new Scalar("a", Type.U32, Operator.COPY,
                 ScalarValue.UNDEFINED, false);
-        scalar.encode(new IntegerValue(1), null, context, new BitVectorBuilder(1));
+        scalar.encode(new IntegerValue(1), new Group("", new Field[] {scalar}, false), context, new BitVectorBuilder(1));
 
-        byte[] encoding = scalar.encode(new IntegerValue(1), null, context, new BitVectorBuilder(1));
+        byte[] encoding = scalar.encode(new IntegerValue(1), new Group("", new Field[] {scalar}, false), context, new BitVectorBuilder(1));
         TestUtil.assertBitVectorEquals("", encoding);
     }
     
