@@ -257,18 +257,38 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
         return createScalar(length, name, optional, "u32");
     }
 
+    /**
+     * Obtain the name of passed Element object as a string
+     * @param sequence The Element that is being checked
+     * @return Returns a string of the name of the Element sequence
+     */
     private String getName(Element sequence) {
         return sequence.getAttributeNode("name").getNodeValue();
     }
 
+    /**
+     * Determines if the passed Node is of type element
+     * @param item The Node that is being checked to see if its of type element
+     * @return Returns true if passed Node type is type element, false otherwise
+     */
     private boolean isElement(Node item) {
         return item.getNodeType() == Node.ELEMENT_NODE;
     }
 
+    /**
+     * Determines if the passed node is within the message field element
+     * @param item
+     * @return Returns true if the passed Node is contained in the MessageFieldElement, false otherwise
+     */
     private boolean isMessageFieldElement(Node item) {
         return !NON_FIELD_ELEMENTS.contains(item.getNodeName());
     }
 
+    /**
+     * Parse an XML file from an inputStream, returns a DOM org.w3c.dom.Document object.
+     * @param templateStream The inputStream to be parsed
+     * @return Returns a DOM org.w3c.dom.Document object, returns null if there are exceptions caught
+     */
     private Document parseXml(InputStream templateStream) {
         try {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -294,6 +314,10 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
         return null;
     }
 
+    /**
+     * Sets the errorHandler object to a method
+     * @param errorHandler The errorHandler that is being set
+     */
     public void setErrorHandler(ErrorHandler errorHandler) {
         this.errorHandler = errorHandler;
     }
