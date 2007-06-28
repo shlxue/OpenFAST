@@ -26,7 +26,9 @@ import org.openfast.template.MessageTemplate;
 
 import java.io.InputStream;
 
-
+/*
+ * An interface for the message template loader, loads the input stream.
+ */
 public interface MessageTemplateLoader {
     MessageTemplate[] load(InputStream source);
 }
