@@ -298,6 +298,11 @@ public abstract class Operator {
 
     private final String name;
 
+    /**
+     * 
+     * @param name The name of the Operator as a string
+     * @param types The type array to be stored in the keys
+     */
     protected Operator(String name, String[] types) {
         this.name = name;
 
@@ -310,14 +315,27 @@ public abstract class Operator {
         }
     }
 
+    /**
+     * 
+     * @return Returns the name as a string
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * @return Returns the string 'operator: NAME_VARIABLE'
+     */
     public String toString() {
         return "operator:" + name;
     }
 
+    /**
+     * Find the operator by the key
+     * @param name The name of the operator, stored to the key
+     * @param type The type of the operator, stored to the key
+     * @return Returns the operator object with the specified key
+     */
     public static Operator getOperator(String name, String type) {
         Key key = new Key(name, type);
 
@@ -336,6 +354,12 @@ public abstract class Operator {
     public abstract ScalarValue decodeValue(ScalarValue newValue,
         ScalarValue priorValue, Scalar field);
 
+    /**
+     * 
+     * @param encoding The byte array that is being encoded
+     * @param fieldValue The fieldValue object to check
+     * @return Returns true if the byte array has a length larger then zero
+     */
     public boolean isPresenceMapBitSet(byte[] encoding, FieldValue fieldValue) {
         return encoding.length != 0;
     }
@@ -343,10 +367,25 @@ public abstract class Operator {
     public abstract ScalarValue decodeEmptyValue(ScalarValue previousValue,
         Scalar field);
 
+    /**
+     * Use this to show that there is a MapBit present
+     * @param optional The Optional boolean
+     * @return Returns true
+     */
     public boolean usesPresenceMapBit(boolean optional) {
         return true;
     }
 
+    /**
+     * Checks to see if the optional boolean is set to true, and there is a MapBit, then sets the presenceMapBit to the current index, and 
+     * increases the index of the Map.
+     * @param presenceMap The BitVector map
+     * @param presenceMapIndex The current Map index
+     * @param encoding The byte array that is being encoded
+     * @param fieldValue The fieldValue object
+     * @param optional The optional boolean
+     * @return Returns the presenceMap index
+     */
 	public int encodePresenceMap(BitVector presenceMap, int presenceMapIndex, byte[] encoding, FieldValue fieldValue, boolean optional) {
 		if (usesPresenceMapBit(optional)) {
 			if (isPresenceMapBitSet(encoding, fieldValue))
@@ -356,6 +395,14 @@ public abstract class Operator {
 		return presenceMapIndex;
 	}
 
+	/**
+	 * 
+	 * @param value
+	 * @param priorValue
+	 * @param scalar
+	 * @param presenceMapBuilder
+	 * @return
+	 */
 	public ScalarValue getValueToEncode(ScalarValue value, ScalarValue priorValue, Scalar scalar, BitVectorBuilder presenceMapBuilder) {
 		ScalarValue valueToEncode = getValueToEncode(value, priorValue, scalar);
 		if (valueToEncode == null)

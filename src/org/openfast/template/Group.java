@@ -44,9 +44,9 @@ public class Group extends Field {
 
     /**
      * 
-     * @param name
-     * @param fields
-     * @param optional
+     * @param name The name of the Group
+     * @param fields The Field object array to be created for the group
+     * @param optional The optional boolean
      */
     public Group(String name, Field[] fields, boolean optional) {
         super(name, optional);
@@ -55,6 +55,15 @@ public class Group extends Field {
         this.fieldNameMap = constructFieldNameMap(fields);
     }
 
+    /**
+     * If your FieldValue already has a BitVector, use this encode method.  The MapBuilder index is kept track of and stored through this process.
+     * The supplied data is stored to a byte buffer array and returned.
+     * @param value The value of the FieldValue to be encoded
+     * @param template The Group object to be encoded
+     * @param context The Context object to be encoded
+     * @param presenceMapBuilder The BitVector object that will be used to encode.
+     * @return Return thes the encoded byte array 
+     */
 	public byte[] encode(FieldValue value, Group template, Context context, BitVectorBuilder presenceMapBuilder) {
 		byte[] encoding = encode(value, template, context);
 		if (optional) {
@@ -65,9 +74,15 @@ public class Group extends Field {
 		}
 		return encoding;
 	}
-    
+	
     /**
-     * 
+     * If there is no BitVector, this encoding method will create one.  The supplied data is stored to a byte buffer array and returned.  
+     * The MapBuilder index is kept track of and stored through this process.
+     * @param value The value of the FieldValue to be encoded
+     * @param template The Group object to be encoded
+     * @param context The Context object to be encoded
+     * @return Returns an new byte array if there are no FieldValue to encode, otherwise returns the buffer to the 
+     * byte array that the data was stored to
      */
     public byte[] encode(FieldValue value, Group template, Context context) {
         if (value == null) {
@@ -100,15 +115,21 @@ public class Group extends Field {
             throw new RuntimeException(e);
         }
     }
-
-    /**
-     * 
-     */
+    
     public FieldValue decode(InputStream in, Group group, Context context,
         boolean present) {
         return new GroupValue(this, decodeFieldValues(in, group, context));
     }
 
+    /**
+     * If there is not a vector map created for the inputStream, a vector map will be created to pass to the public
+     * decodeFieldValues method.  
+     * @param in The InputStream to be decoded
+     * @param template The Group object to be decoded
+     * @param context The Context object to be decoded
+     * @return Returns the FieldValue array of the decoded field values passed to it
+     * @see public FieldValue[] decodeFieldValues
+     */
     protected FieldValue[] decodeFieldValues(InputStream in, Group template,
         Context context) {
         BitVector pmap = ((BitVectorValue) Type.BIT_VECTOR.decode(in)).value;
@@ -116,6 +137,19 @@ public class Group extends Field {
         return decodeFieldValues(in, template, pmap, context, 0);
     }
 
+    /**
+     * Goes through the all the field value array, starting with the index passed, checks to see if a map actually created for the field to pass
+     * to the decoder - the field index is created as a new Group object and stored to the the FieldValue array.  Once all the field values have
+     * beed gone through, the method returns.
+     * @param in The InputStream to be decoded
+     * @param template The Group object
+     * @param pmap The BitVector to be decoded
+     * @param context The Context object to be decoded
+     * @param start The index of the Field to start decoding from
+     * @return Returns a FieldValue array of the decoded field values passed to it.  
+     * @throws Throws RuntimeException if there is an problem in the decoding
+     *
+     */
     public FieldValue[] decodeFieldValues(InputStream in, Group template,
         BitVector pmap, Context context, int start) {
         FieldValue[] values = new FieldValue[fields.length];
@@ -134,6 +168,7 @@ public class Group extends Field {
                 if (field.usesPresenceMapBit()) {
                     presenceMapIndex++;
                 }
+                
             } catch (Exception e) {
                 throw new RuntimeException(
                     "Error occurred while decoding field \"" + field.getName() +
@@ -145,10 +180,10 @@ public class Group extends Field {
 
     /**
      * 
-     * @param pmap
-     * @param i
-     * @param field
-     * @return
+     * @param pmap The vector map that is to be tested
+     * @param i The index of the vector map to be checked 
+     * @param field The field object that is being tested to see if one is present
+     * @return Returns true 
      */
     private boolean isPresent(BitVector pmap, int i, Field field) {
         if (!field.usesPresenceMapBit()) {

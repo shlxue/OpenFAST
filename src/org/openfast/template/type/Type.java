@@ -126,10 +126,21 @@ public abstract class Type {
 
     public abstract ScalarValue decode(InputStream in);
 
+    /**
+     * 
+     * @return Returns false
+     */
     public boolean isNullable() {
     	return false;
     }
 
+    /**
+     * 
+     * @param type
+     * @param optional
+     * @param operator
+     * @return
+     */
     public static Type getType(String type, boolean optional, Operator operator) {
         Key key = new Key(type, Boolean.valueOf(optional));
 

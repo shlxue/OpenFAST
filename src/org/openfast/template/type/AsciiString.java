@@ -51,6 +51,10 @@ final class AsciiString extends Type {
         return string.getBytes();
     }
 
+    /**
+     * @param 
+     * @return
+     */
     public ScalarValue decode(InputStream in) {
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         int byt;
@@ -74,10 +78,16 @@ final class AsciiString extends Type {
         return new StringValue(new String(bytes));
     }
 
+    /**
+     * @return Returns a new StringValue object with the pass value
+     */
     public ScalarValue parse(String value) {
         return new StringValue(value);
     }
 
+    /**
+     * @return Returns a new StringValue object with empty string as the value
+     */
     public ScalarValue getDefaultValue() {
         return new StringValue("");
     }

@@ -43,27 +43,47 @@ public class MessageTemplate extends Group implements FieldSet {
         super(name, addTemplateIdField(fields), false);
     }
 
+    /**
+     * Take an existing field array and add TemplateID information to it
+     * @param fields The field array that needs the TemplateID added to it
+     * @return Returns a new array with the passed field information and TemplateID
+     */
     private static Field[] addTemplateIdField(Field[] fields) {
         Field[] newFields = new Field[fields.length + 1];
         newFields[0] = new Scalar("templateId", Type.U32,
                 Operator.COPY, ScalarValue.UNDEFINED, false);
         System.arraycopy(fields, 0, newFields, 1, fields.length);
-
+        
         return newFields;
     }
 
+    /**
+     * Set the messageReference
+     * @param messageReference The string of the messageReference
+     */
     public void setMessageReference(String messageReference) {
         this.messageReference = messageReference;
     }
 
+    /**
+     * @param index The index to find the field
+     * @return Returns the index of the field object
+     */
     public Field getField(int index) {
         return fields[index];
     }
 
+    /**
+     * @return Returns the length of the fields as an int
+     */
     public int getFieldCount() {
         return fields.length;
     }
 
+    /**
+     * 
+     * @return Returns the string messageReference
+     */
     public String getMessageReference() {
         return messageReference;
     }
@@ -72,6 +92,14 @@ public class MessageTemplate extends Group implements FieldSet {
         return super.encode(message, this, context);
     }
 
+    /**
+     * Decodes the inputStream and creates a new message that contains this information
+     * @param in The inputStream to be decoded
+     * @param templateId The templateID of the message
+     * @param pmap The BitVector map of the Message
+     * @param context The Context object
+     * @return Returns a new message object with the newly decoded fieldValue
+     */
     public Message decode(InputStream in, int templateId, BitVector pmap,
         Context context) {
         FieldValue[] fieldValues = super.decodeFieldValues(in, this, pmap,
@@ -82,18 +110,30 @@ public class MessageTemplate extends Group implements FieldSet {
         return new Message(this, templateId, fieldValues);
     }
 
+    /**
+     * @return Returns the class of the message
+     */
     public Class getValueType() {
         return Message.class;
     }
 
+    /**
+     * @return Returns the string 'MessageTemplate [NAME]'
+     */
     public String toString() {
         return "MessageTemplate [" + name + "]";
     }
 
+    /**
+     * @return Creates a new Message object with the specified FieldValue and the passed string value
+     */
     public FieldValue createValue(String value) {
         return new Message(this, Integer.parseInt(value));
     }
 
+    /**
+     * @return Returns the field array
+     */
     public Field[] getFields() {
         return fields;
     }
