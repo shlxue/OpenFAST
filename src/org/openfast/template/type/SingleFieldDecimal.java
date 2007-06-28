@@ -49,7 +49,7 @@ final class SingleFieldDecimal extends Type {
 
         try {
             if (Math.abs(value.exponent) > 63) {
-                FastConstants.handleError(FastConstants.LARGE_DECIMAL,
+                FastConstants.handleError(FastConstants.R1_LARGE_DECIMAL,
                     "Encountered exponent of size " + value.exponent);
             }
 
@@ -66,7 +66,7 @@ final class SingleFieldDecimal extends Type {
         int exponent = ((IntegerValue) Type.INTEGER.decode(in)).value;
 
         if (Math.abs(exponent) > 63) {
-            FastConstants.handleError(FastConstants.LARGE_DECIMAL,
+            FastConstants.handleError(FastConstants.R1_LARGE_DECIMAL,
                 "Encountered exponent of size " + exponent);
         }
 
@@ -76,7 +76,7 @@ final class SingleFieldDecimal extends Type {
         return decimalValue;
     }
 
-    public ScalarValue parse(String value) {
+    public ScalarValue fromString(String value) {
         return new DecimalValue(Double.parseDouble(value));
     }
 

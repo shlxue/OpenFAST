@@ -24,26 +24,10 @@ package org.openfast;
 
 import java.math.BigDecimal;
 
+import org.openfast.error.FastConstants;
+
 
 public class DecimalValue extends NumericValue {
-    public static final DecimalValue NULL = new DecimalValue(0.0) {
-            public boolean isNull() {
-                return true;
-            }
-
-            public String toString() {
-                return "DecimalValue [NULL]";
-            }
-
-            public NumericValue add(NumericValue value) {
-                return this;
-            }
-
-            public NumericValue subtract(NumericValue value) {
-                return this;
-            }
-        };
-
     public final double value;
     public final int exponent;
     public final int mantissa;
@@ -95,10 +79,6 @@ public class DecimalValue extends NumericValue {
         return false;
     }
 
-    public String toString() {
-        return "DecimalValue [" + value + "]";
-    }
-
     public boolean equals(Object obj) {
         if ((obj == null) || !(obj instanceof DecimalValue)) {
             return false;
@@ -127,11 +107,31 @@ public class DecimalValue extends NumericValue {
         return (double) value == this.value;
     }
 
-    public long getLong() {
+    public long toLong() {
+    	if (exponent < 0)
+    		FastConstants.handleError(FastConstants.R5_DECIMAL_CANT_CONVERT_TO_INT, "");
         return (long) value;
     }
 
-    public int getInt() {
+    public int toInt() {
+    	if (exponent < 0)
+    		FastConstants.handleError(FastConstants.R5_DECIMAL_CANT_CONVERT_TO_INT, "");
         return (int) value;
+    }
+
+    public short toShort() {
+    	if (exponent < 0)
+    		FastConstants.handleError(FastConstants.R5_DECIMAL_CANT_CONVERT_TO_INT, "");
+        return (short) value;
+    }
+
+    public byte toByte() {
+    	if (exponent < 0)
+    		FastConstants.handleError(FastConstants.R5_DECIMAL_CANT_CONVERT_TO_INT, "");
+        return (byte) value;
+    }
+
+    public String toString() {
+        return String.valueOf(value);
     }
 }

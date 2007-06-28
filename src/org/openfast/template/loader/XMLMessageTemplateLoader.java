@@ -22,11 +22,11 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast.template.loader;
 
-import org.openfast.FastAlertSeverity;
 import org.openfast.ScalarValue;
 
 import org.openfast.error.ErrorCode;
 import org.openfast.error.ErrorHandler;
+import org.openfast.error.FastAlertSeverity;
 import org.openfast.error.FastConstants;
 
 import org.openfast.template.Field;

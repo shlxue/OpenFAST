@@ -67,8 +67,16 @@ public abstract class OpenFastTestCase extends TestCase {
         return ByteUtil.createByteStream(bitString);
     }
 
+    protected static InputStream stream(byte[] bytes) {
+        return new ByteArrayInputStream(bytes);
+    }
+
     protected static ByteVectorValue byt(byte[] value) {
 		return new ByteVectorValue(value);
+	}
+
+	protected byte[] byt(String hexString) {
+		return ByteUtil.convertHexStringToByteArray(hexString);
 	}
 
 	protected DecimalValue d(int mantissa, int exponent) {

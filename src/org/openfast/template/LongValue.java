@@ -96,7 +96,7 @@ public class LongValue extends NumericValue {
      * @return Returns a new LongValue with the value as the difference between the two NumericValues
      */
     public NumericValue subtract(NumericValue subend) {
-        return new LongValue(this.value - subend.getLong());
+        return new LongValue(this.value - subend.toLong());
     }
 
     /**
@@ -107,7 +107,7 @@ public class LongValue extends NumericValue {
      * 
      */
     public NumericValue add(NumericValue addend) {
-        return new LongValue(this.value + addend.getLong());
+        return new LongValue(this.value + addend.toLong());
     }
 
     /**
@@ -129,14 +129,14 @@ public class LongValue extends NumericValue {
     /**
      * @return Returns the value of LongValue as a long
      */
-    public long getLong() {
+    public long toLong() {
         return value;
     }
 
     /**
      * @return Returns the value of LongValue as an integer
      */
-    public int getInt() {
+    public int toInt() {
         return (int) value;
     }
 }

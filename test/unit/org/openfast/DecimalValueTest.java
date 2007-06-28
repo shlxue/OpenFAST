@@ -22,10 +22,12 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast;
 
-import junit.framework.TestCase;
+import org.openfast.error.FastConstants;
+import org.openfast.error.FastException;
+import org.openfast.test.OpenFastTestCase;
 
 
-public class DecimalValueTest extends TestCase {
+public class DecimalValueTest extends OpenFastTestCase {
     public void testMantissaAndExponent() {
         DecimalValue value = new DecimalValue(9427.55);
         assertEquals(942755, value.mantissa);
@@ -34,4 +36,58 @@ public class DecimalValueTest extends TestCase {
         value = new DecimalValue(942755, -2);
         assertEquals(9427.55, value.value, .01);
     }
+    
+    public void testToByte() {
+    	assertEquals(100, d(100.0).toByte());
+    }
+    
+    public void testToByteWithDecimalPart() {
+    	try {
+    		d(100.1).toByte();
+    		fail();
+    	} catch (FastException e) {
+    		assertEquals(FastConstants.R5_DECIMAL_CANT_CONVERT_TO_INT, e.getCode());
+    	}
+    }
+    
+    public void testToShort() {
+    	assertEquals(128, d(128.0).toShort());
+    }
+    
+    public void testToShortWithDecimalPart() {
+    	try {
+    		d(100.1).toShort();
+    		fail();
+    	} catch (FastException e) {
+    		assertEquals(FastConstants.R5_DECIMAL_CANT_CONVERT_TO_INT, e.getCode());
+    	}
+    }
+    
+    public void testToInt() {
+    	assertEquals(100, d(100.0).toInt());
+    }
+    
+    public void testToIntWithDecimalPart() {
+    	try {
+    		d(100.1).toInt();
+    		fail();
+    	} catch (FastException e) {
+    		assertEquals(FastConstants.R5_DECIMAL_CANT_CONVERT_TO_INT, e.getCode());
+    	}
+    }
+    
+    public void testToLong() {
+    	assertEquals(10000000000000L, d(10000000000000.0).toLong());
+    }
+    
+    public void testToLongWithDecimalPart() {
+    	try {
+    		d(100.1).toLong();
+    		fail();
+    	} catch (FastException e) {
+    		assertEquals(FastConstants.R5_DECIMAL_CANT_CONVERT_TO_INT, e.getCode());
+    	}
+    }
+    
+    
 }

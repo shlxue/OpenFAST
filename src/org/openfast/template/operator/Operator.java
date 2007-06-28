@@ -210,7 +210,7 @@ public abstract class Operator {
                         if (field.isOptional()) {
                             return ScalarValue.UNDEFINED;
                         } else {
-                            FastConstants.handleError(FastConstants.NO_DEFAULT_VALUE,
+                            FastConstants.handleError(FastConstants.D5_NO_DEFAULT_VALUE,
                                 "");
                         }
                     } else {
@@ -260,7 +260,7 @@ public abstract class Operator {
                 StringValue base;
 
                 if ((previousValue == null) && !field.isOptional()) {
-                    FastConstants.handleError(FastConstants.MNDTRY_FIELD_NOT_PRESENT,
+                    FastConstants.handleError(FastConstants.D6_MNDTRY_FIELD_NOT_PRESENT,
                         "");
 
                     return null;
@@ -340,7 +340,7 @@ public abstract class Operator {
         Key key = new Key(name, type);
 
         if (!OPERATOR_MAP.containsKey(key)) {
-        	FastConstants.handleError(FastConstants.OPERATOR_TYPE_INCOMP, "The operator \"" + name +
+        	FastConstants.handleError(FastConstants.S2_OPERATOR_TYPE_INCOMP, "The operator \"" + name +
                     "\" does not exist for the type " + type);
             throw new IllegalArgumentException();
         }

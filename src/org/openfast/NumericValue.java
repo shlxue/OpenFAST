@@ -33,7 +33,7 @@ public abstract class NumericValue extends ScalarValue {
 
     public abstract boolean equals(int value);
 
-    public abstract long getLong();
+    public abstract long toLong();
 
-    public abstract int getInt();
+    public abstract int toInt();
 }

@@ -42,7 +42,7 @@ final class AsciiString extends Type {
                 "Only nullable strings can represent null values.");
         }
 
-        String string = ((StringValue) value).value;
+        String string = value.toString();
 
         if ((string != null) && (string.length() == 0)) {
             return Type.NULL_VALUE_ENCODING;
@@ -81,7 +81,7 @@ final class AsciiString extends Type {
     /**
      * @return Returns a new StringValue object with the pass value
      */
-    public ScalarValue parse(String value) {
+    public ScalarValue fromString(String value) {
         return new StringValue(value);
     }
 

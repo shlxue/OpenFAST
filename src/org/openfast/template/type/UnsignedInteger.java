@@ -25,13 +25,11 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
  */
 package org.openfast.template.type;
 
-import org.openfast.IntegerValue;
-import org.openfast.ScalarValue;
-
-import org.openfast.template.LongValue;
-
 import java.io.IOException;
 import java.io.InputStream;
+
+import org.openfast.IntegerValue;
+import org.openfast.ScalarValue;
 
 
 public final class UnsignedInteger extends IntegerType {
@@ -41,9 +39,9 @@ public final class UnsignedInteger extends IntegerType {
         long value;
 
         if (scalarValue instanceof IntegerValue) {
-            value = ((IntegerValue) scalarValue).value;
+            value = scalarValue.toLong();
         } else {
-            value = ((LongValue) scalarValue).value;
+            value = scalarValue.toLong();
         }
 
         int size = getUnsignedIntegerSize(value);

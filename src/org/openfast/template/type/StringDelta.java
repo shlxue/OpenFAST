@@ -62,7 +62,7 @@ public class StringDelta extends Type {
         return new StringValue("");
     }
 
-    public ScalarValue parse(String value) {
+    public ScalarValue fromString(String value) {
         return new StringValue(value);
     }
 }

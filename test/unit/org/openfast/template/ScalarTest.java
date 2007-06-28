@@ -71,7 +71,7 @@ public class ScalarTest extends TestCase {
 			 new Scalar("malformed", Type.U32, Operator.CONSTANT, ScalarValue.UNDEFINED, false);
 			 fail();
 		 } catch (FastException e) {
-			 assertEquals(FastConstants.NO_INITIAL_VALUE_FOR_CONST, e.getCode());
+			 assertEquals(FastConstants.S4_NO_INITIAL_VALUE_FOR_CONST, e.getCode());
 			 assertEquals("The field \"malformed\" must have a default value defined.", e.getMessage());
 		 }
 	}
@@ -82,7 +82,7 @@ public class ScalarTest extends TestCase {
 			new Scalar("malformed", Type.U32, Operator.DEFAULT, ScalarValue.UNDEFINED, false); // mandatory not okay
 			fail();
 		} catch (FastException e) {
-			assertEquals(FastConstants.NO_INITVAL_MNDTRY_DFALT, e.getCode());
+			assertEquals(FastConstants.S5_NO_INITVAL_MNDTRY_DFALT, e.getCode());
 			assertEquals("The field \"malformed\" must have a default value defined.", e.getMessage());
 		}
 	}

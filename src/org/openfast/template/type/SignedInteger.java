@@ -36,7 +36,7 @@ public final class SignedInteger extends IntegerType {
     SignedInteger() { }
 
     public byte[] encodeValue(ScalarValue value) {
-        long longValue = ((NumericValue) value).getLong();
+        long longValue = ((NumericValue) value).toLong();
         int size = getSignedIntegerSize(longValue);
         byte[] encoding = new byte[size];
 

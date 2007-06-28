@@ -50,7 +50,7 @@ public class FastDecoderTest extends TestCase {
         context.registerTemplate(113, messageTemplate);
 
         GroupValue message = new FastDecoder(context, in).readMessage();
-        assertEquals(113, message.getInteger(0));
+        assertEquals(113, message.getInt(0));
     }
 
     public void testDecodeSequentialEmptyMessages() {
@@ -62,8 +62,8 @@ public class FastDecoderTest extends TestCase {
         FastDecoder decoder = new FastDecoder(context, in);
         GroupValue message = decoder.readMessage();
         GroupValue message2 = decoder.readMessage();
-        assertEquals(113, message.getInteger(0));
-        assertEquals(113, message2.getInteger(0));
+        assertEquals(113, message.getInt(0));
+        assertEquals(113, message2.getInt(0));
     }
 
     public void testDecodeSimpleMessage() {

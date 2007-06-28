@@ -107,10 +107,6 @@ public class SequenceValue implements FieldValue {
         return builder.toString();
     }
 
-    public String serialize() {
-        return "";
-    }
-
     public GroupValue get(int index) {
         return (GroupValue) elements.get(index);
     }

@@ -54,7 +54,7 @@ public class CopyOperator extends OptionallyPresentOperator {
             return null;
         }
 
-        FastConstants.handleError(FastConstants.NO_DEFAULT_VALUE, "");
+        FastConstants.handleError(FastConstants.D5_NO_DEFAULT_VALUE, "");
 
         return null;
     }

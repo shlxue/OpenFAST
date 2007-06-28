@@ -53,7 +53,7 @@ public abstract class OptionallyPresentOperator extends Operator {
                 return ScalarValue.NULL;
             }
         } else {
-            FastConstants.handleError(FastConstants.MNDTRY_FIELD_NOT_PRESENT, "");
+            FastConstants.handleError(FastConstants.D6_MNDTRY_FIELD_NOT_PRESENT, "");
         }
 
         return null;

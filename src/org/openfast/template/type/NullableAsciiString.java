@@ -77,7 +77,7 @@ final class NullableAsciiString extends Type {
         return new StringValue(new String(bytes));
     }
 
-    public ScalarValue parse(String value) {
+    public ScalarValue fromString(String value) {
         return new StringValue(value);
     }
 

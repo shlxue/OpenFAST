@@ -41,7 +41,7 @@ public abstract class IntegerType extends Type {
         return new IntegerValue((int) value);
     }
 
-    public ScalarValue parse(String value) {
+    public ScalarValue fromString(String value) {
         return parseIntegralValue(value);
     }
 

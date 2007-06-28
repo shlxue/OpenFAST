@@ -28,6 +28,21 @@ public class ByteVectorValue extends ScalarValue {
     public ByteVectorValue(byte[] value) {
         this.value = value;
     }
+    
+    public byte[] getBytes() {
+    	return value;
+    }
+    
+    public String toString() {
+    	StringBuffer builder = new StringBuffer(value.length*2);
+    	for (int i=0; i<value.length; i++) {
+    		String hex = Integer.toHexString(value[i]);
+    		if (hex.length() == 1)
+    			builder.append('0');
+			builder.append(hex);
+    	}
+    	return builder.toString();
+    }
 
     public boolean equals(Object obj) {
         if ((obj == null) || !(obj instanceof ByteVectorValue)) {

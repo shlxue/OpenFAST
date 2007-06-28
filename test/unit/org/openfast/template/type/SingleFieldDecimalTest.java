@@ -46,7 +46,7 @@ public class SingleFieldDecimalTest extends OpenFastTestCase {
             Type.SF_SCALED_NUMBER.encode(d(150, 64));
             fail();
         } catch (FastException e) {
-            assertEquals(FastConstants.LARGE_DECIMAL, e.getCode());
+            assertEquals(FastConstants.R1_LARGE_DECIMAL, e.getCode());
             assertEquals("Encountered exponent of size 64", e.getMessage());
         }
     }
@@ -56,7 +56,7 @@ public class SingleFieldDecimalTest extends OpenFastTestCase {
             Type.SF_SCALED_NUMBER.decode(stream("00000001 11111111 10000001"));
             fail();
         } catch (FastException e) {
-            assertEquals(FastConstants.LARGE_DECIMAL, e.getCode());
+            assertEquals(FastConstants.R1_LARGE_DECIMAL, e.getCode());
             assertEquals("Encountered exponent of size 255", e.getMessage());
         }
     }

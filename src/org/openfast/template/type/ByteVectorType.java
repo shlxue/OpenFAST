@@ -39,14 +39,14 @@ final class ByteVectorType extends Type {
     ByteVectorType() { }
 
     public byte[] encode(ScalarValue value) {
-        ByteVectorValue byteVectorValue = (ByteVectorValue) value;
-        int lengthSize = IntegerType.getUnsignedIntegerSize(byteVectorValue.value.length);
-        byte[] encoding = new byte[byteVectorValue.value.length + lengthSize];
+        byte[] bytes = value.getBytes();
+        int lengthSize = IntegerType.getUnsignedIntegerSize(bytes.length);
+        byte[] encoding = new byte[bytes.length + lengthSize];
         byte[] length = Type.UINT.encode(new IntegerValue(
-                    byteVectorValue.value.length));
+        		bytes.length));
         System.arraycopy(length, 0, encoding, 0, lengthSize);
-        System.arraycopy(byteVectorValue.value, 0, encoding, lengthSize,
-            byteVectorValue.value.length);
+        System.arraycopy(bytes, 0, encoding, lengthSize,
+        		bytes.length);
 
         return encoding;
     }
@@ -69,8 +69,8 @@ final class ByteVectorType extends Type {
         throw new NotImplementedException();
     }
 
-    public ScalarValue parse(String value) {
-        return null;
+    public ScalarValue fromString(String value) {
+        return new ByteVectorValue(value.getBytes());
     }
 
     public ScalarValue getDefaultValue() {

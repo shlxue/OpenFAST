@@ -62,7 +62,7 @@ public final class BitVectorType extends Type {
         return new BitVectorValue(new BitVector(buffer.toByteArray()));
     }
 
-    public ScalarValue parse(String value) {
+    public ScalarValue fromString(String value) {
         return null;
     }
 

@@ -49,7 +49,7 @@ final class NullableSingleFieldDecimal extends Type {
 
         try {
             if (Math.abs(value.exponent) > 63) {
-                FastConstants.handleError(FastConstants.LARGE_DECIMAL, "");
+                FastConstants.handleError(FastConstants.R1_LARGE_DECIMAL, "");
             }
 
             buffer.write(Type.NULLABLE_INTEGER.encode(
@@ -76,7 +76,7 @@ final class NullableSingleFieldDecimal extends Type {
         return decimalValue;
     }
 
-    public ScalarValue parse(String value) {
+    public ScalarValue fromString(String value) {
         return new DecimalValue(Double.parseDouble(value));
     }
 

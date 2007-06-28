@@ -53,7 +53,7 @@ final class TwinFieldDecimal extends Type {
         return new TwinValue(Type.INTEGER.decode(in), Type.INTEGER.decode(in));
     }
 
-    public ScalarValue parse(String value) {
+    public ScalarValue fromString(String value) {
         return new DecimalValue(Double.parseDouble(value));
     }
 

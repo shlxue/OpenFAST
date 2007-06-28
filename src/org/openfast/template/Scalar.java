@@ -74,9 +74,9 @@ public class Scalar extends Field {
     private void validate() {
     	// TODO - move this validation into the operator class.
     	if (operatorName.equals(Operator.CONSTANT) && defaultValue.isUndefined())
-    		FastConstants.handleError(FastConstants.NO_INITIAL_VALUE_FOR_CONST, "The field \"" + name + "\" must have a default value defined.");
+    		FastConstants.handleError(FastConstants.S4_NO_INITIAL_VALUE_FOR_CONST, "The field \"" + name + "\" must have a default value defined.");
     	if (operatorName.equals(Operator.DEFAULT) && !optional && defaultValue.isUndefined())
-    		FastConstants.handleError(FastConstants.NO_INITVAL_MNDTRY_DFALT, "The field \"" + name + "\" must have a default value defined.");
+    		FastConstants.handleError(FastConstants.S5_NO_INITVAL_MNDTRY_DFALT, "The field \"" + name + "\" must have a default value defined.");
 	}
 
 	public Scalar(String name, String typeName, String operator, ScalarValue defaultValue, boolean optional) {
@@ -285,7 +285,7 @@ public class Scalar extends Field {
      * @return Returns the FieldValue object with the passed value
      */
     public FieldValue createValue(String value) {
-        return type.parse(value);
+        return type.fromString(value);
     }
 
     /**

@@ -22,10 +22,10 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast.session;
 
-import org.openfast.FastAlertSeverity;
 
 import org.openfast.error.ErrorCode;
 import org.openfast.error.ErrorType;
+import org.openfast.error.FastAlertSeverity;
 
 
 public interface SessionConstants {

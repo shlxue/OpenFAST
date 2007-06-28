@@ -22,19 +22,72 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast;
 
+import java.math.BigDecimal;
+
+import org.openfast.error.FastConstants;
+
 public class StringValue extends ScalarValue {
     public final String value;
 
     public StringValue(String value) {
         this.value = value;
     }
-
-    public String serialize() {
-        return value;
+    
+    public byte toByte() {
+    	int value = toInt();
+    	if (value > Byte.MAX_VALUE || value < Byte.MIN_VALUE) {
+    		FastConstants.handleError(FastConstants.R4_NUMERIC_VALUE_TOO_LARGE, "The value \"" + value + "\" is too large to fit into a byte.");
+    		return 0;
+    	}
+    	return (byte) value;
+    }
+    
+    public short toShort() {
+    	int value = toInt();
+    	if (value > Short.MAX_VALUE || value < Short.MIN_VALUE) {
+    		FastConstants.handleError(FastConstants.R4_NUMERIC_VALUE_TOO_LARGE, "The value \"" + value + "\" is too large to fit into a short.");
+    		return 0;
+    	}
+    	return (short) value;
+    }
+    
+    public int toInt() {
+    	try {
+    		return Integer.parseInt(value);
+    	} catch (NumberFormatException e) {
+    		FastConstants.handleError(FastConstants.R4_NUMERIC_VALUE_TOO_LARGE, "The value \"" + value + "\" is too large to fit into an int.", e);
+    		return 0;
+    	}
+    }
+    
+    public long toLong() {
+    	try {
+    		return Long.parseLong(value);
+    	} catch (NumberFormatException e) {
+    		FastConstants.handleError(FastConstants.R4_NUMERIC_VALUE_TOO_LARGE, "The value \"" + value + "\" is too large to fit into a long.", e);
+    		return 0;
+    	}
+    }
+    
+    public double toDouble() {
+    	try {
+    		return Double.parseDouble(value);
+    	} catch (NumberFormatException e) {
+    		FastConstants.handleError(FastConstants.R4_NUMERIC_VALUE_TOO_LARGE, "The value\"" + value + "\" is too large to fit into a double.", e);
+    		return 0.0;
+    	}
+    }
+    
+    public byte[] getBytes() {
+    	return value.getBytes();
+    }
+    
+    public BigDecimal toBigDecimal() {
+    	return new BigDecimal(value);
     }
 
     public String toString() {
-        return "StringValue [" + value + "]";
+        return value;
     }
 
     public boolean equals(Object obj) {

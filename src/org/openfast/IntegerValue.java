@@ -22,6 +22,9 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast;
 
+import java.math.BigDecimal;
+
+import org.openfast.error.FastConstants;
 import org.openfast.template.LongValue;
 
 
@@ -56,16 +59,12 @@ public class IntegerValue extends NumericValue {
         return new IntegerValue(value - 1);
     }
 
-    public String toString() {
-        return "IntegerValue [" + value + "]";
-    }
-
     public NumericValue subtract(NumericValue subend) {
         if (subend instanceof LongValue) {
-            return new LongValue(this.value - subend.getLong());
+            return new LongValue(this.value - subend.toLong());
         }
 
-        return new IntegerValue(this.value - subend.getInt());
+        return new IntegerValue(this.value - subend.toInt());
     }
 
     public NumericValue add(NumericValue addend) {
@@ -73,7 +72,7 @@ public class IntegerValue extends NumericValue {
             return addend.add(this);
         }
 
-        return new IntegerValue(this.value + addend.getInt());
+        return new IntegerValue(this.value + addend.toInt());
     }
 
     public String serialize() {
@@ -84,11 +83,35 @@ public class IntegerValue extends NumericValue {
         return value == this.value;
     }
 
-    public long getLong() {
+    public long toLong() {
         return value;
     }
 
-    public int getInt() {
+    public int toInt() {
         return value;
+    }
+
+    public String toString() {
+        return String.valueOf(value);
+    }
+    
+    public byte toByte() {
+    	if (value > Byte.MAX_VALUE || value < Byte.MIN_VALUE)
+    		FastConstants.handleError(FastConstants.R4_NUMERIC_VALUE_TOO_LARGE, "The value \"" + value + "\" is too large for a byte.");
+    	return (byte) value;
+    }
+    
+    public short toShort() {
+    	if (value > Short.MAX_VALUE || value < Short.MIN_VALUE)
+    		FastConstants.handleError(FastConstants.R4_NUMERIC_VALUE_TOO_LARGE, "The value \"" + value + "\" is too large for a short.");
+    	return (short) value;
+    }
+    
+    public double toDouble() {
+    	return value;
+    }
+    
+    public BigDecimal toBigDecimal() {
+    	return new BigDecimal(value);
     }
 }

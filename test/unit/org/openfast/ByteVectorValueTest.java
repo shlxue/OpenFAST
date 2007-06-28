@@ -22,13 +22,18 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast;
 
-import junit.framework.TestCase;
+import org.openfast.test.OpenFastTestCase;
 
 
-public class ByteVectorValueTest extends TestCase {
+public class ByteVectorValueTest extends OpenFastTestCase {
     public void testEquals() {
         ByteVectorValue expected = new ByteVectorValue(new byte[] { (byte) 0xff });
         ByteVectorValue actual = new ByteVectorValue(new byte[] { (byte) 0xff });
         assertEquals(expected, actual);
+    }
+    
+    public void testConvertToString() {
+    	assertEquals("61626364", byt("abcd".getBytes()).toString());
+    	assertEquals("7a4f4e65", byt("zONe".getBytes()).toString());
     }
 }

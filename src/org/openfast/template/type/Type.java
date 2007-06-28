@@ -122,7 +122,7 @@ public abstract class Type {
         return encoding;
     }
 
-    public abstract ScalarValue parse(String value);
+    public abstract ScalarValue fromString(String value);
 
     public abstract ScalarValue decode(InputStream in);
 

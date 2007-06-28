@@ -48,15 +48,15 @@ public class ByteUtil {
     }
 
     public static byte[] convertHexStringToByteArray(String hexString) {
-        if (hexString.length() == 0) {
+        if (hexString == null) {
             return new byte[0];
         }
 
-        String[] hexStrings = hexString.split(" ");
-        byte[] bytes = new byte[hexStrings.length];
+        hexString = hexString.replaceAll(" ", "");
+        byte[] bytes = new byte[hexString.length()/2];
 
-        for (int i = 0; i < hexStrings.length; i++) {
-            bytes[i] = (byte) Integer.parseInt(hexStrings[i], 16);
+        for (int i = 0; i < hexString.length(); i+=2) {
+            bytes[i/2] = (byte) Integer.parseInt(hexString.substring(i, i+2), 16);
         }
 
         return bytes;

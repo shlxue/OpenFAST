@@ -26,6 +26,7 @@ import org.openfast.template.Group;
 
 import org.openfast.util.ArrayIterator;
 
+import java.math.BigDecimal;
 import java.util.Iterator;
 
 
@@ -50,27 +51,108 @@ public class GroupValue implements FieldValue {
         return new ArrayIterator(values);
     }
 
-    public FieldValue getValue(int fieldIndex) {
-        return values[fieldIndex];
-    }
-
     public void setInteger(int fieldIndex, int value) {
         values[fieldIndex] = new IntegerValue(value);
     }
 
-    public int getInteger(int fieldIndex) {
-        return ((IntegerValue) values[fieldIndex]).value;
+    public int getInt(int fieldIndex) {
+        return getScalar(fieldIndex).toInt();
+    }
+    
+    public int getInt(String fieldName) {
+	    return getScalar(fieldName).toInt();
+	}
+
+    public long getLong(int fieldIndex) {
+        return getScalar(fieldIndex).toLong();
+    }
+    
+    public long getLong(String fieldName) {
+	    return getScalar(fieldName).toLong();
+	}
+
+	public byte getByte(int fieldIndex) {
+    	return getScalar(fieldIndex).toByte();
     }
 
-    public String getString(String fieldName) {
-        return getValue(fieldName).serialize();
+	public byte getByte(String fieldName) {
+    	return getScalar(fieldName).toByte();
     }
 
-    public int getInteger(String fieldName) {
-        return ((IntegerValue) getValue(fieldName)).value;
+	public short getShort(int fieldIndex) {
+    	return getScalar(fieldIndex).toShort();
     }
 
-    public void setFieldValue(int fieldIndex, FieldValue value) {
+	public short getShort(String fieldName) {
+    	return getScalar(fieldName).toShort();
+    }
+
+    public String getString(int index) {
+	    return getValue(index).toString();
+	}
+
+	public String getString(String fieldName) {
+        return getValue(fieldName).toString();
+    }
+
+    public double getDouble(int fieldIndex) {
+	    return getScalar(fieldIndex).toDouble();
+	}
+
+    public double getDouble(String fieldName) {
+	    return getScalar(fieldName).toDouble();
+	}
+
+    public BigDecimal getBigDecimal(int fieldIndex) {
+	    return getScalar(fieldIndex).toBigDecimal();
+	}
+
+    public BigDecimal getBigDecimal(String fieldName) {
+	    return getScalar(fieldName).toBigDecimal();
+	}
+
+	public SequenceValue getSequence(int fieldIndex) {
+	    return (SequenceValue) getValue(fieldIndex);
+	}
+
+	public SequenceValue getSequence(String fieldName) {
+	    return (SequenceValue) getValue(fieldName);
+	}
+	
+	public ScalarValue getScalar(int fieldIndex) {
+	    return (ScalarValue) getValue(fieldIndex);
+	}
+
+	public ScalarValue getScalar(String fieldName) {
+		return (ScalarValue) getValue(fieldName);
+	}
+
+	public GroupValue getGroup(int fieldIndex) {
+	    return (GroupValue) getValue(fieldIndex);
+	}
+
+	public GroupValue getGroup(String fieldName) {
+	    return (GroupValue) getValue(fieldName);
+	}
+
+	public FieldValue getValue(int fieldIndex) {
+	    return values[fieldIndex];
+	}
+
+	public FieldValue getValue(String fieldName) {
+	    if (!group.hasField(fieldName)) {
+	        throw new IllegalArgumentException("The field \"" + fieldName +
+	            "\" does not exist.");
+	    }
+	
+	    return values[group.getFieldIndex(fieldName)];
+	}
+
+	public Group getGroup() {
+	    return group;
+	}
+
+	public void setFieldValue(int fieldIndex, FieldValue value) {
         values[fieldIndex] = value;
     }
 
@@ -82,9 +164,17 @@ public class GroupValue implements FieldValue {
         values[fieldIndex] = new ByteVectorValue(bytes);
     }
 
+	public void setByteVector(String fieldName, byte[] bytes) {
+		setFieldValue(fieldName, new ByteVectorValue(bytes));
+	}
+
     public void setDecimal(int fieldIndex, double value) {
         values[fieldIndex] = new DecimalValue(value);
     }
+
+	public void setDecimal(String fieldName, double value) {
+		setFieldValue(fieldName, new DecimalValue(value));
+	}
 
     public void setString(int fieldIndex, String value) {
         values[fieldIndex] = new StringValue(value);
@@ -92,10 +182,6 @@ public class GroupValue implements FieldValue {
 
     public void setString(String fieldName, String value) {
         setFieldValue(fieldName, group.getField(fieldName).createValue(value));
-    }
-
-    public String getString(int index) {
-        return getValue(index).serialize();
     }
 
     public boolean equals(Object other) {
@@ -138,38 +224,13 @@ public class GroupValue implements FieldValue {
         return builder.toString();
     }
 
-    public String serialize() {
-        return "";
-    }
-
     public void setFieldValue(String fieldName, FieldValue value) {
         int index = group.getFieldIndex(fieldName);
         setFieldValue(index, value);
     }
 
-    public GroupValue getGroup(String fieldName) {
-        return (GroupValue) getValue(fieldName);
-    }
-
-    public SequenceValue getSequence(String fieldName) {
-        return (SequenceValue) getValue(fieldName);
-    }
-
-    public FieldValue getValue(String fieldName) {
-        if (!group.hasField(fieldName)) {
-            throw new IllegalArgumentException("The field \"" + fieldName +
-                "\" does not exist.");
-        }
-
-        return values[group.getFieldIndex(fieldName)];
-    }
-
     public int getFieldCount() {
         return values.length;
-    }
-
-    public Group getGroup() {
-        return group;
     }
 
     public void setFieldValue(String fieldName, String value) {
@@ -182,21 +243,5 @@ public class GroupValue implements FieldValue {
 
     public boolean isDefined(String fieldName) {
         return getValue(fieldName) != null;
-    }
-
-    public double getDouble(String fieldName) {
-        return ((DecimalValue) getValue(fieldName)).value;
-    }
-
-    public SequenceValue getSequence(int fieldIndex) {
-        return (SequenceValue) getValue(fieldIndex);
-    }
-
-    public ScalarValue getScalar(int fieldIndex) {
-        return (ScalarValue) getValue(fieldIndex);
-    }
-
-    public GroupValue getGroup(int fieldIndex) {
-        return (GroupValue) getValue(fieldIndex);
     }
 }

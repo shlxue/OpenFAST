@@ -147,7 +147,7 @@ public class OperatorTest extends TestCase {
 			Operator.getOperator(Operator.INCREMENT, Type.STRING);
 			fail();
 		} catch (FastException e) {
-			assertEquals(FastConstants.OPERATOR_TYPE_INCOMP, e.getCode());
+			assertEquals(FastConstants.S2_OPERATOR_TYPE_INCOMP, e.getCode());
 			assertEquals("The operator \"increment\" does not exist for the type string", e.getMessage());
 		}
 	}

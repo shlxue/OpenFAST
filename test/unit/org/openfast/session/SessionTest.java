@@ -119,8 +119,8 @@ public class SessionTest extends TestCase {
             serverSession.out.getUnderlyingStream().toString());
 
         GroupValue alertMessage = session.in.readMessage();
-        assertEquals(2, alertMessage.getInteger(1));
-        assertEquals(11, alertMessage.getInteger(2));
+        assertEquals(2, alertMessage.getInt(1));
+        assertEquals(11, alertMessage.getInt(2));
         assertEquals("Template not supported", alertMessage.getString(4));
     }
 

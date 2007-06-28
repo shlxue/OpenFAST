@@ -22,12 +22,11 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast.template;
 
-import org.openfast.BitVector;
+import java.io.InputStream;
+
 import org.openfast.BitVectorBuilder;
 import org.openfast.Context;
 import org.openfast.FieldValue;
-
-import java.io.InputStream;
 
 /**
  * 
@@ -141,13 +140,4 @@ public abstract class Field {
      * getTypeName method declaration
      */
     public abstract String getTypeName();
-
-	public int encodePresenceMap(BitVector presenceMap, int presenceMapIndex, byte[] encoding, FieldValue fieldValue) {
-		if (usesPresenceMapBit()) {
-			if (isPresenceMapBitSet(encoding, fieldValue))
-				presenceMap.set(presenceMapIndex);
-			return presenceMapIndex++;
-		}
-		return presenceMapIndex;
-	}
 }

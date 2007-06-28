@@ -22,6 +22,8 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast;
 
+import java.math.BigDecimal;
+
 import org.openfast.template.type.Type;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -74,7 +76,35 @@ public class ScalarValue implements FieldValue {
         throw new IllegalArgumentException("The type specified does not exist.");
     }
 
-    public String serialize() {
-        return "";
+    public byte toByte() {
+    	throw new NotImplementedException();
+    }
+    
+    public short toShort() {
+    	throw new NotImplementedException();
+    }
+    
+    public int toInt() {
+    	throw new NotImplementedException();
+    }
+    
+    public long toLong() {
+    	throw new NotImplementedException();
+    }
+    
+    public String toString() {
+    	throw new NotImplementedException();
+    }
+    
+    public byte[] getBytes() {
+    	throw new NotImplementedException();
+    }
+    
+    public double toDouble() {
+    	throw new NotImplementedException();
+    }
+    
+    public BigDecimal toBigDecimal() {
+    	throw new NotImplementedException();
     }
 }

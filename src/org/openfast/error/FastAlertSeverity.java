@@ -20,7 +20,7 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 */
 
 
-package org.openfast;
+package org.openfast.error;
 
 public class FastAlertSeverity {
     public static final FastAlertSeverity FATAL = new FastAlertSeverity(1,

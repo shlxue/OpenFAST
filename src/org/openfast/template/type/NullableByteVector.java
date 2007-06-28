@@ -43,7 +43,7 @@ public class NullableByteVector extends NotStopBitEncodedType {
 		return new ByteVectorValue(new byte[] {});
 	}
 
-	public ScalarValue parse(String value) {
+	public ScalarValue fromString(String value) {
 		return new ByteVectorValue(value.getBytes());
 	}
 

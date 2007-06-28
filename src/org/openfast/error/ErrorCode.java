@@ -22,7 +22,6 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast.error;
 
-import org.openfast.FastAlertSeverity;
 import org.openfast.GroupValue;
 
 import java.util.HashMap;
@@ -68,7 +67,7 @@ public class ErrorCode {
     }
 
     public static ErrorCode getAlertCode(GroupValue alertMsg) {
-        return (ErrorCode) ALERT_CODES.get(new Integer(alertMsg.getInteger(2)));
+        return (ErrorCode) ALERT_CODES.get(new Integer(alertMsg.getInt(2)));
     }
 
     public ErrorType getType() {

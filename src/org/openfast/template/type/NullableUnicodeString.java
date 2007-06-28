@@ -60,7 +60,7 @@ final class NullableUnicodeString extends NotStopBitEncodedType {
 		}
     }
 
-    public ScalarValue parse(String value) {
+    public ScalarValue fromString(String value) {
         return new StringValue(value);
     }
 

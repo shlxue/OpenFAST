@@ -51,7 +51,7 @@ public final class NullableSignedInteger extends IntegerType {
 
     public ScalarValue decode(InputStream in) {
         NumericValue numericValue = ((NumericValue) Type.INTEGER.decode(in));
-        long value = numericValue.getLong();
+        long value = numericValue.toLong();
 
         if (value == 0) {
             return null;
