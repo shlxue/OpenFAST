@@ -31,6 +31,9 @@ public abstract class AlwaysPresentOperator extends Operator {
         super(name, types);
     }
 
+    /**
+     * @return Returns false
+     */
     public boolean usesPresenceMapBit(boolean optional) {
         return false;
     }
