@@ -28,8 +28,8 @@ import org.openfast.test.OpenFastTestCase;
 public class NullableStringDeltaTest extends OpenFastTestCase {
 	
 	public void testEncodeDecode() {
-		assertEncodeDecode(null, "10000000", Type.NULLABLE_STRING_DELTA);
-		assertEncodeDecode(twin(i(1), string("A")), "10000010 11000001", Type.NULLABLE_STRING_DELTA);
-		assertEncodeDecode(twin(i(-1), string("A")), "11111111 11000001", Type.NULLABLE_STRING_DELTA);
+		assertEncodeDecode(null, "10000000", TypeCodec.NULLABLE_STRING_DELTA);
+		assertEncodeDecode(twin(i(1), string("A")), "10000010 11000001", TypeCodec.NULLABLE_STRING_DELTA);
+		assertEncodeDecode(twin(i(-1), string("A")), "11111111 11000001", TypeCodec.NULLABLE_STRING_DELTA);
 	}
 }

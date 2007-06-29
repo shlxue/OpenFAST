@@ -24,8 +24,6 @@ package org.openfast;
 
 import java.math.BigDecimal;
 
-import org.openfast.template.type.Type;
-
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 
@@ -60,20 +58,6 @@ public class ScalarValue implements FieldValue {
 
     public boolean isNull() {
         return false;
-    }
-
-    public static ScalarValue getValue(String typeName, String value) {
-        if ((typeName.equals(Type.I32)) || (typeName.equals(Type.U32))) {
-            return new IntegerValue(Integer.parseInt(value));
-        } else if (typeName.equals(Type.DECIMAL)) {
-            return new DecimalValue(Double.parseDouble(value));
-        } else if (typeName.equals(Type.ASCII_STRING)) {
-            return new StringValue(value);
-        } else if (typeName.equals(Type.BYTE_VECTOR)) {
-            throw new NotImplementedException();
-        }
-
-        throw new IllegalArgumentException("The type specified does not exist.");
     }
 
     public byte toByte() {

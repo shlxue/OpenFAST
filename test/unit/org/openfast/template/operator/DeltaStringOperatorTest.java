@@ -27,7 +27,6 @@ import junit.framework.TestCase;
 import org.openfast.IntegerValue;
 import org.openfast.ScalarValue;
 import org.openfast.StringValue;
-
 import org.openfast.template.Scalar;
 import org.openfast.template.TwinValue;
 import org.openfast.template.type.Type;
@@ -40,7 +39,7 @@ public class DeltaStringOperatorTest extends TestCase {
     }
 
     public void testGetValueToEncodeMandatory() {
-        field = new Scalar(null, Type.ASCII_STRING, Operator.DELTA, ScalarValue.UNDEFINED, false);
+        field = new Scalar(null, Type.ASCII, Operator.DELTA, ScalarValue.UNDEFINED, false);
 
         assertEquals(tv(0, "ABCD"), encode("ABCD", ScalarValue.UNDEFINED));
         assertEquals(tv(1, "E"), encode("ABCE", s("ABCD")));
@@ -50,7 +49,7 @@ public class DeltaStringOperatorTest extends TestCase {
     }
 
     public void testDecodeValueMandatory() {
-        field = new Scalar(null, Type.ASCII_STRING, Operator.DELTA, ScalarValue.UNDEFINED, false);
+        field = new Scalar(null, Type.ASCII, Operator.DELTA, ScalarValue.UNDEFINED, false);
 
         assertEquals(new StringValue("ABCD"),
             decode(tv(0, "ABCD"), ScalarValue.UNDEFINED));
@@ -61,7 +60,7 @@ public class DeltaStringOperatorTest extends TestCase {
     }
 
     public void testGetValueToEncodeOptional() {
-        field = new Scalar(null, Type.ASCII_STRING, Operator.DELTA,
+        field = new Scalar(null, Type.ASCII, Operator.DELTA,
                 ScalarValue.UNDEFINED, true);
 
         assertEquals(tv(0, "ABCD"), encode("ABCD", ScalarValue.UNDEFINED));
@@ -73,7 +72,7 @@ public class DeltaStringOperatorTest extends TestCase {
     }
 
     public void testDecodeValueOptional() {
-        field = new Scalar(null, Type.ASCII_STRING, Operator.DELTA,
+        field = new Scalar(null, Type.ASCII, Operator.DELTA,
                 ScalarValue.UNDEFINED, true);
 
         assertEquals(new StringValue("ABCD"),

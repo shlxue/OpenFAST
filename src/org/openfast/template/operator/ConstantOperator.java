@@ -7,11 +7,12 @@ import org.openfast.BitVectorBuilder;
 import org.openfast.FieldValue;
 import org.openfast.ScalarValue;
 import org.openfast.template.Scalar;
+import org.openfast.template.type.Type;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 final class ConstantOperator extends Operator {
-	protected ConstantOperator(String name, String[] types) {
+	protected ConstantOperator(String name, Type[] types) {
 		super(name, types);
 	}
 

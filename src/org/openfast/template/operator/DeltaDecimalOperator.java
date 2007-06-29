@@ -27,14 +27,13 @@ package org.openfast.template.operator;
 
 import org.openfast.DecimalValue;
 import org.openfast.ScalarValue;
-
 import org.openfast.template.Scalar;
 import org.openfast.template.type.Type;
 
 
 final class DeltaDecimalOperator extends AlwaysPresentOperator {
     DeltaDecimalOperator() {
-        super(DELTA, new String[] { Type.DECIMAL });
+        super(DELTA, new Type[] { Type.DECIMAL });
     }
 
     public ScalarValue getValueToEncode(ScalarValue val, ScalarValue priorVal,

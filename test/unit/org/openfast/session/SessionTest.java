@@ -34,7 +34,7 @@ import org.openfast.error.FastException;
 
 import org.openfast.template.Field;
 import org.openfast.template.MessageTemplate;
-import org.openfast.template.type.Type;
+import org.openfast.template.type.TypeCodec;
 
 import org.openfast.test.ObjectMother;
 import org.openfast.test.TestUtil;
@@ -110,7 +110,7 @@ public class SessionTest extends TestCase {
         String expectedServerOutput = "11000000 01111101 10000000 01110011 01100101 01110010 01110110 01100101 11110010 " +
         //                             --PMAP-- ----TID=16001---- ---1=2-- --2=11-- -3=NULL- -4=<ERR MESSAGE>
                                       "11000000 01111101 10000001 10000010 10001011 10000000 " +
-            ByteUtil.convertByteArrayToBitString(Type.ASCII_STRING_TYPE.encode(
+            ByteUtil.convertByteArrayToBitString(TypeCodec.ASCII.encode(
                     new StringValue("Template not supported")));
         serverSession.in.readMessage();
         assertEquals(expectedServerInput,

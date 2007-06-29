@@ -36,12 +36,12 @@ import java.io.IOException;
 import java.io.InputStream;
 
 
-final class SingleFieldDecimal extends Type {
+final class SingleFieldDecimal extends TypeCodec {
     SingleFieldDecimal() { }
 
     public byte[] encodeValue(ScalarValue v) {
         if (v == ScalarValue.NULL) {
-            return Type.NULL_VALUE_ENCODING;
+            return TypeCodec.NULL_VALUE_ENCODING;
         }
 
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
@@ -53,8 +53,8 @@ final class SingleFieldDecimal extends Type {
                     "Encountered exponent of size " + value.exponent);
             }
 
-            buffer.write(Type.INTEGER.encode(new IntegerValue(value.exponent)));
-            buffer.write(Type.INTEGER.encode(new IntegerValue(value.mantissa)));
+            buffer.write(TypeCodec.INTEGER.encode(new IntegerValue(value.exponent)));
+            buffer.write(TypeCodec.INTEGER.encode(new IntegerValue(value.mantissa)));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -63,14 +63,14 @@ final class SingleFieldDecimal extends Type {
     }
 
     public ScalarValue decode(InputStream in) {
-        int exponent = ((IntegerValue) Type.INTEGER.decode(in)).value;
+        int exponent = ((IntegerValue) TypeCodec.INTEGER.decode(in)).value;
 
         if (Math.abs(exponent) > 63) {
             FastConstants.handleError(FastConstants.R1_LARGE_DECIMAL,
                 "Encountered exponent of size " + exponent);
         }
 
-        int mantissa = ((IntegerValue) Type.INTEGER.decode(in)).value;
+        int mantissa = ((IntegerValue) TypeCodec.INTEGER.decode(in)).value;
         DecimalValue decimalValue = new DecimalValue(mantissa, exponent);
 
         return decimalValue;

@@ -22,6 +22,8 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast.template;
 
+import java.io.InputStream;
+
 import org.openfast.BitVector;
 import org.openfast.Context;
 import org.openfast.FieldValue;
@@ -29,11 +31,8 @@ import org.openfast.GroupValue;
 import org.openfast.IntegerValue;
 import org.openfast.Message;
 import org.openfast.ScalarValue;
-
 import org.openfast.template.operator.Operator;
 import org.openfast.template.type.Type;
-
-import java.io.InputStream;
 
 
 public class MessageTemplate extends Group implements FieldSet {

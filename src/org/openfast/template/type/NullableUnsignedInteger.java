@@ -37,14 +37,14 @@ public final class NullableUnsignedInteger extends IntegerType {
 
     public byte[] encodeValue(ScalarValue v) {
         if (v.isNull()) {
-            return Type.NULL_VALUE_ENCODING;
+            return TypeCodec.NULL_VALUE_ENCODING;
         }
 
-        return Type.UINT.encodeValue(((IntegerValue) v).increment());
+        return TypeCodec.UINT.encodeValue(((IntegerValue) v).increment());
     }
 
     public ScalarValue decode(InputStream in) {
-        NumericValue value = (NumericValue) Type.UINT.decode(in);
+        NumericValue value = (NumericValue) TypeCodec.UINT.decode(in);
 
         if (value.equals(0)) {
             return null;

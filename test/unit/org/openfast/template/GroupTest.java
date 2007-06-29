@@ -22,6 +22,9 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast.template;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+
 import junit.framework.TestCase;
 
 import org.openfast.ByteUtil;
@@ -30,13 +33,9 @@ import org.openfast.FieldValue;
 import org.openfast.GroupValue;
 import org.openfast.IntegerValue;
 import org.openfast.ScalarValue;
-
 import org.openfast.template.operator.Operator;
 import org.openfast.template.type.Type;
 import org.openfast.test.TestUtil;
-
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 
 
 public class GroupTest extends TestCase {

@@ -22,13 +22,22 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast.template.loader;
 
-import org.openfast.ScalarValue;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.FactoryConfigurationError;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.openfast.ScalarValue;
 import org.openfast.error.ErrorCode;
 import org.openfast.error.ErrorHandler;
 import org.openfast.error.FastAlertSeverity;
 import org.openfast.error.FastConstants;
-
 import org.openfast.template.Field;
 import org.openfast.template.Group;
 import org.openfast.template.MessageTemplate;
@@ -38,25 +47,11 @@ import org.openfast.template.TwinValue;
 import org.openfast.template.operator.Operator;
 import org.openfast.template.operator.TwinOperator;
 import org.openfast.template.type.Type;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
 import org.xml.sax.SAXException;
-
-import java.io.IOException;
-import java.io.InputStream;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.FactoryConfigurationError;
-import javax.xml.parsers.ParserConfigurationException;
 
 
 public class XMLMessageTemplateLoader implements MessageTemplateLoader {
@@ -95,17 +90,12 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
 
     }
 
-<<<<<<< .mine
     /**
-     * Get the message reference string from the passed element templateTag
-     * @param templateTag The dom element object
-     * @return Returns the message reference string of the supplied element 
+     * Creates a Group object from the dom goup element
+     * @param group The dom element object
+     * @param isOptional The optional boolean
+     * @return Returns a newly created Group object
      */
-    private String getMessageReference(Element templateTag) {
-        String messageReference = null;
-        NodeList messageReferenceTags = templateTag.getElementsByTagName(
-                "messageRef");
-=======
     private Group parseGroup(Element groupElement, boolean isOptional, String dictionary) {
     	if (groupElement.hasAttribute("dictionary"))
     		dictionary = groupElement.getAttribute("dictionary");
@@ -122,7 +112,6 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
 		messageTemplate.setTypeReference(getTypeReference(templateElement));
 		return messageTemplate;
 	}
->>>>>>> .r18
 
     private String getTypeReference(Element templateTag) {
         String typeReference = null;
@@ -137,16 +126,12 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
         return typeReference;
     }
 
-<<<<<<< .mine
     /**
      * Places the nodes of the passed element into an array
      * @param template The dom element object
      * @return Returns a Field array of the parsed nodes of the dom element 
      */
-    private Field[] parseFields(Element template) {
-=======
     private Field[] parseFields(Element template, String dictionary) {
->>>>>>> .r18
         NodeList childNodes = template.getChildNodes();
         List fields = new ArrayList();
 
@@ -161,7 +146,6 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
         return (Field[]) fields.toArray(new Field[] {  });
     }
 
-<<<<<<< .mine
     /**
      * This method checks what the type of the supplied element to determine how to parse it.
      * Once that is determined, it will parse it accordingly and return a new Scalar object of the 
@@ -169,10 +153,7 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
      * @param fieldNode The dom element object
      * @return Returns a new Scalar object of the parsed data. 
      */
-    private Field parseField(Element fieldNode) {
-=======
     private Field parseField(Element fieldNode, String dictionary) {
->>>>>>> .r18
         String name = fieldNode.getAttribute("name");
         String type = fieldNode.getNodeName();
         boolean optional = false;
@@ -240,8 +221,7 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
             String value = ((Element) operatorNode).getAttribute("value");
 
             if ((value != null) && !value.equals("")) {
-                mantissaDefaultValue = ScalarValue.getValue(Type.U32,
-                        value);
+                mantissaDefaultValue = Type.U32.getValue(value);
             }
         }
 
@@ -252,8 +232,7 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
             String value = ((Element) operatorNode).getAttribute("value");
 
             if ((value != null) && !value.equals("")) {
-                exponentDefaultValue = ScalarValue.getValue(Type.U32,
-                        value);
+                exponentDefaultValue = Type.U32.getValue(value);
             }
         }
 
@@ -264,7 +243,6 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
 		return scalar;
     }
 
-<<<<<<< .mine
     /**
      * Create a new Scalar object with the passed information
      * @param fieldNode the dom element object
@@ -273,10 +251,7 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
      * @param typeName The typeName of the new Scalar
      * @return Returns a new scalar with the passed information
      */
-    private Scalar createScalar(Element fieldNode, String name, boolean optional, String typeName) {
-=======
     private Scalar createScalar(Element fieldNode, String name, boolean optional, String typeName, String dictionary) {
->>>>>>> .r18
     	String operator = Operator.NONE;
     	String defaultValue = null;
     	String key = null;
@@ -290,7 +265,8 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
 	        if (operatorElement.hasAttribute("key"))
 	        	key = operatorElement.getAttribute("key");
         }
-        Scalar scalar = new Scalar(name, typeName, operator, defaultValue, optional);
+        Type type = Type.getType(typeName);
+		Scalar scalar = new Scalar(name, type, operator, type.getValue(defaultValue), optional);
         if (key != null)
         	scalar.setKey(key);
         scalar.setDictionary(dictionary);
@@ -316,16 +292,12 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
         return null;
     }
 
-<<<<<<< .mine
     /**
-     * Creates a Group object from the dom goup element
-     * @param group The dom element object
-     * @param isOptional The optional boolean
-     * @return Returns a newly created Group object
+     * Creates a sequence object from the dom sequence element
+     * @param sequence The dom element object
+     * @param optional The optional boolean
+     * @return Returns a new Sequence object created out of the sequence dom element
      */
-    private Group parseGroup(Element group, boolean isOptional) {
-        return new Group(getName(group), parseFields(group), isOptional);
-=======
     private Sequence parseSequence(Element sequenceElement, boolean optional, String dictionary) {
     	if (sequenceElement.hasAttribute("dictionary"))
     		dictionary = sequenceElement.getAttribute("dictionary");
@@ -334,20 +306,6 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
 		            parseFields(sequenceElement, dictionary), optional);
         sequence.setTypeReference(getTypeReference(sequenceElement));
 		return sequence;
->>>>>>> .r18
-    }
-
-<<<<<<< .mine
-    /**
-     * Creates a sequence object from the dom sequence element
-     * @param sequence The dom element object
-     * @param optional The optional boolean
-     * @return Returns a new Sequence object created out of the sequence dom element
-     */
-    private Sequence parseSequence(Element sequence, boolean optional) {
-        return new Sequence(getName(sequence),
-            parseSequenceLengthField(sequence, optional),
-            parseFields(sequence), optional);
     }
 
     /**
@@ -356,10 +314,7 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
      * @param optional The optional boolean
      * @return Returns null if there are no elements by the tag length, otherwise 
      */
-    private Scalar parseSequenceLengthField(Element sequence, boolean optional) {
-=======
     private Scalar parseSequenceLengthField(Element sequence, boolean optional, String dictionary) {
->>>>>>> .r18
         NodeList lengthElements = sequence.getElementsByTagName("length");
 
         if (lengthElements.getLength() == 0) {

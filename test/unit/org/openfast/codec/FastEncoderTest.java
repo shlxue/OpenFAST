@@ -29,7 +29,6 @@ import org.openfast.IntegerValue;
 import org.openfast.Message;
 import org.openfast.ScalarValue;
 import org.openfast.StringValue;
-
 import org.openfast.template.Field;
 import org.openfast.template.MessageTemplate;
 import org.openfast.template.Scalar;
@@ -86,11 +85,11 @@ public class FastEncoderTest extends TestCase {
     public void testEncodeMessageWithAllFieldTypes() {
         MessageTemplate template = new MessageTemplate(null,
                 new Field[] {
-                    new Scalar("1", Type.ASCII_STRING, Operator.COPY, ScalarValue.UNDEFINED, false),
+                    new Scalar("1", Type.STRING, Operator.COPY, ScalarValue.UNDEFINED, false),
                     new Scalar("2", Type.BYTE_VECTOR, Operator.COPY, ScalarValue.UNDEFINED, false),
                     new Scalar("3", Type.DECIMAL, Operator.COPY, ScalarValue.UNDEFINED, false),
                     new Scalar("4", Type.I32, Operator.COPY, ScalarValue.UNDEFINED, false),
-                    new Scalar("5", Type.ASCII_STRING, Operator.COPY, ScalarValue.UNDEFINED, false),
+                    new Scalar("5", Type.STRING, Operator.COPY, ScalarValue.UNDEFINED, false),
                     new Scalar("6", Type.U32, Operator.COPY, ScalarValue.UNDEFINED, false),
                 });
         Context context = new Context();
@@ -252,11 +251,11 @@ public class FastEncoderTest extends TestCase {
     public void testEncodeMessageWithStringFieldTypesAndAllOperators() {
         MessageTemplate template = new MessageTemplate(null,
                 new Field[] {
-                    new Scalar("1", Type.ASCII_STRING, Operator.COPY, ScalarValue.UNDEFINED, false),
-                    new Scalar("2", Type.ASCII_STRING, Operator.DELTA, ScalarValue.UNDEFINED, false),
-                    new Scalar("3", Type.ASCII_STRING, Operator.CONSTANT,
+                    new Scalar("1", Type.STRING, Operator.COPY, ScalarValue.UNDEFINED, false),
+                    new Scalar("2", Type.STRING, Operator.DELTA, ScalarValue.UNDEFINED, false),
+                    new Scalar("3", Type.STRING, Operator.CONSTANT,
                         new StringValue("e"), false), /* NON-TRANSFERRABLE */
-                new Scalar("4", Type.ASCII_STRING, Operator.DEFAULT,
+                new Scalar("4", Type.STRING, Operator.DEFAULT,
                         new StringValue("long"), false)
                 });
         Context context = new Context();

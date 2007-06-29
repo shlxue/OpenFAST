@@ -23,9 +23,7 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 package org.openfast.template.operator;
 
 import org.openfast.ScalarValue;
-
 import org.openfast.error.FastConstants;
-
 import org.openfast.template.Scalar;
 import org.openfast.template.type.Type;
 

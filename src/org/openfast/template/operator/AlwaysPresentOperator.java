@@ -25,9 +25,10 @@ package org.openfast.template.operator;
 import org.openfast.BitVectorBuilder;
 import org.openfast.ScalarValue;
 import org.openfast.template.Scalar;
+import org.openfast.template.type.Type;
 
 public abstract class AlwaysPresentOperator extends Operator {
-    protected AlwaysPresentOperator(String name, String[] types) {
+    protected AlwaysPresentOperator(String name, Type[] types) {
         super(name, types);
     }
 

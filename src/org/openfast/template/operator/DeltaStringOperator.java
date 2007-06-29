@@ -27,17 +27,15 @@ package org.openfast.template.operator;
 
 import org.openfast.ScalarValue;
 import org.openfast.StringValue;
-
 import org.openfast.template.Scalar;
 import org.openfast.template.TwinValue;
 import org.openfast.template.type.Type;
-
 import org.openfast.util.Util;
 
 
 final class DeltaStringOperator extends AlwaysPresentOperator {
     DeltaStringOperator() {
-        super(Operator.DELTA, new String[] { Type.ASCII_STRING });
+        super(Operator.DELTA, new Type[] { Type.ASCII, Type.STRING });
     }
 
     public ScalarValue getValueToEncode(ScalarValue value,

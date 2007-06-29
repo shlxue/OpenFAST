@@ -38,12 +38,12 @@ public class SingleFieldDecimalTest extends OpenFastTestCase {
         assertEncodeDecode(1000, "10000011 10000001");
         assertEncodeDecode(d(9427550, 1),
             "10000001 00000100 00111111 00110100 11011110",
-            Type.SF_SCALED_NUMBER);
+            TypeCodec.SF_SCALED_NUMBER);
     }
 
     public void testEncodeLargeDecimalReportsError() {
         try {
-            Type.SF_SCALED_NUMBER.encode(d(150, 64));
+            TypeCodec.SF_SCALED_NUMBER.encode(d(150, 64));
             fail();
         } catch (FastException e) {
             assertEquals(FastConstants.R1_LARGE_DECIMAL, e.getCode());
@@ -53,7 +53,7 @@ public class SingleFieldDecimalTest extends OpenFastTestCase {
 
     public void testDecodeLargeDecimalReportsError() {
         try {
-            Type.SF_SCALED_NUMBER.decode(stream("00000001 11111111 10000001"));
+            TypeCodec.SF_SCALED_NUMBER.decode(stream("00000001 11111111 10000001"));
             fail();
         } catch (FastException e) {
             assertEquals(FastConstants.R1_LARGE_DECIMAL, e.getCode());
@@ -62,6 +62,6 @@ public class SingleFieldDecimalTest extends OpenFastTestCase {
     }
 
     private void assertEncodeDecode(double value, String bitString) {
-        assertEncodeDecode(d(value), bitString, Type.SF_SCALED_NUMBER);
+        assertEncodeDecode(d(value), bitString, TypeCodec.SF_SCALED_NUMBER);
     }
 }

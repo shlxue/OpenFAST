@@ -30,7 +30,7 @@ import org.openfast.template.LongValue;
 import org.openfast.util.Util;
 
 
-public abstract class IntegerType extends Type {
+public abstract class IntegerType extends TypeCodec {
     protected IntegerType() { }
 
     protected static ScalarValue createValue(long value) {

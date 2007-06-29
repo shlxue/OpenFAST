@@ -40,17 +40,17 @@ final class NullableUnicodeString extends NotStopBitEncodedType {
 
     public byte[] encodeValue(ScalarValue value) {
     	if (value.isNull())
-    		return Type.NULLABLE_BYTE_VECTOR_TYPE.encodeValue(ScalarValue.NULL);
+    		return TypeCodec.NULLABLE_BYTE_VECTOR_TYPE.encodeValue(ScalarValue.NULL);
         try {
 			byte[] utf8encoding = ((StringValue) value).value.getBytes("UTF8");
-			return Type.NULLABLE_BYTE_VECTOR_TYPE.encode(new ByteVectorValue(utf8encoding));
+			return TypeCodec.NULLABLE_BYTE_VECTOR_TYPE.encode(new ByteVectorValue(utf8encoding));
 		} catch (UnsupportedEncodingException e) {
 			throw new FastException(FastConstants.IMPOSSIBLE_EXCEPTION, "Apparently Unicode is no longer supported by Java.", e);
 		}
     }
 
     public ScalarValue decode(InputStream in) {
-    	ScalarValue decodedValue = Type.NULLABLE_BYTE_VECTOR_TYPE.decode(in);
+    	ScalarValue decodedValue = TypeCodec.NULLABLE_BYTE_VECTOR_TYPE.decode(in);
     	if (decodedValue == null) return null;
 		ByteVectorValue value = (ByteVectorValue) decodedValue;
         try {

@@ -29,7 +29,7 @@ import org.openfast.IntegerValue;
 import org.openfast.Message;
 
 import org.openfast.template.MessageTemplate;
-import org.openfast.template.type.Type;
+import org.openfast.template.type.TypeCodec;
 
 import java.io.InputStream;
 
@@ -44,7 +44,7 @@ public class FastDecoder implements Coder {
     }
 
     public Message readMessage() {
-        BitVectorValue bitVectorValue = (BitVectorValue) Type.BIT_VECTOR.decode(in);
+        BitVectorValue bitVectorValue = (BitVectorValue) TypeCodec.BIT_VECTOR.decode(in);
 
         if (bitVectorValue == null) {
             return null; // Must have reached end of stream;
@@ -54,7 +54,7 @@ public class FastDecoder implements Coder {
 
         // if template id is not present, use previous, else decode template id
         int templateId = (pmap.isSet(0))
-            ? ((IntegerValue) Type.UINT.decode(in)).value
+            ? ((IntegerValue) TypeCodec.UINT.decode(in)).value
             : context.getLastTemplateId();
         MessageTemplate template = context.getTemplate(templateId);
 

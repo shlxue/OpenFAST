@@ -36,12 +36,12 @@ import java.io.IOException;
 import java.io.InputStream;
 
 
-final class NullableSingleFieldDecimal extends Type {
+final class NullableSingleFieldDecimal extends TypeCodec {
     NullableSingleFieldDecimal() { }
 
     public byte[] encodeValue(ScalarValue v) {
         if (v == ScalarValue.NULL) {
-            return Type.NULL_VALUE_ENCODING;
+            return TypeCodec.NULL_VALUE_ENCODING;
         }
 
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
@@ -52,9 +52,9 @@ final class NullableSingleFieldDecimal extends Type {
                 FastConstants.handleError(FastConstants.R1_LARGE_DECIMAL, "");
             }
 
-            buffer.write(Type.NULLABLE_INTEGER.encode(
+            buffer.write(TypeCodec.NULLABLE_INTEGER.encode(
                     new IntegerValue(value.exponent)));
-            buffer.write(Type.INTEGER.encode(new IntegerValue(value.mantissa)));
+            buffer.write(TypeCodec.INTEGER.encode(new IntegerValue(value.mantissa)));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -63,14 +63,14 @@ final class NullableSingleFieldDecimal extends Type {
     }
 
     public ScalarValue decode(InputStream in) {
-        ScalarValue exp = Type.NULLABLE_INTEGER.decode(in);
+        ScalarValue exp = TypeCodec.NULLABLE_INTEGER.decode(in);
 
         if ((exp == null) || exp.isNull()) {
             return null;
         }
 
         int exponent = ((IntegerValue) exp).value;
-        int mantissa = ((IntegerValue) Type.INTEGER.decode(in)).value;
+        int mantissa = ((IntegerValue) TypeCodec.INTEGER.decode(in)).value;
         DecimalValue decimalValue = new DecimalValue(mantissa, exponent);
 
         return decimalValue;

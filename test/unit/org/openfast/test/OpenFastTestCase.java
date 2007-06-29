@@ -34,7 +34,7 @@ import org.openfast.StringValue;
 import org.openfast.template.MessageTemplate;
 import org.openfast.template.TwinValue;
 import org.openfast.template.loader.XMLMessageTemplateLoader;
-import org.openfast.template.type.Type;
+import org.openfast.template.type.TypeCodec;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -58,7 +58,7 @@ public abstract class OpenFastTestCase extends TestCase {
     }
 
     protected static void assertEncodeDecode(ScalarValue value,
-        String bitString, Type type) {
+        String bitString, TypeCodec type) {
         assertEquals(bitString, type.encode(value == null ? ScalarValue.NULL : value));
         assertEquals(value, type.decode(ByteUtil.createByteStream(bitString)));
     }

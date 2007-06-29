@@ -36,6 +36,7 @@ import org.openfast.template.TwinValue;
 import org.openfast.template.operator.Operator;
 import org.openfast.template.operator.TwinOperator;
 import org.openfast.template.type.Type;
+import org.openfast.template.type.TypeCodec;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -136,10 +137,10 @@ public class XMLMessageTemplateLoaderTest extends TestCase {
         assertFalse(location.isOptional());
         assertTrue(id2.isOptional());
         
-        assertEquals(Type.UNICODE_STRING_TYPE, name.getCodecStrategy());
-        assertEquals(Type.NULLABLE_UNICODE_STRING, id.getCodecStrategy());
-        assertEquals(Type.ASCII_STRING_TYPE, location.getCodecStrategy());
-        assertEquals(Type.NULLABLE_ASCII_STRING, id2.getCodecStrategy());
+        assertEquals(TypeCodec.UNICODE, name.getTypeCodec());
+        assertEquals(TypeCodec.NULLABLE_UNICODE, id.getTypeCodec());
+        assertEquals(TypeCodec.ASCII, location.getTypeCodec());
+        assertEquals(TypeCodec.NULLABLE_ASCII, id2.getTypeCodec());
     }
     
     public void testLoadMdIncrementalRefreshTemplate() {
@@ -157,17 +158,17 @@ public class XMLMessageTemplateLoaderTest extends TestCase {
         int index = 0;
         assertScalarField(messageTemplate, index++, Type.U32,
             "templateId", Operator.COPY);
-        assertScalarField(messageTemplate, index++, Type.ASCII_STRING, "8",
+        assertScalarField(messageTemplate, index++, Type.ASCII, "8",
             Operator.CONSTANT);
         assertScalarField(messageTemplate, index++, Type.U32, "9",
             Operator.CONSTANT);
-        assertScalarField(messageTemplate, index++, Type.ASCII_STRING, "35",
+        assertScalarField(messageTemplate, index++, Type.ASCII, "35",
             Operator.CONSTANT);
-        assertScalarField(messageTemplate, index++, Type.ASCII_STRING, "49",
+        assertScalarField(messageTemplate, index++, Type.ASCII, "49",
             Operator.CONSTANT);
         assertScalarField(messageTemplate, index++, Type.U32,
             "34", Operator.INCREMENT);
-        assertScalarField(messageTemplate, index++, Type.ASCII_STRING, "52",
+        assertScalarField(messageTemplate, index++, Type.ASCII, "52",
             Operator.DELTA);
         assertScalarField(messageTemplate, index++, Type.U32,
             "75", Operator.COPY);
@@ -192,53 +193,53 @@ public class XMLMessageTemplateLoaderTest extends TestCase {
             "346", Operator.NONE);
         assertScalarField(sequence, seqIndex++, Type.U32, "1023",
             Operator.INCREMENT);
-        assertScalarField(sequence, seqIndex++, Type.ASCII_STRING, "279",
+        assertScalarField(sequence, seqIndex++, Type.ASCII, "279",
             Operator.COPY);
-        assertScalarField(sequence, seqIndex++, Type.ASCII_STRING, "269",
+        assertScalarField(sequence, seqIndex++, Type.ASCII, "269",
             Operator.COPY);
-        assertScalarField(sequence, seqIndex++, Type.ASCII_STRING, "107",
+        assertScalarField(sequence, seqIndex++, Type.ASCII, "107",
             Operator.COPY);
-        assertScalarField(sequence, seqIndex++, Type.ASCII_STRING, "48",
+        assertScalarField(sequence, seqIndex++, Type.ASCII, "48",
             Operator.DELTA);
-        assertScalarField(sequence, seqIndex++, Type.ASCII_STRING, "276",
+        assertScalarField(sequence, seqIndex++, Type.ASCII, "276",
             Operator.COPY);
-        assertScalarField(sequence, seqIndex++, Type.ASCII_STRING, "274",
+        assertScalarField(sequence, seqIndex++, Type.ASCII, "274",
             Operator.COPY);
         assertScalarField(sequence, seqIndex++, Type.DECIMAL, "451",
             Operator.COPY);
-        assertScalarField(sequence, seqIndex++, Type.ASCII_STRING, "277",
+        assertScalarField(sequence, seqIndex++, Type.ASCII, "277",
             Operator.DEFAULT);
         assertOptionalScalarField(sequence, seqIndex++, Type.U32,
             "1020", Operator.NONE);
         assertScalarField(sequence, seqIndex++, Type.I32, "537",
             Operator.DEFAULT);
-        assertScalarField(sequence, seqIndex++, Type.ASCII_STRING, "1024",
+        assertScalarField(sequence, seqIndex++, Type.ASCII, "1024",
             Operator.DEFAULT);
-        assertScalarField(sequence, seqIndex++, Type.ASCII_STRING, "336",
+        assertScalarField(sequence, seqIndex++, Type.ASCII, "336",
             Operator.DEFAULT);
 
-        assertScalarField(messageTemplate, index++, Type.ASCII_STRING, "10",
+        assertScalarField(messageTemplate, index++, Type.ASCII, "10",
             Operator.NONE);
     }
 
-    private void assertScalarField(FieldSet fieldSet, int fieldIndex,
-        String typeName, String name, Operator operator, ScalarValue defaultValue) {
+	private void assertScalarField(FieldSet fieldSet, int fieldIndex,
+        Type type, String name, Operator operator, ScalarValue defaultValue) {
         Scalar field = (Scalar) fieldSet.getField(fieldIndex);
-        assertScalarField(field, typeName, name);
+        assertScalarField(field, type, name);
         assertEquals(operator, field.getOperator());
         assertEquals(defaultValue, field.getDefaultValue());
     }
 
     private void assertScalarField(FieldSet fieldSet, int fieldIndex,
-        String typeName, String name, String operatorType) {
+        Type type, String name, String operatorType) {
         Scalar field = (Scalar) fieldSet.getField(fieldIndex);
-        assertScalarField(field, typeName, name);
+        assertScalarField(field, type, name);
         assertEquals(operatorType, field.getOperator().getName());
     }
 
     private void assertSequenceLengthField(Sequence sequence, String name,
-        String typeName, String operator) {
-        assertEquals(typeName, sequence.getLength().getType());
+        Type type, String operator) {
+        assertEquals(type, sequence.getLength().getType());
         assertEquals(name, sequence.getLength().getName());
         assertEquals(operator, sequence.getLength().getOperator().getName());
     }
@@ -256,15 +257,15 @@ public class XMLMessageTemplateLoaderTest extends TestCase {
     }
 
     private void assertOptionalScalarField(FieldSet fieldSet, int fieldIndex,
-        String typeName, String name, String operator) {
+        Type type, String name, String operator) {
         Scalar field = (Scalar) fieldSet.getField(fieldIndex);
-        assertScalarField(field, typeName, name);
+        assertScalarField(field, type, name);
         assertEquals(operator, field.getOperator().getName());
         assertTrue(field.isOptional());
     }
 
-    private void assertScalarField(Scalar field, String typeName, String name) {
+    private void assertScalarField(Scalar field, Type type, String name) {
         assertEquals(name, field.getName());
-        assertEquals(typeName, field.getType());
+        assertEquals(type, field.getType());
     }
 }

@@ -28,7 +28,6 @@ import org.openfast.BitVectorBuilder;
 import org.openfast.Context;
 import org.openfast.IntegerValue;
 import org.openfast.ScalarValue;
-
 import org.openfast.error.FastConstants;
 import org.openfast.error.FastException;
 import org.openfast.template.operator.Operator;

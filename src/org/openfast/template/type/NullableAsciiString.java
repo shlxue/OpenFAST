@@ -33,14 +33,14 @@ import java.io.IOException;
 import java.io.InputStream;
 
 
-final class NullableAsciiString extends Type {
+final class NullableAsciiString extends TypeCodec {
     private static final byte[] NULLABLE_EMPTY_STRING = new byte[] { 0x00, 0x00 };
 
     NullableAsciiString() { }
 
     public byte[] encodeValue(ScalarValue value) {
         if (value.isNull()) {
-            return Type.NULL_VALUE_ENCODING;
+            return TypeCodec.NULL_VALUE_ENCODING;
         }
 
         String string = ((StringValue) value).value;

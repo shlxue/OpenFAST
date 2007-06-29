@@ -34,7 +34,7 @@ import org.openfast.BitVectorValue;
 import org.openfast.Context;
 import org.openfast.FieldValue;
 import org.openfast.GroupValue;
-import org.openfast.template.type.Type;
+import org.openfast.template.type.TypeCodec;
 
 
 public class Group extends Field {
@@ -133,7 +133,7 @@ public class Group extends Field {
      */
     protected FieldValue[] decodeFieldValues(InputStream in, Group template,
         Context context) {
-        BitVector pmap = ((BitVectorValue) Type.BIT_VECTOR.decode(in)).value;
+        BitVector pmap = ((BitVectorValue) TypeCodec.BIT_VECTOR.decode(in)).value;
 
         return decodeFieldValues(in, template, pmap, context, 0);
     }

@@ -33,7 +33,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 
-final class AsciiString extends Type {
+final class AsciiString extends TypeCodec {
     AsciiString() { }
 
     public byte[] encodeValue(ScalarValue value) {
@@ -45,7 +45,7 @@ final class AsciiString extends Type {
         String string = value.toString();
 
         if ((string != null) && (string.length() == 0)) {
-            return Type.NULL_VALUE_ENCODING;
+            return TypeCodec.NULL_VALUE_ENCODING;
         }
 
         return string.getBytes();

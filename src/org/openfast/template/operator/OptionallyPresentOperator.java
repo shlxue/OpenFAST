@@ -27,10 +27,11 @@ import org.openfast.ScalarValue;
 import org.openfast.error.FastConstants;
 
 import org.openfast.template.Scalar;
+import org.openfast.template.type.Type;
 
 
 public abstract class OptionallyPresentOperator extends Operator {
-    protected OptionallyPresentOperator(String name, String[] types) {
+    protected OptionallyPresentOperator(String name, Type[] types) {
         super(name, types);
     }
 

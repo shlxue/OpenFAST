@@ -34,7 +34,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 
-public final class BitVectorType extends Type {
+public final class BitVectorType extends TypeCodec {
     BitVectorType() { }
 
     public byte[] encodeValue(ScalarValue value) {

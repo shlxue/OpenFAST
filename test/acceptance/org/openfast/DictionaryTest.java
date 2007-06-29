@@ -22,18 +22,17 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast;
 
+import java.io.ByteArrayOutputStream;
+
 import junit.framework.TestCase;
 
 import org.openfast.session.Session;
-
 import org.openfast.template.Field;
 import org.openfast.template.MessageTemplate;
 import org.openfast.template.Scalar;
 import org.openfast.template.operator.Operator;
 import org.openfast.template.type.Type;
 import org.openfast.test.TestUtil;
-
-import java.io.ByteArrayOutputStream;
 
 
 public class DictionaryTest extends TestCase {

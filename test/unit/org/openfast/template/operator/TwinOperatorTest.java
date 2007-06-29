@@ -25,11 +25,9 @@ package org.openfast.template.operator;
 import org.openfast.BitVectorBuilder;
 import org.openfast.IntegerValue;
 import org.openfast.ScalarValue;
-
 import org.openfast.template.Scalar;
 import org.openfast.template.TwinValue;
 import org.openfast.template.type.Type;
-
 import org.openfast.test.OpenFastTestCase;
 
 

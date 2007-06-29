@@ -22,6 +22,9 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast.session;
 
+import java.io.InputStream;
+import java.io.OutputStream;
+
 import org.openfast.Context;
 import org.openfast.FieldValue;
 import org.openfast.GroupValue;
@@ -31,20 +34,14 @@ import org.openfast.MessageInputStream;
 import org.openfast.MessageOutputStream;
 import org.openfast.MessageStream;
 import org.openfast.ScalarValue;
-
 import org.openfast.codec.Coder;
-
 import org.openfast.error.ErrorCode;
 import org.openfast.error.ErrorHandler;
-
 import org.openfast.template.Field;
 import org.openfast.template.MessageTemplate;
 import org.openfast.template.Scalar;
 import org.openfast.template.operator.Operator;
 import org.openfast.template.type.Type;
-
-import java.io.InputStream;
-import java.io.OutputStream;
 
 
 public class Session implements ErrorHandler {
@@ -58,13 +55,13 @@ public class Session implements ErrorHandler {
                 new Scalar("Code", Type.U32, Operator.NONE, ScalarValue.UNDEFINED, false),
                 new Scalar("Value", Type.U32, Operator.NONE,
                     ScalarValue.UNDEFINED, true),
-                new Scalar("Description", Type.ASCII_STRING, Operator.NONE, ScalarValue.UNDEFINED, false),
+                new Scalar("Description", Type.ASCII, Operator.NONE, ScalarValue.UNDEFINED, false),
             });
     private final static MessageTemplate FAST_RESET_TEMPLATE = new MessageTemplate("",
             new Field[] {  });
     private final static MessageTemplate FAST_HELLO_TEMPLATE = new MessageTemplate("",
             new Field[] {
-                new Scalar("SenderName", Type.ASCII_STRING, Operator.NONE, ScalarValue.UNDEFINED, false)
+                new Scalar("SenderName", Type.ASCII, Operator.NONE, ScalarValue.UNDEFINED, false)
             });
     public static final Message RESET = new Message(FAST_RESET_TEMPLATE,
             FAST_RESET_TEMPLATE_ID) {

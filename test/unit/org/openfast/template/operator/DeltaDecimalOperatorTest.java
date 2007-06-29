@@ -26,7 +26,6 @@ import junit.framework.TestCase;
 
 import org.openfast.DecimalValue;
 import org.openfast.ScalarValue;
-
 import org.openfast.template.Scalar;
 import org.openfast.template.type.Type;
 

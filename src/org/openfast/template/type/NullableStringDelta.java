@@ -30,24 +30,24 @@ import org.openfast.template.TwinValue;
 import java.io.InputStream;
 
 
-public class NullableStringDelta extends Type {
+public class NullableStringDelta extends TypeCodec {
     public NullableStringDelta() { }
 
     public ScalarValue decode(InputStream in) {
-        ScalarValue subtractionLength = Type.NULLABLE_INTEGER.decode(in);
+        ScalarValue subtractionLength = TypeCodec.NULLABLE_INTEGER.decode(in);
         if (subtractionLength == null) return null;
 
-        ScalarValue difference = Type.ASCII_STRING_TYPE.decode(in);
+        ScalarValue difference = TypeCodec.ASCII.decode(in);
 
         return new TwinValue(subtractionLength, difference);
     }
 
     public byte[] encodeValue(ScalarValue value) {
-        if (value.isNull()) return Type.NULL_VALUE_ENCODING;
+        if (value.isNull()) return TypeCodec.NULL_VALUE_ENCODING;
         
         TwinValue diff = (TwinValue) value;
-        byte[] subtractionLength = Type.NULLABLE_INTEGER.encode(diff.first);
-        byte[] difference = Type.ASCII_STRING_TYPE.encode(diff.second);
+        byte[] subtractionLength = TypeCodec.NULLABLE_INTEGER.encode(diff.first);
+        byte[] difference = TypeCodec.ASCII.encode(diff.second);
         byte[] encoded = new byte[subtractionLength.length + difference.length];
         System.arraycopy(subtractionLength, 0, encoded, 0,
             subtractionLength.length);

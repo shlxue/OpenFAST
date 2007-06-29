@@ -39,7 +39,7 @@ public class TwinOperator extends Operator {
     private Operator mantissaOperator;
 
     public TwinOperator(String exponentOperator, String mantissaOperator) {
-        super("twin", new String[] { Type.DECIMAL });
+        super("twin", new Type[] { Type.DECIMAL });
         this.exponentOperator = Operator.getOperator(exponentOperator, Type.I32);
         this.mantissaOperator = Operator.getOperator(mantissaOperator, Type.I32);
     }

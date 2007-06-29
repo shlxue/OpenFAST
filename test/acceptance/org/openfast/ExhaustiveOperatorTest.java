@@ -22,21 +22,20 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast;
 
+import java.io.IOException;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
+
 import junit.framework.TestCase;
 
 import org.openfast.codec.FastDecoder;
 import org.openfast.codec.FastEncoder;
-
 import org.openfast.template.Field;
 import org.openfast.template.MessageTemplate;
 import org.openfast.template.Scalar;
 import org.openfast.template.operator.Operator;
 import org.openfast.template.type.Type;
 import org.openfast.test.TestUtil;
-
-import java.io.IOException;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
 
 
 /**
@@ -445,7 +444,7 @@ public class ExhaustiveOperatorTest extends TestCase {
     }
 
     public void testTailOperatorWithOptionalField() {
-        Scalar field = new Scalar("", Type.ASCII_STRING, Operator.TAIL,
+        Scalar field = new Scalar("", Type.STRING, Operator.TAIL,
                 new StringValue("abc"), true);
         MessageTemplate template = registerTemplate(field);
 
@@ -481,7 +480,7 @@ public class ExhaustiveOperatorTest extends TestCase {
     }
 
     public void testTailOperatorWithMandatoryField() {
-        Scalar field = new Scalar("", Type.ASCII_STRING, Operator.TAIL,
+        Scalar field = new Scalar("", Type.STRING, Operator.TAIL,
                 new StringValue("abc"), false);
         MessageTemplate template = registerTemplate(field);
 

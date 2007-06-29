@@ -33,7 +33,7 @@ import org.openfast.ScalarValue;
 import org.openfast.template.TwinValue;
 
 
-final class TwinFieldDecimal extends Type {
+final class TwinFieldDecimal extends TypeCodec {
     TwinFieldDecimal() { }
 
     public byte[] encodeValue(ScalarValue v) {
@@ -41,16 +41,16 @@ final class TwinFieldDecimal extends Type {
     		return NULL_VALUE_ENCODING;
         TwinValue value = (TwinValue) v;
         if (value.first != null && value.second != null)
-        	return ByteUtil.combine(Type.INTEGER.encode(value.first), Type.INTEGER.encode(value.second));
+        	return ByteUtil.combine(TypeCodec.INTEGER.encode(value.first), TypeCodec.INTEGER.encode(value.second));
         if (value.second != null)
-        	return Type.INTEGER.encode(value.second);
+        	return TypeCodec.INTEGER.encode(value.second);
         if (value.first != null)
-        	return Type.INTEGER.encode(value.first);
+        	return TypeCodec.INTEGER.encode(value.first);
         return new byte[] {};
     }
 
     public ScalarValue decode(InputStream in) {
-        return new TwinValue(Type.INTEGER.decode(in), Type.INTEGER.decode(in));
+        return new TwinValue(TypeCodec.INTEGER.decode(in), TypeCodec.INTEGER.decode(in));
     }
 
     public ScalarValue fromString(String value) {

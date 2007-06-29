@@ -22,6 +22,11 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast.template;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Iterator;
+
 import org.openfast.BitVectorBuilder;
 import org.openfast.Context;
 import org.openfast.FieldValue;
@@ -29,16 +34,9 @@ import org.openfast.GroupValue;
 import org.openfast.IntegerValue;
 import org.openfast.ScalarValue;
 import org.openfast.SequenceValue;
-
 import org.openfast.error.FastConstants;
 import org.openfast.template.operator.Operator;
 import org.openfast.template.type.Type;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
-import java.util.Iterator;
 
 
 public class Sequence extends Field implements FieldSet {

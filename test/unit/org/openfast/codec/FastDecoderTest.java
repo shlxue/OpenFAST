@@ -22,6 +22,8 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast.codec;
 
+import java.io.InputStream;
+
 import junit.framework.TestCase;
 
 import org.openfast.ByteUtil;
@@ -31,15 +33,12 @@ import org.openfast.IntegerValue;
 import org.openfast.Message;
 import org.openfast.ScalarValue;
 import org.openfast.StringValue;
-
 import org.openfast.template.Field;
 import org.openfast.template.Group;
 import org.openfast.template.MessageTemplate;
 import org.openfast.template.Scalar;
 import org.openfast.template.operator.Operator;
 import org.openfast.template.type.Type;
-
-import java.io.InputStream;
 
 
 public class FastDecoderTest extends TestCase {
@@ -91,11 +90,11 @@ public class FastDecoderTest extends TestCase {
 
         MessageTemplate template = new MessageTemplate(null,
                 new Field[] {
-                    new Scalar("1", Type.ASCII_STRING, Operator.COPY, ScalarValue.UNDEFINED, false),
+                    new Scalar("1", Type.ASCII, Operator.COPY, ScalarValue.UNDEFINED, false),
                     new Scalar("2", Type.BYTE_VECTOR, Operator.COPY, ScalarValue.UNDEFINED, false),
                     new Scalar("3", Type.DECIMAL, Operator.COPY, ScalarValue.UNDEFINED, false),
                     new Scalar("4", Type.I32, Operator.COPY, ScalarValue.UNDEFINED, false),
-                    new Scalar("5", Type.ASCII_STRING, Operator.COPY, ScalarValue.UNDEFINED, false),
+                    new Scalar("5", Type.ASCII, Operator.COPY, ScalarValue.UNDEFINED, false),
                     new Scalar("6", Type.U32, Operator.COPY, ScalarValue.UNDEFINED, false),
                 });
         Context context = new Context();
@@ -232,11 +231,11 @@ public class FastDecoderTest extends TestCase {
     public void testDecodeMessageWithStringFieldTypesAndAllOperators() {
         MessageTemplate template = new MessageTemplate(null,
                 new Field[] {
-                    new Scalar("1", Type.ASCII_STRING, Operator.COPY, ScalarValue.UNDEFINED, false),
-                    new Scalar("2", Type.ASCII_STRING, Operator.DELTA, ScalarValue.UNDEFINED, false),
-                    new Scalar("3", Type.ASCII_STRING, Operator.CONSTANT,
+                    new Scalar("1", Type.ASCII, Operator.COPY, ScalarValue.UNDEFINED, false),
+                    new Scalar("2", Type.ASCII, Operator.DELTA, ScalarValue.UNDEFINED, false),
+                    new Scalar("3", Type.ASCII, Operator.CONSTANT,
                         new StringValue("e"), false), /* NON-TRANSFERRABLE */
-                new Scalar("4", Type.ASCII_STRING, Operator.DEFAULT,
+                new Scalar("4", Type.ASCII, Operator.DEFAULT,
                         new StringValue("long"), false)
                 });
 

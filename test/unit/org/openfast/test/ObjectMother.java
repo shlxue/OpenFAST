@@ -30,7 +30,6 @@ import org.openfast.Message;
 import org.openfast.ScalarValue;
 import org.openfast.SequenceValue;
 import org.openfast.StringValue;
-
 import org.openfast.template.Field;
 import org.openfast.template.Group;
 import org.openfast.template.MessageTemplate;
@@ -88,7 +87,7 @@ public class ObjectMother {
             allocationInstruction = new MessageTemplate("AllocInstrctn",
                     new Field[] {
                         allocations(), instrument(),
-                        new Scalar("ID", Type.ASCII_STRING, Operator.DELTA, ScalarValue.UNDEFINED, false),
+                        new Scalar("ID", Type.ASCII, Operator.DELTA, ScalarValue.UNDEFINED, false),
                         new Scalar("Side", Type.U32,
                             Operator.COPY, ScalarValue.UNDEFINED, false),
                         new Scalar("Quantity", Type.DECIMAL, Operator.DELTA,
@@ -105,7 +104,7 @@ public class ObjectMother {
         if (allocations == null) {
             allocations = new Sequence("Allocations",
                     new Field[] {
-                        new Scalar("Account", Type.ASCII_STRING, Operator.COPY, ScalarValue.UNDEFINED, false),
+                        new Scalar("Account", Type.ASCII, Operator.COPY, ScalarValue.UNDEFINED, false),
                         new Scalar("Price", Type.DECIMAL, Operator.DELTA, ScalarValue.UNDEFINED, false),
                         new Scalar("Quantity", Type.DECIMAL, Operator.DELTA,
                             ScalarValue.UNDEFINED, false),
@@ -121,8 +120,8 @@ public class ObjectMother {
         if (instrument == null) {
             instrument = new Group("Instrmt",
                     new Field[] {
-                        new Scalar("Symbol", Type.ASCII_STRING, Operator.COPY, ScalarValue.UNDEFINED, false),
-                        new Scalar("MMY", Type.ASCII_STRING, Operator.DELTA, ScalarValue.UNDEFINED, false),
+                        new Scalar("Symbol", Type.ASCII, Operator.COPY, ScalarValue.UNDEFINED, false),
+                        new Scalar("MMY", Type.ASCII, Operator.DELTA, ScalarValue.UNDEFINED, false),
                     }, false);
         }
 

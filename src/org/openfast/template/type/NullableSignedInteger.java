@@ -37,20 +37,20 @@ public final class NullableSignedInteger extends IntegerType {
 
     public byte[] encodeValue(ScalarValue value) {
         if (value.isNull()) {
-            return Type.NULL_VALUE_ENCODING;
+            return TypeCodec.NULL_VALUE_ENCODING;
         }
 
         IntegerValue intValue = (IntegerValue) value;
 
         if (intValue.value >= 0) {
-            return Type.INTEGER.encodeValue(intValue.increment());
+            return TypeCodec.INTEGER.encodeValue(intValue.increment());
         } else {
-            return Type.INTEGER.encodeValue(intValue);
+            return TypeCodec.INTEGER.encodeValue(intValue);
         }
     }
 
     public ScalarValue decode(InputStream in) {
-        NumericValue numericValue = ((NumericValue) Type.INTEGER.decode(in));
+        NumericValue numericValue = ((NumericValue) TypeCodec.INTEGER.decode(in));
         long value = numericValue.toLong();
 
         if (value == 0) {

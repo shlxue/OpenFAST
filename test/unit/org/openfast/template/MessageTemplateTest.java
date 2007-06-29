@@ -32,7 +32,7 @@ import org.openfast.template.type.Type;
 public class MessageTemplateTest extends TestCase {
     public void testEncodeMessageUsingTemplate() {
         Field[] fields = new Field[2];
-        fields[0] = new Scalar("code", Type.ASCII_STRING, Operator.COPY, ScalarValue.UNDEFINED, false);
+        fields[0] = new Scalar("code", Type.ASCII, Operator.COPY, ScalarValue.UNDEFINED, false);
         fields[1] = new Scalar("value", Type.U32, Operator.DELTA,
                 ScalarValue.UNDEFINED, false);
 

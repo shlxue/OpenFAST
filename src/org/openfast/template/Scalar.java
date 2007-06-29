@@ -31,14 +31,15 @@ import org.openfast.ScalarValue;
 import org.openfast.error.FastConstants;
 import org.openfast.template.operator.Operator;
 import org.openfast.template.type.Type;
+import org.openfast.template.type.TypeCodec;
 
 import java.io.InputStream;
 
 
 public class Scalar extends Field {
-    private final Type type;
+    private final TypeCodec typeCodec;
     private final Operator operator;
-    private final String typeName;
+    private final Type type;
     private final String operatorName;
     private String dictionary;
     private ScalarValue defaultValue = ScalarValue.UNDEFINED;
@@ -52,18 +53,22 @@ public class Scalar extends Field {
      * @param defaultValue The default value of the ScalarValue
      * @param optional The optional boolean
      */
-    public Scalar(String name, String typeName, Operator operator, ScalarValue defaultValue, boolean optional) {
+    public Scalar(String name, Type type, Operator operator, ScalarValue defaultValue, boolean optional) {
         super(name, optional);
         this.operator = operator;
         this.operatorName = operator.getName();
         this.dictionary = "global";
         this.defaultValue = (defaultValue == null) ? ScalarValue.UNDEFINED : defaultValue;
-        this.typeName = typeName;
-        this.type = Type.getType(typeName, optional, operator);
+        this.type = type;
+        this.typeCodec = type.getCodec(operator, optional);
         this.initialValue = ((defaultValue == null) || defaultValue.isUndefined()) 
-        								? this.type.getDefaultValue()
+        								? this.typeCodec.getDefaultValue()
                                         : defaultValue;
         validate();
+    }
+
+	public Scalar(String name, Type type, String operator, ScalarValue defaultValue, boolean optional) {
+        this(name, type, Operator.getOperator(operator, type), defaultValue, optional);
     }
 
     /**
@@ -79,31 +84,12 @@ public class Scalar extends Field {
     		FastConstants.handleError(FastConstants.S5_NO_INITVAL_MNDTRY_DFALT, "The field \"" + name + "\" must have a default value defined.");
 	}
 
-	public Scalar(String name, String typeName, String operator, ScalarValue defaultValue, boolean optional) {
-        this(name, typeName, Operator.getOperator(operator, typeName), defaultValue, optional);
-    }
-
-    public Scalar(String name, String typeName, String operator, String defaultValue, boolean optional) {
-        this(name, typeName, operator, getValue(typeName, defaultValue), optional);
-    }
-
-    /**
-     * 
-     * @param typeName The string of the ScalarValue type
-     * @param defaultValue The default value as a string  of the ScalarValue
-     * @return Returns a undefined scalarValue if there is no defaultValue, otherwise returns 
-     */
-	private static ScalarValue getValue(String typeName, String defaultValue) {
-		if (defaultValue == null) return ScalarValue.UNDEFINED;
-		return ScalarValue.getValue(typeName, defaultValue);
-	}
-
 	/**
 	 * 
 	 * @return Returns the type as a string
 	 */
-    public String getType() {
-        return typeName;
+    public Type getType() {
+        return type;
     }
 
     /**
@@ -146,7 +132,7 @@ public class Scalar extends Field {
                 return new byte[0];
             }
 
-            return type.encode(valueToEncode);
+            return typeCodec.encode(valueToEncode);
         } catch (Exception e) {
             throw new RuntimeException(
                 "Error occurred while encoding scalar \"" + getName() + "\": " +
@@ -193,7 +179,7 @@ public class Scalar extends Field {
             return operator.decodeValue(null, null, this);
         }
 
-        return decodeValue(type.decode(in), previousValue);
+        return decodeValue(typeCodec.decode(in), previousValue);
     }
 
     /**
@@ -289,7 +275,7 @@ public class Scalar extends Field {
      * @return Returns the FieldValue object with the passed value
      */
     public FieldValue createValue(String value) {
-        return type.fromString(value);
+        return type.getValue(value);
     }
 
     /**
@@ -311,7 +297,7 @@ public class Scalar extends Field {
      * 
      * @return Returns the type of the Codec
      */
-    public Type getCodecStrategy() {
-    	return type;
+    public TypeCodec getTypeCodec() {
+    	return typeCodec;
     }
 }

@@ -35,14 +35,14 @@ import java.io.IOException;
 import java.io.InputStream;
 
 
-final class ByteVectorType extends Type {
+final class ByteVectorType extends TypeCodec {
     ByteVectorType() { }
 
     public byte[] encode(ScalarValue value) {
         byte[] bytes = value.getBytes();
         int lengthSize = IntegerType.getUnsignedIntegerSize(bytes.length);
         byte[] encoding = new byte[bytes.length + lengthSize];
-        byte[] length = Type.UINT.encode(new IntegerValue(
+        byte[] length = TypeCodec.UINT.encode(new IntegerValue(
         		bytes.length));
         System.arraycopy(length, 0, encoding, 0, lengthSize);
         System.arraycopy(bytes, 0, encoding, lengthSize,
@@ -52,7 +52,7 @@ final class ByteVectorType extends Type {
     }
 
     public ScalarValue decode(InputStream in) {
-        int length = ((IntegerValue) Type.UINT.decode(in)).value;
+        int length = ((IntegerValue) TypeCodec.UINT.decode(in)).value;
         byte[] encoding = new byte[length];
 
         for (int i = 0; i < length; i++)

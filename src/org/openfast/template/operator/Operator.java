@@ -22,22 +22,19 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast.template.operator;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.openfast.BitVector;
 import org.openfast.BitVectorBuilder;
 import org.openfast.FieldValue;
 import org.openfast.NumericValue;
 import org.openfast.ScalarValue;
 import org.openfast.StringValue;
-
 import org.openfast.error.FastConstants;
-
 import org.openfast.template.Scalar;
 import org.openfast.template.type.Type;
-
 import org.openfast.util.Key;
-
-import java.util.HashMap;
-import java.util.Map;
 
 
 public abstract class Operator {
@@ -225,7 +222,7 @@ public abstract class Operator {
     public static final Operator DELTA_STRING = new DeltaStringOperator();
     protected static final Operator DELTA_DECIMAL = new DeltaDecimalOperator();
     protected static final Operator TAIL_STRING = new Operator("tail",
-            new String[] { Type.ASCII_STRING }) {
+            new Type[] { Type.ASCII, Type.STRING }) {
             public ScalarValue getValueToEncode(ScalarValue value,
                 ScalarValue priorValue, Scalar field) {
                 if (value == null) {
@@ -303,7 +300,7 @@ public abstract class Operator {
      * @param name The name of the Operator as a string
      * @param types The type array to be stored in the keys
      */
-    protected Operator(String name, String[] types) {
+    protected Operator(String name, Type[] types) {
         this.name = name;
 
         for (int i = 0; i < types.length; i++) {
@@ -336,7 +333,7 @@ public abstract class Operator {
      * @param type The type of the operator, stored to the key
      * @return Returns the operator object with the specified key
      */
-    public static Operator getOperator(String name, String type) {
+    public static Operator getOperator(String name, Type type) {
         Key key = new Key(name, type);
 
         if (!OPERATOR_MAP.containsKey(key)) {
