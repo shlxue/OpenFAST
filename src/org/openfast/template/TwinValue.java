@@ -39,9 +39,9 @@ public class TwinValue extends ScalarValue {
     }
 
     /**
-     * Compares a TwinValue object with another TwinValue object
-     * @param TwinValue Object
-     * @return True if the two objects are the same, false otherwise
+     * Checks to see if the object passed to it is a TwinValue object
+     * @param The object to be checked if it is a TwinValue object
+     * @return If the passed object is a TwinValue object, returns true, false otherwise
      */
     public boolean equals(Object obj) {
         if ((obj == null) || !(obj instanceof TwinValue)) {
@@ -53,7 +53,7 @@ public class TwinValue extends ScalarValue {
 
     /**
      * Compares the current TwinValue ScalarValues with another TwinValue ScalarValues
-     * @param other A TwinValue object
+     * @param other The TwinValue object that is being compared
      * @return True if the the first and second ScalarValues equal the compared TwinValue ScalarValues, false otherwise
      */
     private boolean equals(TwinValue other) {
@@ -61,7 +61,7 @@ public class TwinValue extends ScalarValue {
     }
 
     /**
-     * Converts the ScalarValues first and second to string 
+     * Converts the ScalarValues first and second to strings
      * @return string in the form (first ScalarValue, second ScalarValue)
      */
     public String toString() {

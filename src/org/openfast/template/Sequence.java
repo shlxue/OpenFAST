@@ -49,7 +49,7 @@ public class Sequence extends Field implements FieldSet {
     /**
      * Sequence Constructor - Sets the implicitLength to true
      * @param name The name of the sequence as a string
-     * @param fields Field array
+     * @param fields Field array object
      * @param optional An optional boolean
      * 
      */
@@ -133,7 +133,7 @@ public class Sequence extends Field implements FieldSet {
     }
 
     /**
-     * @param encoding Byte array
+     * @param encoding Byte array to be checked if there is a MapBit
      * @param fieldValue FieldValue object
      * @return True if there is a Map Bit set, false otherwise
      */
@@ -143,7 +143,7 @@ public class Sequence extends Field implements FieldSet {
 
     /**
      * Store the data passed to a byte array
-     * @param value The FieldValue
+     * @param value The FieldValue object
      * @param template The Group that is to be stored
      * @param context Which context is to be stored
      * @return Returns the buffer of the byte array
@@ -182,7 +182,8 @@ public class Sequence extends Field implements FieldSet {
      * @param template Which Group template is to be decoded
      * @param context Which Context is to be decoded
      * @param present 
-     * @return Returns the number of FieldValues decoded
+     * @return If there is nothing to decode - returns null, otherwise 
+     * returns a sequenceValue object that has the decoded information stored.
      */
     public FieldValue decode(InputStream in, Group template, Context context,
         boolean present) {

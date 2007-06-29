@@ -170,8 +170,8 @@ public class Scalar extends Field {
 
     /**
      * 
-     * @param in
-     * @param previousValue
+     * @param in The InputStream to be decoded
+     * @param previousValue 
      * @return 
      */
     public ScalarValue decode(InputStream in, ScalarValue previousValue) {

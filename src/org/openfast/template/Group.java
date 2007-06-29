@@ -143,7 +143,7 @@ public class Group extends Field {
      * @param template The Group object to be decoded
      * @param context The Context object to be decoded
      * @return Returns the FieldValue array of the decoded field values passed to it
-     * @see public FieldValue[] decodeFieldValues
+     * 
      */
     protected FieldValue[] decodeFieldValues(InputStream in, Group template,
         Context context) {
