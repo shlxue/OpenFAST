@@ -44,10 +44,18 @@ public class TwinOperator extends Operator {
         this.mantissaOperator = Operator.getOperator(mantissaOperator, Type.I32);
     }
 
+    /**
+     * @return Returns null
+     */
     public ScalarValue decodeEmptyValue(ScalarValue previousValue, Scalar field) {
         return null;
     }
 
+    /**
+     * @param val
+     * @param priorVal
+     * @return 
+     */
     public ScalarValue decodeValue(ScalarValue val, ScalarValue priorVal,
         Scalar field) {
         if (val == null) return null;
@@ -69,6 +77,14 @@ public class TwinOperator extends Operator {
         return new DecimalValue(mantissa.value, exponent.value);
     }
 
+    /**
+     * 
+     * @param val The current ScalarValue object
+     * @param priorVal The prior ScalarValue object
+     * @param field The Scalar object
+     * @param presenceMapBuilder The BitVector object
+     * @return 
+     */
     public ScalarValue getValueToEncode(ScalarValue val, ScalarValue priorVal, Scalar field, BitVectorBuilder presenceMapBuilder) {
         ScalarValue priorValue = priorVal.isUndefined() ? field.getDefaultValue() : toTwin(priorVal);
         ScalarValue firstPrior = priorValue.isUndefined() ? ScalarValue.UNDEFINED : ((TwinValue) priorValue).first;
@@ -99,11 +115,21 @@ public class TwinOperator extends Operator {
         return new TwinValue(exponentValue, mantissaValue);
     }
 
+    /**
+     * Convert a ScalarValue object to a TwinValue object
+     * @param priorVal The ScalarValue object to be converted
+     * @return Returns a TwinValue object 
+     */
     private TwinValue toTwin(ScalarValue priorVal) {
     	DecimalValue val = (DecimalValue) priorVal;
 		return new TwinValue(new IntegerValue(val.exponent), new IntegerValue(val.mantissa));
 	}
 
+    /**
+     * Checks to see if the supplied object is a TwinOperator object
+     * @param obj The object to be checked to see if its TwinOperator object
+     * @return Returns true if the passed object is a TwinOperator object, false otherwise
+     */
 	public boolean equals(Object obj) {
         if ((obj == null) || !(obj instanceof TwinOperator)) {
             return false;
@@ -112,6 +138,11 @@ public class TwinOperator extends Operator {
         return equals((TwinOperator) obj);
     }
 
+	/**
+	 * Checks to see if the exponentOperator and the mantissaOperator of the passed object are the same as the one being compared to
+	 * @param other The TwinOperator object to be checked if the decimal values are the same
+	 * @return Returns true if the exponentOperator and the mantissaOperator of the passed object are the same as the one being compared, false otherwise
+	 */
     private boolean equals(TwinOperator other) {
         return exponentOperator.equals(other.exponentOperator) &&
         mantissaOperator.equals(other.mantissaOperator);
