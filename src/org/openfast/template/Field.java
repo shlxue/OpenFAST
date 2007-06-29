@@ -36,7 +36,7 @@ import org.openfast.FieldValue;
 public abstract class Field {
     protected final String name;
     protected String key;
-    protected final boolean optional;
+    protected boolean optional;
 
     /**
      * Field Constructor

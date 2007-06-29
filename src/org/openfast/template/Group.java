@@ -92,6 +92,7 @@ public class Group extends Field {
 
         GroupValue groupValue = (GroupValue) value;
         BitVectorBuilder presenceMapBuilder = new BitVectorBuilder(fields.length);
+        boolean someAreSet = false;
 
         try {
             byte[][] fieldEncodings = new byte[fields.length][];
@@ -100,12 +101,16 @@ public class Group extends Field {
                     fieldIndex++) {
                 FieldValue fieldValue = groupValue.getValue(fieldIndex);
                 Field field = getField(fieldIndex);
+                if (field.usesPresenceMapBit())
+                	someAreSet = true;
                 byte[] encoding = field.encode(fieldValue, template, context, presenceMapBuilder);
                 fieldEncodings[fieldIndex] = encoding;
             }
-
             ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-            buffer.write(presenceMapBuilder.getBitVector().getTruncatedBytes());
+            if (!someAreSet)
+            	this.setUsesPresenceMapBit(false);
+            else 
+            	buffer.write(presenceMapBuilder.getBitVector().getTruncatedBytes());
             for (int i = 0; i < fieldEncodings.length; i++) {
                 if (fieldEncodings[i] != null) {
                     buffer.write(fieldEncodings[i]);
@@ -155,6 +160,7 @@ public class Group extends Field {
         BitVector pmap, Context context, int start) {
         FieldValue[] values = new FieldValue[fields.length];
         int presenceMapIndex = start;
+        boolean someAreSet = false;
 
         //		System.out.print(getName() + "[");
         for (int fieldIndex = start; fieldIndex < fields.length;
@@ -168,6 +174,7 @@ public class Group extends Field {
 
                 if (field.usesPresenceMapBit()) {
                     presenceMapIndex++;
+                    someAreSet = true;
                 }
                 
 //            } catch (Exception e) {
@@ -175,6 +182,8 @@ public class Group extends Field {
 //                    "Error occurred while decoding field \"" + field.getName() +
 //                    "\" in group \"" + getName() + "\"", e);
 //            }
+            if (!someAreSet)
+            	this.setUsesPresenceMapBit(false);
         }
         return values;
     }
@@ -210,6 +219,10 @@ public class Group extends Field {
      */
     public boolean usesPresenceMapBit() {
         return optional;
+    }
+    
+    public void setUsesPresenceMapBit(boolean x) {
+    	optional = x;
     }
 
     /**
