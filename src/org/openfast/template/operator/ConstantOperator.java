@@ -16,6 +16,9 @@ final class ConstantOperator extends Operator {
 		super(name, types);
 	}
 
+	/**
+	 * 
+	 */
 	public ScalarValue getValueToEncode(ScalarValue value, ScalarValue priorValue, Scalar field, BitVectorBuilder presenceMapBuilder) {
 		if (field.isOptional())
 			presenceMapBuilder.setOnValueSkipOnNull(value);
@@ -32,6 +35,11 @@ final class ConstantOperator extends Operator {
 	    return fieldValue != null;
 	}
 
+	/**
+	 * @param previousValue 
+	 * @param field 
+	 * @return
+	 */
 	public ScalarValue decodeEmptyValue(ScalarValue previousValue,
 	    Scalar field) {
 	    if (!field.isOptional()) {
@@ -41,6 +49,9 @@ final class ConstantOperator extends Operator {
 	    return null;
 	}
 
+	/**
+	 * @return Returns the passed optional boolean
+	 */
 	public boolean usesPresenceMapBit(boolean optional) {
 	    return optional;
 	}

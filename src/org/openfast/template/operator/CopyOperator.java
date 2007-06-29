@@ -34,6 +34,14 @@ public class CopyOperator extends OptionallyPresentOperator {
         super(COPY, Type.ALL_TYPES);
     }
 
+    /**
+     * Determine which values to encode from the passed ScalarValue objects
+     * @param value The ScalarValue object to be encoded
+     * @param priorValue The priorValue object to be encoded
+     * @param defaultValue The defaultValue object to be encoded
+     * @return Returns null if the priorValue is undefined and if the ScalarValue object equals the defaultValue object or priorValue object, otherwise
+     * returns the ScalarValue object
+     */
     protected ScalarValue getValueToEncode(ScalarValue value,
         ScalarValue priorValue, ScalarValue defaultValue) {
         if ((priorValue == ScalarValue.UNDEFINED) &&
@@ -44,6 +52,11 @@ public class CopyOperator extends OptionallyPresentOperator {
         return (value.equals(priorValue)) ? null : value;
     }
 
+    /**
+     * Get the initial value of the passed Scalar object as long as the object is defined
+     * @param field The Scalar object that the initial value is trying to return
+     * @return Returns the default value of the passed Scalar object if the object is defined, otherwise returns null
+     */
     protected ScalarValue getInitialValue(Scalar field) {
         if (!field.getDefaultValue().isUndefined()) {
             return field.getDefaultValue();
@@ -58,10 +71,16 @@ public class CopyOperator extends OptionallyPresentOperator {
         return null;
     }
 
+    /**
+     * @return Returns the variable priorValue
+     */
     protected ScalarValue getEmptyValue(ScalarValue priorValue) {
         return priorValue;
     }
 
+    /**
+     * @returns the variable newValue
+     */
     public ScalarValue decodeValue(ScalarValue newValue,
         ScalarValue priorValue, Scalar field) {
         return newValue;

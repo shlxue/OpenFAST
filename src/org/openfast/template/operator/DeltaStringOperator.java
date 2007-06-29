@@ -38,6 +38,12 @@ final class DeltaStringOperator extends AlwaysPresentOperator {
         super(Operator.DELTA, new Type[] { Type.ASCII, Type.STRING });
     }
 
+    /**
+     * @param value
+     * @param priorValue
+     * @param field
+     * @return 
+     */
     public ScalarValue getValueToEncode(ScalarValue value,
         ScalarValue priorValue, Scalar field) {
         if (value == null) {
@@ -54,6 +60,13 @@ final class DeltaStringOperator extends AlwaysPresentOperator {
         return Util.getDifference((StringValue) value, (StringValue) base);
     }
 
+    /**
+     * 
+     * @param newValue 
+     * @param previousValue
+     * @param field
+     * @return Returns null if the passed ScalarValue objects are null, otherwise 
+     */
     public ScalarValue decodeValue(ScalarValue newValue,
         ScalarValue previousValue, Scalar field) {
         if ((newValue == null) || newValue.isNull()) {

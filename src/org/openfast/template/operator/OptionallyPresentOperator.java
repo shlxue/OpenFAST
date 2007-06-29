@@ -36,6 +36,12 @@ public abstract class OptionallyPresentOperator extends Operator {
         super(name, types);
     }
 
+    /**
+     * 
+     * @param priorValue
+     * @param field
+     * @return 
+     */
     public ScalarValue decodeEmptyValue(ScalarValue priorValue, Scalar field) {
         if (priorValue == ScalarValue.UNDEFINED) {
             return getInitialValue(field);
@@ -44,6 +50,12 @@ public abstract class OptionallyPresentOperator extends Operator {
         return getEmptyValue(priorValue);
     }
 
+    /**
+     * @param value
+     * @param priorValue
+     * @param field
+     * @return 
+     */
     public ScalarValue getValueToEncode(ScalarValue value,
         ScalarValue priorValue, Scalar field) {
         if (value != null) {
