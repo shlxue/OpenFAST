@@ -92,7 +92,7 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
     }
 
     /**
-     * Creates a Group object from the dom goup element
+     * Creates a Group object from the dom group element
      * @param group The dom element object
      * @param isOptional The optional boolean
      * @return Returns a newly created Group object
@@ -101,6 +101,8 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
     	if (groupElement.hasAttribute("dictionary"))
     		dictionary = groupElement.getAttribute("dictionary");
         Group group = new Group(getName(groupElement), parseFields(groupElement, dictionary), isOptional);
+        if (groupElement.hasAttribute("id"))
+    		group.setId(groupElement.getAttribute("id"));
         group.setTypeReference(getTypeReference(groupElement));
 		return group;
     }
@@ -110,6 +112,8 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
 		if (templateElement.hasAttribute("dictionary"))
 			dictionary = templateElement.getAttribute("dictionary");
 		MessageTemplate messageTemplate = new MessageTemplate(templateElement.getAttribute("name"), parseFields(templateElement, dictionary));
+		if (templateElement.hasAttribute("id"))
+    		messageTemplate.setId(templateElement.getAttribute("id"));
 		messageTemplate.setTypeReference(getTypeReference(templateElement));
 		return messageTemplate;
 	}
@@ -140,6 +144,7 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
             Node item = childNodes.item(i);
 
             if (isElement(item) && isMessageFieldElement(item)) {
+            	
                 fields.add(parseField((Element) item, dictionary));
             }
         }
@@ -240,6 +245,8 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
         Scalar scalar = new Scalar(name, Type.DECIMAL,
 		            new TwinOperator(exponentOperator, mantissaOperator),
 		            new TwinValue(exponentDefaultValue, mantissaDefaultValue), optional);
+        if (fieldNode.hasAttribute("id"))
+    		scalar.setId(fieldNode.getAttribute("id"));
         scalar.setDictionary(dictionary);
 		return scalar;
     }
@@ -268,6 +275,8 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
         }
         Type type = Type.getType(typeName);
 		Scalar scalar = new Scalar(name, type, operator, type.getValue(defaultValue), optional);
+		if (fieldNode.hasAttribute("id"))
+    		scalar.setId(fieldNode.getAttribute("id"));
         if (key != null)
         	scalar.setKey(key);
         scalar.setDictionary(dictionary);
@@ -307,6 +316,8 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
 		            parseSequenceLengthField(sequenceElement, name, optional, dictionary),
 		            parseFields(sequenceElement, dictionary), optional);
         sequence.setTypeReference(getTypeReference(sequenceElement));
+        if (sequenceElement.hasAttribute("id"))
+    		sequence.setId(sequenceElement.getAttribute("id"));
 		return sequence;
     }
 

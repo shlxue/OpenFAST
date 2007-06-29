@@ -37,6 +37,7 @@ public abstract class Field {
     protected final String name;
     protected String key;
     protected final boolean optional;
+    protected String id;
 
     /**
      * Field Constructor
@@ -59,6 +60,20 @@ public abstract class Field {
         this.name = name;
         this.key = key;
         this.optional = optional;
+    }
+    
+    /**
+     * Field Constructor
+     * @param name The name of the Field, a string
+     * @param key The key of the Field, a string
+     * @param optional An optional boolean
+     * @param id The id string
+     */
+    public Field(String name, String key, boolean optional, String id) {
+    	this.name = name;
+    	this.key = key;
+    	this.optional = optional;
+    	this.id = id;
     }
 
     /**
@@ -87,6 +102,22 @@ public abstract class Field {
 
 	public void setKey(String key) {
 		this.key = key;
+	}
+	
+	/**
+     * Find the ID
+     * @return Returns the ID as a string
+     */
+	public String getId() {
+		return id;
+	}
+	
+	/**
+     * Set the ID
+     * @param id The new ID to set the Field's ID to
+     */
+	public void setId(String id) {
+		this.id = id;
 	}
 
     /**
