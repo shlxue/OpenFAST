@@ -72,8 +72,4 @@ final class ByteVectorType extends TypeCodec {
     public ScalarValue fromString(String value) {
         return new ByteVectorValue(value.getBytes());
     }
-
-    public ScalarValue getDefaultValue() {
-        return new ByteVectorValue(new byte[] {  });
-    }
 }

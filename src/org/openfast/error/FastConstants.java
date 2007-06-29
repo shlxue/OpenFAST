@@ -48,6 +48,8 @@ public final class FastConstants {
     public static final ErrorCode D1_FIELD_APP_INCOMP = new ErrorCode(DYNAMIC, 1,
             "ERR D1", "Field cannot be converted to type of application field",
             FastAlertSeverity.ERROR);
+    public static final ErrorCode D2_INT_OUT_OF_RANGE = new ErrorCode(DYNAMIC, 2, "ERR D2", "The integer value is out of range for the specified integer type.", FastAlertSeverity.WARN);
+    public static final ErrorCode D4_INVALID_TYPE = new ErrorCode(DYNAMIC, 4, "ERR D4", "The previous value is not the same type as the type of the current field.", FastAlertSeverity.ERROR);
     public static final ErrorCode D5_NO_DEFAULT_VALUE = new ErrorCode(DYNAMIC, 5,
             "ERR D5",
             "If no prior value is set and the field is not present, there must be a default value or the optional flag must be set.",

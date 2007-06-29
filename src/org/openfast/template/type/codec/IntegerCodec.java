@@ -41,10 +41,6 @@ public abstract class IntegerCodec extends TypeCodec {
         return new IntegerValue((int) value);
     }
 
-    public ScalarValue getDefaultValue() {
-        return new IntegerValue(0);
-    }
-
     public static int getUnsignedIntegerSize(long value) {
         if (value < 128) {
             return 1; // 2 ^ 7

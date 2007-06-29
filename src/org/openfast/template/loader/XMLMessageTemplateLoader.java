@@ -327,7 +327,7 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
         String name = length.hasAttribute("name") ? length.getAttribute("name")
                                                   : Sequence.createUniqueName();
 
-        return createScalar(length, name, optional, "u32", dictionary);
+        return createScalar(length, name, optional, Type.U32.getName(), dictionary);
     }
 
     /**

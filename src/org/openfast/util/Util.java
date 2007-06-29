@@ -22,10 +22,12 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast.util;
 
+import java.util.Collection;
+import java.util.Iterator;
+
 import org.openfast.IntegerValue;
 import org.openfast.ScalarValue;
 import org.openfast.StringValue;
-
 import org.openfast.template.TwinValue;
 
 
@@ -101,4 +103,16 @@ public class Util {
         return new StringValue(base.substring(0, base.length() - subtraction) +
             diff);
     }
+
+	public static String collectionToString(Collection set) {
+		StringBuffer buffer = new StringBuffer();
+		Iterator iter = set.iterator();
+		buffer.append("{");
+		while (iter.hasNext()) {
+			buffer.append(iter.next()).append(",");
+		}
+		buffer.deleteCharAt(buffer.length()-1);
+		buffer.append("}");
+		return buffer.toString();
+	}
 }

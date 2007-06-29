@@ -100,7 +100,7 @@ public class XMLMessageTemplateLoaderTest extends TestCase {
         String templateXml = "<templates xmlns=\"http://www.fixprotocol.org/ns/template-definition\"" +
             "	ns=\"http://www.fixprotocol.org/ns/templates/sample\">" +
             "	<template name=\"SampleTemplate\">" +
-            "		<u32 name=\"value\"><copy key=\"integer\" /></u32>" +
+            "		<uInt32 name=\"value\"><copy key=\"integer\" /></uInt32>" +
             "	</template>" + "</templates>";
 
         XMLMessageTemplateLoader loader = new XMLMessageTemplateLoader();

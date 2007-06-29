@@ -62,7 +62,7 @@ public class Scalar extends Field {
         this.type = type;
         this.typeCodec = type.getCodec(operator, optional);
         this.initialValue = ((defaultValue == null) || defaultValue.isUndefined()) 
-        								? this.typeCodec.getDefaultValue()
+        								? this.type.getDefaultValue()
                                         : defaultValue;
         validate();
     }
@@ -224,17 +224,17 @@ public class Scalar extends Field {
      */
     public FieldValue decode(InputStream in, Group template, Context context,
         boolean present) {
-        ScalarValue previousValue = context.lookup(getDictionary(), template, getKey());
+        ScalarValue previousValue = context.lookup( getDictionary(), template, getKey());
         validateDictionaryTypeAgainstFieldType(previousValue, this.type);
         ScalarValue value;
 
         if (present) {
             value = decode(in, previousValue);
-        } else if ((getOperatorName() == Operator.CONSTANT) && isOptional()) {
-            value = null;
         } else {
             value = decode(previousValue);
         }
+        
+        validateDecodedValueIsCorrectForType(value, type);
 
         if (!((getOperatorName() == Operator.DELTA) && (value == null))) {
             context.store(getDictionary(), template, getKey(), value);
@@ -243,8 +243,16 @@ public class Scalar extends Field {
         return value;
     }
 
-    private void validateDictionaryTypeAgainstFieldType(ScalarValue previousValue, Type type) {
-    	
+    private void validateDecodedValueIsCorrectForType(ScalarValue value, Type type) {
+    	if (value == null) return;
+    	type.validateValue(value);
+	}
+
+	private void validateDictionaryTypeAgainstFieldType(ScalarValue previousValue, Type type) {
+    	if (previousValue == null || previousValue.isUndefined()) return;
+    	if (!type.isValueOf(previousValue)) {
+    		FastConstants.handleError(FastConstants.D4_INVALID_TYPE, "The value \"" + previousValue + "\" is not valid for the type " + type);
+    	}
 	}
 
 	/**

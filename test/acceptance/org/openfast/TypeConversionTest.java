@@ -9,10 +9,10 @@ public class TypeConversionTest extends OpenFastTestCase {
 		MessageTemplate template = template(
 				"<template>" +
 				"  <string name=\"string\"/>" +
-				"  <u32 name=\"uint\"/>" +
-				"  <i8 name=\"byte\"/>" +
-				"  <i16 name=\"short\"/>" +
-				"  <i64 name=\"long\"/>" +
+				"  <uInt32 name=\"uint\"/>" +
+				"  <int8 name=\"byte\"/>" +
+				"  <int16 name=\"short\"/>" +
+				"  <int64 name=\"long\"/>" +
 				"  <byte name=\"bytevector\"/>" +
 				"  <decimal name=\"decimal\"/>" +
 				"</template>");

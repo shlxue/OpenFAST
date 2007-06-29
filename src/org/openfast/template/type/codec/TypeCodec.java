@@ -52,7 +52,6 @@ public abstract class TypeCodec {
     
     public abstract byte[] encodeValue(ScalarValue value);
     public abstract ScalarValue decode(InputStream in);
-    public abstract ScalarValue getDefaultValue();
 
     public byte[] encode(ScalarValue value) {
         byte[] encoding = encodeValue(value);

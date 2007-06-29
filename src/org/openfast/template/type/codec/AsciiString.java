@@ -84,11 +84,4 @@ final class AsciiString extends TypeCodec {
     public ScalarValue fromString(String value) {
         return new StringValue(value);
     }
-
-    /**
-     * @return Returns a new StringValue object with empty string as the value
-     */
-    public ScalarValue getDefaultValue() {
-        return new StringValue("");
-    }
 }

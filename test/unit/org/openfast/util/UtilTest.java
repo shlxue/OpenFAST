@@ -22,16 +22,25 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast.util;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import junit.framework.TestCase;
 
 import org.openfast.IntegerValue;
 import org.openfast.ScalarValue;
 import org.openfast.StringValue;
-
 import org.openfast.template.TwinValue;
 
 
 public class UtilTest extends TestCase {
+	public void testCollectionToString() {
+		Map map = new LinkedHashMap();
+		map.put("abc", "123");
+		map.put("def", "456");
+		assertEquals("{abc,def}", Util.collectionToString(map.keySet()));
+	}
+	
     public void testGetDifference() {
         assertEquals(tv(0, "d"), diff("abc", "abcd"));
         assertEquals(tv(1, "ed"), diff("abc", "abed"));

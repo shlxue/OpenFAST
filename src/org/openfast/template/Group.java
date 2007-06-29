@@ -161,7 +161,7 @@ public class Group extends Field {
                 fieldIndex++) {
             Field field = getField(fieldIndex);
 
-            try {
+//            try {
                 boolean present = isPresent(pmap, presenceMapIndex, field);
                 values[fieldIndex] = fields[fieldIndex].decode(in, template,
                         context, present);
@@ -170,11 +170,11 @@ public class Group extends Field {
                     presenceMapIndex++;
                 }
                 
-            } catch (Exception e) {
-                throw new RuntimeException(
-                    "Error occurred while decoding field \"" + field.getName() +
-                    "\" in group \"" + getName() + "\"", e);
-            }
+//            } catch (Exception e) {
+//                throw new RuntimeException(
+//                    "Error occurred while decoding field \"" + field.getName() +
+//                    "\" in group \"" + getName() + "\"", e);
+//            }
         }
         return values;
     }

@@ -22,20 +22,22 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast.template;
 
-import junit.framework.TestCase;
+import java.io.ByteArrayInputStream;
 
 import org.openfast.BitVectorBuilder;
 import org.openfast.Context;
 import org.openfast.IntegerValue;
+import org.openfast.Message;
 import org.openfast.ScalarValue;
 import org.openfast.error.FastConstants;
 import org.openfast.error.FastException;
 import org.openfast.template.operator.Operator;
 import org.openfast.template.type.Type;
+import org.openfast.test.OpenFastTestCase;
 import org.openfast.test.TestUtil;
 
 
-public class ScalarTest extends TestCase {
+public class ScalarTest extends OpenFastTestCase {
     private Context context;
 
     public void setUp() {
@@ -83,6 +85,27 @@ public class ScalarTest extends TestCase {
 		} catch (FastException e) {
 			assertEquals(FastConstants.S5_NO_INITVAL_MNDTRY_DFALT, e.getCode());
 			assertEquals("The field \"malformed\" must have a default value defined.", e.getMessage());
+		}
+	}
+	
+	public void testPriorValueTypeConflict() {
+		MessageTemplate template = template(
+				"<template>" +
+				"  <uInt32 name=\"number\"><copy key=\"value\"/></uInt32>" +
+				"  <string name=\"string\"><copy key=\"value\"/></string>" +
+				"</template>");
+		Message message = new Message(template, 2);
+		message.setInteger(1, 25);
+		message.setString(2, "string");
+		Context encodingContext = new Context();
+		Context decodingContext = new Context();
+		try {
+			byte[] encoding = template.encode(message, encodingContext);
+			ByteArrayInputStream in = new ByteArrayInputStream(encoding);
+			template.decode(in, template, decodingContext, true);
+			fail();
+		} catch (FastException e) {
+			assertEquals(FastConstants.D4_INVALID_TYPE, e.getCode());
 		}
 	}
 }
