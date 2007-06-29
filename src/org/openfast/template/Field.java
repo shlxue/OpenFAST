@@ -28,11 +28,6 @@ import org.openfast.BitVectorBuilder;
 import org.openfast.Context;
 import org.openfast.FieldValue;
 
-/**
- * 
- * @see FieldSet
- *
- */
 public abstract class Field {
     protected final String name;
     protected String key;
@@ -78,7 +73,7 @@ public abstract class Field {
 
     /**
      * Find the name
-     * @return Returns the name as a string
+     * @return Returns the name of the Field as a string
      */
     public String getName() {
         return name;
@@ -100,6 +95,10 @@ public abstract class Field {
         return key;
     }
 
+    /**
+     * Sets the passed key to the current field key
+     * @param key The key to be set
+     */
 	public void setKey(String key) {
 		this.key = key;
 	}
@@ -122,10 +121,10 @@ public abstract class Field {
 
     /**
      * byte[] encode method declaration
-     * @param value The FieldValue value to be encoded
-     * @param template The template of the Group to be encoded
-     * @param context The context of the Context to be encoded
-     * @param presenceMapBuilder 
+     * @param value The FieldValue object to be encoded
+     * @param template The Group object to be encoded
+     * @param context The Context object to be encoded
+     * @param presenceMapBuilder The BitVectorBuilder object to be encoded
      */
     public abstract byte[] encode(FieldValue value, Group template,
         Context context, BitVectorBuilder presenceMapBuilder);
@@ -133,10 +132,10 @@ public abstract class Field {
     /**
      * FieldValue decode method declaration
      * @param in The inputStream to be decoded
-     * @param template The template of the Group to be decoded
-     * @param context The context of the Context to be decoded
+     * @param template The Group object to be decoded
+     * @param context The Context object to be decoded
      * @param present
-     * @return
+     *
      */
     public abstract FieldValue decode(InputStream in, Group template,
         Context context, boolean present);
@@ -151,7 +150,7 @@ public abstract class Field {
     /**
      * isPresenceMapBitSet method declaration
      * @param encoding The byte array to check if it is present
-     * @param fieldValue The fieldValue value
+     * @param fieldValue The fieldValue object
      */
     public abstract boolean isPresenceMapBitSet(byte[] encoding,
         FieldValue fieldValue);
