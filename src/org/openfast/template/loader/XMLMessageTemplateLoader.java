@@ -69,6 +69,10 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
             -1, "XMLPARSEERR", "XML Parsing Error", FastAlertSeverity.ERROR);
     private ErrorHandler errorHandler = ErrorHandler.DEFAULT;
 
+    /**
+     * Parses the XML stream and creates an array of the elements
+     * @param source The inputStream object to load
+     */
     public MessageTemplate[] load(InputStream source) {
         Document document = parseXml(source);
 
@@ -91,6 +95,17 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
 
     }
 
+<<<<<<< .mine
+    /**
+     * Get the message reference string from the passed element templateTag
+     * @param templateTag The dom element object
+     * @return Returns the message reference string of the supplied element 
+     */
+    private String getMessageReference(Element templateTag) {
+        String messageReference = null;
+        NodeList messageReferenceTags = templateTag.getElementsByTagName(
+                "messageRef");
+=======
     private Group parseGroup(Element groupElement, boolean isOptional, String dictionary) {
     	if (groupElement.hasAttribute("dictionary"))
     		dictionary = groupElement.getAttribute("dictionary");
@@ -107,6 +122,7 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
 		messageTemplate.setTypeReference(getTypeReference(templateElement));
 		return messageTemplate;
 	}
+>>>>>>> .r18
 
     private String getTypeReference(Element templateTag) {
         String typeReference = null;
@@ -121,7 +137,16 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
         return typeReference;
     }
 
+<<<<<<< .mine
+    /**
+     * Places the nodes of the passed element into an array
+     * @param template The dom element object
+     * @return Returns a Field array of the parsed nodes of the dom element 
+     */
+    private Field[] parseFields(Element template) {
+=======
     private Field[] parseFields(Element template, String dictionary) {
+>>>>>>> .r18
         NodeList childNodes = template.getChildNodes();
         List fields = new ArrayList();
 
@@ -136,7 +161,18 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
         return (Field[]) fields.toArray(new Field[] {  });
     }
 
+<<<<<<< .mine
+    /**
+     * This method checks what the type of the supplied element to determine how to parse it.
+     * Once that is determined, it will parse it accordingly and return a new Scalar object of the 
+     * passed data.
+     * @param fieldNode The dom element object
+     * @return Returns a new Scalar object of the parsed data. 
+     */
+    private Field parseField(Element fieldNode) {
+=======
     private Field parseField(Element fieldNode, String dictionary) {
+>>>>>>> .r18
         String name = fieldNode.getAttribute("name");
         String type = fieldNode.getNodeName();
         boolean optional = false;
@@ -177,6 +213,16 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
         return createScalar(fieldNode, name, optional, type, dictionary);
     }
 
+    /**
+     * Create a new Scalar object with a new TwinValue and a new TwinOperator with the mantissa and exponent nodes.
+     * If there are nodes or child nodes within the passed Nodes, those values are stored as well
+     * @param fieldNode The dom element object
+     * @param name The name of the create Scalar object
+     * @param optional The optional boolean
+     * @param mantissaNode The passed mantissaNode
+     * @param exponentNode The passed exponentNode
+     * @return Returns a new Scalar object with the newly create TwinValue object and TwinOperator object.
+     */
     private Field createTwinFieldDecimal(Element fieldNode, String name,
         boolean optional, Node mantissaNode, Node exponentNode, String dictionary) {
         String mantissaOperator = "none";
@@ -218,7 +264,19 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
 		return scalar;
     }
 
+<<<<<<< .mine
+    /**
+     * Create a new Scalar object with the passed information
+     * @param fieldNode the dom element object
+     * @param name The name of the new Scalar
+     * @param optional The optional boolean
+     * @param typeName The typeName of the new Scalar
+     * @return Returns a new scalar with the passed information
+     */
+    private Scalar createScalar(Element fieldNode, String name, boolean optional, String typeName) {
+=======
     private Scalar createScalar(Element fieldNode, String name, boolean optional, String typeName, String dictionary) {
+>>>>>>> .r18
     	String operator = Operator.NONE;
     	String defaultValue = null;
     	String key = null;
@@ -239,6 +297,11 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
 		return scalar;
     }
 
+    /**
+     * Find the first element item within the passed Element objects child nodes
+     * @param fieldNode The dom element object
+     * @return Returns the first element of the child nodes of the passed element, otherwise returns null
+     */
     private Element getOperatorElement(Element fieldNode) {
         NodeList children = fieldNode.getChildNodes();
         int index = 0;
@@ -253,6 +316,16 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
         return null;
     }
 
+<<<<<<< .mine
+    /**
+     * Creates a Group object from the dom goup element
+     * @param group The dom element object
+     * @param isOptional The optional boolean
+     * @return Returns a newly created Group object
+     */
+    private Group parseGroup(Element group, boolean isOptional) {
+        return new Group(getName(group), parseFields(group), isOptional);
+=======
     private Sequence parseSequence(Element sequenceElement, boolean optional, String dictionary) {
     	if (sequenceElement.hasAttribute("dictionary"))
     		dictionary = sequenceElement.getAttribute("dictionary");
@@ -261,9 +334,32 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
 		            parseFields(sequenceElement, dictionary), optional);
         sequence.setTypeReference(getTypeReference(sequenceElement));
 		return sequence;
+>>>>>>> .r18
     }
 
+<<<<<<< .mine
+    /**
+     * Creates a sequence object from the dom sequence element
+     * @param sequence The dom element object
+     * @param optional The optional boolean
+     * @return Returns a new Sequence object created out of the sequence dom element
+     */
+    private Sequence parseSequence(Element sequence, boolean optional) {
+        return new Sequence(getName(sequence),
+            parseSequenceLengthField(sequence, optional),
+            parseFields(sequence), optional);
+    }
+
+    /**
+     * 
+     * @param sequence The dom element object
+     * @param optional The optional boolean
+     * @return Returns null if there are no elements by the tag length, otherwise 
+     */
+    private Scalar parseSequenceLengthField(Element sequence, boolean optional) {
+=======
     private Scalar parseSequenceLengthField(Element sequence, boolean optional, String dictionary) {
+>>>>>>> .r18
         NodeList lengthElements = sequence.getElementsByTagName("length");
 
         if (lengthElements.getLength() == 0) {
