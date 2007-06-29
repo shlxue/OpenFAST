@@ -1,5 +1,6 @@
 package org.openfast.template.type;
 
+import org.openfast.template.type.codec.TypeCodec;
 import org.openfast.test.OpenFastTestCase;
 
 public class ByteVectorTypeTest extends OpenFastTestCase {

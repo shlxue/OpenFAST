@@ -23,7 +23,7 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 /**
  *
  */
-package org.openfast.template.type;
+package org.openfast.template.type.codec;
 
 import org.openfast.IntegerValue;
 import org.openfast.NumericValue;
@@ -32,7 +32,7 @@ import org.openfast.ScalarValue;
 import java.io.InputStream;
 
 
-public final class NullableSignedInteger extends IntegerType {
+public final class NullableSignedInteger extends IntegerCodec {
     NullableSignedInteger() { }
 
     public byte[] encodeValue(ScalarValue value) {

@@ -1,4 +1,4 @@
-package org.openfast.template.type;
+package org.openfast.template.type.codec;
 
 import org.openfast.ScalarValue;
 

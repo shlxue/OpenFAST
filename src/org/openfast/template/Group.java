@@ -34,7 +34,7 @@ import org.openfast.BitVectorValue;
 import org.openfast.Context;
 import org.openfast.FieldValue;
 import org.openfast.GroupValue;
-import org.openfast.template.type.TypeCodec;
+import org.openfast.template.type.codec.TypeCodec;
 
 
 public class Group extends Field {

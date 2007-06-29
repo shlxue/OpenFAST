@@ -23,7 +23,7 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 /**
  *
  */
-package org.openfast.template.type;
+package org.openfast.template.type.codec;
 
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;

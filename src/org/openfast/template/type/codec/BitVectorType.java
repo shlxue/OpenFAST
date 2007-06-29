@@ -23,41 +23,50 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 /**
  *
  */
-package org.openfast.template.type;
+package org.openfast.template.type.codec;
 
+import org.openfast.BitVector;
+import org.openfast.BitVectorValue;
+import org.openfast.ScalarValue;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 
-import org.openfast.ByteUtil;
-import org.openfast.DecimalValue;
-import org.openfast.ScalarValue;
-import org.openfast.template.TwinValue;
 
+public final class BitVectorType extends TypeCodec {
+    BitVectorType() { }
 
-final class TwinFieldDecimal extends TypeCodec {
-    TwinFieldDecimal() { }
-
-    public byte[] encodeValue(ScalarValue v) {
-    	if (v.isNull())
-    		return NULL_VALUE_ENCODING;
-        TwinValue value = (TwinValue) v;
-        if (value.first != null && value.second != null)
-        	return ByteUtil.combine(TypeCodec.INTEGER.encode(value.first), TypeCodec.INTEGER.encode(value.second));
-        if (value.second != null)
-        	return TypeCodec.INTEGER.encode(value.second);
-        if (value.first != null)
-        	return TypeCodec.INTEGER.encode(value.first);
-        return new byte[] {};
+    public byte[] encodeValue(ScalarValue value) {
+        return ((BitVectorValue) value).value.getBytes();
     }
 
     public ScalarValue decode(InputStream in) {
-        return new TwinValue(TypeCodec.INTEGER.decode(in), TypeCodec.INTEGER.decode(in));
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        int byt;
+
+        do {
+            try {
+                byt = in.read();
+
+                if (byt < 0) {
+                    return null;
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            buffer.write(byt);
+        } while ((byt & 0x80) == 0);
+
+        return new BitVectorValue(new BitVector(buffer.toByteArray()));
     }
 
     public ScalarValue fromString(String value) {
-        return new DecimalValue(Double.parseDouble(value));
+        return null;
     }
 
     public ScalarValue getDefaultValue() {
-        return new DecimalValue(0.0);
+        return new BitVectorValue(new BitVector(0));
     }
 }

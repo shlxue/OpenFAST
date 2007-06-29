@@ -20,7 +20,7 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 */
 
 
-package org.openfast.template.type;
+package org.openfast.template.type.codec;
 
 import java.io.InputStream;
 
@@ -51,6 +51,8 @@ public abstract class TypeCodec {
     public static final TypeCodec NULLABLE_STRING_DELTA = new NullableStringDelta();
     
     public abstract byte[] encodeValue(ScalarValue value);
+    public abstract ScalarValue decode(InputStream in);
+    public abstract ScalarValue getDefaultValue();
 
     public byte[] encode(ScalarValue value) {
         byte[] encoding = encodeValue(value);
@@ -58,9 +60,6 @@ public abstract class TypeCodec {
         return encoding;
     }
 
-    public abstract ScalarValue fromString(String value);
-
-    public abstract ScalarValue decode(InputStream in);
 
     /**
      * 
@@ -70,5 +69,4 @@ public abstract class TypeCodec {
     	return false;
     }
 
-    public abstract ScalarValue getDefaultValue();
 }

@@ -23,7 +23,7 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 /**
  *
  */
-package org.openfast.template.type;
+package org.openfast.template.type.codec;
 
 import org.openfast.DecimalValue;
 import org.openfast.IntegerValue;
@@ -36,8 +36,8 @@ import java.io.IOException;
 import java.io.InputStream;
 
 
-final class NullableSingleFieldDecimal extends TypeCodec {
-    NullableSingleFieldDecimal() { }
+final class SingleFieldDecimal extends TypeCodec {
+    SingleFieldDecimal() { }
 
     public byte[] encodeValue(ScalarValue v) {
         if (v == ScalarValue.NULL) {
@@ -49,11 +49,11 @@ final class NullableSingleFieldDecimal extends TypeCodec {
 
         try {
             if (Math.abs(value.exponent) > 63) {
-                FastConstants.handleError(FastConstants.R1_LARGE_DECIMAL, "");
+                FastConstants.handleError(FastConstants.R1_LARGE_DECIMAL,
+                    "Encountered exponent of size " + value.exponent);
             }
 
-            buffer.write(TypeCodec.NULLABLE_INTEGER.encode(
-                    new IntegerValue(value.exponent)));
+            buffer.write(TypeCodec.INTEGER.encode(new IntegerValue(value.exponent)));
             buffer.write(TypeCodec.INTEGER.encode(new IntegerValue(value.mantissa)));
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -63,13 +63,13 @@ final class NullableSingleFieldDecimal extends TypeCodec {
     }
 
     public ScalarValue decode(InputStream in) {
-        ScalarValue exp = TypeCodec.NULLABLE_INTEGER.decode(in);
+        int exponent = ((IntegerValue) TypeCodec.INTEGER.decode(in)).value;
 
-        if ((exp == null) || exp.isNull()) {
-            return null;
+        if (Math.abs(exponent) > 63) {
+            FastConstants.handleError(FastConstants.R1_LARGE_DECIMAL,
+                "Encountered exponent of size " + exponent);
         }
 
-        int exponent = ((IntegerValue) exp).value;
         int mantissa = ((IntegerValue) TypeCodec.INTEGER.decode(in)).value;
         DecimalValue decimalValue = new DecimalValue(mantissa, exponent);
 
@@ -82,9 +82,5 @@ final class NullableSingleFieldDecimal extends TypeCodec {
 
     public ScalarValue getDefaultValue() {
         return new DecimalValue(0.0);
-    }
-    
-    public boolean isNullable() {
-    	return true;
     }
 }

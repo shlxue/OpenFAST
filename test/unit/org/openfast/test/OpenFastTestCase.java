@@ -34,7 +34,7 @@ import org.openfast.StringValue;
 import org.openfast.template.MessageTemplate;
 import org.openfast.template.TwinValue;
 import org.openfast.template.loader.XMLMessageTemplateLoader;
-import org.openfast.template.type.TypeCodec;
+import org.openfast.template.type.codec.TypeCodec;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;

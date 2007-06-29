@@ -34,7 +34,7 @@ import org.openfast.error.FastException;
 
 import org.openfast.template.Field;
 import org.openfast.template.MessageTemplate;
-import org.openfast.template.type.TypeCodec;
+import org.openfast.template.type.codec.TypeCodec;
 
 import org.openfast.test.ObjectMother;
 import org.openfast.test.TestUtil;

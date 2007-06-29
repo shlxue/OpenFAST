@@ -23,66 +23,65 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 /**
  *
  */
-package org.openfast.template.type;
+package org.openfast.template.type.codec;
 
+import org.openfast.DecimalValue;
+import org.openfast.IntegerValue;
 import org.openfast.ScalarValue;
-import org.openfast.StringValue;
+
+import org.openfast.error.FastConstants;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 
-final class NullableAsciiString extends TypeCodec {
-    private static final byte[] NULLABLE_EMPTY_STRING = new byte[] { 0x00, 0x00 };
+final class NullableSingleFieldDecimal extends TypeCodec {
+    NullableSingleFieldDecimal() { }
 
-    NullableAsciiString() { }
-
-    public byte[] encodeValue(ScalarValue value) {
-        if (value.isNull()) {
+    public byte[] encodeValue(ScalarValue v) {
+        if (v == ScalarValue.NULL) {
             return TypeCodec.NULL_VALUE_ENCODING;
         }
 
-        String string = ((StringValue) value).value;
-
-        if ((string != null) && (string.length() == 0)) {
-            return NULLABLE_EMPTY_STRING;
-        }
-
-        return string.getBytes();
-    }
-
-    public ScalarValue decode(InputStream in) {
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-        int byt;
+        DecimalValue value = (DecimalValue) v;
 
         try {
-            do {
-                byt = in.read();
-                buffer.write(byt);
-            } while ((byt & 0x80) == 0);
+            if (Math.abs(value.exponent) > 63) {
+                FastConstants.handleError(FastConstants.R1_LARGE_DECIMAL, "");
+            }
+
+            buffer.write(TypeCodec.NULLABLE_INTEGER.encode(
+                    new IntegerValue(value.exponent)));
+            buffer.write(TypeCodec.INTEGER.encode(new IntegerValue(value.mantissa)));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        byte[] bytes = buffer.toByteArray();
-        bytes[bytes.length - 1] &= 0x7f;
+        return buffer.toByteArray();
+    }
 
-        if ((bytes.length == 1) && (bytes[0] == 0)) {
-            return ScalarValue.NULL;
-        } else if ((bytes.length == 2) && (bytes[0] == 0) && (bytes[1] == 0)) {
-            return new StringValue("");
+    public ScalarValue decode(InputStream in) {
+        ScalarValue exp = TypeCodec.NULLABLE_INTEGER.decode(in);
+
+        if ((exp == null) || exp.isNull()) {
+            return null;
         }
 
-        return new StringValue(new String(bytes));
+        int exponent = ((IntegerValue) exp).value;
+        int mantissa = ((IntegerValue) TypeCodec.INTEGER.decode(in)).value;
+        DecimalValue decimalValue = new DecimalValue(mantissa, exponent);
+
+        return decimalValue;
     }
 
     public ScalarValue fromString(String value) {
-        return new StringValue(value);
+        return new DecimalValue(Double.parseDouble(value));
     }
 
     public ScalarValue getDefaultValue() {
-        return new StringValue("");
+        return new DecimalValue(0.0);
     }
     
     public boolean isNullable() {

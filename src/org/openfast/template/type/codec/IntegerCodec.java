@@ -20,7 +20,7 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 */
 
 
-package org.openfast.template.type;
+package org.openfast.template.type.codec;
 
 import org.openfast.IntegerValue;
 import org.openfast.ScalarValue;
@@ -30,8 +30,8 @@ import org.openfast.template.LongValue;
 import org.openfast.util.Util;
 
 
-public abstract class IntegerType extends TypeCodec {
-    protected IntegerType() { }
+public abstract class IntegerCodec extends TypeCodec {
+    protected IntegerCodec() { }
 
     protected static ScalarValue createValue(long value) {
         if (Util.isBiggerThanInt(value)) {
@@ -41,22 +41,8 @@ public abstract class IntegerType extends TypeCodec {
         return new IntegerValue((int) value);
     }
 
-    public ScalarValue fromString(String value) {
-        return parseIntegralValue(value);
-    }
-
     public ScalarValue getDefaultValue() {
         return new IntegerValue(0);
-    }
-
-    public static ScalarValue parseIntegralValue(String value) {
-        long longValue = Long.parseLong(value);
-
-        if (Util.isBiggerThanInt(longValue)) {
-            return new LongValue(longValue);
-        }
-
-        return new IntegerValue((int) longValue);
     }
 
     public static int getUnsignedIntegerSize(long value) {

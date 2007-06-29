@@ -23,7 +23,7 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 /**
  *
  */
-package org.openfast.template.type;
+package org.openfast.template.type.codec;
 
 import org.openfast.ByteVectorValue;
 import org.openfast.IntegerValue;
@@ -40,7 +40,7 @@ final class ByteVectorType extends TypeCodec {
 
     public byte[] encode(ScalarValue value) {
         byte[] bytes = value.getBytes();
-        int lengthSize = IntegerType.getUnsignedIntegerSize(bytes.length);
+        int lengthSize = IntegerCodec.getUnsignedIntegerSize(bytes.length);
         byte[] encoding = new byte[bytes.length + lengthSize];
         byte[] length = TypeCodec.UINT.encode(new IntegerValue(
         		bytes.length));

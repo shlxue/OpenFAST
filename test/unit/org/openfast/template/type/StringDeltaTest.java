@@ -29,6 +29,7 @@ import org.openfast.IntegerValue;
 import org.openfast.StringValue;
 
 import org.openfast.template.TwinValue;
+import org.openfast.template.type.codec.TypeCodec;
 import org.openfast.test.TestUtil;
 
 import java.io.InputStream;

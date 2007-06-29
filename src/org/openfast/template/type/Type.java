@@ -11,32 +11,10 @@ import org.openfast.StringValue;
 import org.openfast.template.LongValue;
 import org.openfast.template.operator.Operator;
 import org.openfast.template.operator.TwinOperator;
+import org.openfast.template.type.codec.TypeCodec;
+import org.openfast.util.Util;
 
 public abstract class Type {
-	private static abstract class SimpleType extends Type {
-		private final TypeCodec codec;
-		private final TypeCodec nullableCodec;
-		
-		public SimpleType (String typeName, TypeCodec codec, TypeCodec nullableCodec) {
-			super(typeName);
-			this.codec = codec;
-			this.nullableCodec = nullableCodec;
-		}
-		
-		public TypeCodec getCodec(Operator operator, boolean optional) {
-			if (optional)
-				return nullableCodec;
-			return codec;
-		}
-		
-		public ScalarValue getValue(String value) {
-			if (value == null) return null;
-			return getVal(value);
-		}
-
-		protected abstract ScalarValue getVal(String value);
-	}
-	
 	private static class IntegerType extends SimpleType {
 		public IntegerType(String typeName, TypeCodec codec, TypeCodec nullableCodec) {
 			super(typeName, codec, nullableCodec);
@@ -52,11 +30,18 @@ public abstract class Type {
 		}
 		
 		protected ScalarValue getVal(String value) {
+			long longValue;
 			try {
-				return new IntegerValue(Integer.parseInt(value));
+				longValue = Long.parseLong(value);
 			} catch (NumberFormatException e) {
 				return null;
 			}
+			
+	        if (Util.isBiggerThanInt(longValue)) {
+	            return new LongValue(longValue);
+	        }
+
+	        return new IntegerValue((int) longValue);
 		}
 	}
 	
@@ -97,27 +82,11 @@ public abstract class Type {
 	public final static Type U8 = new IntegerType("u8", TypeCodec.UINT, TypeCodec.NULLABLE_UNSIGNED_INTEGER); 
 	public final static Type U16 = new IntegerType("u16", TypeCodec.UINT, TypeCodec.NULLABLE_UNSIGNED_INTEGER); 
 	public final static Type U32 = new IntegerType("u32", TypeCodec.UINT, TypeCodec.NULLABLE_UNSIGNED_INTEGER); 
-	public final static Type U64 = new IntegerType("u64", TypeCodec.UINT, TypeCodec.NULLABLE_UNSIGNED_INTEGER) {
-		protected ScalarValue getVal(String value) {
-			try {
-				return new LongValue(Long.parseLong(value));
-			} catch (NumberFormatException e) {
-				return null;
-			}
-		}
-	}; 
+	public final static Type U64 = new IntegerType("u64", TypeCodec.UINT, TypeCodec.NULLABLE_UNSIGNED_INTEGER);
 	public final static Type I8 = new IntegerType("i8", TypeCodec.INTEGER, TypeCodec.NULLABLE_INTEGER); 
 	public final static Type I16 = new IntegerType("i16", TypeCodec.INTEGER, TypeCodec.NULLABLE_INTEGER); 
 	public final static Type I32 = new IntegerType("i32", TypeCodec.INTEGER, TypeCodec.NULLABLE_INTEGER); 
-	public final static Type I64 = new IntegerType("i64", TypeCodec.INTEGER, TypeCodec.NULLABLE_INTEGER) {
-		protected ScalarValue getVal(String value) {
-			try {
-				return new LongValue(Long.parseLong(value));
-			} catch (NumberFormatException e) {
-				return null;
-			}
-		}
-	};  
+	public final static Type I64 = new IntegerType("i64", TypeCodec.INTEGER, TypeCodec.NULLABLE_INTEGER);  
 	public final static Type STRING = new StringType("string", TypeCodec.ASCII, TypeCodec.NULLABLE_ASCII);
 	public final static Type ASCII = new StringType("ascii", TypeCodec.ASCII, TypeCodec.NULLABLE_ASCII);
 	public final static Type UNICODE = new StringType("unicode", TypeCodec.UNICODE, TypeCodec.NULLABLE_UNICODE);

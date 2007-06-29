@@ -31,7 +31,7 @@ import org.openfast.ScalarValue;
 import org.openfast.error.FastConstants;
 import org.openfast.template.operator.Operator;
 import org.openfast.template.type.Type;
-import org.openfast.template.type.TypeCodec;
+import org.openfast.template.type.codec.TypeCodec;
 
 import java.io.InputStream;
 

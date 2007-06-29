@@ -1,4 +1,4 @@
-package org.openfast.template.type;
+package org.openfast.template.type.codec;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,7 +30,7 @@ public class NullableByteVector extends NotStopBitEncodedType {
 		if (value.isNull())
 			return TypeCodec.NULLABLE_UNSIGNED_INTEGER.encodeValue(ScalarValue.NULL);
         ByteVectorValue byteVectorValue = (ByteVectorValue) value;
-        int lengthSize = IntegerType.getUnsignedIntegerSize(byteVectorValue.value.length);
+        int lengthSize = IntegerCodec.getUnsignedIntegerSize(byteVectorValue.value.length);
         byte[] encoding = new byte[byteVectorValue.value.length + lengthSize];
         byte[] length = TypeCodec.NULLABLE_UNSIGNED_INTEGER.encode(new IntegerValue(byteVectorValue.value.length));
         System.arraycopy(length, 0, encoding, 0, lengthSize);

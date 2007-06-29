@@ -29,7 +29,7 @@ import org.openfast.IntegerValue;
 import org.openfast.Message;
 
 import org.openfast.template.MessageTemplate;
-import org.openfast.template.type.TypeCodec;
+import org.openfast.template.type.codec.TypeCodec;
 
 import java.io.InputStream;
 

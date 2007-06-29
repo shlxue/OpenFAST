@@ -36,7 +36,7 @@ import org.openfast.template.TwinValue;
 import org.openfast.template.operator.Operator;
 import org.openfast.template.operator.TwinOperator;
 import org.openfast.template.type.Type;
-import org.openfast.template.type.TypeCodec;
+import org.openfast.template.type.codec.TypeCodec;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;

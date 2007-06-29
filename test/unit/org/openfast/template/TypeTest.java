@@ -32,7 +32,7 @@ import org.openfast.DecimalValue;
 import org.openfast.IntegerValue;
 import org.openfast.ScalarValue;
 import org.openfast.StringValue;
-import org.openfast.template.type.TypeCodec;
+import org.openfast.template.type.codec.TypeCodec;
 import org.openfast.test.OpenFastTestCase;
 import org.openfast.test.TestUtil;
 
