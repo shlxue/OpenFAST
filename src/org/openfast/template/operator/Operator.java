@@ -28,6 +28,7 @@ import java.util.Map;
 import org.openfast.BitVector;
 import org.openfast.BitVectorBuilder;
 import org.openfast.FieldValue;
+import org.openfast.Global;
 import org.openfast.NumericValue;
 import org.openfast.ScalarValue;
 import org.openfast.StringValue;
@@ -207,7 +208,7 @@ public abstract class Operator {
                         if (field.isOptional()) {
                             return ScalarValue.UNDEFINED;
                         } else {
-                            FastConstants.handleError(FastConstants.D5_NO_DEFAULT_VALUE,
+                            Global.handleError(FastConstants.D5_NO_DEFAULT_VALUE,
                                 "");
                         }
                     } else {
@@ -257,7 +258,7 @@ public abstract class Operator {
                 StringValue base;
 
                 if ((previousValue == null) && !field.isOptional()) {
-                    FastConstants.handleError(FastConstants.D6_MNDTRY_FIELD_NOT_PRESENT,
+                    Global.handleError(FastConstants.D6_MNDTRY_FIELD_NOT_PRESENT,
                         "");
 
                     return null;
@@ -337,7 +338,7 @@ public abstract class Operator {
         Key key = new Key(name, type);
 
         if (!OPERATOR_MAP.containsKey(key)) {
-        	FastConstants.handleError(FastConstants.S2_OPERATOR_TYPE_INCOMP, "The operator \"" + name +
+        	Global.handleError(FastConstants.S2_OPERATOR_TYPE_INCOMP, "The operator \"" + name +
                     "\" does not exist for the type " + type);
             throw new IllegalArgumentException();
         }

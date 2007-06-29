@@ -26,11 +26,14 @@ import junit.framework.TestCase;
 
 import org.openfast.ByteUtil;
 import org.openfast.ByteVectorValue;
+import org.openfast.Context;
 import org.openfast.DecimalValue;
 import org.openfast.IntegerValue;
 import org.openfast.ScalarValue;
 import org.openfast.StringValue;
 
+import org.openfast.codec.FastDecoder;
+import org.openfast.codec.FastEncoder;
 import org.openfast.template.MessageTemplate;
 import org.openfast.template.TwinValue;
 import org.openfast.template.loader.XMLMessageTemplateLoader;
@@ -73,6 +76,18 @@ public abstract class OpenFastTestCase extends TestCase {
 
     protected static ByteVectorValue byt(byte[] value) {
 		return new ByteVectorValue(value);
+	}
+
+	protected static FastDecoder decoder(String bitString, MessageTemplate template) {
+		Context context = new Context();
+		context.registerTemplate(1, template);
+		return new FastDecoder(context, stream(bitString));
+	}
+
+	protected static FastEncoder encoder(MessageTemplate template) {
+		Context context = new Context();
+		context.registerTemplate(1, template);
+		return new FastEncoder(context);
 	}
 
 	protected byte[] byt(String hexString) {

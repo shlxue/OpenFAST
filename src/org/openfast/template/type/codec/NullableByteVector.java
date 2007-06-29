@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.openfast.ByteVectorValue;
+import org.openfast.Global;
 import org.openfast.IntegerValue;
 import org.openfast.ScalarValue;
 import org.openfast.error.FastConstants;
@@ -21,7 +22,7 @@ public class NullableByteVector extends NotStopBitEncodedType {
         	try {
                 encoding[i] = (byte) in.read();
             } catch (IOException e) {
-            	FastConstants.handleError(FastConstants.IO_ERROR, "An error occurred while decoding a nullable byte vector.", e);
+            	Global.handleError(FastConstants.IO_ERROR, "An error occurred while decoding a nullable byte vector.", e);
             }
         return new ByteVectorValue(encoding);
 	}

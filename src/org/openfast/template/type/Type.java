@@ -3,6 +3,7 @@ package org.openfast.template.type;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.openfast.Global;
 import org.openfast.ScalarValue;
 import org.openfast.error.FastConstants;
 import org.openfast.template.LongValue;
@@ -45,7 +46,7 @@ public abstract class Type {
 		public void validateValue(ScalarValue value) {
 			if (value instanceof LongValue) {
 				if (value.toLong() > Integer.MAX_VALUE || value.toLong() < Integer.MIN_VALUE)
-					FastConstants.handleError(FastConstants.D2_INT_OUT_OF_RANGE, "The value " + value + " is out of range for the type " + this);
+					Global.handleError(FastConstants.D2_INT_OUT_OF_RANGE, "The value " + value + " is out of range for the type " + this);
 			}
 		}
 	}; 
@@ -56,7 +57,7 @@ public abstract class Type {
 		public void validateValue(ScalarValue value) {
 			if (value instanceof LongValue) {
 				if (value.toLong() > Integer.MAX_VALUE || value.toLong() < Integer.MIN_VALUE)
-					FastConstants.handleError(FastConstants.D2_INT_OUT_OF_RANGE, "The value " + value + " is out of range for the type " + this);
+					Global.handleError(FastConstants.D2_INT_OUT_OF_RANGE, "The value " + value + " is out of range for the type " + this);
 			}
 		}
 	};  

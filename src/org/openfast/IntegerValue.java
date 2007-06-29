@@ -97,13 +97,13 @@ public class IntegerValue extends NumericValue {
     
     public byte toByte() {
     	if (value > Byte.MAX_VALUE || value < Byte.MIN_VALUE)
-    		FastConstants.handleError(FastConstants.R4_NUMERIC_VALUE_TOO_LARGE, "The value \"" + value + "\" is too large for a byte.");
+    		Global.handleError(FastConstants.R4_NUMERIC_VALUE_TOO_LARGE, "The value \"" + value + "\" is too large for a byte.");
     	return (byte) value;
     }
     
     public short toShort() {
     	if (value > Short.MAX_VALUE || value < Short.MIN_VALUE)
-    		FastConstants.handleError(FastConstants.R4_NUMERIC_VALUE_TOO_LARGE, "The value \"" + value + "\" is too large for a short.");
+    		Global.handleError(FastConstants.R4_NUMERIC_VALUE_TOO_LARGE, "The value \"" + value + "\" is too large for a short.");
     	return (short) value;
     }
     

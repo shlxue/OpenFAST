@@ -6,6 +6,7 @@ package org.openfast.template.type;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.openfast.Global;
 import org.openfast.IntegerValue;
 import org.openfast.ScalarValue;
 import org.openfast.error.FastConstants;
@@ -50,7 +51,7 @@ public abstract class IntegerType extends SimpleType {
 		try {
 			longValue = Long.parseLong(value);
 		} catch (NumberFormatException e) {
-			FastConstants.handleError(FastConstants.S3_INITIAL_VALUE_INCOMP, "The value \"" + value + "\" is not compatable with type " + this);
+			Global.handleError(FastConstants.S3_INITIAL_VALUE_INCOMP, "The value \"" + value + "\" is not compatable with type " + this);
 			return null;
 		}
 		
@@ -72,7 +73,7 @@ public abstract class IntegerType extends SimpleType {
 	public void validateValue(ScalarValue value) {
 		if (value == null || value.isUndefined()) return;
 		if (value.toLong() > maxValue || value.toLong() < minValue) {
-			FastConstants.handleError(FastConstants.D2_INT_OUT_OF_RANGE, "The value " + value + " is out of range for type " + this);
+			Global.handleError(FastConstants.D2_INT_OUT_OF_RANGE, "The value " + value + " is out of range for type " + this);
 		}
 	}
 }

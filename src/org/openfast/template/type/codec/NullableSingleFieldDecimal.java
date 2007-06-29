@@ -26,6 +26,7 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 package org.openfast.template.type.codec;
 
 import org.openfast.DecimalValue;
+import org.openfast.Global;
 import org.openfast.IntegerValue;
 import org.openfast.ScalarValue;
 
@@ -49,7 +50,7 @@ final class NullableSingleFieldDecimal extends TypeCodec {
 
         try {
             if (Math.abs(value.exponent) > 63) {
-                FastConstants.handleError(FastConstants.R1_LARGE_DECIMAL, "");
+                Global.handleError(FastConstants.R1_LARGE_DECIMAL, "");
             }
 
             buffer.write(TypeCodec.NULLABLE_INTEGER.encode(

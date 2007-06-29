@@ -30,6 +30,7 @@ import java.util.Iterator;
 import org.openfast.BitVectorBuilder;
 import org.openfast.Context;
 import org.openfast.FieldValue;
+import org.openfast.Global;
 import org.openfast.GroupValue;
 import org.openfast.IntegerValue;
 import org.openfast.ScalarValue;
@@ -53,7 +54,7 @@ public class Sequence extends Field implements FieldSet {
      * 
      */
     public Sequence(String name, Field[] fields, boolean optional) {
-        this(name, createLength(optional), fields, optional);
+        this(name, createLength(name, optional), fields, optional);
         implicitLength = true;
     }
 
@@ -80,7 +81,7 @@ public class Sequence extends Field implements FieldSet {
         this.group = new Group(name, fields, optional);
 
         if (length == null) {
-            this.length = createLength(optional);
+            this.length = createLength(name, optional);
             implicitLength = true;
         } else {
             this.length = length;
@@ -89,20 +90,13 @@ public class Sequence extends Field implements FieldSet {
 
     /**
      * Creates a Scalar value length
+     * @param name 
      * @param optional Optional boolean value
      * @return A Scalar value
      */
-    private static Scalar createLength(boolean optional) {
-        return new Scalar(createUniqueName(), Type.U32,
+    private static Scalar createLength(String name, boolean optional) {
+        return new Scalar(Global.createImplicitName(name), Type.U32,
             Operator.NONE, ScalarValue.UNDEFINED, optional);
-    }
-
-    /**
-     * Creates a null string
-     * @return returns a null string
-     */
-    public static String createUniqueName() {
-        return null;
     }
 
     /**

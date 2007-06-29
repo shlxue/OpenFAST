@@ -22,6 +22,7 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast.template.operator;
 
+import org.openfast.Global;
 import org.openfast.ScalarValue;
 import org.openfast.error.FastConstants;
 import org.openfast.template.Scalar;
@@ -52,7 +53,7 @@ public class CopyOperator extends OptionallyPresentOperator {
             return null;
         }
 
-        FastConstants.handleError(FastConstants.D5_NO_DEFAULT_VALUE, "");
+        Global.handleError(FastConstants.D5_NO_DEFAULT_VALUE, "");
 
         return null;
     }

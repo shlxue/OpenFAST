@@ -22,6 +22,7 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast.template.operator;
 
+import org.openfast.Global;
 import org.openfast.ScalarValue;
 
 import org.openfast.error.FastConstants;
@@ -54,7 +55,7 @@ public abstract class OptionallyPresentOperator extends Operator {
                 return ScalarValue.NULL;
             }
         } else {
-            FastConstants.handleError(FastConstants.D6_MNDTRY_FIELD_NOT_PRESENT, "");
+            Global.handleError(FastConstants.D6_MNDTRY_FIELD_NOT_PRESENT, "");
         }
 
         return null;

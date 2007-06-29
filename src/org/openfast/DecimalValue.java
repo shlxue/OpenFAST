@@ -109,26 +109,34 @@ public class DecimalValue extends NumericValue {
 
     public long toLong() {
     	if (exponent < 0)
-    		FastConstants.handleError(FastConstants.R5_DECIMAL_CANT_CONVERT_TO_INT, "");
+    		Global.handleError(FastConstants.R5_DECIMAL_CANT_CONVERT_TO_INT, "");
         return (long) value;
     }
 
     public int toInt() {
     	if (exponent < 0)
-    		FastConstants.handleError(FastConstants.R5_DECIMAL_CANT_CONVERT_TO_INT, "");
+    		Global.handleError(FastConstants.R5_DECIMAL_CANT_CONVERT_TO_INT, "");
         return (int) value;
     }
 
     public short toShort() {
     	if (exponent < 0)
-    		FastConstants.handleError(FastConstants.R5_DECIMAL_CANT_CONVERT_TO_INT, "");
+    		Global.handleError(FastConstants.R5_DECIMAL_CANT_CONVERT_TO_INT, "");
         return (short) value;
     }
 
     public byte toByte() {
     	if (exponent < 0)
-    		FastConstants.handleError(FastConstants.R5_DECIMAL_CANT_CONVERT_TO_INT, "");
+    		Global.handleError(FastConstants.R5_DECIMAL_CANT_CONVERT_TO_INT, "");
         return (byte) value;
+    }
+    
+    public double toDouble() {
+    	return value;
+    }
+    
+    public BigDecimal toBigDecimal() {
+    	return new BigDecimal(value);
     }
 
     public String toString() {

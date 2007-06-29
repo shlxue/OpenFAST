@@ -26,6 +26,7 @@ import org.openfast.BitVector;
 import org.openfast.BitVectorBuilder;
 import org.openfast.Context;
 import org.openfast.FieldValue;
+import org.openfast.Global;
 import org.openfast.ScalarValue;
 
 import org.openfast.error.FastConstants;
@@ -79,9 +80,9 @@ public class Scalar extends Field {
     private void validate() {
     	// TODO - move this validation into the operator class.
     	if (operatorName.equals(Operator.CONSTANT) && defaultValue.isUndefined())
-    		FastConstants.handleError(FastConstants.S4_NO_INITIAL_VALUE_FOR_CONST, "The field \"" + name + "\" must have a default value defined.");
+    		Global.handleError(FastConstants.S4_NO_INITIAL_VALUE_FOR_CONST, "The field \"" + name + "\" must have a default value defined.");
     	if (operatorName.equals(Operator.DEFAULT) && !optional && defaultValue.isUndefined())
-    		FastConstants.handleError(FastConstants.S5_NO_INITVAL_MNDTRY_DFALT, "The field \"" + name + "\" must have a default value defined.");
+    		Global.handleError(FastConstants.S5_NO_INITVAL_MNDTRY_DFALT, "The field \"" + name + "\" must have a default value defined.");
 	}
 
 	/**
@@ -251,7 +252,7 @@ public class Scalar extends Field {
 	private void validateDictionaryTypeAgainstFieldType(ScalarValue previousValue, Type type) {
     	if (previousValue == null || previousValue.isUndefined()) return;
     	if (!type.isValueOf(previousValue)) {
-    		FastConstants.handleError(FastConstants.D4_INVALID_TYPE, "The value \"" + previousValue + "\" is not valid for the type " + type);
+    		Global.handleError(FastConstants.D4_INVALID_TYPE, "The value \"" + previousValue + "\" is not valid for the type " + type);
     	}
 	}
 

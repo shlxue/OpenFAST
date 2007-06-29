@@ -42,7 +42,17 @@ public class Group extends Field {
     protected final Field[] fields;
     protected final Map fieldIndexMap;
     protected final Map fieldNameMap;
+    protected final boolean usesPresenceMap;
 
+    protected Group(String name, Field[] fields, boolean optional, boolean usesPresenceMap) {
+        super(name, optional);
+        this.fields = fields;
+        this.fieldIndexMap = constructFieldIndexMap(fields);
+        this.fieldNameMap = constructFieldNameMap(fields);
+        this.usesPresenceMap = usesPresenceMap;
+    	
+    }
+    
     /**
      * 
      * @param name The name of the Group
@@ -50,13 +60,17 @@ public class Group extends Field {
      * @param optional The optional boolean
      */
     public Group(String name, Field[] fields, boolean optional) {
-        super(name, optional);
-        this.fields = fields;
-        this.fieldIndexMap = constructFieldIndexMap(fields);
-        this.fieldNameMap = constructFieldNameMap(fields);
+    	this (name, fields, optional, determinePresenceMapUsage(fields));
     }
 
-    /**
+    private static boolean determinePresenceMapUsage(Field[] fields) {
+    	for (int i=0; i<fields.length; i++)
+    		if (fields[i].usesPresenceMapBit())
+    			return true;
+    	return false;
+	}
+
+	/**
      * If your FieldValue already has a BitVector, use this encode method.  The MapBuilder index is kept track of and stored through this process.
      * The supplied data is stored to a byte buffer array and returned.
      * @param value The value of the FieldValue to be encoded
@@ -92,8 +106,6 @@ public class Group extends Field {
 
         GroupValue groupValue = (GroupValue) value;
         BitVectorBuilder presenceMapBuilder = new BitVectorBuilder(fields.length);
-        boolean someAreSet = false;
-
         try {
             byte[][] fieldEncodings = new byte[fields.length][];
 
@@ -101,15 +113,12 @@ public class Group extends Field {
                     fieldIndex++) {
                 FieldValue fieldValue = groupValue.getValue(fieldIndex);
                 Field field = getField(fieldIndex);
-                if (field.usesPresenceMapBit())
-                	someAreSet = true;
                 byte[] encoding = field.encode(fieldValue, template, context, presenceMapBuilder);
                 fieldEncodings[fieldIndex] = encoding;
             }
             ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-            if (!someAreSet)
-            	this.setUsesPresenceMapBit(false);
-            else 
+            
+            if (usesPresenceMap)
             	buffer.write(presenceMapBuilder.getBitVector().getTruncatedBytes());
             for (int i = 0; i < fieldEncodings.length; i++) {
                 if (fieldEncodings[i] != null) {
@@ -138,12 +147,24 @@ public class Group extends Field {
      */
     protected FieldValue[] decodeFieldValues(InputStream in, Group template,
         Context context) {
-        BitVector pmap = ((BitVectorValue) TypeCodec.BIT_VECTOR.decode(in)).value;
-
-        return decodeFieldValues(in, template, pmap, context, 0);
+    	if (usesPresenceMap) {
+    		BitVector pmap = ((BitVectorValue) TypeCodec.BIT_VECTOR.decode(in)).value;
+    		return decodeFieldValues(in, template, pmap, context, 0);
+    	} else {
+    		return decodeFieldValues(in, template, context, 0);
+    	}
     }
 
-    /**
+    private FieldValue[] decodeFieldValues(InputStream in, Group template, Context context, int start) {
+        FieldValue[] values = new FieldValue[fields.length];
+
+        for (int fieldIndex = start; fieldIndex < fields.length; fieldIndex++) {
+            values[fieldIndex] = getField(fieldIndex).decode(in, template, context, true);
+        }
+        return values;
+	}
+
+	/**
      * Goes through the all the field value array, starting with the index passed, checks to see if a map actually created for the field to pass
      * to the decoder - the field index is created as a new Group object and stored to the the FieldValue array.  Once all the field values have
      * beed gone through, the method returns.
@@ -160,30 +181,18 @@ public class Group extends Field {
         BitVector pmap, Context context, int start) {
         FieldValue[] values = new FieldValue[fields.length];
         int presenceMapIndex = start;
-        boolean someAreSet = false;
 
-        //		System.out.print(getName() + "[");
         for (int fieldIndex = start; fieldIndex < fields.length;
                 fieldIndex++) {
             Field field = getField(fieldIndex);
 
-//            try {
                 boolean present = isPresent(pmap, presenceMapIndex, field);
                 values[fieldIndex] = fields[fieldIndex].decode(in, template,
                         context, present);
 
                 if (field.usesPresenceMapBit()) {
                     presenceMapIndex++;
-                    someAreSet = true;
                 }
-                
-//            } catch (Exception e) {
-//                throw new RuntimeException(
-//                    "Error occurred while decoding field \"" + field.getName() +
-//                    "\" in group \"" + getName() + "\"", e);
-//            }
-            if (!someAreSet)
-            	this.setUsesPresenceMapBit(false);
         }
         return values;
     }
@@ -221,10 +230,6 @@ public class Group extends Field {
         return optional;
     }
     
-    public void setUsesPresenceMapBit(boolean x) {
-    	optional = x;
-    }
-
     /**
      * Find the number of total fields
      * @return Returns the number of fields

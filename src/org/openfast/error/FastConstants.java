@@ -69,23 +69,4 @@ public final class FastConstants {
 	public static final ErrorCode IMPOSSIBLE_EXCEPTION = new ErrorCode(DYNAMIC, 101, "IMPOSSIBLE", "This should never happen.", FastAlertSeverity.ERROR);
 	public static final ErrorCode IO_ERROR = new ErrorCode(DYNAMIC, 102, "IOERROR", "An IO error occurred.", FastAlertSeverity.FATAL);
 	public static final String ANY = "any";
-    
-	
-	private static ErrorHandler globalHandler = ErrorHandler.DEFAULT;
-
-    public static void setGlobalHandler(ErrorHandler handler) {
-        if (handler == null) {
-            throw new NullPointerException();
-        }
-
-        globalHandler = handler;
-    }
-
-    public static void handleError(ErrorCode error, String message) {
-        globalHandler.error(error, message);
-    }
-
-	public static void handleError(ErrorCode error, String message, Throwable source) {
-		globalHandler.error(error, message, source);
-	}
 }

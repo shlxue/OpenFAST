@@ -22,20 +22,28 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast.template;
 
-import junit.framework.TestCase;
+import org.openfast.Message;
+import org.openfast.codec.FastDecoder;
+import org.openfast.codec.FastEncoder;
+import org.openfast.test.OpenFastTestCase;
 
-import org.openfast.ScalarValue;
-import org.openfast.template.operator.Operator;
-import org.openfast.template.type.Type;
 
-
-public class MessageTemplateTest extends TestCase {
-    public void testEncodeMessageUsingTemplate() {
-        Field[] fields = new Field[2];
-        fields[0] = new Scalar("code", Type.ASCII, Operator.COPY, ScalarValue.UNDEFINED, false);
-        fields[1] = new Scalar("value", Type.U32, Operator.DELTA,
-                ScalarValue.UNDEFINED, false);
-
-        //		MessageTemplate template = new MessageTemplate(null, fields);
-    }
+public class MessageTemplateTest extends OpenFastTestCase {
+	public void testMessageTemplateWithNoFieldsThatUsePresenceMapStillEncodesPresenceMap() {
+		MessageTemplate template = template(
+				"<template>" +
+				"  <string name=\"string\"/>" +
+				"  <decimal name=\"decimal\"><delta/></decimal>" +
+				"</template>");
+		String encoding = "11000000 10000001 11100001 10000000 10000001";
+		
+		FastDecoder decoder = decoder(encoding, template);
+		FastEncoder encoder = encoder(template);
+		
+		Message message = decoder.readMessage();
+		assertEquals("a", message.getString("string"));
+		assertEquals(1.0, message.getDouble("decimal"), 0.1);
+		
+		assertEquals(encoding, encoder.encode(message));
+	}
 }

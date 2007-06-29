@@ -25,20 +25,21 @@ package org.openfast.template;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
-import junit.framework.TestCase;
-
 import org.openfast.ByteUtil;
 import org.openfast.Context;
 import org.openfast.FieldValue;
 import org.openfast.GroupValue;
 import org.openfast.IntegerValue;
+import org.openfast.Message;
 import org.openfast.ScalarValue;
+import org.openfast.codec.FastDecoder;
 import org.openfast.template.operator.Operator;
 import org.openfast.template.type.Type;
+import org.openfast.test.OpenFastTestCase;
 import org.openfast.test.TestUtil;
 
 
-public class GroupTest extends TestCase {
+public class GroupTest extends OpenFastTestCase {
     private Group template;
     private Context context;
 
@@ -82,5 +83,27 @@ public class GroupTest extends TestCase {
                 context, true);
         assertEquals(1, ((IntegerValue) groupValue.getValue(0)).value);
         assertEquals(2, ((IntegerValue) groupValue.getValue(1)).value);
+    }
+    
+    public void testGroupWithoutPresenceMap() {
+    	MessageTemplate template = template(
+    			"<template>" +
+    			"  <group name=\"priceGroup\" presence=\"optional\">" +
+    			"    <decimal name=\"price\"><delta/></decimal>" +
+    			"  </group>" +
+    			"</template>");
+    	Context encodingContext = new Context();
+    	Context decodingContext = new Context();
+    	encodingContext.registerTemplate(1, template);
+    	decodingContext.registerTemplate(1, template);
+    	
+    	String encodedBits = "11100000 10000001 11111110 10111111";
+    	
+    	FastDecoder decoder = new FastDecoder(decodingContext, stream(encodedBits));
+		Message message = decoder.readMessage();
+    	assertEquals(0.63, message.getGroup("priceGroup").getDouble("price"), 0.01);
+    	
+    	byte[] encoding = template.encode(message, encodingContext);
+    	assertEquals(encodedBits, encoding);
     }
 }

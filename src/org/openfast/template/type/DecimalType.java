@@ -4,6 +4,7 @@
 package org.openfast.template.type;
 
 import org.openfast.DecimalValue;
+import org.openfast.Global;
 import org.openfast.ScalarValue;
 import org.openfast.error.FastConstants;
 import org.openfast.template.operator.Operator;
@@ -25,7 +26,7 @@ final class DecimalType extends SimpleType {
 		try {
 			return new DecimalValue(Double.parseDouble(value));
 		} catch (NumberFormatException e) {
-			FastConstants.handleError(FastConstants.S3_INITIAL_VALUE_INCOMP, "The value \"" + value + "\" is not compatible with type " + this);
+			Global.handleError(FastConstants.S3_INITIAL_VALUE_INCOMP, "The value \"" + value + "\" is not compatible with type " + this);
 			return null;
 		}
 	}

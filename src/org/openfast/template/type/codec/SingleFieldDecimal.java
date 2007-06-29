@@ -26,6 +26,7 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 package org.openfast.template.type.codec;
 
 import org.openfast.DecimalValue;
+import org.openfast.Global;
 import org.openfast.IntegerValue;
 import org.openfast.ScalarValue;
 
@@ -49,7 +50,7 @@ final class SingleFieldDecimal extends TypeCodec {
 
         try {
             if (Math.abs(value.exponent) > 63) {
-                FastConstants.handleError(FastConstants.R1_LARGE_DECIMAL,
+                Global.handleError(FastConstants.R1_LARGE_DECIMAL,
                     "Encountered exponent of size " + value.exponent);
             }
 
@@ -66,7 +67,7 @@ final class SingleFieldDecimal extends TypeCodec {
         int exponent = ((IntegerValue) TypeCodec.INTEGER.decode(in)).value;
 
         if (Math.abs(exponent) > 63) {
-            FastConstants.handleError(FastConstants.R1_LARGE_DECIMAL,
+            Global.handleError(FastConstants.R1_LARGE_DECIMAL,
                 "Encountered exponent of size " + exponent);
         }
 

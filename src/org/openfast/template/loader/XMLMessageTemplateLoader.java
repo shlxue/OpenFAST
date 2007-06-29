@@ -33,6 +33,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.openfast.Global;
 import org.openfast.ScalarValue;
 import org.openfast.error.ErrorCode;
 import org.openfast.error.ErrorHandler;
@@ -301,8 +302,9 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
     private Sequence parseSequence(Element sequenceElement, boolean optional, String dictionary) {
     	if (sequenceElement.hasAttribute("dictionary"))
     		dictionary = sequenceElement.getAttribute("dictionary");
-        Sequence sequence = new Sequence(getName(sequenceElement),
-		            parseSequenceLengthField(sequenceElement, optional, dictionary),
+        String name = getName(sequenceElement);
+		Sequence sequence = new Sequence(name,
+		            parseSequenceLengthField(sequenceElement, name, optional, dictionary),
 		            parseFields(sequenceElement, dictionary), optional);
         sequence.setTypeReference(getTypeReference(sequenceElement));
 		return sequence;
@@ -311,10 +313,11 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
     /**
      * 
      * @param sequence The dom element object
+     * @param sequenceName Name of the sequence to which this lenght field belongs
      * @param optional The optional boolean
      * @return Returns null if there are no elements by the tag length, otherwise 
      */
-    private Scalar parseSequenceLengthField(Element sequence, boolean optional, String dictionary) {
+    private Scalar parseSequenceLengthField(Element sequence, String sequenceName, boolean optional, String dictionary) {
         NodeList lengthElements = sequence.getElementsByTagName("length");
 
         if (lengthElements.getLength() == 0) {
@@ -325,7 +328,7 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
         if (length.hasAttribute("dictionary"))
         	dictionary = length.getAttribute("dictionary");
         String name = length.hasAttribute("name") ? length.getAttribute("name")
-                                                  : Sequence.createUniqueName();
+                                                  : Global.createImplicitName(sequenceName);
 
         return createScalar(length, name, optional, Type.U32.getName(), dictionary);
     }

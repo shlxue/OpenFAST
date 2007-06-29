@@ -37,7 +37,7 @@ import org.openfast.template.type.Type;
 
 public class MessageTemplate extends Group implements FieldSet {
     public MessageTemplate(String name, Field[] fields) {
-        super(name, addTemplateIdField(fields), false);
+        super(name, addTemplateIdField(fields), false, true);
     }
 
     /**

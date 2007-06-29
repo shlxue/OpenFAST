@@ -36,7 +36,7 @@ public class StringValue extends ScalarValue {
     public byte toByte() {
     	int value = toInt();
     	if (value > Byte.MAX_VALUE || value < Byte.MIN_VALUE) {
-    		FastConstants.handleError(FastConstants.R4_NUMERIC_VALUE_TOO_LARGE, "The value \"" + value + "\" is too large to fit into a byte.");
+    		Global.handleError(FastConstants.R4_NUMERIC_VALUE_TOO_LARGE, "The value \"" + value + "\" is too large to fit into a byte.");
     		return 0;
     	}
     	return (byte) value;
@@ -45,7 +45,7 @@ public class StringValue extends ScalarValue {
     public short toShort() {
     	int value = toInt();
     	if (value > Short.MAX_VALUE || value < Short.MIN_VALUE) {
-    		FastConstants.handleError(FastConstants.R4_NUMERIC_VALUE_TOO_LARGE, "The value \"" + value + "\" is too large to fit into a short.");
+    		Global.handleError(FastConstants.R4_NUMERIC_VALUE_TOO_LARGE, "The value \"" + value + "\" is too large to fit into a short.");
     		return 0;
     	}
     	return (short) value;
@@ -55,7 +55,7 @@ public class StringValue extends ScalarValue {
     	try {
     		return Integer.parseInt(value);
     	} catch (NumberFormatException e) {
-    		FastConstants.handleError(FastConstants.R4_NUMERIC_VALUE_TOO_LARGE, "The value \"" + value + "\" is too large to fit into an int.", e);
+    		Global.handleError(FastConstants.R4_NUMERIC_VALUE_TOO_LARGE, "The value \"" + value + "\" is too large to fit into an int.", e);
     		return 0;
     	}
     }
@@ -64,7 +64,7 @@ public class StringValue extends ScalarValue {
     	try {
     		return Long.parseLong(value);
     	} catch (NumberFormatException e) {
-    		FastConstants.handleError(FastConstants.R4_NUMERIC_VALUE_TOO_LARGE, "The value \"" + value + "\" is too large to fit into a long.", e);
+    		Global.handleError(FastConstants.R4_NUMERIC_VALUE_TOO_LARGE, "The value \"" + value + "\" is too large to fit into a long.", e);
     		return 0;
     	}
     }
@@ -73,7 +73,7 @@ public class StringValue extends ScalarValue {
     	try {
     		return Double.parseDouble(value);
     	} catch (NumberFormatException e) {
-    		FastConstants.handleError(FastConstants.R4_NUMERIC_VALUE_TOO_LARGE, "The value\"" + value + "\" is too large to fit into a double.", e);
+    		Global.handleError(FastConstants.R4_NUMERIC_VALUE_TOO_LARGE, "The value\"" + value + "\" is too large to fit into a double.", e);
     		return 0.0;
     	}
     }
