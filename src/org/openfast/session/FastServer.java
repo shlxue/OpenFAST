@@ -32,6 +32,7 @@ public class FastServer {
     private final String serverName;
     private ErrorHandler errorHandler = ErrorHandler.DEFAULT;
     private ConnectionListener connectionListener = ConnectionListener.NULL;
+	private boolean listening;
 
     public FastServer(String serverName, SessionFactory sessionFactory) {
         if ((serverName == null) || serverName.trim().equals("") ||
@@ -44,8 +45,10 @@ public class FastServer {
     }
 
     public void listen() throws FastConnectionException {
-        while (true) {
+    	listening = true;
+        while (listening) {
             Session session = sessionFactory.getSession();
+            if (session == null) continue;
             Message helloMessage = session.in.readMessage();
 
             if (helloMessage.getTemplateId() != Session.FAST_HELLO_TEMPLATE_ID) {
@@ -71,6 +74,7 @@ public class FastServer {
     }
 
     public void close() throws FastConnectionException {
+    	listening = false;
         sessionFactory.close();
     }
 

@@ -22,6 +22,8 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast.session;
 
+import java.io.IOException;
+
 import org.openfast.Message;
 
 import org.openfast.error.ErrorCode;
@@ -34,9 +36,15 @@ public abstract class FastConnectionFactory {
     public Session connect(String clientName) throws FastConnectionException {
         Session session = connectInternal();
         Message message = Session.createHelloMessage(clientName);
-        session.out.writeMessage(message);
-
+        session.out.writeMessage(message, true);
+        try {
+			Thread.sleep(10);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+        long time = System.currentTimeMillis();
         Message hello = session.in.readMessage();
+        System.out.println(System.currentTimeMillis() - time);
 
         if (hello.getTemplateId() == Session.FAST_ALERT_TEMPLATE_ID) {
             errorHandler.error(ErrorCode.getAlertCode(hello),

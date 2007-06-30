@@ -22,19 +22,17 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast.util;
 
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.concurrent.Semaphore;
+
 import org.openfast.session.Client;
 import org.openfast.session.FastConnectionException;
 import org.openfast.session.FastConnectionFactory;
 import org.openfast.session.Session;
 import org.openfast.session.SessionFactory;
-
-import java.io.IOException;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
-
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.concurrent.Semaphore;
 
 
 public class LocalFastConnectionFactory extends FastConnectionFactory {
@@ -46,7 +44,11 @@ public class LocalFastConnectionFactory extends FastConnectionFactory {
 
     public SessionFactory createLocalSessionFactory() {
         return new SessionFactory() {
-                public void close() throws FastConnectionException {
+				private boolean running;
+
+				public void close() throws FastConnectionException {
+					running = false;
+					sessionLock.release();
                 }
 
                 public Client getClient(String serverName) {
@@ -55,8 +57,9 @@ public class LocalFastConnectionFactory extends FastConnectionFactory {
 
                 public Session getSession() throws FastConnectionException {
                     try {
+                    	running = true;
                         sessionLock.acquire();
-
+                        if (!running) return null;
                         Session serverSession = (Session) newSessions.remove();
 
                         return serverSession;
@@ -80,7 +83,7 @@ public class LocalFastConnectionFactory extends FastConnectionFactory {
             sessionLock.release();
 
             return session;
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }

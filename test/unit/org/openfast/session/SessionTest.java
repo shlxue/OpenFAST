@@ -45,14 +45,15 @@ import org.openfast.util.RecordingSessionFactory;
 
 
 public class SessionTest extends TestCase {
-    private LocalFastConnectionFactory factory;
+    private LocalFastConnectionFactory clientFactory;
     private FastServer server;
     private Session serverSession;
+	private Thread serverThread;
 
     protected void setUp() throws Exception {
-        factory = new LocalFastConnectionFactory();
+        clientFactory = new LocalFastConnectionFactory();
         server = new FastServer("server",
-                new RecordingSessionFactory(factory.createLocalSessionFactory()));
+                new RecordingSessionFactory(clientFactory.createLocalSessionFactory()));
         server.setErrorHandler(ErrorHandler.NULL);
         server.setConnectionListener(new ConnectionListener() {
                 public boolean isValid(Client client) {
@@ -63,15 +64,16 @@ public class SessionTest extends TestCase {
                     serverSession = session;
                 }
             });
-        new Thread(new Runnable() {
-                public void run() {
-                    try {
-                        server.listen();
-                    } catch (FastConnectionException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-            }, "FAST Server").start();
+        serverThread = new Thread(new Runnable() {
+				                public void run() {
+				                    try {
+			                    		server.listen();
+				                    } catch (FastConnectionException e) {
+				                        throw new RuntimeException(e);
+				                    }
+				                }
+				            }, "FAST Server");
+		serverThread.start();
     }
 
     protected void tearDown() throws Exception {
@@ -80,7 +82,7 @@ public class SessionTest extends TestCase {
 
     public void testBasicSessionInitialization()
         throws FastConnectionException, InterruptedException {
-        factory.connect("client");
+        clientFactory.connect("client");
 
         //                             --PMAP-- ----TID=16000---- -----------------name="client"-----------------------
         String expectedServerInput = "11000000 01111101 10000000 01100011 01101100 01101001 01100101 01101110 11110100";
@@ -95,7 +97,7 @@ public class SessionTest extends TestCase {
 
     public void testUnregisteredTemplateError()
         throws FastConnectionException, InterruptedException {
-        Session session = factory.connect("client");
+        Session session = clientFactory.connect("client");
         MessageTemplate messageTemplate = new MessageTemplate("",
                 new Field[] {  });
         session.out.registerTemplate(1, messageTemplate);
@@ -137,7 +139,7 @@ public class SessionTest extends TestCase {
             });
 
         try {
-            factory.connect("client");
+            clientFactory.connect("client");
             fail();
         } catch (FastException e) {
             assertEquals("Unable to connect.", e.getMessage());
@@ -146,7 +148,7 @@ public class SessionTest extends TestCase {
     }
 
     public void testFastReset() throws FastConnectionException {
-        Session session = factory.connect("client");
+        Session session = clientFactory.connect("client");
 
         MessageTemplate quoteTemplate = ObjectMother.quoteTemplate();
         Message quote = ObjectMother.quote(103.4, 104.2);

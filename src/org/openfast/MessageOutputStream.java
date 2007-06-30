@@ -51,8 +51,12 @@ public class MessageOutputStream implements MessageStream {
         this.encoder = new FastEncoder(context);
         this.context = context;
     }
-
+    
     public void writeMessage(Message message) {
+    	writeMessage(message, false);
+    }
+
+    public void writeMessage(Message message, boolean flush) {
         try {
             Integer templateId = new Integer(message.getTemplateId());
 
@@ -68,6 +72,8 @@ public class MessageOutputStream implements MessageStream {
             }
 
             out.write(data);
+            if (flush)
+            	out.flush();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

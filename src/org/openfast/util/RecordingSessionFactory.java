@@ -47,6 +47,7 @@ public class RecordingSessionFactory implements SessionFactory {
 
     public Session getSession() throws FastConnectionException {
         Session session = underlyingFactory.getSession();
+        if (session == null) return null;
         in = new RecordingInputStream(session.in.getUnderlyingStream());
         out = new RecordingOutputStream(session.out.getUnderlyingStream());
 
