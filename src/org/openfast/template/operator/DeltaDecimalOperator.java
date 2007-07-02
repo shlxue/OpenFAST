@@ -63,6 +63,12 @@ final class DeltaDecimalOperator extends AlwaysPresentOperator {
             value.exponent - priorValue.exponent);
     }
 
+    /**
+     * @param val
+     * @param priorVal
+     * @return Returns null if either of the passed objects are null,
+     * otherwise 
+     */
     public ScalarValue decodeValue(ScalarValue val, ScalarValue priorVal,
         Scalar field) {
         if (priorVal == null) {
@@ -97,6 +103,13 @@ final class DeltaDecimalOperator extends AlwaysPresentOperator {
             value.exponent + priorValue.exponent);
     }
 
+    /**
+     * @param previousValue
+     * @param field The Scalar object being checked
+     * @return If the passed objects are undefined, return null, if the 
+     * passed values are not optional return the previousValue, otherwise
+     * return the default value of the passed field.
+     */
     public ScalarValue decodeEmptyValue(ScalarValue previousValue, Scalar field) {
         if (field.getDefaultValue().isUndefined()) {
             if (field.isOptional()) {

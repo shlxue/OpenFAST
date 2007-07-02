@@ -33,6 +33,7 @@ public abstract class AlwaysPresentOperator extends Operator {
     }
 
     /**
+     * 
      * @return Returns false
      */
     public boolean usesPresenceMapBit(boolean optional) {

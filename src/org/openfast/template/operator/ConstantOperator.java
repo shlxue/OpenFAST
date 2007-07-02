@@ -17,7 +17,11 @@ final class ConstantOperator extends Operator {
 	}
 
 	/**
-	 * 
+	 * @param value
+	 * @param priorValue
+	 * @param field
+	 * @param presenceMapBuilder
+	 * @return 
 	 */
 	public ScalarValue getValueToEncode(ScalarValue value, ScalarValue priorValue, Scalar field, BitVectorBuilder presenceMapBuilder) {
 		if (field.isOptional())
@@ -25,20 +29,31 @@ final class ConstantOperator extends Operator {
 	    return null; // Never encode constant value.
 	}
 
+	/**
+	 * 
+	 * @param newValue
+	 * @param previousValue
+	 * @return Returns the default ScalarValue of the passed Scalar object
+	 */
 	public ScalarValue decodeValue(ScalarValue newValue,
 	    ScalarValue previousValue, Scalar field) {
 	    return field.getDefaultValue();
 	}
 
+	/**
+	 * @return Returns true if the passed fieldValue isn't null, false otherwise
+	 */
 	public boolean isPresenceMapBitSet(byte[] encoding,
 	    FieldValue fieldValue) {
 	    return fieldValue != null;
 	}
 
 	/**
+	 * Get the default value of the Scalar object 
 	 * @param previousValue 
-	 * @param field 
-	 * @return
+	 * @param field The Scalar object to get the default value from
+	 * @return If the field is required, return the default ScalarValue, otherwise
+	 * return null
 	 */
 	public ScalarValue decodeEmptyValue(ScalarValue previousValue,
 	    Scalar field) {
