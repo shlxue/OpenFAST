@@ -37,7 +37,7 @@ public abstract class Field {
     /**
      * Field Constructor
      * @param name The name of the Field, a string
-     * @param optional An optional boolean 
+     * @param optional Determines if the Field is required or not for the data
      */
     public Field(String name, boolean optional) {
         this.name = name;
@@ -49,7 +49,7 @@ public abstract class Field {
      * Field Constructor
      * @param name The name of the Field, a string
      * @param key The key of the Field, a string
-     * @param optional An optional boolean
+     * @param optional Determines if the Field is required or not for the data
      */
     public Field(String name, String key, boolean optional) {
         this.name = name;
@@ -61,7 +61,7 @@ public abstract class Field {
      * Field Constructor
      * @param name The name of the Field, a string
      * @param key The key of the Field, a string
-     * @param optional An optional boolean
+     * @param optional Determines if the Field is required or not for the data
      * @param id The id string
      */
     public Field(String name, String key, boolean optional, String id) {
@@ -80,8 +80,8 @@ public abstract class Field {
     }
 
     /**
-     * Check to see what the optional boolean is set to
-     * @return Returns true if the optional boolean is set to true, false otherwise
+     * Check to see if the Field is required 
+     * @return Returns true if the Field isn't required, false otherwise
      */
     public boolean isOptional() {
         return optional;
@@ -123,7 +123,7 @@ public abstract class Field {
      * byte[] encode method declaration
      * @param value The FieldValue object to be encoded
      * @param template The Group object to be encoded
-     * @param context The Context object to be encoded
+     * @param context The previous object to keep the data in sync
      * @param presenceMapBuilder The BitVectorBuilder object to be encoded
      */
     public abstract byte[] encode(FieldValue value, Group template,
@@ -133,7 +133,7 @@ public abstract class Field {
      * FieldValue decode method declaration
      * @param in The inputStream to be decoded
      * @param template The Group object to be decoded
-     * @param context The Context object to be decoded
+     * @param context The previous object to keep the data in sync
      * @param present
      *
      */

@@ -57,12 +57,17 @@ public class Group extends Field {
      * 
      * @param name The name of the Group
      * @param fields The Field object array to be created for the group
-     * @param optional The optional boolean
+     * @param optional Determines if the Field is required or not for the data
      */
     public Group(String name, Field[] fields, boolean optional) {
     	this (name, fields, optional, determinePresenceMapUsage(fields));
     }
 
+    /**
+     * Check to see if the passed field array has a Field that has a MapBit present
+     * @param fields The Field object array to be checked
+     * @return Returns true if a Field object has a MapBit present, false otherwise
+     */
     private static boolean determinePresenceMapUsage(Field[] fields) {
     	for (int i=0; i<fields.length; i++)
     		if (fields[i].usesPresenceMapBit())
@@ -71,13 +76,14 @@ public class Group extends Field {
 	}
 
 	/**
-     * If your FieldValue already has a BitVector, use this encode method.  The MapBuilder index is kept track of and stored through this process.
+     * If your FieldValue already has a BitVector, use this encode method.  
+     * The MapBuilder index is kept track of and stored through this process.
      * The supplied data is stored to a byte buffer array and returned.
      * @param value The value of the FieldValue to be encoded
      * @param template The Group object to be encoded
-     * @param context The Context object to be encoded
+     * @param context The previous object to keep the data in sync
      * @param presenceMapBuilder The BitVector object that will be used to encode.
-     * @return Return thes the encoded byte array 
+     * @return Returns the encoded byte array 
      */
 	public byte[] encode(FieldValue value, Group template, Context context, BitVectorBuilder presenceMapBuilder) {
 		byte[] encoding = encode(value, template, context);
@@ -95,7 +101,7 @@ public class Group extends Field {
      * The MapBuilder index is kept track of and stored through this process.
      * @param value The value of the FieldValue to be encoded
      * @param template The Group object to be encoded
-     * @param context The Context object to be encoded
+     * @param context The previous object to keep the data in sync
      * @return Returns an new byte array if there are no FieldValue to encode, otherwise returns the buffer to the 
      * byte array that the data was stored to
      */
@@ -131,6 +137,14 @@ public class Group extends Field {
         }
     }
     
+    /**
+     * 
+     * @param in The InputStream to be decoded
+     * @param group The Group object to be decoded
+     * @param context The previous object to keep the data in sync
+     * @param present
+     * @return Returns a new GroupValue
+     */
     public FieldValue decode(InputStream in, Group group, Context context,
         boolean present) {
         return new GroupValue(this, decodeFieldValues(in, group, context));
@@ -141,7 +155,7 @@ public class Group extends Field {
      * decodeFieldValues method.  
      * @param in The InputStream to be decoded
      * @param template The Group object to be decoded
-     * @param context The Context object to be decoded
+     * @param context The previous object to keep the data in sync
      * @return Returns the FieldValue array of the decoded field values passed to it
      * 
      */
@@ -155,6 +169,16 @@ public class Group extends Field {
     	}
     }
 
+    /**
+     * If there is not a vector map created for the inputStream, a vector map will be created to pass to the public
+     * decodeFieldValues method.  
+     * @param in The InputStream to be decoded
+     * @param template The Group object to be decoded
+     * @param context The previous object to keep the data in sync
+     * @param start The starting point of where to decode
+     * @return Returns the FieldValue array of the decoded field values passed to it
+     * 
+     */
     private FieldValue[] decodeFieldValues(InputStream in, Group template, Context context, int start) {
         FieldValue[] values = new FieldValue[fields.length];
 
@@ -171,7 +195,7 @@ public class Group extends Field {
      * @param in The InputStream to be decoded
      * @param template The Group object
      * @param pmap The BitVector to be decoded
-     * @param context The Context object to be decoded
+     * @param context The previous object to keep the data in sync
      * @param start The index of the Field to start decoding from
      * @return Returns a FieldValue array of the decoded field values passed to it.  
      * @throws Throws RuntimeException if there is an problem in the decoding
@@ -375,6 +399,9 @@ public class Group extends Field {
         return typeReference;
     }
     
+    /**
+     * @return Returns true if the type has a reference, false otherwise
+     */
     public boolean hasTypeReference() {
     	return typeReference != null;
     }
