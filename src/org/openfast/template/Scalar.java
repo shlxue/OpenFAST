@@ -50,9 +50,9 @@ public class Scalar extends Field {
      * Scalar constructor - sets the dictionary as global and validates the entries 
      * @param name The name of Scalar as a string
      * @param typeName The name of the type as a string
-     * @param operator The Operator object
+     * @param operator Which operator object is being used
      * @param defaultValue The default value of the ScalarValue
-     * @param optional The optional boolean
+     * @param optional Determines if the Scalar is required or not for the data
      */
     public Scalar(String name, Type type, Operator operator, ScalarValue defaultValue, boolean optional) {
         super(name, optional);
@@ -112,7 +112,7 @@ public class Scalar extends Field {
     /**
      * @param value The Field value
      * @param template The Group object
-     * @param context The Context object
+     * @param context The previous object to keep the data in sync
      * @param presenceMapBuilder The BitVector builder
      * @return 
      * @throw Throws RuntimeException if the encoding fails - will print to console the name of the scalar to fail
@@ -218,7 +218,7 @@ public class Scalar extends Field {
      * 
      * @param in The InputStream to be decoded
      * @param template The Group object
-     * @param context The Context Object
+     * @param context The previous object to keep the data in sync
      * @param present 
      * @return Returns the null if the Operator is constant and the optional boolean is true and the present boolean is true,
      * otherwise decodes the previousValue and returns the FieldValue object after decoding
@@ -244,11 +244,21 @@ public class Scalar extends Field {
         return value;
     }
 
+    /**
+     * Validate the passed ScalarValue and the Type objects
+     * @param value The value to be validated
+     * @param type The type to be validated
+     */
     private void validateDecodedValueIsCorrectForType(ScalarValue value, Type type) {
     	if (value == null) return;
     	type.validateValue(value);
 	}
 
+    /**
+     * 
+     * @param previousValue
+     * @param type The type to be validated
+     */
 	private void validateDictionaryTypeAgainstFieldType(ScalarValue previousValue, Type type) {
     	if (previousValue == null || previousValue.isUndefined()) return;
     	if (!type.isValueOf(previousValue)) {

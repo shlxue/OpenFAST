@@ -50,7 +50,7 @@ public class Sequence extends Field implements FieldSet {
      * Sequence Constructor - Sets the implicitLength to true
      * @param name The name of the sequence as a string
      * @param fields Field array object
-     * @param optional An optional boolean
+     * @param optional Determines if the Field is required or not for the data
      * 
      */
     public Sequence(String name, Field[] fields, boolean optional) {
@@ -74,7 +74,7 @@ public class Sequence extends Field implements FieldSet {
      * @param name Name of the sequence, a string
      * @param length Length of the sequence, a Scalar value
      * @param fields Field array
-     * @param optional Optional boolean
+     * @param optional Determines if the Field is required or not for the data
      */
     public Sequence(String name, Scalar length, Field[] fields, boolean optional) {
         super(name, optional);
@@ -90,8 +90,8 @@ public class Sequence extends Field implements FieldSet {
 
     /**
      * Creates a Scalar value length
-     * @param name 
-     * @param optional Optional boolean value
+     * @param name The name of the Scalar object
+     * @param optional Determines if the Field is required or not for the data
      * @return A Scalar value
      */
     private static Scalar createLength(String name, boolean optional) {
@@ -145,7 +145,7 @@ public class Sequence extends Field implements FieldSet {
      * Store the data passed to a byte array
      * @param value The FieldValue object
      * @param template The Group that is to be stored
-     * @param context Which context is to be stored
+     * @param context The previous object to keep the data in sync
      * @return Returns the buffer of the byte array
      */
     public byte[] encode(FieldValue value, Group template, Context context, BitVectorBuilder presenceMapBuilder) {
@@ -180,7 +180,7 @@ public class Sequence extends Field implements FieldSet {
      * Decode the specified stream of data
      * @param in The input stream to be decoded
      * @param template Which Group template is to be decoded
-     * @param context Which Context is to be decoded
+     * @param context The previous object to keep the data in sync
      * @param present 
      * @return If there is nothing to decode - returns null, otherwise 
      * returns a sequenceValue object that has the decoded information stored.
@@ -250,15 +250,27 @@ public class Sequence extends Field implements FieldSet {
         return implicitLength;
     }
 
+    /**
+     * Set the type reference
+     * @param typeReference The type reference name as a string
+     */
 	public void setTypeReference(String typeReference) {
 		this.typeReference = typeReference;
 		this.group.setTypeReference(typeReference);
 	}
 
+	/**
+	 * 
+	 * @return Returns the typeReference as a string
+	 */
 	public String getTypeReference() {
 		return typeReference;
 	}
 	
+	/**
+	 * 
+	 * @return Returns true if there is a type reference
+	 */
 	public boolean hasTypeReference() {
 		return typeReference != null;
 	}

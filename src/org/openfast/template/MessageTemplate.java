@@ -69,6 +69,12 @@ public class MessageTemplate extends Group implements FieldSet {
         return fields.length;
     }
 
+    /**
+     * Uses the superclasses encode method to encode the byte array - see Group.java
+     * @param message The GroupValue object to be encoded
+     * @param context The previous object to keep the data in sync
+     * @return Returns a byte array of the encoded message
+     */
     public byte[] encode(GroupValue message, Context context) {
         return super.encode(message, this, context);
     }
@@ -78,7 +84,7 @@ public class MessageTemplate extends Group implements FieldSet {
      * @param in The inputStream to be decoded
      * @param templateId The templateID of the message
      * @param pmap The BitVector map of the Message
-     * @param context The Context object
+     * @param context The previous object to keep the data in sync
      * @return Returns a new message object with the newly decoded fieldValue
      */
     public Message decode(InputStream in, int templateId, BitVector pmap,
