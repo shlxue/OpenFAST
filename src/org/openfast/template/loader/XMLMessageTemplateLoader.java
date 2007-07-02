@@ -94,7 +94,7 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
     /**
      * Creates a Group object from the dom group element
      * @param group The dom element object
-     * @param isOptional The optional boolean
+     * @param isOptional Determines if the Field is required or not for the data
      * @return Returns a newly created Group object
      */
     private Group parseGroup(Element groupElement, boolean isOptional, String dictionary) {
@@ -107,6 +107,11 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
 		return group;
     }
     
+    /**
+     * Creates a MessageTemplate object from the dom template element
+     * @param templateElement The dom element object
+     * @return Returns a newly created MessageTemplate object
+     */
 	private MessageTemplate parseTemplate(Element templateElement) {
 		String dictionary = "global";
 		if (templateElement.hasAttribute("dictionary"))
@@ -118,6 +123,11 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
 		return messageTemplate;
 	}
 
+	/**
+	 * Finds the typeReference tag in the passed dom element object
+	 * @param templateTag The dom element object 
+	 * @return Returns a string of the TypeReference from the passed element dom object
+	 */
     private String getTypeReference(Element templateTag) {
         String typeReference = null;
         NodeList typeReferenceTags = templateTag.getElementsByTagName(
@@ -205,7 +215,7 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
      * If there are nodes or child nodes within the passed Nodes, those values are stored as well
      * @param fieldNode The dom element object
      * @param name The name of the create Scalar object
-     * @param optional The optional boolean
+     * @param optional Determines if the Field is required or not for the data
      * @param mantissaNode The passed mantissaNode
      * @param exponentNode The passed exponentNode
      * @return Returns a new Scalar object with the newly create TwinValue object and TwinOperator object.
@@ -255,7 +265,7 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
      * Create a new Scalar object with the passed information
      * @param fieldNode the dom element object
      * @param name The name of the new Scalar
-     * @param optional The optional boolean
+     * @param optional Determines if the Scalar is required or not for the data
      * @param typeName The typeName of the new Scalar
      * @return Returns a new scalar with the passed information
      */
@@ -305,7 +315,7 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
     /**
      * Creates a sequence object from the dom sequence element
      * @param sequence The dom element object
-     * @param optional The optional boolean
+     * @param optional Determines if the Sequence is required or not for the data
      * @return Returns a new Sequence object created out of the sequence dom element
      */
     private Sequence parseSequence(Element sequenceElement, boolean optional, String dictionary) {
@@ -325,7 +335,7 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
      * 
      * @param sequence The dom element object
      * @param sequenceName Name of the sequence to which this lenght field belongs
-     * @param optional The optional boolean
+     * @param optional Determines if the Scalar is required or not for the data
      * @return Returns null if there are no elements by the tag length, otherwise 
      */
     private Scalar parseSequenceLengthField(Element sequence, String sequenceName, boolean optional, String dictionary) {
