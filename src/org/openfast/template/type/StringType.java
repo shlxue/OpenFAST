@@ -13,10 +13,20 @@ public class StringType extends SimpleType {
 		super(typeName, codec, nullableCodec);
 	}
 	
+	/**
+	 * @param value
+	 * @return 
+	 */
 	public ScalarValue getVal(String value) {
 		return new StringValue(value);
 	}
 	
+	/**
+	 * Get the approprivate codec for the passed operator
+	 * @param operator The operator object in which the codec is trying to get
+	 * @param optional Determines if the Field is required or not for the data
+	 * @return Returns the codec if the field is required
+	 */
 	public TypeCodec getCodec(Operator operator, boolean optional) {
 		if (operator.equals(Operator.DELTA_STRING))
 			return (optional) ? TypeCodec.NULLABLE_STRING_DELTA : TypeCodec.STRING_DELTA;
@@ -30,6 +40,12 @@ public class StringType extends SimpleType {
         return new StringValue("");
     }
 
+    /**
+     * @param previousValue The previous value of the Field, used in 
+	 * determining the corresponding field value for the current
+	 * message being decoded.
+     * @return Returns true if the passed value is an instance of an integer or long
+     */
 	public boolean isValueOf(ScalarValue previousValue) {
 		return previousValue instanceof StringValue;
 	}

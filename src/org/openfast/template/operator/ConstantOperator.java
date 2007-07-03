@@ -31,8 +31,11 @@ final class ConstantOperator extends Operator {
 
 	/**
 	 * 
-	 * @param newValue
-	 * @param previousValue
+	 * @param newValue The new value of the Field, used in the comparing with the 
+	 * previousValue.  
+	 * @param previousValue The previous value of the Field, used in 
+	 * determining the corresponding field value for the current
+	 * message being decoded.
 	 * @return Returns the default ScalarValue of the passed Scalar object
 	 */
 	public ScalarValue decodeValue(ScalarValue newValue,
@@ -50,7 +53,9 @@ final class ConstantOperator extends Operator {
 
 	/**
 	 * Get the default value of the Scalar object 
-	 * @param previousValue 
+	 * @param previousValue The previous value of the Field, used in 
+	 * determining the corresponding field value for the current
+	 * message being decoded.
 	 * @param field The Scalar object to get the default value from
 	 * @return If the field is required, return the default ScalarValue, otherwise
 	 * return null

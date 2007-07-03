@@ -16,12 +16,22 @@ final class DecimalType extends SimpleType {
 		super("decimal", TypeCodec.SF_SCALED_NUMBER, TypeCodec.NULLABLE_SF_SCALED_NUMBER);
 	}
 
+	/**
+	 * Get the approprivate codec for the passed operator
+	 * @param operator The operator object in which the codec is trying to get
+	 * @param optional Determines if the Field is required or not for the data
+	 * @return Returns the codec if the field is required
+	 */
 	public TypeCodec getCodec(Operator operator, boolean optional) {
 		if (operator instanceof TwinOperator)
 			return TypeCodec.TF_SCALED_NUMBER;
 		return super.getCodec(operator, optional);
 	}
 
+	/**
+	 * @param value
+	 * @return 
+	 */
 	protected ScalarValue getVal(String value) {
 		try {
 			return new DecimalValue(Double.parseDouble(value));
@@ -31,10 +41,21 @@ final class DecimalType extends SimpleType {
 		}
 	}
 
+	/**
+	 * @return Returns a new DecimalValue with a defualt value
+	 */
 	public ScalarValue getDefaultValue() {
 		return new DecimalValue(0.0);
 	}
 
+	/**
+	 * Determines if previousValue is of type DecimalValue
+	 * @param previousValue The previous value of the Field, used in 
+	 * determining the corresponding field value for the current
+	 * message being decoded.
+	 * @return Returns true if the previousValue is an instance of DecimalValue,
+	 * false otherwise 
+	 */
 	public boolean isValueOf(ScalarValue previousValue) {
 		return previousValue instanceof DecimalValue;
 	}

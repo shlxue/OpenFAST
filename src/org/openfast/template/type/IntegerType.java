@@ -29,10 +29,20 @@ public abstract class IntegerType extends SimpleType {
 		MAX_VALUES.put(new Integer(64), new Long(Long.MAX_VALUE));
 	}
 	
+	/**
+	 * 
+	 * @param numberBits The number of bits as an integer
+	 * @return Returns a long of the max value of the passed integer
+	 */
 	protected static long getMax(int numberBits) {
 		return ((Number) MAX_VALUES.get(new Integer(numberBits))).longValue();
 	}
 	
+	/**
+	 * 
+	 * @param numberBits The number of bits as an integer
+	 * @return Returns a long of the min value of the passed integer
+	 */
 	protected static long getMin(int numberBits) {
 		return ((Number) MIN_VALUES.get(new Integer(numberBits))).longValue();
 	}
@@ -46,6 +56,10 @@ public abstract class IntegerType extends SimpleType {
 		this.maxValue = maxValue;
 	}
 	
+	/**
+	 * @param value
+	 * @return 
+	 */
 	protected ScalarValue getVal(String value) {
 		long longValue;
 		try {
@@ -62,14 +76,28 @@ public abstract class IntegerType extends SimpleType {
         return new IntegerValue((int) longValue);
 	}
 
+	/**
+	 * @return Returns a default value
+	 */
     public ScalarValue getDefaultValue() {
         return new IntegerValue(0);
     }
 
+    /**
+     * @param previousValue The previous value of the Field, used in 
+	 * determining the corresponding field value for the current
+	 * message being decoded.
+     * @return Returns true if the passed value is an instance of an integer or long
+     */
 	public boolean isValueOf(ScalarValue previousValue) {
 		return previousValue instanceof IntegerValue || previousValue instanceof LongValue;
 	}
 	
+	/**
+	 * Validates the passed ScalarValue, if fails, throws error.
+	 * @param value The ScalarValue object to be validated
+	 * 
+	 */
 	public void validateValue(ScalarValue value) {
 		if (value == null || value.isUndefined()) return;
 		if (value.toLong() > maxValue || value.toLong() < minValue) {

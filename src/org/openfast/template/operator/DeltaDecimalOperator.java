@@ -104,7 +104,9 @@ final class DeltaDecimalOperator extends AlwaysPresentOperator {
     }
 
     /**
-     * @param previousValue
+     * @param previousValue The previous value of the Field, used in 
+	 * determining the corresponding field value for the current
+	 * message being decoded.
      * @param field The Scalar object being checked
      * @return If the passed objects are undefined, return null, if the 
      * passed values are not optional return the previousValue, otherwise

@@ -367,7 +367,7 @@ public abstract class Operator {
 
     /**
      * Use this to show that there is a MapBit present
-     * @param optional The Optional boolean
+     * @param optional Determines if the Field is required or not for the data
      * @return Returns true
      */
     public boolean usesPresenceMapBit(boolean optional) {
@@ -381,7 +381,7 @@ public abstract class Operator {
      * @param presenceMapIndex The current Map index
      * @param encoding The byte array that is being encoded
      * @param fieldValue The fieldValue object
-     * @param optional The optional boolean
+     * @param optional Determines if the Field is required or not for the data
      * @return Returns the presenceMap index
      */
 	public int encodePresenceMap(BitVector presenceMap, int presenceMapIndex, byte[] encoding, FieldValue fieldValue, boolean optional) {

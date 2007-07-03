@@ -62,9 +62,12 @@ final class DeltaStringOperator extends AlwaysPresentOperator {
 
     /**
      * 
-     * @param newValue 
-     * @param previousValue
-     * @param field
+     * @param newValue The new value of the Field, used in the comparing with the 
+	 * previousValue.  
+     * @param previousValue The previous value of the Field, used in 
+	 * determining the corresponding field value for the current
+	 * message being decoded.
+     * @param field The field being decoded
      * @return Returns null if the passed ScalarValue objects are null, otherwise 
      */
     public ScalarValue decodeValue(ScalarValue newValue,

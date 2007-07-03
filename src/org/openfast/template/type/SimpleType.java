@@ -17,12 +17,22 @@ public abstract class SimpleType extends Type {
 		this.nullableCodec = nullableCodec;
 	}
 	
+	/**
+	 * Get the approprivate codec for the passed operator
+	 * @param operator The operator object in which the codec is trying to get
+	 * @param optional Determines if the Field is required or not for the data
+	 * @return Returns the codec if the field is required
+	 */
 	public TypeCodec getCodec(Operator operator, boolean optional) {
 		if (optional)
 			return nullableCodec;
 		return codec;
 	}
 	
+	/**
+	 * @param value
+	 * @return 
+	 */
 	public ScalarValue getValue(String value) {
 		if (value == null) return null;
 		return getVal(value);

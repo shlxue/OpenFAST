@@ -20,16 +20,28 @@ public abstract class Type {
 		TYPE_NAME_MAP.put(typeName, this);
 	}
 	
+	/**
+	 * Return the type that is being searched for
+	 * @param typeName The type name that being searched for
+	 * @return Return a Type object of the type that is being searched for
+	 */
 	public static Type getType(String typeName) {
 		if (!TYPE_NAME_MAP.containsKey(typeName))
 			throw new IllegalArgumentException("The type named " + typeName + " does not exist.  Existing types are " + Util.collectionToString(TYPE_NAME_MAP.keySet()));
 		return (Type) TYPE_NAME_MAP.get(typeName);
 	}
 	
+	/**
+	 * 
+	 * @return Returns name as a string
+	 */
 	public String getName() {
 		return name;
 	}
 	
+	/**
+	 * @return Returns the name as a string
+	 */
 	public String toString() {
 		return name;
 	}
