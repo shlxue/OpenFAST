@@ -35,6 +35,11 @@ import org.openfast.ScalarValue;
 public final class SignedInteger extends IntegerCodec {
     SignedInteger() { }
 
+    /**
+     * Takes a ScalarValue object, and converts it to a byte array
+     * @param value The ScalarValue to be encoded
+     * @return Returns a byte array of the passed object
+     */
     public byte[] encodeValue(ScalarValue value) {
         long longValue = ((NumericValue) value).toLong();
         int size = getSignedIntegerSize(longValue);
@@ -54,6 +59,11 @@ public final class SignedInteger extends IntegerCodec {
         return encoding;
     }
 
+    /**
+     * 
+     * @param in The InputStream to be decoded
+     * @return 
+     */
     public ScalarValue decode(InputStream in) {
         long value = 0;
 

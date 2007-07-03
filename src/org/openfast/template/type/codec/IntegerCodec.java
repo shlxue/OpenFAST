@@ -33,6 +33,13 @@ import org.openfast.util.Util;
 public abstract class IntegerCodec extends TypeCodec {
     protected IntegerCodec() { }
 
+    /**
+     * Creates a new value, long or integer, depends on value passed to method
+     * @param value The passed value to be created
+     * @return If the long is larger than an integer - returns 
+     * a new LongValue object, otherwise
+     * returns an ScalarValue object of type integer of the passed long value
+     */
     protected static ScalarValue createValue(long value) {
         if (Util.isBiggerThanInt(value)) {
             return new LongValue(value);
@@ -41,6 +48,11 @@ public abstract class IntegerCodec extends TypeCodec {
         return new IntegerValue((int) value);
     }
 
+    /**
+     * 
+     * @param value The long to determine the unsigned integer 
+     * @return Returns an unsigned integer
+     */
     public static int getUnsignedIntegerSize(long value) {
         if (value < 128) {
             return 1; // 2 ^ 7
@@ -77,6 +89,11 @@ public abstract class IntegerCodec extends TypeCodec {
         return 9;
     }
 
+    /**
+     * Find the signed integer size for the passed long value
+     * @param value The long value to be used to get the signed integer size
+     * @return Returns an integer of the appropriate signed integer
+     */
     public static int getSignedIntegerSize(long value) {
         if ((value >= -64) && (value <= 63)) {
             return 1; // - 2 ^ 6 ... 2 ^ 6 -1

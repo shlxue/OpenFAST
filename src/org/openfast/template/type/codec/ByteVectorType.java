@@ -38,6 +38,11 @@ import java.io.InputStream;
 final class ByteVectorType extends TypeCodec {
     ByteVectorType() { }
 
+    /**
+     * Takes a ScalarValue object, and converts it to a byte array
+     * @param value The ScalarValue to be encoded
+     * @return Returns a byte array of the passed object
+     */
     public byte[] encode(ScalarValue value) {
         byte[] bytes = value.getBytes();
         int lengthSize = IntegerCodec.getUnsignedIntegerSize(bytes.length);
@@ -51,6 +56,11 @@ final class ByteVectorType extends TypeCodec {
         return encoding;
     }
 
+    /**
+     * Reads in a stream of data and stores it to a ByteVectorValue object
+     * @param in The InputStream to be decoded
+     * @return Returns a new ByteVectorValue object with the data stream as an array
+     */
     public ScalarValue decode(InputStream in) {
         int length = ((IntegerValue) TypeCodec.UINT.decode(in)).value;
         byte[] encoding = new byte[length];
@@ -69,6 +79,9 @@ final class ByteVectorType extends TypeCodec {
         throw new NotImplementedException();
     }
 
+    /**
+     * @return Returns a new ByteVectorValue object with the passed value
+     */
     public ScalarValue fromString(String value) {
         return new ByteVectorValue(value.getBytes());
     }

@@ -38,6 +38,11 @@ final class NullableAsciiString extends TypeCodec {
 
     NullableAsciiString() { }
 
+    /**
+     * Takes a ScalarValue object, and converts it to a byte array
+     * @param value The ScalarValue to be encoded
+     * @return Returns a byte array of the passed object
+     */
     public byte[] encodeValue(ScalarValue value) {
         if (value.isNull()) {
             return TypeCodec.NULL_VALUE_ENCODING;
@@ -51,7 +56,12 @@ final class NullableAsciiString extends TypeCodec {
 
         return string.getBytes();
     }
-
+    
+    /**
+     * Reads in a stream of data and stores it to a StringValue object
+     * @param in The InputStream to be decoded
+     * @return Returns a new StringValue object with the data stream as a String
+     */
     public ScalarValue decode(InputStream in) {
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         int byt;
@@ -77,14 +87,27 @@ final class NullableAsciiString extends TypeCodec {
         return new StringValue(new String(bytes));
     }
 
+    /**
+     * Creates a new StringValue object
+     * @param value The string to be value of the new object
+     * @return Returns a new StringValue object with the passed string as its
+     * parameter
+     */
     public ScalarValue fromString(String value) {
         return new StringValue(value);
     }
 
+    /**
+     * 
+     * @return Returns an empty StringValue object
+     */
     public ScalarValue getDefaultValue() {
         return new StringValue("");
     }
     
+    /**
+     * @return Returns true
+     */
     public boolean isNullable() {
     	return true;
     }

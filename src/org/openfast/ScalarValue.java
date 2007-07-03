@@ -48,14 +48,26 @@ public class ScalarValue implements FieldValue {
             }
         };
 
+    /**
+     * 
+     * @return Returns false
+     */    
     public boolean equalsValue(String defaultValue) {
         return false;
     }
 
+    /**
+     * 
+     * @return Returns false
+     */
     public boolean isUndefined() {
         return false;
     }
 
+    /**
+     * 
+     * @return Returns false
+     */
     public boolean isNull() {
         return false;
     }

@@ -53,6 +53,11 @@ public abstract class TypeCodec {
     public abstract byte[] encodeValue(ScalarValue value);
     public abstract ScalarValue decode(InputStream in);
 
+    /**
+     * Encode the passed object
+     * @param value The ScalarValue object to be encoded
+     * @return Returns an encoded byte array with an added stop bit at the end
+     */
     public byte[] encode(ScalarValue value) {
         byte[] encoding = encodeValue(value);
         encoding[encoding.length - 1] |= 0x80; // add stop bit;

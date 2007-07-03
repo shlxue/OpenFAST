@@ -35,6 +35,11 @@ import java.io.InputStream;
 public final class NullableUnsignedInteger extends IntegerCodec {
     NullableUnsignedInteger() { }
 
+    /**
+     * Takes a ScalarValue object, and converts it to a byte array
+     * @param v The ScalarValue to be encoded
+     * @return Returns a byte array of the passed object
+     */
     public byte[] encodeValue(ScalarValue v) {
         if (v.isNull()) {
             return TypeCodec.NULL_VALUE_ENCODING;
@@ -43,6 +48,11 @@ public final class NullableUnsignedInteger extends IntegerCodec {
         return TypeCodec.UINT.encodeValue(((IntegerValue) v).increment());
     }
 
+    /**
+     * Reads in a stream of data and stores it to a NumericValue object
+     * @param in The InputStream to be decoded
+     * @return Returns a NumericValue object
+     */
     public ScalarValue decode(InputStream in) {
         NumericValue value = (NumericValue) TypeCodec.UINT.decode(in);
 
@@ -53,6 +63,9 @@ public final class NullableUnsignedInteger extends IntegerCodec {
         return value.decrement();
     }
     
+    /**
+     * @return Returns true
+     */
     public boolean isNullable() {
     	return true;
     }

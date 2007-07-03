@@ -35,6 +35,11 @@ import java.io.InputStream;
 public final class NullableSignedInteger extends IntegerCodec {
     NullableSignedInteger() { }
 
+    /**
+     * Takes a ScalarValue object, and converts it to a byte array
+     * @param value The ScalarValue to be encoded
+     * @return Returns a byte array of the passed object
+     */
     public byte[] encodeValue(ScalarValue value) {
         if (value.isNull()) {
             return TypeCodec.NULL_VALUE_ENCODING;
@@ -49,6 +54,11 @@ public final class NullableSignedInteger extends IntegerCodec {
         }
     }
 
+    /**
+     * Reads in a stream of data and stores it to a numericValue object - type integer
+     * @param in The InputStream to be decoded
+     * @return Returns a new numericValue object
+     */
     public ScalarValue decode(InputStream in) {
         NumericValue numericValue = ((NumericValue) TypeCodec.INTEGER.decode(in));
         long value = numericValue.toLong();
@@ -64,6 +74,9 @@ public final class NullableSignedInteger extends IntegerCodec {
         return numericValue;
     }
     
+    /**
+     * @return Returns true
+     */
     public boolean isNullable() {
     	return true;
     }

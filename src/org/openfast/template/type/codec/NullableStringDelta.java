@@ -33,6 +33,11 @@ import java.io.InputStream;
 public class NullableStringDelta extends TypeCodec {
     public NullableStringDelta() { }
 
+    /**
+     * Reads in a stream of data and stores it to a TwinValue object
+     * @param in The InputStream to be decoded
+     * @return Returns a new TwinValue object with the data as its parameters
+     */
     public ScalarValue decode(InputStream in) {
         ScalarValue subtractionLength = TypeCodec.NULLABLE_INTEGER.decode(in);
         if (subtractionLength == null) return null;
@@ -42,6 +47,11 @@ public class NullableStringDelta extends TypeCodec {
         return new TwinValue(subtractionLength, difference);
     }
 
+    /**
+     * Takes a ScalarValue object, and converts it to a byte array
+     * @param value The ScalarValue to be encoded
+     * @return Returns a byte array of the passed object
+     */
     public byte[] encodeValue(ScalarValue value) {
         if (value.isNull()) return TypeCodec.NULL_VALUE_ENCODING;
         
@@ -57,14 +67,26 @@ public class NullableStringDelta extends TypeCodec {
         return encoded;
     }
 
+    /**
+     * 
+     * @return Returns a new StringValue object with a defualt value
+     */
     public ScalarValue getDefaultValue() {
         return new StringValue("");
     }
 
+    /**
+     * 
+     * @param value Passed value to the new StringValue object
+     * @return Returns a new StringValue object with the passed value
+     */
     public ScalarValue fromString(String value) {
         return new StringValue(value);
     }
     
+    /**
+     * @return Returns true
+     */
     public boolean isNullable() {
     	return true;
     }

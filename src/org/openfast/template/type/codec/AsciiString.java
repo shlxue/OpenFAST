@@ -36,6 +36,11 @@ import java.io.InputStream;
 final class AsciiString extends TypeCodec {
     AsciiString() { }
 
+    /**
+     * Takes a ScalarValue object, and converts it to a byte array
+     * @param value The ScalarValue to be encoded
+     * @return Returns a byte array of the passed object
+     */
     public byte[] encodeValue(ScalarValue value) {
         if ((value == null) || value.isNull()) {
             throw new IllegalStateException(
@@ -52,8 +57,9 @@ final class AsciiString extends TypeCodec {
     }
 
     /**
-     * @param 
-     * @return
+     * Reads in a stream of data and stores it to a StringValue object
+     * @param in The InputStream to be decoded
+     * @return Returns a new StringValue object with the data stream as a String
      */
     public ScalarValue decode(InputStream in) {
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
@@ -79,7 +85,7 @@ final class AsciiString extends TypeCodec {
     }
 
     /**
-     * @return Returns a new StringValue object with the pass value
+     * @return Returns a new StringValue object with the passed value
      */
     public ScalarValue fromString(String value) {
         return new StringValue(value);
