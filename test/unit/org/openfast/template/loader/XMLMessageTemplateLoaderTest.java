@@ -29,6 +29,7 @@ import org.openfast.ScalarValue;
 import org.openfast.error.ErrorHandler;
 import org.openfast.error.FastConstants;
 import org.openfast.error.FastException;
+import org.openfast.template.DynamicTemplateReference;
 import org.openfast.template.MessageTemplate;
 import org.openfast.template.Scalar;
 import org.openfast.template.Sequence;
@@ -291,7 +292,28 @@ public class XMLMessageTemplateLoaderTest extends OpenFastTestCase {
     	assertScalarField(templates[0], 1, Type.U32, "quantity", Operator.NONE);
     	assertScalarField(templates[0], 2, Type.ASCII, "string", Operator.NONE);
     	assertScalarField(templates[0], 3, Type.DECIMAL, "price", Operator.NONE);
-    	
+    }
+    
+    public void testDynamicTemplateReference() {
+    	String template1Xml =
+			"<template name=\"t1\">" +
+			"  <string name=\"string\"/>" +
+			"</template>";
+    	String template2Xml =
+			"<template name=\"t2\">" +
+			"  <uInt32 name=\"quantity\"/>" +
+			"  <templateRef/>" +
+			"  <decimal name=\"price\"/>" +
+			"</template>";
+
+    	XMLMessageTemplateLoader loader = new XMLMessageTemplateLoader();
+		loader.load(stream(template1Xml));
+		MessageTemplate[] templates = loader.load(stream(template2Xml));
+		
+    	assertEquals(4, templates[0].getFieldCount());
+    	assertScalarField(templates[0], 1, Type.U32, "quantity", Operator.NONE);
+    	assertScalarField(templates[0], 3, Type.DECIMAL, "price", Operator.NONE);
+    	assertTrue(templates[0].getField(2) instanceof DynamicTemplateReference);
     }
     
     public void testNullDocument() {

@@ -27,7 +27,6 @@ import java.io.InputStream;
 import org.openfast.BitVector;
 import org.openfast.Context;
 import org.openfast.FieldValue;
-import org.openfast.GroupValue;
 import org.openfast.IntegerValue;
 import org.openfast.Message;
 import org.openfast.ScalarValue;
@@ -75,7 +74,8 @@ public class MessageTemplate extends Group implements FieldSet {
      * @param context The previous object to keep the data in sync
      * @return Returns a byte array of the encoded message
      */
-    public byte[] encode(GroupValue message, Context context) {
+    public byte[] encode(Message message, Context context) {
+        message.setInteger(0, context.getId(message.getTemplate()));
         return super.encode(message, this, context);
     }
 

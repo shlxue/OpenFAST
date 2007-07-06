@@ -43,7 +43,6 @@ public class FastEncoder implements Coder, TemplateRegistry {
      */
     public byte[] encode(Message message) {
         MessageTemplate template = message.getTemplate();
-        message.setInteger(0, context.getId(template));
         context.newMessage(template);
         return template.encode(message, context);
     }

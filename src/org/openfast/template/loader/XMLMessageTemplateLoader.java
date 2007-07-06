@@ -38,6 +38,7 @@ import org.openfast.error.ErrorHandler;
 import org.openfast.error.FastAlertSeverity;
 import org.openfast.error.FastConstants;
 import org.openfast.template.DelegatingTemplateRepository;
+import org.openfast.template.DynamicTemplateReference;
 import org.openfast.template.Field;
 import org.openfast.template.Group;
 import org.openfast.template.MessageTemplate;
@@ -173,6 +174,8 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
     		else {
     			return Arrays.asList(getTemplate(templateName).getTemplateFields());
     		}
+    	} else {
+    		return Arrays.asList(new Field[] { new DynamicTemplateReference() });
     	}
 		return new ArrayList();
 	}

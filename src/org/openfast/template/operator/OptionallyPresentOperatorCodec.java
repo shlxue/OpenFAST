@@ -67,7 +67,7 @@ public abstract class OptionallyPresentOperatorCodec extends OperatorCodec {
                 return ScalarValue.NULL;
             }
         } else {
-            Global.handleError(FastConstants.D6_MNDTRY_FIELD_NOT_PRESENT, "");
+            Global.handleError(FastConstants.D6_MNDTRY_FIELD_NOT_PRESENT, "The field \"" + field + " is not present.");
         }
 
         return null;
