@@ -22,29 +22,24 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast.template.loader;
 
-import junit.framework.TestCase;
-
-import org.openfast.IntegerValue;
-import org.openfast.ScalarValue;
-
-import org.openfast.error.ErrorHandler;
-import org.openfast.template.FieldSet;
-import org.openfast.template.Group;
-import org.openfast.template.MessageTemplate;
-import org.openfast.template.Scalar;
-import org.openfast.template.Sequence;
-import org.openfast.template.TwinValue;
-import org.openfast.template.operator.Operator;
-import org.openfast.template.operator.OperatorCodec;
-import org.openfast.template.operator.TwinOperatorCodec;
-import org.openfast.template.type.Type;
-import org.openfast.template.type.codec.TypeCodec;
-
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
+import org.openfast.ScalarValue;
+import org.openfast.error.ErrorHandler;
+import org.openfast.error.FastConstants;
+import org.openfast.error.FastException;
+import org.openfast.template.MessageTemplate;
+import org.openfast.template.Scalar;
+import org.openfast.template.Sequence;
+import org.openfast.template.operator.Operator;
+import org.openfast.template.operator.TwinOperatorCodec;
+import org.openfast.template.type.Type;
+import org.openfast.template.type.codec.TypeCodec;
+import org.openfast.test.OpenFastTestCase;
 
-public class XMLMessageTemplateLoaderTest extends TestCase {
+
+public class XMLMessageTemplateLoaderTest extends OpenFastTestCase {
     public void testLoadTemplateThatContainsDecimalWithTwinOperators() {
         String templateXml = "<templates xmlns=\"http://www.fixprotocol.org/ns/template-definition\"" +
             "	ns=\"http://www.fixprotocol.org/ns/templates/sample\">" +
@@ -62,22 +57,18 @@ public class XMLMessageTemplateLoaderTest extends TestCase {
         MessageTemplate messageTemplate = templates[0];
         assertEquals("SampleTemplate", messageTemplate.getName());
         assertEquals(7, messageTemplate.getFieldCount());
-        assertScalarField(messageTemplate, 1, Type.DECIMAL, "bid",
-            new TwinOperatorCodec(Operator.COPY, Operator.DELTA),
-            new TwinValue(new IntegerValue(-2), ScalarValue.UNDEFINED));
+        assertScalarField(messageTemplate, 1, Type.DECIMAL, "bid",  new TwinOperatorCodec(Operator.COPY, Operator.DELTA), twin(i(-2), ScalarValue.UNDEFINED));
         assertScalarField(messageTemplate, 2, Type.DECIMAL, "ask",
             new TwinOperatorCodec(Operator.NONE, Operator.DELTA),
-            new TwinValue(ScalarValue.UNDEFINED, ScalarValue.UNDEFINED));
+            twin(ScalarValue.UNDEFINED, ScalarValue.UNDEFINED));
         assertScalarField(messageTemplate, 3, Type.DECIMAL, "high",
             new TwinOperatorCodec(Operator.COPY, Operator.NONE),
-            new TwinValue(ScalarValue.UNDEFINED, ScalarValue.UNDEFINED));
+            twin(ScalarValue.UNDEFINED, ScalarValue.UNDEFINED));
         assertScalarField(messageTemplate, 4, Type.DECIMAL, "low",
             new TwinOperatorCodec(Operator.COPY, Operator.DELTA),
-            new TwinValue(new IntegerValue(-2), new IntegerValue(10)));
-        assertScalarField(messageTemplate, 5, Type.DECIMAL, "open",
-            Operator.COPY);
-        assertScalarField(messageTemplate, 6, Type.DECIMAL, "close",
-            Operator.COPY);
+            twin(i(-2), i(10)));
+        assertScalarField(messageTemplate, 5, Type.DECIMAL, "open", Operator.COPY);
+        assertScalarField(messageTemplate, 6, Type.DECIMAL, "close", Operator.COPY);
     }
 
     public void testLoadTemplateThatContainsGroups() {
@@ -224,56 +215,88 @@ public class XMLMessageTemplateLoaderTest extends TestCase {
             Operator.NONE);
     }
     
+    public void testStaticTemplateReference() {
+    	String templateXml = "<templates>" +
+    			"  <template name=\"t1\">" +
+    			"    <string name=\"string\"/>" +
+    			"  </template>" +
+    			"  <template name=\"t2\">" +
+    			"    <uInt32 name=\"quantity\"/>" +
+    			"    <templateRef name=\"t1\"/>" +
+    			"    <decimal name=\"price\"/>" +
+    			"  </template>" +
+    			"</templates>";
+    	MessageTemplate[] templates = new XMLMessageTemplateLoader().load(stream(templateXml));
+    	assertEquals(4, templates[1].getFieldCount());
+    	assertScalarField(templates[1], 1, Type.U32, "quantity", Operator.NONE);
+    	assertScalarField(templates[1], 2, Type.ASCII, "string", Operator.NONE);
+    	assertScalarField(templates[1], 3, Type.DECIMAL, "price", Operator.NONE);
+    }
+    
+    public void testNonExistantTemplateReference() {
+    	String template2Xml =
+			"<template name=\"t2\">" +
+			"  <uInt32 name=\"quantity\"/>" +
+			"  <templateRef name=\"t1\"/>" +
+			"  <decimal name=\"price\"/>" +
+			"</template>";
+    	try {
+    		new XMLMessageTemplateLoader().load(stream(template2Xml));
+    	} catch (FastException e) {
+    		assertEquals(FastConstants.D8_TEMPLATE_NOT_EXIST, e.getCode());
+    	}
+    }
+    
+    public void testReferencedTemplateInOtherLoader() {
+    	String template1Xml =
+			"<template name=\"t1\">" +
+			"  <string name=\"string\"/>" +
+			"</template>";
+    	String template2Xml =
+			"<template name=\"t2\">" +
+			"  <uInt32 name=\"quantity\"/>" +
+			"  <templateRef name=\"t1\"/>" +
+			"  <decimal name=\"price\"/>" +
+			"</template>";
+
+    	XMLMessageTemplateLoader loader1 = new XMLMessageTemplateLoader();
+    	XMLMessageTemplateLoader loader2 = new XMLMessageTemplateLoader();
+    	loader2.setTemplateRepository(loader1);
+    	
+		loader1.load(stream(template1Xml));
+		MessageTemplate[] templates = loader2.load(stream(template2Xml));
+    	assertEquals(4, templates[0].getFieldCount());
+    	assertScalarField(templates[0], 1, Type.U32, "quantity", Operator.NONE);
+    	assertScalarField(templates[0], 2, Type.ASCII, "string", Operator.NONE);
+    	assertScalarField(templates[0], 3, Type.DECIMAL, "price", Operator.NONE);
+    }
+    
+    public void testTemplateReferencedFromPreviousLoad() {
+    	String template1Xml =
+			"<template name=\"t1\">" +
+			"  <string name=\"string\"/>" +
+			"</template>";
+    	String template2Xml =
+			"<template name=\"t2\">" +
+			"  <uInt32 name=\"quantity\"/>" +
+			"  <templateRef name=\"t1\"/>" +
+			"  <decimal name=\"price\"/>" +
+			"</template>";
+
+    	XMLMessageTemplateLoader loader = new XMLMessageTemplateLoader();
+		loader.load(stream(template1Xml));
+		MessageTemplate[] templates = loader.load(stream(template2Xml));
+		
+    	assertEquals(4, templates[0].getFieldCount());
+    	assertScalarField(templates[0], 1, Type.U32, "quantity", Operator.NONE);
+    	assertScalarField(templates[0], 2, Type.ASCII, "string", Operator.NONE);
+    	assertScalarField(templates[0], 3, Type.DECIMAL, "price", Operator.NONE);
+    	
+    }
+    
     public void testNullDocument() {
     	XMLMessageTemplateLoader loader = new XMLMessageTemplateLoader();
     	loader.setErrorHandler(ErrorHandler.NULL);
 		assertEquals(0, loader.load(null).length);
-    }
-
-	private void assertScalarField(FieldSet fieldSet, int fieldIndex,
-        Type type, String name, OperatorCodec operator, ScalarValue defaultValue) {
-        Scalar field = (Scalar) fieldSet.getField(fieldIndex);
-        assertScalarField(field, type, name);
-        assertEquals(operator, field.getOperatorCodec());
-        assertEquals(defaultValue, field.getDefaultValue());
-    }
-
-    private void assertScalarField(FieldSet fieldSet, int fieldIndex,
-        Type type, String name, Operator operator) {
-        Scalar field = (Scalar) fieldSet.getField(fieldIndex);
-        assertScalarField(field, type, name);
-        assertEquals(operator, field.getOperator());
-    }
-
-    private void assertSequenceLengthField(Sequence sequence, String name,
-        Type type, Operator operator) {
-        assertEquals(type, sequence.getLength().getType());
-        assertEquals(name, sequence.getLength().getName());
-        assertEquals(operator, sequence.getLength().getOperator());
-    }
-
-    private void assertSequence(MessageTemplate messageTemplate,
-        int fieldIndex, int fieldCount) {
-        Sequence sequence = (Sequence) messageTemplate.getField(fieldIndex);
-        assertEquals(fieldCount, sequence.getFieldCount());
-    }
-
-    private void assertGroup(MessageTemplate messageTemplate, int fieldIndex,
-        String name) {
-        Group currentGroup = (Group) messageTemplate.getField(fieldIndex);
-        assertEquals(name, currentGroup.getName());
-    }
-
-    private void assertOptionalScalarField(FieldSet fieldSet, int fieldIndex,
-        Type type, String name, Operator operator) {
-        Scalar field = (Scalar) fieldSet.getField(fieldIndex);
-        assertScalarField(field, type, name);
-        assertEquals(operator, field.getOperator());
-        assertTrue(field.isOptional());
-    }
-
-    private void assertScalarField(Scalar field, Type type, String name) {
-        assertEquals(name, field.getName());
-        assertEquals(type, field.getType());
     }
 }

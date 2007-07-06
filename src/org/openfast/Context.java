@@ -30,6 +30,7 @@ import org.openfast.error.ErrorHandler;
 import org.openfast.error.FastConstants;
 import org.openfast.template.Group;
 import org.openfast.template.MessageTemplate;
+import org.openfast.template.TemplateRegistry;
 
 
 public class Context implements TemplateRegistry {

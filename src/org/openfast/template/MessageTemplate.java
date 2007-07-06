@@ -124,4 +124,10 @@ public class MessageTemplate extends Group implements FieldSet {
     public Field[] getFields() {
         return fields;
     }
+    
+    public Field[] getTemplateFields() {
+    	Field[] f = new Field[fields.length - 1];
+    	System.arraycopy(fields, 1, f, 0, fields.length-1);
+    	return f;
+    }
 }

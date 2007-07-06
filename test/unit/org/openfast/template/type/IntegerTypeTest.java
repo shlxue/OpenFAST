@@ -50,7 +50,7 @@ public class IntegerTypeTest extends OpenFastTestCase {
     	
     	Context encodingContext = new Context();
     	try {
-    		template.decode(stream("11000000 10000001 00111111 01111111 01111111 01111111 11111111"), template, encodingContext, true);
+    		template.decode(bitStream("11000000 10000001 00111111 01111111 01111111 01111111 11111111"), template, encodingContext, true);
     		fail();
     	} catch (FastException e) {
     		assertEquals(FastConstants.D2_INT_OUT_OF_RANGE, e.getCode());

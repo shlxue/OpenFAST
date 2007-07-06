@@ -20,11 +20,10 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 */
 
 
-package org.openfast;
+package org.openfast.template;
 
-import org.openfast.template.MessageTemplate;
 
 
 public interface TemplateRegistry {
-    void registerTemplate(int templateId, MessageTemplate template);
+	void registerTemplate(int templateId, MessageTemplate template);
 }

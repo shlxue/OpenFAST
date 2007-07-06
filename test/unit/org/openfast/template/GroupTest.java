@@ -99,7 +99,7 @@ public class GroupTest extends OpenFastTestCase {
     	
     	String encodedBits = "11100000 10000001 11111110 10111111";
     	
-    	FastDecoder decoder = new FastDecoder(decodingContext, stream(encodedBits));
+    	FastDecoder decoder = new FastDecoder(decodingContext, bitStream(encodedBits));
 		Message message = decoder.readMessage();
     	assertEquals(0.63, message.getGroup("priceGroup").getDouble("price"), 0.01);
     	

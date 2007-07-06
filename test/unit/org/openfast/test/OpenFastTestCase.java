@@ -34,9 +34,16 @@ import org.openfast.StringValue;
 
 import org.openfast.codec.FastDecoder;
 import org.openfast.codec.FastEncoder;
+import org.openfast.template.FieldSet;
+import org.openfast.template.Group;
 import org.openfast.template.MessageTemplate;
+import org.openfast.template.Scalar;
+import org.openfast.template.Sequence;
 import org.openfast.template.TwinValue;
 import org.openfast.template.loader.XMLMessageTemplateLoader;
+import org.openfast.template.operator.Operator;
+import org.openfast.template.operator.OperatorCodec;
+import org.openfast.template.type.Type;
 import org.openfast.template.type.codec.TypeCodec;
 
 import java.io.ByteArrayInputStream;
@@ -66,11 +73,15 @@ public abstract class OpenFastTestCase extends TestCase {
         assertEquals(value, type.decode(ByteUtil.createByteStream(bitString)));
     }
 
-    protected static InputStream stream(String bitString) {
+    protected static InputStream bitStream(String bitString) {
         return ByteUtil.createByteStream(bitString);
     }
+    
+    protected static InputStream stream(String source) {
+    	return new ByteArrayInputStream(source.getBytes());
+    }
 
-    protected static InputStream stream(byte[] bytes) {
+    protected static InputStream byteStream(byte[] bytes) {
         return new ByteArrayInputStream(bytes);
     }
 
@@ -81,7 +92,7 @@ public abstract class OpenFastTestCase extends TestCase {
 	protected static FastDecoder decoder(String bitString, MessageTemplate template) {
 		Context context = new Context();
 		context.registerTemplate(1, template);
-		return new FastDecoder(context, stream(bitString));
+		return new FastDecoder(context, bitStream(bitString));
 	}
 
 	protected static FastDecoder decoder(MessageTemplate template, byte[] encoding) {
@@ -111,5 +122,46 @@ public abstract class OpenFastTestCase extends TestCase {
 	protected MessageTemplate template(String templateXml) {
 		MessageTemplate[] templates = new XMLMessageTemplateLoader().load(new ByteArrayInputStream(templateXml.getBytes()));
 		return templates[0];
+	}
+
+	protected void assertScalarField(FieldSet fieldSet, int fieldIndex, Type type, String name, OperatorCodec operator, ScalarValue defaultValue) {
+	    Scalar field = (Scalar) fieldSet.getField(fieldIndex);
+	    assertScalarField(field, type, name);
+	    assertEquals(operator, field.getOperatorCodec());
+	    assertEquals(defaultValue, field.getDefaultValue());
+	}
+
+	protected void assertScalarField(FieldSet fieldSet, int fieldIndex, Type type, String name, Operator operator) {
+	    Scalar field = (Scalar) fieldSet.getField(fieldIndex);
+	    assertScalarField(field, type, name);
+	    assertEquals(operator, field.getOperator());
+	}
+
+	protected void assertSequenceLengthField(Sequence sequence, String name, Type type, Operator operator) {
+	    assertEquals(type, sequence.getLength().getType());
+	    assertEquals(name, sequence.getLength().getName());
+	    assertEquals(operator, sequence.getLength().getOperator());
+	}
+
+	protected void assertSequence(MessageTemplate messageTemplate, int fieldIndex, int fieldCount) {
+	    Sequence sequence = (Sequence) messageTemplate.getField(fieldIndex);
+	    assertEquals(fieldCount, sequence.getFieldCount());
+	}
+
+	protected void assertGroup(MessageTemplate messageTemplate, int fieldIndex, String name) {
+	    Group currentGroup = (Group) messageTemplate.getField(fieldIndex);
+	    assertEquals(name, currentGroup.getName());
+	}
+
+	protected void assertOptionalScalarField(FieldSet fieldSet, int fieldIndex, Type type, String name, Operator operator) {
+	    Scalar field = (Scalar) fieldSet.getField(fieldIndex);
+	    assertScalarField(field, type, name);
+	    assertEquals(operator, field.getOperator());
+	    assertTrue(field.isOptional());
+	}
+
+	private void assertScalarField(Scalar field, Type type, String name) {
+	    assertEquals(name, field.getName());
+	    assertEquals(type, field.getType());
 	}
 }

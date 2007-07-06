@@ -7,7 +7,7 @@ import org.openfast.test.OpenFastTestCase;
 public class MessageInputStreamTest extends OpenFastTestCase {
 
 	public void testReadMessage() {
-		MessageInputStream in = new MessageInputStream(stream("11000000 10000100"));
+		MessageInputStream in = new MessageInputStream(bitStream("11000000 10000100"));
 		try {
 			in.readMessage();
 			fail();

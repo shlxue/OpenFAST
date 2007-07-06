@@ -54,7 +54,7 @@ public class SingleFieldDecimalTest extends OpenFastTestCase {
 
     public void testDecodeLargeDecimalReportsError() {
         try {
-            TypeCodec.SF_SCALED_NUMBER.decode(stream("00000001 11111111 10000001"));
+            TypeCodec.SF_SCALED_NUMBER.decode(bitStream("00000001 11111111 10000001"));
             fail();
         } catch (FastException e) {
             assertEquals(FastConstants.R1_LARGE_DECIMAL, e.getCode());

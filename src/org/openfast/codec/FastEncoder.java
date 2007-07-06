@@ -24,8 +24,8 @@ package org.openfast.codec;
 
 import org.openfast.Context;
 import org.openfast.Message;
-import org.openfast.TemplateRegistry;
 import org.openfast.template.MessageTemplate;
+import org.openfast.template.TemplateRegistry;
 
 
 /* In 1.5 version use : static import java.lang.Math.*; */

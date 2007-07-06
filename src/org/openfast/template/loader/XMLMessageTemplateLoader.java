@@ -37,11 +37,13 @@ import org.openfast.error.ErrorCode;
 import org.openfast.error.ErrorHandler;
 import org.openfast.error.FastAlertSeverity;
 import org.openfast.error.FastConstants;
+import org.openfast.template.DelegatingTemplateRepository;
 import org.openfast.template.Field;
 import org.openfast.template.Group;
 import org.openfast.template.MessageTemplate;
 import org.openfast.template.Scalar;
 import org.openfast.template.Sequence;
+import org.openfast.template.TemplateRepository;
 import org.openfast.template.TwinValue;
 import org.openfast.template.operator.Operator;
 import org.openfast.template.operator.TwinOperatorCodec;
@@ -54,13 +56,14 @@ import org.w3c.dom.NodeList;
 
 public class XMLMessageTemplateLoader implements MessageTemplateLoader {
     private static final List NON_FIELD_ELEMENTS = Arrays.asList(new String[] {
-                "typeRef", "length"
+                "typeRef", "length", "templateRef"
             });
     private static final ErrorCode IO_ERROR = new ErrorCode(FastConstants.STATIC,
             -1, "IOERROR", "IO Error", FastAlertSeverity.ERROR);
     private static final ErrorCode XML_PARSING_ERROR = new ErrorCode(FastConstants.STATIC,
             -1, "XMLPARSEERR", "XML Parsing Error", FastAlertSeverity.ERROR);
     private ErrorHandler errorHandler = ErrorHandler.DEFAULT;
+    private DelegatingTemplateRepository templateRepository = new DelegatingTemplateRepository(TemplateRepository.NULL);
 
     /**
      * Parses the XML stream and creates an array of the elements
@@ -117,6 +120,7 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
 		if (templateElement.hasAttribute("id"))
     		messageTemplate.setId(templateElement.getAttribute("id"));
 		messageTemplate.setTypeReference(getTypeReference(templateElement));
+		add(messageTemplate);
 		return messageTemplate;
 	}
 
@@ -150,16 +154,30 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
         for (int i = 0; i < childNodes.getLength(); i++) {
             Node item = childNodes.item(i);
 
-            if (isElement(item) && isMessageFieldElement(item)) {
-            	
-                fields.add(parseField((Element) item, dictionary));
+            if (isElement(item)) {
+            	if (isMessageFieldElement(item))
+            		fields.add(parseField((Element) item, dictionary));
+            	else if (item.getNodeName().equals("templateRef"))
+            		fields.addAll(parseTemplateRef((Element) item, dictionary));
             }
         }
 
         return (Field[]) fields.toArray(new Field[] {  });
     }
 
-    /**
+    private List/*<Field>*/ parseTemplateRef(Element element, String dictionary) {
+    	if (element.hasAttribute("name")) {
+    		String templateName = element.getAttribute("name");
+    		if (!hasTemplate(templateName))
+    			errorHandler.error(FastConstants.D8_TEMPLATE_NOT_EXIST, "The template \"" + templateName + "\" was not found.");
+    		else {
+    			return Arrays.asList(getTemplate(templateName).getTemplateFields());
+    		}
+    	}
+		return new ArrayList();
+	}
+
+	/**
      * This method checks what the type of the supplied element to determine how to parse it.
      * Once that is determined, it will parse it accordingly and return a new Scalar object of the 
      * passed data.
@@ -410,4 +428,32 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
     public void setErrorHandler(ErrorHandler errorHandler) {
         this.errorHandler = errorHandler;
     }
+
+	public void setTemplateRepository(TemplateRepository templateRepository) {
+		this.templateRepository.setRepository(templateRepository);
+	}
+
+	public void add(MessageTemplate template) {
+		templateRepository.add(template);
+	}
+
+	public MessageTemplate getTemplate(String name) {
+		return templateRepository.getTemplate(name);
+	}
+
+	public MessageTemplate getTemplate(int id) {
+		return templateRepository.getTemplate(id);
+	}
+
+	public boolean hasTemplate(String name) {
+		return templateRepository.hasTemplate(name);
+	}
+
+	public boolean hasTemplate(int id) {
+		return templateRepository.hasTemplate(id);
+	}
+
+	public MessageTemplate[] toArray() {
+		return templateRepository.toArray();
+	}
 }

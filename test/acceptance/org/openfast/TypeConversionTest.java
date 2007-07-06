@@ -29,7 +29,7 @@ public class TypeConversionTest extends OpenFastTestCase {
 		FastEncoder encoder = encoder(template);
 		
 		byte[] encoding = encoder.encode(message);
-		GroupValue decodedMessage = (GroupValue) template.decode(stream(encoding), template, new Context(), true);
+		GroupValue decodedMessage = (GroupValue) template.decode(byteStream(encoding), template, new Context(), true);
 		
 		assertEquals("7f001a", decodedMessage.getString("string"));
 		assertEquals(150, decodedMessage.getInt("uint"));

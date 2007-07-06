@@ -23,12 +23,13 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 package org.openfast.template.loader;
 
 import org.openfast.template.MessageTemplate;
+import org.openfast.template.TemplateRepository;
 
 import java.io.InputStream;
 
 /*
  * An interface for the message template loader, loads the input stream.
  */
-public interface MessageTemplateLoader {
+public interface MessageTemplateLoader extends TemplateRepository {
     MessageTemplate[] load(InputStream source);
 }

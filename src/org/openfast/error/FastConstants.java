@@ -51,6 +51,7 @@ public interface FastConstants {
     ErrorCode D5_NO_DEFAULT_VALUE = new ErrorCode(DYNAMIC, 5, "ERR D5", "If no prior value is set and the field is not present, there must be a default value or the optional flag must be set.", ERROR);
     ErrorCode D6_MNDTRY_FIELD_NOT_PRESENT = new ErrorCode(DYNAMIC, 6, "ERR D6", "A mandatory field must have a value", ERROR);
     ErrorCode D7_SUBTRCTN_LEN_LONG = new ErrorCode(DYNAMIC, 7, "ERR D7", "The subtraction length is longer than the base value.", ERROR);
+    ErrorCode D8_TEMPLATE_NOT_EXIST = new ErrorCode(DYNAMIC, 8, "ERR D8", "The referenced template does not exist.", ERROR);
     ErrorCode D9_TEMPLATE_NOT_REGISTERED = new ErrorCode(DYNAMIC, 9, "ERR D9", "The template has not been registered.", ERROR);
 
     // Reportable Errors
@@ -61,6 +62,7 @@ public interface FastConstants {
     // Errors not defined in the FAST specification
 	ErrorCode IMPOSSIBLE_EXCEPTION = new ErrorCode(DYNAMIC, 101, "IMPOSSIBLE", "This should never happen.", ERROR);
 	ErrorCode IO_ERROR = new ErrorCode(DYNAMIC, 102, "IOERROR", "An IO error occurred.", FATAL);
+
 
 
 }

@@ -23,6 +23,7 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 package org.openfast;
 
 import org.openfast.template.MessageTemplate;
+import org.openfast.template.TemplateRegistry;
 
 public interface MessageStream extends TemplateRegistry {
     void addMessageHandler(MessageTemplate template, MessageHandler handler);
