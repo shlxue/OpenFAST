@@ -28,7 +28,7 @@ public class StringType extends SimpleType {
 	 * @return Returns the codec if the field is required
 	 */
 	public TypeCodec getCodec(Operator operator, boolean optional) {
-		if (operator.equals(Operator.DELTA_STRING))
+		if (operator == Operator.DELTA)
 			return (optional) ? TypeCodec.NULLABLE_STRING_DELTA : TypeCodec.STRING_DELTA;
 		return super.getCodec(operator, optional);
 	}

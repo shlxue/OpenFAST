@@ -22,13 +22,13 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast.template;
 
-import java.io.ByteArrayInputStream;
-
 import org.openfast.BitVectorBuilder;
 import org.openfast.Context;
 import org.openfast.IntegerValue;
 import org.openfast.Message;
 import org.openfast.ScalarValue;
+import org.openfast.codec.FastDecoder;
+import org.openfast.codec.FastEncoder;
 import org.openfast.error.FastConstants;
 import org.openfast.error.FastException;
 import org.openfast.template.operator.Operator;
@@ -94,15 +94,14 @@ public class ScalarTest extends OpenFastTestCase {
 				"  <uInt32 name=\"number\"><copy key=\"value\"/></uInt32>" +
 				"  <string name=\"string\"><copy key=\"value\"/></string>" +
 				"</template>");
-		Message message = new Message(template, 2);
+		Message message = new Message(template);
 		message.setInteger(1, 25);
 		message.setString(2, "string");
-		Context encodingContext = new Context();
-		Context decodingContext = new Context();
+		FastEncoder encoder = encoder(template);
 		try {
-			byte[] encoding = template.encode(message, encodingContext);
-			ByteArrayInputStream in = new ByteArrayInputStream(encoding);
-			template.decode(in, template, decodingContext, true);
+			byte[] encoding = encoder.encode(message);
+			FastDecoder decoder = decoder(template, encoding);
+			decoder.readMessage();
 			fail();
 		} catch (FastException e) {
 			assertEquals(FastConstants.D4_INVALID_TYPE, e.getCode());

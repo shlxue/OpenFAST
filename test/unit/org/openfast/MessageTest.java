@@ -40,10 +40,10 @@ public class MessageTest extends TestCase {
                 new Field[] {
                     new Scalar("1", Type.U32, Operator.COPY, ScalarValue.UNDEFINED, false)
                 });
-        GroupValue message = new Message(template, 2);
+        GroupValue message = new Message(template);
         message.setInteger(1, 1);
 
-        GroupValue other = new Message(template, 2);
+        GroupValue other = new Message(template);
         other.setInteger(1, 1);
 
         assertEquals(message, other);
@@ -54,10 +54,10 @@ public class MessageTest extends TestCase {
                 new Field[] {
                     new Scalar("1", Type.U32, Operator.COPY, ScalarValue.UNDEFINED, false)
                 });
-        Message message = new Message(template, 2);
+        Message message = new Message(template);
         message.setInteger(1, 2);
 
-        Message other = new Message(template, 2);
+        Message other = new Message(template);
         assertFalse(message.equals(other));
         assertFalse(other.equals(message));
         other.setInteger(1, 1);

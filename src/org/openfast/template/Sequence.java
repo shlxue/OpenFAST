@@ -159,7 +159,6 @@ public class Sequence extends Field implements FieldSet {
         SequenceValue val = (SequenceValue) value;
         int len = val.getLength();
 
-        //		System.out.print(getName() + "[");
         try {
             buffer.write(length.encode(new IntegerValue(len), template, context, presenceMapBuilder));
 

@@ -22,10 +22,10 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast.error;
 
-import org.openfast.GroupValue;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import org.openfast.Message;
 
 
 public class ErrorCode {
@@ -66,11 +66,15 @@ public class ErrorCode {
         return severity;
     }
 
-    public static ErrorCode getAlertCode(GroupValue alertMsg) {
+    public static ErrorCode getAlertCode(Message alertMsg) {
         return (ErrorCode) ALERT_CODES.get(new Integer(alertMsg.getInt(2)));
     }
 
     public ErrorType getType() {
         return type;
+    }
+    
+    public String toString() {
+    	return shortName + ": " + description;
     }
 }

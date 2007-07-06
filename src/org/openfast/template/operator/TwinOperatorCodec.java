@@ -33,15 +33,15 @@ import org.openfast.template.type.Type;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 
-public class TwinOperator extends Operator {
+public class TwinOperatorCodec extends OperatorCodec {
     private static final TwinValue DEFAULT = new TwinValue(new IntegerValue(0), new IntegerValue(0));
-	private Operator exponentOperator;
-    private Operator mantissaOperator;
+	private OperatorCodec exponentOperator;
+    private OperatorCodec mantissaOperator;
 
-    public TwinOperator(String exponentOperator, String mantissaOperator) {
-        super("twin", new Type[] { Type.DECIMAL });
-        this.exponentOperator = Operator.getOperator(exponentOperator, Type.I32);
-        this.mantissaOperator = Operator.getOperator(mantissaOperator, Type.I32);
+    public TwinOperatorCodec(Operator firstOperator, Operator secondOperator) {
+        super(Operator.TWIN, new Type[] { Type.DECIMAL });
+        this.exponentOperator = firstOperator.getCodec(Type.I32);
+        this.mantissaOperator = secondOperator.getCodec(Type.I32);
     }
 
     /**
@@ -131,11 +131,11 @@ public class TwinOperator extends Operator {
      * @return Returns true if the passed object is a TwinOperator object, false otherwise
      */
 	public boolean equals(Object obj) {
-        if ((obj == null) || !(obj instanceof TwinOperator)) {
+        if ((obj == null) || !(obj instanceof TwinOperatorCodec)) {
             return false;
         }
 
-        return equals((TwinOperator) obj);
+        return equals((TwinOperatorCodec) obj);
     }
 
 	/**
@@ -143,12 +143,20 @@ public class TwinOperator extends Operator {
 	 * @param other The TwinOperator object to be checked if the decimal values are the same
 	 * @return Returns true if the exponentOperator and the mantissaOperator of the passed object are the same as the one being compared, false otherwise
 	 */
-    private boolean equals(TwinOperator other) {
+    private boolean equals(TwinOperatorCodec other) {
         return exponentOperator.equals(other.exponentOperator) &&
         mantissaOperator.equals(other.mantissaOperator);
     }
 
 	public ScalarValue getValueToEncode(ScalarValue value, ScalarValue priorValue, Scalar field) {
 		throw new NotImplementedException();
+	}
+	
+	public boolean canEncode(ScalarValue val, Scalar field) {
+		if (val == null || val.isUndefined())
+			return true;
+		TwinValue value = toTwin(val);
+		return exponentOperator.canEncode(value.first, field) &&
+		       mantissaOperator.canEncode(value.second, field);
 	}
 }

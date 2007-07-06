@@ -25,6 +25,7 @@ package org.openfast.session;
 import junit.framework.TestCase;
 
 import org.openfast.ByteUtil;
+import org.openfast.Global;
 import org.openfast.GroupValue;
 import org.openfast.Message;
 import org.openfast.StringValue;
@@ -78,6 +79,7 @@ public class SessionTest extends TestCase {
 
     protected void tearDown() throws Exception {
         server.close();
+        Global.setErrorHandler(ErrorHandler.DEFAULT);
     }
 
     public void testBasicSessionInitialization()
@@ -101,7 +103,7 @@ public class SessionTest extends TestCase {
         MessageTemplate messageTemplate = new MessageTemplate("",
                 new Field[] {  });
         session.out.registerTemplate(1, messageTemplate);
-        session.out.writeMessage(new Message(messageTemplate, 1));
+        session.out.writeMessage(new Message(messageTemplate));
 
         //                             --PMAP-- ----TID=16000---- -----------------name="client"-----------------------
         String expectedServerInput = "11000000 01111101 10000000 01100011 01101100 01101001 01100101 01101110 11110100 " +

@@ -23,6 +23,7 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 package org.openfast;
 
 import org.openfast.codec.FastEncoder;
+import org.openfast.error.FastConstants;
 
 import org.openfast.session.Session;
 
@@ -58,10 +59,8 @@ public class MessageOutputStream implements MessageStream {
 
     public void writeMessage(Message message, boolean flush) {
         try {
-            Integer templateId = new Integer(message.getTemplateId());
-
-            if (handlers.containsKey(templateId)) {
-                ((MessageHandler) handlers.get(templateId)).handleMessage(message,
+            if (handlers.containsKey(message.getTemplate())) {
+                ((MessageHandler) handlers.get(message.getTemplate())).handleMessage(message,
                     context, encoder);
             }
 
@@ -75,7 +74,7 @@ public class MessageOutputStream implements MessageStream {
             if (flush)
             	out.flush();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+        	Global.handleError(FastConstants.IO_ERROR, "An IO error occurred while writing message " + message, e);
         }
     }
 
@@ -92,7 +91,7 @@ public class MessageOutputStream implements MessageStream {
         try {
             out.close();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            Global.handleError(FastConstants.IO_ERROR, "An error occurred while closing output stream.", e);
         }
     }
 
@@ -100,11 +99,11 @@ public class MessageOutputStream implements MessageStream {
         return out;
     }
 
-    public void addMessageHandler(int templateId, MessageHandler handler) {
+    public void addMessageHandler(MessageTemplate template, MessageHandler handler) {
         if (handlers == Collections.EMPTY_MAP) {
             handlers = new HashMap();
         }
 
-        handlers.put(new Integer(templateId), handler);
+        handlers.put(template, handler);
     }
 }

@@ -22,8 +22,6 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast.codec;
 
-import junit.framework.TestCase;
-
 import org.openfast.Context;
 import org.openfast.IntegerValue;
 import org.openfast.Message;
@@ -34,36 +32,37 @@ import org.openfast.template.MessageTemplate;
 import org.openfast.template.Scalar;
 import org.openfast.template.operator.Operator;
 import org.openfast.template.type.Type;
+import org.openfast.test.OpenFastTestCase;
 import org.openfast.test.TestUtil;
 
 
-public class FastEncoderTest extends TestCase {
+public class FastEncoderTest extends OpenFastTestCase {
     public void testEncodeEmptyMessage() {
         MessageTemplate messageTemplate = new MessageTemplate(null,
                 new Field[] {  });
-        Message message = new Message(messageTemplate, 113);
+        Message message = new Message(messageTemplate);
         Context context = new Context();
         context.registerTemplate(113, messageTemplate);
 
         byte[] encoding = new FastEncoder(context).encode(message);
-        TestUtil.assertBitVectorEquals("11000000 11110001", encoding);
+        assertEquals("11000000 11110001", encoding);
     }
 
     public void testEncodeSequentialEmptyMessages() {
         MessageTemplate messageTemplate = new MessageTemplate(null,
                 new Field[] {  });
-        Message message = new Message(messageTemplate, 113);
-        Message nextMsg = new Message(messageTemplate, 113);
+        Message message = new Message(messageTemplate);
+        Message nextMsg = new Message(messageTemplate);
         Context context = new Context();
         context.registerTemplate(113, messageTemplate);
 
         FastEncoder encoder = new FastEncoder(context);
 
         // Presence map should show that the only field present is the template id.
-        TestUtil.assertBitVectorEquals("11000000 11110001",
+        assertEquals("11000000 11110001",
             encoder.encode(message));
         // Presence map should be empty (except for leading stop bit)
-        TestUtil.assertBitVectorEquals("10000000", encoder.encode(nextMsg));
+        assertEquals("10000000", encoder.encode(nextMsg));
     }
 
     public void testEncodeSimpleMessage() {
@@ -74,12 +73,11 @@ public class FastEncoderTest extends TestCase {
         Context context = new Context();
         context.registerTemplate(113, template);
 
-        Message message = new Message(template, 113);
+        Message message = new Message(template);
         message.setInteger(1, 1);
 
         FastEncoder encoder = new FastEncoder(context);
-        TestUtil.assertBitVectorEquals("11100000 11110001 10000001",
-            encoder.encode(message));
+        assertEquals("11100000 11110001 10000001", encoder.encode(message));
     }
 
     public void testEncodeMessageWithAllFieldTypes() {
@@ -95,7 +93,7 @@ public class FastEncoderTest extends TestCase {
         Context context = new Context();
         context.registerTemplate(113, template);
 
-        Message message = new Message(template, 113);
+        Message message = new Message(template);
         message.setString(1, "H");
         message.setByteVector(2, new byte[] { (byte) 0xFF });
         message.setDecimal(3, 1.201);
@@ -105,8 +103,7 @@ public class FastEncoderTest extends TestCase {
 
         //               --PMAP-- --TID--- ---#1--- -------#2-------- ------------#3------------ ---#4--- ------------#5------------ ---#6---
         String msgstr = "11111111 11110001 11001000 10000001 11111111 11111101 00001001 10110001 11111111 01100001 01100010 11100011 10000010";
-        TestUtil.assertBitVectorEquals(msgstr,
-            new FastEncoder(context).encode(message));
+        assertEquals(msgstr, new FastEncoder(context).encode(message));
     }
 
     public void testEncodeMessageWithOverlongPmap() {
@@ -131,7 +128,7 @@ public class FastEncoderTest extends TestCase {
         Context context = new Context();
         context.registerTemplate(113, template);
 
-        Message message = new Message(template, 113);
+        Message message = new Message(template);
         message.setInteger(1, 1);
         message.setInteger(2, 1);
         message.setInteger(3, 1);
@@ -144,8 +141,7 @@ public class FastEncoderTest extends TestCase {
         //WHAT IT THINKS 01000000 00000000 10000000 11110001
         String msgstr = "11000000 11110001";
 
-        TestUtil.assertBitVectorEquals(msgstr,
-            new FastEncoder(context).encode(message));
+        assertEquals(msgstr, new FastEncoder(context).encode(message));
     }
 
     public void testEncodeMessageWithSignedIntegerFieldTypesAndAllOperators() {
@@ -167,7 +163,7 @@ public class FastEncoderTest extends TestCase {
 
         FastEncoder encoder = new FastEncoder(context);
 
-        Message message = new Message(template, 113);
+        Message message = new Message(template);
         message.setInteger(1, 109);
         message.setInteger(2, 29470);
         message.setInteger(3, 10);
@@ -195,7 +191,7 @@ public class FastEncoderTest extends TestCase {
 
         //             --PMAP-- --------#1------- --------#2------- ---#4--- ---#6---
         String msg3 = "10101100 00000000 11100000 00001000 10000111 10000001 10000011";
-        TestUtil.assertBitVectorEquals(msg3, encoder.encode(message));
+        assertEquals(msg3, encoder.encode(message));
     }
 
     public void testEncodeMessageWithUnsignedIntegerFieldTypesAndAllOperators() {
@@ -217,7 +213,7 @@ public class FastEncoderTest extends TestCase {
 
         FastEncoder encoder = new FastEncoder(context);
 
-        Message message = new Message(template, 113);
+        Message message = new Message(template);
         message.setInteger(1, 109);
         message.setInteger(2, 29470);
         message.setInteger(3, 10);
@@ -227,7 +223,7 @@ public class FastEncoderTest extends TestCase {
 
         //             --PMAP-- --TID--- ---#1--- ------------#2------------ ---#4---
         String msg1 = "11101000 11110001 11101101 00000001 01100110 10011110 10000011";
-        TestUtil.assertBitVectorEquals(msg1, encoder.encode(message));
+        assertEquals(msg1, encoder.encode(message));
 
         message.setInteger(2, 29471);
         message.setInteger(3, 11);
@@ -236,7 +232,7 @@ public class FastEncoderTest extends TestCase {
 
         //             --PMAP-- ---#2--- ---#6---
         String msg2 = "10000100 10000001 10000011";
-        TestUtil.assertBitVectorEquals(msg2, encoder.encode(message));
+        assertEquals(msg2, encoder.encode(message));
 
         message.setInteger(1, 96);
         message.setInteger(2, 30500);
@@ -245,7 +241,7 @@ public class FastEncoderTest extends TestCase {
 
         //             --PMAP-- ---#1--- --------#2------- ---#4--- ---#6---
         String msg3 = "10101100 11100000 00001000 10000101 10000001 10000011";
-        TestUtil.assertBitVectorEquals(msg3, encoder.encode(message));
+        assertEquals(msg3, encoder.encode(message));
     }
 
     public void testEncodeMessageWithStringFieldTypesAndAllOperators() {
@@ -261,7 +257,7 @@ public class FastEncoderTest extends TestCase {
         Context context = new Context();
         context.registerTemplate(113, template);
 
-        Message message = new Message(template, 113);
+        Message message = new Message(template);
         message.setString(1, "on");
         message.setString(2, "DCB32");
         message.setString(3, "e");
@@ -275,11 +271,11 @@ public class FastEncoderTest extends TestCase {
 
         FastEncoder encoder = new FastEncoder(context);
 
-        TestUtil.assertBitVectorEquals(msg1, encoder.encode(message));
+        assertEquals(msg1, encoder.encode(message));
 
         message.setString(2, "DCB16");
         message.setString(4, "short");
 
-        TestUtil.assertBitVectorEquals(msg2, encoder.encode(message));
+        assertEquals(msg2, encoder.encode(message));
     }
 }

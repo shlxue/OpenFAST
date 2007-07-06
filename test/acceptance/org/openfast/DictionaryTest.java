@@ -54,16 +54,16 @@ public class DictionaryTest extends TestCase {
         MessageTemplate request = new MessageTemplate("request",
                 new Field[] { bidR });
 
-        Message quote1 = new Message(quote, 2);
+        Message quote1 = new Message(quote);
         quote1.setFieldValue(1, new DecimalValue(10.2));
 
-        Message request1 = new Message(request, 1);
+        Message request1 = new Message(request);
         request1.setFieldValue(1, new DecimalValue(10.3));
 
-        Message quote2 = new Message(quote, 2);
+        Message quote2 = new Message(quote);
         quote2.setFieldValue(1, new DecimalValue(10.2));
 
-        Message request2 = new Message(request, 1);
+        Message request2 = new Message(request);
         request2.setFieldValue(1, new DecimalValue(10.2));
 
         session.out.registerTemplate(1, request);

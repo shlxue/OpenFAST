@@ -16,7 +16,7 @@ public class UnsignedIntegerType extends IntegerType {
 	 * @return Returns the codec if the field is required
 	 */
 	public TypeCodec getCodec(Operator operator, boolean optional) {
-		if (operator.equals(Operator.DELTA_INTEGER))
+		if (operator.equals(Operator.DELTA))
 			if (optional)
 				return TypeCodec.NULLABLE_INTEGER;
 			else

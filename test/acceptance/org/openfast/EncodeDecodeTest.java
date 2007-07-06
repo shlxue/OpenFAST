@@ -59,7 +59,7 @@ public class EncodeDecodeTest extends TestCase {
                             new Scalar("EIN", Type.STRING, Operator.NONE, ScalarValue.UNDEFINED, false)
                         }, false)
                 });
-        Message aaaInsurance = new Message(template, 1);
+        Message aaaInsurance = new Message(template);
         aaaInsurance.setFieldValue(1, new StringValue("AAA Insurance"));
         aaaInsurance.setFieldValue(2, new IntegerValue(5));
 
@@ -83,7 +83,7 @@ public class EncodeDecodeTest extends TestCase {
         out.registerTemplate(1, template);
         out.writeMessage(aaaInsurance);
 
-        Message abcBuilding = new Message(template, 1);
+        Message abcBuilding = new Message(template);
         abcBuilding.setFieldValue(1, new StringValue("ABC Building"));
         abcBuilding.setFieldValue(2, new IntegerValue(6));
         employees = new SequenceValue(template.getSequence("Employees"));

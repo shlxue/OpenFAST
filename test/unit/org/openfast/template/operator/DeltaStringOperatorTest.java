@@ -22,22 +22,32 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast.template.operator;
 
-import junit.framework.TestCase;
-
 import org.openfast.IntegerValue;
 import org.openfast.ScalarValue;
 import org.openfast.StringValue;
+import org.openfast.error.FastConstants;
+import org.openfast.error.FastException;
 import org.openfast.template.Scalar;
 import org.openfast.template.TwinValue;
 import org.openfast.template.type.Type;
+import org.openfast.test.OpenFastTestCase;
 
 
-public class DeltaStringOperatorTest extends TestCase {
+public class DeltaStringOperatorTest extends OpenFastTestCase {
     private Scalar field;
 
-    protected void setUp() throws Exception {
+    public void testDecodeSubtractionLengthError() {
+    	field = new Scalar(null, Type.ASCII, Operator.DELTA, ScalarValue.UNDEFINED, false);
+    	
+    	try {
+    		decode(twin(i(5), string("abc")), string("def"));
+    		fail();
+    	} catch (FastException e) {
+    		assertEquals(FastConstants.D7_SUBTRCTN_LEN_LONG, e.getCode());
+    		assertEquals("The string diff <5, abc> cannot be applied to the base value \"def\" because the subtraction length is too long.", e.getMessage());
+    	}
     }
-
+    
     public void testGetValueToEncodeMandatory() {
         field = new Scalar(null, Type.ASCII, Operator.DELTA, ScalarValue.UNDEFINED, false);
 
@@ -90,16 +100,16 @@ public class DeltaStringOperatorTest extends TestCase {
 
     private ScalarValue encode(String value, ScalarValue priorValue) {
         if (value == null) {
-            return Operator.DELTA_STRING.getValueToEncode(null, priorValue,
+            return OperatorCodec.DELTA_STRING.getValueToEncode(null, priorValue,
                 field);
         }
 
-        return Operator.DELTA_STRING.getValueToEncode(new StringValue(value),
+        return OperatorCodec.DELTA_STRING.getValueToEncode(new StringValue(value),
             priorValue, field);
     }
 
     private ScalarValue decode(ScalarValue diff, ScalarValue priorValue) {
-        return Operator.DELTA_STRING.decodeValue(diff, priorValue, field);
+        return OperatorCodec.DELTA_STRING.decodeValue(diff, priorValue, field);
     }
 
     private TwinValue tv(int subtraction, String diff) {

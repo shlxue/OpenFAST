@@ -27,6 +27,7 @@ import junit.framework.TestCase;
 import org.openfast.IntegerValue;
 import org.openfast.ScalarValue;
 
+import org.openfast.error.ErrorHandler;
 import org.openfast.template.FieldSet;
 import org.openfast.template.Group;
 import org.openfast.template.MessageTemplate;
@@ -34,7 +35,8 @@ import org.openfast.template.Scalar;
 import org.openfast.template.Sequence;
 import org.openfast.template.TwinValue;
 import org.openfast.template.operator.Operator;
-import org.openfast.template.operator.TwinOperator;
+import org.openfast.template.operator.OperatorCodec;
+import org.openfast.template.operator.TwinOperatorCodec;
 import org.openfast.template.type.Type;
 import org.openfast.template.type.codec.TypeCodec;
 
@@ -61,16 +63,16 @@ public class XMLMessageTemplateLoaderTest extends TestCase {
         assertEquals("SampleTemplate", messageTemplate.getName());
         assertEquals(7, messageTemplate.getFieldCount());
         assertScalarField(messageTemplate, 1, Type.DECIMAL, "bid",
-            new TwinOperator(Operator.COPY, Operator.DELTA),
+            new TwinOperatorCodec(Operator.COPY, Operator.DELTA),
             new TwinValue(new IntegerValue(-2), ScalarValue.UNDEFINED));
         assertScalarField(messageTemplate, 2, Type.DECIMAL, "ask",
-            new TwinOperator(Operator.NONE, Operator.DELTA),
+            new TwinOperatorCodec(Operator.NONE, Operator.DELTA),
             new TwinValue(ScalarValue.UNDEFINED, ScalarValue.UNDEFINED));
         assertScalarField(messageTemplate, 3, Type.DECIMAL, "high",
-            new TwinOperator(Operator.COPY, Operator.NONE),
+            new TwinOperatorCodec(Operator.COPY, Operator.NONE),
             new TwinValue(ScalarValue.UNDEFINED, ScalarValue.UNDEFINED));
         assertScalarField(messageTemplate, 4, Type.DECIMAL, "low",
-            new TwinOperator(Operator.COPY, Operator.DELTA),
+            new TwinOperatorCodec(Operator.COPY, Operator.DELTA),
             new TwinValue(new IntegerValue(-2), new IntegerValue(10)));
         assertScalarField(messageTemplate, 5, Type.DECIMAL, "open",
             Operator.COPY);
@@ -221,27 +223,33 @@ public class XMLMessageTemplateLoaderTest extends TestCase {
         assertScalarField(messageTemplate, index++, Type.ASCII, "10",
             Operator.NONE);
     }
+    
+    public void testNullDocument() {
+    	XMLMessageTemplateLoader loader = new XMLMessageTemplateLoader();
+    	loader.setErrorHandler(ErrorHandler.NULL);
+		assertEquals(0, loader.load(null).length);
+    }
 
 	private void assertScalarField(FieldSet fieldSet, int fieldIndex,
-        Type type, String name, Operator operator, ScalarValue defaultValue) {
+        Type type, String name, OperatorCodec operator, ScalarValue defaultValue) {
         Scalar field = (Scalar) fieldSet.getField(fieldIndex);
         assertScalarField(field, type, name);
-        assertEquals(operator, field.getOperator());
+        assertEquals(operator, field.getOperatorCodec());
         assertEquals(defaultValue, field.getDefaultValue());
     }
 
     private void assertScalarField(FieldSet fieldSet, int fieldIndex,
-        Type type, String name, String operatorType) {
+        Type type, String name, Operator operator) {
         Scalar field = (Scalar) fieldSet.getField(fieldIndex);
         assertScalarField(field, type, name);
-        assertEquals(operatorType, field.getOperator().getName());
+        assertEquals(operator, field.getOperator());
     }
 
     private void assertSequenceLengthField(Sequence sequence, String name,
-        Type type, String operator) {
+        Type type, Operator operator) {
         assertEquals(type, sequence.getLength().getType());
         assertEquals(name, sequence.getLength().getName());
-        assertEquals(operator, sequence.getLength().getOperator().getName());
+        assertEquals(operator, sequence.getLength().getOperator());
     }
 
     private void assertSequence(MessageTemplate messageTemplate,
@@ -257,10 +265,10 @@ public class XMLMessageTemplateLoaderTest extends TestCase {
     }
 
     private void assertOptionalScalarField(FieldSet fieldSet, int fieldIndex,
-        Type type, String name, String operator) {
+        Type type, String name, Operator operator) {
         Scalar field = (Scalar) fieldSet.getField(fieldIndex);
         assertScalarField(field, type, name);
-        assertEquals(operator, field.getOperator().getName());
+        assertEquals(operator, field.getOperator());
         assertTrue(field.isOptional());
     }
 

@@ -25,16 +25,18 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
  */
 package org.openfast.template.operator;
 
+import org.openfast.Global;
 import org.openfast.ScalarValue;
 import org.openfast.StringValue;
+import org.openfast.error.FastConstants;
 import org.openfast.template.Scalar;
 import org.openfast.template.TwinValue;
 import org.openfast.template.type.Type;
 import org.openfast.util.Util;
 
 
-final class DeltaStringOperator extends AlwaysPresentOperator {
-    DeltaStringOperator() {
+final class DeltaStringOperatorCodec extends AlwaysPresentOperatorCodec {
+    DeltaStringOperatorCodec() {
         super(Operator.DELTA, new Type[] { Type.ASCII, Type.STRING });
     }
 
@@ -51,7 +53,8 @@ final class DeltaStringOperator extends AlwaysPresentOperator {
         }
 
         if (priorValue == null) {
-            throw new IllegalStateException(Operator.ERR_D9);
+        	Global.handleError(FastConstants.D6_MNDTRY_FIELD_NOT_PRESENT, "The field " + field + " must have a priorValue defined.");
+        	return null;
         }
 
         ScalarValue base = (priorValue.isUndefined()) ? field.getInitialValue()
@@ -62,12 +65,9 @@ final class DeltaStringOperator extends AlwaysPresentOperator {
 
     /**
      * 
-     * @param newValue The new value of the Field, used in the comparing with the 
-	 * previousValue.  
-     * @param previousValue The previous value of the Field, used in 
-	 * determining the corresponding field value for the current
-	 * message being decoded.
-     * @param field The field being decoded
+     * @param newValue 
+     * @param previousValue
+     * @param field
      * @return Returns null if the passed ScalarValue objects are null, otherwise 
      */
     public ScalarValue decodeValue(ScalarValue newValue,
@@ -80,6 +80,9 @@ final class DeltaStringOperator extends AlwaysPresentOperator {
         ScalarValue base = (previousValue.isUndefined())
             ? field.getInitialValue() : previousValue;
 
+        if (diffValue.first.toInt() > base.toString().length()) {
+        	Global.handleError(FastConstants.D7_SUBTRCTN_LEN_LONG, "The string diff <" + diffValue + "> cannot be applied to the base value \"" + base + "\" because the subtraction length is too long.");
+        }
         return Util.applyDifference((StringValue) base, diffValue);
     }
 

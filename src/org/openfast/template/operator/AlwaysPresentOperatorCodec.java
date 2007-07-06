@@ -27,13 +27,12 @@ import org.openfast.ScalarValue;
 import org.openfast.template.Scalar;
 import org.openfast.template.type.Type;
 
-public abstract class AlwaysPresentOperator extends Operator {
-    protected AlwaysPresentOperator(String name, Type[] types) {
-        super(name, types);
+public abstract class AlwaysPresentOperatorCodec extends OperatorCodec {
+    protected AlwaysPresentOperatorCodec(Operator operator, Type[] types) {
+        super(operator, types);
     }
 
     /**
-     * 
      * @return Returns false
      */
     public boolean usesPresenceMapBit(boolean optional) {

@@ -1,5 +1,6 @@
 package org.openfast;
 
+import org.openfast.codec.FastEncoder;
 import org.openfast.template.MessageTemplate;
 import org.openfast.test.OpenFastTestCase;
 
@@ -17,7 +18,7 @@ public class TypeConversionTest extends OpenFastTestCase {
 				"  <decimal name=\"decimal\"/>" +
 				"</template>");
 		
-		Message message = new Message(template, 102);
+		Message message = new Message(template);
 		message.setByteVector("string", byt("7f001a"));
 		message.setDecimal("uint", 150.0);
 		message.setString("byte", "4");
@@ -25,7 +26,9 @@ public class TypeConversionTest extends OpenFastTestCase {
 		message.setString("long", "1000000000000000000");
 		message.setString("bytevector", "abcd");
 		
-		byte[] encoding = template.encode(message, new Context());
+		FastEncoder encoder = encoder(template);
+		
+		byte[] encoding = encoder.encode(message);
 		GroupValue decodedMessage = (GroupValue) template.decode(stream(encoding), template, new Context(), true);
 		
 		assertEquals("7f001a", decodedMessage.getString("string"));

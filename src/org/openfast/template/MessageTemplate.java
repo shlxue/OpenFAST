@@ -94,7 +94,7 @@ public class MessageTemplate extends Group implements FieldSet {
         System.out.println();
         fieldValues[0] = new IntegerValue(templateId);
 
-        return new Message(this, templateId, fieldValues);
+        return new Message(this, fieldValues);
     }
 
     /**
@@ -115,7 +115,7 @@ public class MessageTemplate extends Group implements FieldSet {
      * @return Creates a new Message object with the specified FieldValue and the passed string value
      */
     public FieldValue createValue(String value) {
-        return new Message(this, Integer.parseInt(value));
+        return new Message(this);
     }
 
     /**

@@ -65,7 +65,7 @@ public class ExhaustiveOperatorTest extends TestCase {
                 ScalarValue.UNDEFINED, true);
         MessageTemplate template = registerTemplate(field);
 
-        Message message = new Message(template, 113);
+        Message message = new Message(template);
         message.setInteger(1, 126);
 
         //                 --PMAP-- --TID--- ---#1---
@@ -85,7 +85,7 @@ public class ExhaustiveOperatorTest extends TestCase {
         MessageTemplate template = registerTemplate(field);
 
         // NOTE: The field is not set.
-        Message message = new Message(template, 113);
+        Message message = new Message(template);
 
         //                 --PMAP-- --TID--- ---#1---
         String encoding = "11000000 11110001 10000000";
@@ -104,9 +104,9 @@ public class ExhaustiveOperatorTest extends TestCase {
         MessageTemplate template = registerTemplate(field);
 
         // NOTE: The field is not set.
-        Message msg1 = new Message(template, 113);
+        Message msg1 = new Message(template);
 
-        Message msg2 = new Message(template, 113);
+        Message msg2 = new Message(template);
         msg2.setInteger(1, 15);
 
         //                 --PMAP-- --TID--- ---#1---
@@ -132,10 +132,10 @@ public class ExhaustiveOperatorTest extends TestCase {
         MessageTemplate template = registerTemplate(field);
 
         // NOTE: The field is not set.
-        Message msg1 = new Message(template, 113);
+        Message msg1 = new Message(template);
         msg1.setInteger(1, 0);
 
-        Message msg2 = new Message(template, 113);
+        Message msg2 = new Message(template);
         msg2.setInteger(1, 16);
 
         //                 --PMAP-- --TID--- ---#1---
@@ -161,11 +161,11 @@ public class ExhaustiveOperatorTest extends TestCase {
                 new IntegerValue(16), true);
         MessageTemplate template = registerTemplate(field);
 
-        Message msg1 = new Message(template, 113);
+        Message msg1 = new Message(template);
         // NOTE: Constant fields are set by default, so set to null to clear;
         msg1.setFieldValue(1, null);
 
-        Message msg2 = new Message(template, 113);
+        Message msg2 = new Message(template);
         msg2.setInteger(1, 16);
 
         //                     --PMAP-- --TID---
@@ -185,10 +185,10 @@ public class ExhaustiveOperatorTest extends TestCase {
         MessageTemplate template = registerTemplate(field);
 
         // NOTE: The field is not set.
-        Message msg1 = new Message(template, 113);
+        Message msg1 = new Message(template);
         msg1.setInteger(1, 16);
 
-        Message msg2 = new Message(template, 113);
+        Message msg2 = new Message(template);
         msg2.setInteger(1, 16);
 
         //                 --PMAP-- --TID---
@@ -209,12 +209,12 @@ public class ExhaustiveOperatorTest extends TestCase {
         MessageTemplate template = registerTemplate(field);
 
         // NOTE: The field is not set.
-        Message msg1 = new Message(template, 113);
+        Message msg1 = new Message(template);
 
-        Message msg2 = new Message(template, 113);
+        Message msg2 = new Message(template);
         msg2.setInteger(1, 16);
 
-        Message msg3 = new Message(template, 113);
+        Message msg3 = new Message(template);
         msg3.setInteger(1, 20);
 
         //                     --PMAP-- --TID--- ---#1---
@@ -236,10 +236,10 @@ public class ExhaustiveOperatorTest extends TestCase {
                 new IntegerValue(16), false);
         MessageTemplate template = registerTemplate(field);
 
-        Message msg1 = new Message(template, 113);
+        Message msg1 = new Message(template);
         msg1.setInteger(1, 16);
 
-        Message msg2 = new Message(template, 113);
+        Message msg2 = new Message(template);
         msg2.setInteger(1, 20);
 
         //                     --PMAP-- --TID---
@@ -257,16 +257,16 @@ public class ExhaustiveOperatorTest extends TestCase {
                 new IntegerValue(16), true);
         MessageTemplate template = registerTemplate(field);
 
-        Message msg1 = new Message(template, 113);
+        Message msg1 = new Message(template);
         msg1.setInteger(1, 16);
 
         // NOTE: The field is not set.
-        Message msg2 = new Message(template, 113);
+        Message msg2 = new Message(template);
 
-        Message msg3 = new Message(template, 113);
+        Message msg3 = new Message(template);
         msg3.setInteger(1, 20);
 
-        Message msg4 = new Message(template, 113);
+        Message msg4 = new Message(template);
         msg4.setInteger(1, 20);
 
         //                     --PMAP-- --TID---
@@ -292,13 +292,13 @@ public class ExhaustiveOperatorTest extends TestCase {
                 new IntegerValue(16), false);
         MessageTemplate template = registerTemplate(field);
 
-        Message msg1 = new Message(template, 113);
+        Message msg1 = new Message(template);
         msg1.setInteger(1, 16);
 
-        Message msg2 = new Message(template, 113);
+        Message msg2 = new Message(template);
         msg2.setInteger(1, 20);
 
-        Message msg3 = new Message(template, 113);
+        Message msg3 = new Message(template);
         msg3.setInteger(1, 20);
 
         //                     --PMAP-- --TID---
@@ -320,16 +320,16 @@ public class ExhaustiveOperatorTest extends TestCase {
                 Operator.INCREMENT, new IntegerValue(16), true);
         MessageTemplate template = registerTemplate(field);
 
-        Message msg1 = new Message(template, 113);
+        Message msg1 = new Message(template);
         msg1.setInteger(1, 16);
 
-        Message msg2 = new Message(template, 113);
+        Message msg2 = new Message(template);
         msg2.setInteger(1, 17);
 
         // NOTE: The field is not set.		
-        Message msg3 = new Message(template, 113);
+        Message msg3 = new Message(template);
 
-        Message msg4 = new Message(template, 113);
+        Message msg4 = new Message(template);
         msg4.setInteger(1, 20);
 
         //                     --PMAP-- --TID---
@@ -355,14 +355,14 @@ public class ExhaustiveOperatorTest extends TestCase {
                 Operator.INCREMENT, new IntegerValue(16), false);
         MessageTemplate template = registerTemplate(field);
 
-        Message msg1 = new Message(template, 113);
+        Message msg1 = new Message(template);
         msg1.setInteger(1, 16);
 
-        Message msg2 = new Message(template, 113);
+        Message msg2 = new Message(template);
         msg2.setInteger(1, 17);
 
         // NOTE: The field is not set.		
-        Message msg3 = new Message(template, 113);
+        Message msg3 = new Message(template);
         msg3.setInteger(1, 20);
 
         //                     --PMAP-- --TID---
@@ -384,16 +384,16 @@ public class ExhaustiveOperatorTest extends TestCase {
                 new IntegerValue(16), true);
         MessageTemplate template = registerTemplate(field);
 
-        Message msg1 = new Message(template, 113);
+        Message msg1 = new Message(template);
         msg1.setInteger(1, 16);
 
-        Message msg2 = new Message(template, 113);
+        Message msg2 = new Message(template);
         msg2.setInteger(1, 17);
 
         // NOTE: The field is not set.		
-        Message msg3 = new Message(template, 113);
+        Message msg3 = new Message(template);
 
-        Message msg4 = new Message(template, 113);
+        Message msg4 = new Message(template);
         msg4.setInteger(1, 20);
 
         //                     --PMAP-- --TID--- ---#1---
@@ -419,14 +419,14 @@ public class ExhaustiveOperatorTest extends TestCase {
                 Operator.INCREMENT, new IntegerValue(16), false);
         MessageTemplate template = registerTemplate(field);
 
-        Message msg1 = new Message(template, 113);
+        Message msg1 = new Message(template);
         msg1.setInteger(1, 16);
 
-        Message msg2 = new Message(template, 113);
+        Message msg2 = new Message(template);
         msg2.setInteger(1, 17);
 
         // NOTE: The field is not set.		
-        Message msg3 = new Message(template, 113);
+        Message msg3 = new Message(template);
         msg3.setInteger(1, 20);
 
         //                     --PMAP-- --TID---
@@ -448,16 +448,16 @@ public class ExhaustiveOperatorTest extends TestCase {
                 new StringValue("abc"), true);
         MessageTemplate template = registerTemplate(field);
 
-        Message msg1 = new Message(template, 113);
+        Message msg1 = new Message(template);
         msg1.setString(1, "abc");
 
-        Message msg2 = new Message(template, 113);
+        Message msg2 = new Message(template);
         msg2.setString(1, "abd");
 
         // NOTE: The field is not set.		
-        Message msg3 = new Message(template, 113);
+        Message msg3 = new Message(template);
 
-        Message msg4 = new Message(template, 113);
+        Message msg4 = new Message(template);
         msg4.setString(1, "dbef");
 
         //                     --PMAP-- --TID---
@@ -484,17 +484,17 @@ public class ExhaustiveOperatorTest extends TestCase {
                 new StringValue("abc"), false);
         MessageTemplate template = registerTemplate(field);
 
-        Message msg1 = new Message(template, 113);
+        Message msg1 = new Message(template);
         msg1.setString(1, "abc");
 
-        Message msg2 = new Message(template, 113);
+        Message msg2 = new Message(template);
         msg2.setString(1, "abd");
 
         // NOTE: The field is not set.		
-        Message msg3 = new Message(template, 113);
+        Message msg3 = new Message(template);
         msg3.setString(1, "abc");
 
-        Message msg4 = new Message(template, 113);
+        Message msg4 = new Message(template);
         msg4.setString(1, "dbef");
 
         //                     --PMAP-- --TID---

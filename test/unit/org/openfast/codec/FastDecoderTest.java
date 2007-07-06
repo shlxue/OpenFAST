@@ -22,6 +22,7 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast.codec;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 import junit.framework.TestCase;
@@ -34,7 +35,6 @@ import org.openfast.Message;
 import org.openfast.ScalarValue;
 import org.openfast.StringValue;
 import org.openfast.template.Field;
-import org.openfast.template.Group;
 import org.openfast.template.MessageTemplate;
 import org.openfast.template.Scalar;
 import org.openfast.template.operator.Operator;
@@ -43,17 +43,17 @@ import org.openfast.template.type.Type;
 
 public class FastDecoderTest extends TestCase {
     public void testDecodeEmptyMessage() {
-        Group messageTemplate = new MessageTemplate(null, new Field[] {  });
+        MessageTemplate messageTemplate = new MessageTemplate(null, new Field[] {  });
         InputStream in = ByteUtil.createByteStream("11000000 11110001");
         Context context = new Context();
         context.registerTemplate(113, messageTemplate);
 
-        GroupValue message = new FastDecoder(context, in).readMessage();
+        Message message = new FastDecoder(context, in).readMessage();
         assertEquals(113, message.getInt(0));
     }
 
     public void testDecodeSequentialEmptyMessages() {
-        Group messageTemplate = new MessageTemplate(null, new Field[] {  });
+        MessageTemplate messageTemplate = new MessageTemplate(null, new Field[] {  });
         InputStream in = ByteUtil.createByteStream("11000000 11110001 10000000");
         Context context = new Context();
         context.registerTemplate(113, messageTemplate);
@@ -74,7 +74,7 @@ public class FastDecoderTest extends TestCase {
         Context context = new Context();
         context.registerTemplate(113, template);
 
-        GroupValue message = new Message(template, 113);
+        Message message = new Message(template);
         message.setInteger(1, 1);
 
         FastDecoder decoder = new FastDecoder(context, in);
@@ -100,7 +100,7 @@ public class FastDecoderTest extends TestCase {
         Context context = new Context();
         context.registerTemplate(113, template);
 
-        GroupValue message = new Message(template, 113);
+        GroupValue message = new Message(template);
         message.setString(1, "H");
         message.setByteVector(2, new byte[] { (byte) 0xFF });
         message.setDecimal(3, 1.201);
@@ -125,7 +125,7 @@ public class FastDecoderTest extends TestCase {
                         new IntegerValue(2), false)
                 });
 
-        GroupValue message = new Message(template, 113);
+        GroupValue message = new Message(template);
         message.setInteger(1, 109);
         message.setInteger(2, 29470);
         message.setInteger(3, 10);
@@ -184,7 +184,7 @@ public class FastDecoderTest extends TestCase {
                         new IntegerValue(2), false)
                 });
 
-        GroupValue message = new Message(template, 113);
+        GroupValue message = new Message(template);
         message.setInteger(1, 109);
         message.setInteger(2, 29470);
         message.setInteger(3, 10);
@@ -239,7 +239,7 @@ public class FastDecoderTest extends TestCase {
                         new StringValue("long"), false)
                 });
 
-        Message message = new Message(template, 113);
+        Message message = new Message(template);
         message.setString(1, "on");
         message.setString(2, "DCB32");
         message.setString(3, "e");
@@ -265,5 +265,15 @@ public class FastDecoderTest extends TestCase {
 
         readMessage = decoder.readMessage();
         assertEquals(message, readMessage);
+    }
+    
+    public void testDecodeEndOfStream() {
+    	FastDecoder decoder = new FastDecoder(new Context(), new InputStream() {
+			public int read() throws IOException {
+				return -1;
+			}});
+    	
+		Message message = decoder.readMessage();
+		assertNull(message);
     }
 }

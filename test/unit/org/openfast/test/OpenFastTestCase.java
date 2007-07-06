@@ -84,6 +84,12 @@ public abstract class OpenFastTestCase extends TestCase {
 		return new FastDecoder(context, stream(bitString));
 	}
 
+	protected static FastDecoder decoder(MessageTemplate template, byte[] encoding) {
+		Context context = new Context();
+		context.registerTemplate(1, template);
+		return new FastDecoder(context, new ByteArrayInputStream(encoding));
+	}
+
 	protected static FastEncoder encoder(MessageTemplate template) {
 		Context context = new Context();
 		context.registerTemplate(1, template);

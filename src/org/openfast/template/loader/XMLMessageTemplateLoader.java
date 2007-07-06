@@ -30,8 +30,6 @@ import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.FactoryConfigurationError;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.openfast.Global;
 import org.openfast.ScalarValue;
@@ -46,13 +44,12 @@ import org.openfast.template.Scalar;
 import org.openfast.template.Sequence;
 import org.openfast.template.TwinValue;
 import org.openfast.template.operator.Operator;
-import org.openfast.template.operator.TwinOperator;
+import org.openfast.template.operator.TwinOperatorCodec;
 import org.openfast.template.type.Type;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 
 public class XMLMessageTemplateLoader implements MessageTemplateLoader {
@@ -253,7 +250,7 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
         }
 
         Scalar scalar = new Scalar(name, Type.DECIMAL,
-		            new TwinOperator(exponentOperator, mantissaOperator),
+		            new TwinOperatorCodec(Operator.getOperator(exponentOperator), Operator.getOperator(mantissaOperator)),
 		            new TwinValue(exponentDefaultValue, mantissaDefaultValue), optional);
         if (fieldNode.hasAttribute("id"))
     		scalar.setId(fieldNode.getAttribute("id"));
@@ -270,7 +267,7 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
      * @return Returns a new scalar with the passed information
      */
     private Scalar createScalar(Element fieldNode, String name, boolean optional, String typeName, String dictionary) {
-    	String operator = Operator.NONE;
+    	Operator operator = Operator.NONE;
     	String defaultValue = null;
     	String key = null;
     	if (fieldNode.hasAttribute("dictionary"))
@@ -279,7 +276,7 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
         if (operatorElement != null) {
 	        if (operatorElement.hasAttribute("value"))
 	            defaultValue = operatorElement.getAttribute("value");
-	        operator = operatorElement.getNodeName();
+	        operator = Operator.getOperator(operatorElement.getNodeName());
 	        if (operatorElement.hasAttribute("key"))
 	        	key = operatorElement.getAttribute("key");
         }
@@ -394,18 +391,13 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
             DocumentBuilder builder = dbf.newDocumentBuilder();
 
             return builder.parse(templateStream);
-        } catch (ParserConfigurationException e) {
-            errorHandler.error(XML_PARSING_ERROR,
-                "Error occurred while parsing xml template.", e);
-        } catch (FactoryConfigurationError e) {
-            errorHandler.error(XML_PARSING_ERROR,
-                "Error occurred while parsing xml template.", e);
-        } catch (SAXException e) {
-            errorHandler.error(XML_PARSING_ERROR,
-                "Error occurred while parsing xml template.", e);
         } catch (IOException e) {
             errorHandler.error(IO_ERROR,
                 "Error occurred while trying to read xml template.", e);
+        } catch (Exception e) {
+
+            errorHandler.error(XML_PARSING_ERROR,
+                "Error occurred while parsing xml template.", e);
         }
 
         return null;

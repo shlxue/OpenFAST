@@ -37,6 +37,7 @@ import org.openfast.ScalarValue;
 import org.openfast.codec.Coder;
 import org.openfast.error.ErrorCode;
 import org.openfast.error.ErrorHandler;
+import org.openfast.error.FastConstants;
 import org.openfast.template.Field;
 import org.openfast.template.MessageTemplate;
 import org.openfast.template.Scalar;
@@ -48,7 +49,7 @@ public class Session implements ErrorHandler {
     public static final int FAST_HELLO_TEMPLATE_ID = 16000;
     public static final int FAST_ALERT_TEMPLATE_ID = 16001;
     public static final int FAST_RESET_TEMPLATE_ID = 120;
-    private final static MessageTemplate FAST_ALERT_TEMPLATE = new MessageTemplate("",
+    public final static MessageTemplate FAST_ALERT_TEMPLATE = new MessageTemplate("",
             new Field[] {
                 new Scalar("Severity", Type.U32, Operator.NONE,
                     ScalarValue.UNDEFINED, false),
@@ -57,20 +58,18 @@ public class Session implements ErrorHandler {
                     ScalarValue.UNDEFINED, true),
                 new Scalar("Description", Type.ASCII, Operator.NONE, ScalarValue.UNDEFINED, false),
             });
-    private final static MessageTemplate FAST_RESET_TEMPLATE = new MessageTemplate("",
+    public final static MessageTemplate FAST_RESET_TEMPLATE = new MessageTemplate("",
             new Field[] {  });
-    private final static MessageTemplate FAST_HELLO_TEMPLATE = new MessageTemplate("",
+    public final static MessageTemplate FAST_HELLO_TEMPLATE = new MessageTemplate("",
             new Field[] {
                 new Scalar("SenderName", Type.ASCII, Operator.NONE, ScalarValue.UNDEFINED, false)
             });
-    public static final Message RESET = new Message(FAST_RESET_TEMPLATE,
-            FAST_RESET_TEMPLATE_ID) {
+    public static final Message RESET = new Message(FAST_RESET_TEMPLATE) {
             public void setFieldValue(int fieldIndex, FieldValue value) {
                 throw new IllegalStateException(
                     "Cannot set values on a fast reserved message.");
             }
         };
-
     private ErrorHandler errorHandler = ErrorHandler.NULL;
     public final MessageInputStream in;
     public final MessageOutputStream out;
@@ -94,8 +93,8 @@ public class Session implements ErrorHandler {
                 }
             };
 
-        in.addMessageHandler(FAST_RESET_TEMPLATE_ID, resetHandler);
-        out.addMessageHandler(FAST_RESET_TEMPLATE_ID, resetHandler);
+        in.addMessageHandler(FAST_RESET_TEMPLATE, resetHandler);
+        out.addMessageHandler(FAST_RESET_TEMPLATE, resetHandler);
     }
 
     private void registerReservedTemplates(MessageStream stream) {
@@ -122,15 +121,14 @@ public class Session implements ErrorHandler {
     }
 
     public static Message createHelloMessage(String name) {
-        Message message = new Message(FAST_HELLO_TEMPLATE,
-                FAST_HELLO_TEMPLATE_ID);
+        Message message = new Message(FAST_HELLO_TEMPLATE);
         message.setString(1, name);
 
         return message;
     }
 
     public static Message createFastAlertMessage(ErrorCode code) {
-        Message alert = new Message(FAST_ALERT_TEMPLATE, FAST_ALERT_TEMPLATE_ID);
+        Message alert = new Message(FAST_ALERT_TEMPLATE);
         alert.setInteger(1, code.getSeverity().getCode());
         alert.setInteger(2, code.getCode());
         alert.setString(4, code.getDescription());
@@ -139,6 +137,10 @@ public class Session implements ErrorHandler {
     }
 
     public void error(ErrorCode code, String message) {
+		if (code.equals(FastConstants.D9_TEMPLATE_NOT_REGISTERED)) {
+			code = SessionConstants.TEMPLATE_NOT_SUPPORTED;
+			message = "Template Not Supported";
+		}
         out.writeMessage(createFastAlertMessage(code));
         errorHandler.error(code, message);
     }

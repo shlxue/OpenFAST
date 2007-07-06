@@ -28,45 +28,34 @@ import org.openfast.template.operator.Operator;
 
 
 public class Message extends GroupValue {
-    private final int templateId;
-    final MessageTemplate template;
+    private final MessageTemplate template;
 
-    public Message(MessageTemplate template, int templateId,
-        FieldValue[] fieldValues) {
+    public Message(MessageTemplate template, FieldValue[] fieldValues) {
         super(template, fieldValues);
         this.template = template;
-        this.templateId = templateId;
     }
 
-    public Message(MessageTemplate template, int templateId) {
-        this(template, templateId,
-            initializeFieldValues(template.getFieldCount(), templateId));
+    public Message(MessageTemplate template) {
+        this(template, initializeFieldValues(template.getFieldCount()));
 
         for (int i = 1; i < template.getFieldCount(); i++) {
             if (template.getField(i) instanceof Scalar) {
                 Scalar scalar = ((Scalar) template.getField(i));
 
-                if (scalar.getOperatorName().equals(Operator.CONSTANT)) {
+                if (scalar.getOperator().equals(Operator.CONSTANT)) {
                     setFieldValue(i, scalar.getDefaultValue());
                 }
             }
         }
     }
 
-    private static FieldValue[] initializeFieldValues(int fieldCount,
-        int templateId) {
+    private static FieldValue[] initializeFieldValues(int fieldCount) {
         FieldValue[] fields = new FieldValue[fieldCount];
-        fields[0] = new IntegerValue(templateId);
-
         return fields;
     }
 
-    public int getTemplateId() {
-        return templateId;
-    }
-
     public String toString() {
-        return "Message [TID: " + String.valueOf(templateId) + "]";
+        return "Message";
     }
 
     public boolean equals(Object obj) {
@@ -78,10 +67,7 @@ public class Message extends GroupValue {
     }
 
     public boolean equals(Message message) {
-        if ((this.getTemplateId() != message.getTemplateId()) ||
-                (this.getFieldCount() != message.getFieldCount())) {
-            return false;
-        }
+        if (this.getFieldCount() != message.getFieldCount()) return false;
 
         for (int i = 1; i < message.getFieldCount(); i++)
             if (message.getValue(i) == null) {

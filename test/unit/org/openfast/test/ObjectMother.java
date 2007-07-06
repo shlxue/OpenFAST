@@ -60,7 +60,7 @@ public class ObjectMother {
     }
 
     public static Message quote(double bid, double ask) {
-        Message quote = new Message(quoteTemplate(), QUOTE_TEMPLATE_ID);
+        Message quote = new Message(quoteTemplate());
         quote.setDecimal(1, bid);
         quote.setDecimal(2, ask);
 
@@ -70,8 +70,7 @@ public class ObjectMother {
     public static Message newAllocInstrctn(String id, int side,
         double quantity, double averagePrice, GroupValue instrument,
         SequenceValue allocations) {
-        Message allocInstrctn = new Message(allocationInstruction(),
-                ALLOC_INSTRCTN_TEMPLATE_ID);
+        Message allocInstrctn = new Message(allocationInstruction());
         allocInstrctn.setFieldValue(1, allocations);
         allocInstrctn.setFieldValue(2, instrument);
         allocInstrctn.setFieldValue(3, new StringValue(id));
@@ -141,4 +140,19 @@ public class ObjectMother {
                 new DecimalValue(quantity), new DecimalValue(0.0)
             });
     }
+
+	public static Message basicAllocationInstruction() {
+		return newAllocInstrctn("abcd1234", 2, 25.0, 102.0, basicInstrument(), basicAllocations());
+	}
+
+	private static SequenceValue basicAllocations() {
+		SequenceValue value = new SequenceValue(allocationInstruction().getSequence("Allocations"));
+		value.add(newAllocation("general", 101.0, 15.0));
+		value.add(newAllocation("specific", 103.0, 10.0));
+		return value;
+	}
+
+	private static GroupValue basicInstrument() {
+		return newInstrument("IBM", "200301");
+	}
 }

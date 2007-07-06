@@ -8,7 +8,6 @@ import org.openfast.Global;
 import org.openfast.ScalarValue;
 import org.openfast.error.FastConstants;
 import org.openfast.template.operator.Operator;
-import org.openfast.template.operator.TwinOperator;
 import org.openfast.template.type.codec.TypeCodec;
 
 final class DecimalType extends SimpleType {
@@ -23,7 +22,7 @@ final class DecimalType extends SimpleType {
 	 * @return Returns the codec if the field is required
 	 */
 	public TypeCodec getCodec(Operator operator, boolean optional) {
-		if (operator instanceof TwinOperator)
+		if (operator == Operator.TWIN)
 			return TypeCodec.TF_SCALED_NUMBER;
 		return super.getCodec(operator, optional);
 	}

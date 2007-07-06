@@ -51,7 +51,7 @@ public class FastServer {
             if (session == null) continue;
             Message helloMessage = session.in.readMessage();
 
-            if (helloMessage.getTemplateId() != Session.FAST_HELLO_TEMPLATE_ID) {
+            if (helloMessage.getTemplate() != Session.FAST_HELLO_TEMPLATE) {
                 throw new FastConnectionException(
                     "Client tried to connect without sending a hello message.");
             }

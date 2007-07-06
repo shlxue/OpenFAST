@@ -22,10 +22,7 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast.session;
 
-import java.io.IOException;
-
 import org.openfast.Message;
-
 import org.openfast.error.ErrorCode;
 import org.openfast.error.ErrorHandler;
 
@@ -38,23 +35,21 @@ public abstract class FastConnectionFactory {
         Message message = Session.createHelloMessage(clientName);
         session.out.writeMessage(message, true);
         try {
-			Thread.sleep(10);
+			Thread.sleep(5);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-        long time = System.currentTimeMillis();
         Message hello = session.in.readMessage();
-        System.out.println(System.currentTimeMillis() - time);
 
-        if (hello.getTemplateId() == Session.FAST_ALERT_TEMPLATE_ID) {
+        if (hello.getTemplate() == Session.FAST_ALERT_TEMPLATE) {
             errorHandler.error(ErrorCode.getAlertCode(hello),
                 "Unable to connect.");
         }
 
-        if (hello.getTemplateId() != Session.FAST_HELLO_TEMPLATE_ID) {
+        if (hello.getTemplate() != Session.FAST_HELLO_TEMPLATE) {
             throw new FastConnectionException(
                 "Unable to connect: Message with template id " +
-                hello.getTemplateId() +
+                hello.getInt(0) +
                 " received, expected hello message (id=" +
                 Session.FAST_HELLO_TEMPLATE_ID + ")");
         }

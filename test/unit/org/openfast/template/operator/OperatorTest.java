@@ -36,25 +36,24 @@ public class OperatorTest extends TestCase {
 	public void testDefaultOperator()
 	{
 		Scalar field = new Scalar("operatorName", Type.U32, Operator.DEFAULT, new IntegerValue(1), false);
-		assertEquals(null, field.getOperator().getValueToEncode(new IntegerValue(1), null, field));
+		assertEquals(null, field.getOperatorCodec().getValueToEncode(new IntegerValue(1), null, field));
 //		newly added implementation
-		assertEquals(new IntegerValue(2), field.getOperator().getValueToEncode(new IntegerValue(2), null, field));
+		assertEquals(new IntegerValue(2), field.getOperatorCodec().getValueToEncode(new IntegerValue(2), null, field));
 	}
 	
 	public void testCopyOperator()
 	{
 		Scalar field = new Scalar("", Type.U32, Operator.COPY, ScalarValue.UNDEFINED, true);
-		Operator copy = Operator.getOperator(Operator.COPY, Type.U32);
+		OperatorCodec copy = Operator.COPY.getCodec(Type.U32);
 		assertEquals(new IntegerValue(1), copy.getValueToEncode(new IntegerValue(1), null, field));
 		assertEquals(new IntegerValue(2), copy.getValueToEncode(new IntegerValue(2), new IntegerValue(1), field));
 		//newly added implementation
 		assertEquals(null, copy.getValueToEncode(ScalarValue.NULL, ScalarValue.NULL, field));
-		assertEquals("operator:copy", copy.toString());
 	}
 	
 	public void testCopyOperatorWithOptionalPresence()
 	{
-		Operator copy = Operator.COPY_ALL;
+		OperatorCodec copy = OperatorCodec.COPY_ALL;
 		Scalar field = new Scalar("", Type.U32, Operator.COPY, ScalarValue.UNDEFINED, true);
 		assertEquals(null, copy.getValueToEncode(null, ScalarValue.UNDEFINED, field));
 		//newly added implementation	
@@ -65,60 +64,60 @@ public class OperatorTest extends TestCase {
 	public void testIncrementOperatorWithNoDefaultValue()
 	{
 		Scalar field = new Scalar("", Type.U32, Operator.INCREMENT, ScalarValue.UNDEFINED, false);
-		assertEquals(new IntegerValue(1), Operator.INCREMENT_INTEGER.getValueToEncode(new IntegerValue(1), null, field));
-		assertEquals(null, Operator.INCREMENT_INTEGER.getValueToEncode(new IntegerValue(2), new IntegerValue(1), field));
+		assertEquals(new IntegerValue(1), OperatorCodec.INCREMENT_INTEGER.getValueToEncode(new IntegerValue(1), null, field));
+		assertEquals(null, OperatorCodec.INCREMENT_INTEGER.getValueToEncode(new IntegerValue(2), new IntegerValue(1), field));
 	}
 	
 	public void testIncrementOperatorWithDefaultValue()
 	{
 		Scalar field = new Scalar("", Type.U32, Operator.INCREMENT, new IntegerValue(1), false);
-		assertEquals(null, Operator.INCREMENT_INTEGER.getValueToEncode(new IntegerValue(1), ScalarValue.UNDEFINED, field));
-		assertEquals(null, Operator.INCREMENT_INTEGER.getValueToEncode(new IntegerValue(2), new IntegerValue(1), field));
-		assertEquals(new IntegerValue(3), Operator.INCREMENT_INTEGER.getValueToEncode(new IntegerValue(3), new IntegerValue(1), field));
-		assertEquals(new IntegerValue(3), Operator.INCREMENT_INTEGER.getValueToEncode(new IntegerValue(3), null, field));
+		assertEquals(null, OperatorCodec.INCREMENT_INTEGER.getValueToEncode(new IntegerValue(1), ScalarValue.UNDEFINED, field));
+		assertEquals(null, OperatorCodec.INCREMENT_INTEGER.getValueToEncode(new IntegerValue(2), new IntegerValue(1), field));
+		assertEquals(new IntegerValue(3), OperatorCodec.INCREMENT_INTEGER.getValueToEncode(new IntegerValue(3), new IntegerValue(1), field));
+		assertEquals(new IntegerValue(3), OperatorCodec.INCREMENT_INTEGER.getValueToEncode(new IntegerValue(3), null, field));
 	}
 	
 	public void testConstantValueOperator()
 	{
 		Scalar field = new Scalar("", Type.ASCII, Operator.CONSTANT, new StringValue("5"), false);
-		assertEquals(null, Operator.CONSTANT_ALL.getValueToEncode(null, null, field, new BitVectorBuilder(1)));	
+		assertEquals(null, OperatorCodec.CONSTANT_ALL.getValueToEncode(null, null, field, new BitVectorBuilder(1)));	
 		Scalar field1 = new Scalar("", Type.ASCII, Operator.CONSTANT, new StringValue("99"), false);
-		assertEquals(null, Operator.CONSTANT_ALL.getValueToEncode(null, null, field1, new BitVectorBuilder(1)));
+		assertEquals(null, OperatorCodec.CONSTANT_ALL.getValueToEncode(null, null, field1, new BitVectorBuilder(1)));
 		//newly added implementation
 		Scalar field2 = new Scalar("", Type.ASCII, Operator.CONSTANT, new StringValue("4"), true);
-		assertEquals(null, Operator.CONSTANT_ALL.decodeEmptyValue(new StringValue("4"), field2));
+		assertEquals(null, OperatorCodec.CONSTANT_ALL.decodeEmptyValue(new StringValue("4"), field2));
 	}
 	
 	public void testDeltaValueOperatorForEncodingIntegerValue()
 	{
 		Scalar field = new Scalar("", Type.I32, Operator.DELTA, ScalarValue.UNDEFINED, false);
-		assertEquals(new IntegerValue(15), field.getOperator().getValueToEncode(new IntegerValue(45), new IntegerValue(30), field));
-		assertEquals(new IntegerValue(-15), field.getOperator().getValueToEncode(new IntegerValue(30), new IntegerValue(45), field));
+		assertEquals(new IntegerValue(15), field.getOperatorCodec().getValueToEncode(new IntegerValue(45), new IntegerValue(30), field));
+		assertEquals(new IntegerValue(-15), field.getOperatorCodec().getValueToEncode(new IntegerValue(30), new IntegerValue(45), field));
 		field = new Scalar("", Type.I32, Operator.DELTA, new IntegerValue(25), false);
-		assertEquals(new IntegerValue(5), field.getOperator().getValueToEncode(new IntegerValue(30), ScalarValue.UNDEFINED, field));
+		assertEquals(new IntegerValue(5), field.getOperatorCodec().getValueToEncode(new IntegerValue(30), ScalarValue.UNDEFINED, field));
 	}
 	
 	public void testDeltaValueOperatorForDecodingIntegerValue()
 	{
-		assertEquals(new IntegerValue(45), Operator.DELTA_INTEGER.decodeValue(new IntegerValue(15), new IntegerValue(30), null));
-		assertEquals(new IntegerValue(30), Operator.DELTA_INTEGER.decodeValue(new IntegerValue(-15), new IntegerValue(45), null));
+		assertEquals(new IntegerValue(45), OperatorCodec.DELTA_INTEGER.decodeValue(new IntegerValue(15), new IntegerValue(30), null));
+		assertEquals(new IntegerValue(30), OperatorCodec.DELTA_INTEGER.decodeValue(new IntegerValue(-15), new IntegerValue(45), null));
 		Scalar field = new Scalar("", Type.I32, Operator.DELTA, new IntegerValue(25), false);
-		assertEquals(new IntegerValue(30), Operator.DELTA_INTEGER.decodeValue(new IntegerValue(5), ScalarValue.UNDEFINED, field));
+		assertEquals(new IntegerValue(30), OperatorCodec.DELTA_INTEGER.decodeValue(new IntegerValue(5), ScalarValue.UNDEFINED, field));
 		Scalar field2 = new Scalar("", Type.I32, Operator.DELTA, new IntegerValue(25), false);
-		assertEquals(new IntegerValue(25), Operator.DELTA_INTEGER.decodeEmptyValue(ScalarValue.UNDEFINED, field2));
-		assertEquals(new IntegerValue(5), Operator.DELTA_INTEGER.decodeEmptyValue(new IntegerValue(5), field));
+		assertEquals(new IntegerValue(25), OperatorCodec.DELTA_INTEGER.decodeEmptyValue(ScalarValue.UNDEFINED, field2));
+		assertEquals(new IntegerValue(5), OperatorCodec.DELTA_INTEGER.decodeEmptyValue(new IntegerValue(5), field));
 		Scalar field1 = new Scalar("", Type.I32, Operator.DELTA, ScalarValue.UNDEFINED, true);
-		assertEquals(ScalarValue.UNDEFINED, Operator.DELTA_INTEGER.decodeEmptyValue(ScalarValue.UNDEFINED, field1));
+		assertEquals(ScalarValue.UNDEFINED, OperatorCodec.DELTA_INTEGER.decodeEmptyValue(ScalarValue.UNDEFINED, field1));
 	}
 	
 	public void testDeltaValueOperatorForEncodingIntegerValueWithEmptyPriorValue()
 	{
 		try {
 			Scalar field = new Scalar("", Type.I32, Operator.DELTA, new IntegerValue(25), false);
-			field.getOperator().getValueToEncode(new IntegerValue(30), null, field);
+			field.getOperatorCodec().getValueToEncode(new IntegerValue(30), null, field);
 			fail();
-		} catch (IllegalStateException e) {
-			assertEquals(Operator.ERR_D9, e.getMessage());
+		} catch (FastException e) {
+			assertEquals(FastConstants.D6_MNDTRY_FIELD_NOT_PRESENT, e.getCode());
 		}
 	}
 	
@@ -126,25 +125,25 @@ public class OperatorTest extends TestCase {
 	{
 		try {
 			Scalar field = new Scalar("", Type.U32, Operator.DELTA, new IntegerValue(25), false);
-			Operator.DELTA_INTEGER.decodeValue(new IntegerValue(30), null, field);
+			OperatorCodec.DELTA_INTEGER.decodeValue(new IntegerValue(30), null, field);
 			//newly added implementation
 			Scalar field1 = new Scalar("", Type.U32, Operator.DELTA, ScalarValue.UNDEFINED, false);
-			assertEquals(ScalarValue.UNDEFINED,Operator.DELTA_INTEGER.decodeEmptyValue(ScalarValue.UNDEFINED, field1));
+			assertEquals(ScalarValue.UNDEFINED,OperatorCodec.DELTA_INTEGER.decodeEmptyValue(ScalarValue.UNDEFINED, field1));
 			fail();
-		} catch (IllegalStateException e) {
-			assertEquals(Operator.ERR_D9, e.getMessage());
+		} catch (FastException e) {
+			assertEquals(FastConstants.D6_MNDTRY_FIELD_NOT_PRESENT, e.getCode());
 		}
 	}
 	
 	public void testDeltaOperatorForOptionalUnsignedInteger() {
 		Scalar field = new Scalar("", Type.U32, Operator.DELTA, ScalarValue.UNDEFINED, true);
-		Operator delta = field.getOperator();
+		OperatorCodec delta = field.getOperatorCodec();
 		assertEquals(ScalarValue.NULL, delta.getValueToEncode(null, ScalarValue.UNDEFINED, field));
 	}
 	
 	public void testIncompatibleOperatorAndTypeError() {
 		try {
-			Operator.getOperator(Operator.INCREMENT, Type.STRING);
+			Operator.INCREMENT.getCodec(Type.STRING);
 			fail();
 		} catch (FastException e) {
 			assertEquals(FastConstants.S2_OPERATOR_TYPE_INCOMP, e.getCode());

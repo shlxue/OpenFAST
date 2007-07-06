@@ -61,10 +61,9 @@ public class MessageInputStream implements MessageStream {
             return null;
         }
 
-        Integer id = new Integer(message.getTemplateId());
-
-        if (handlers.containsKey(id)) {
-            ((MessageHandler) handlers.get(id)).handleMessage(message, context,
+        if (handlers.containsKey(message.getTemplate())) {
+            MessageHandler handler = (MessageHandler) handlers.get(message.getTemplate());
+			handler.handleMessage(message, context,
                 decoder);
 
             return readMessage();
@@ -89,11 +88,11 @@ public class MessageInputStream implements MessageStream {
         return in;
     }
 
-    public void addMessageHandler(int templateId, MessageHandler handler) {
+    public void addMessageHandler(MessageTemplate template, MessageHandler handler) {
         if (handlers == Collections.EMPTY_MAP) {
             handlers = new HashMap();
         }
 
-        handlers.put(new Integer(templateId), handler);
+        handlers.put(template, handler);
     }
 }

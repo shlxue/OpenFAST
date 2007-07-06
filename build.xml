@@ -7,13 +7,20 @@
 	<property name="test.unit.dir" value="${test.dir}/unit"/>
 	<property name="test.acceptance.dir" value="${test.dir}/acceptance"/>
 	<property name="build.dir" value="build"/>
-	<property name="doc.dir" value="doc"/>
+	<property name="work.dir" value="${build.dir}/work"/>
+	<property name="docs.dir" value="${build.dir}/docs"/>
+	<property name="javadoc.dir" value="${docs.dir}/api"/>
 
-	<property name="build.classes.dir" value="${build.dir}/classes"/>
-	<property name="build.test.classes.dir" value="${build.dir}/test-classes"/>
-	<property name="test.results.dir" value="${build.dir}/test-results"/>
+	<property name="build.classes.dir" value="${work.dir}/classes"/>
+	<property name="build.test.classes.dir" value="${work.dir}/test-classes"/>
+	<property name="instr.dir" value="${work.dir}/instr"/>
+	
 	<property name="dist.dir" value="${build.dir}/dist"/>
 	<property name="lib" value="${basedir}/lib"/>
+
+	<property name="reports.dir" value="${build.dir}/reports" />
+	<property name="reports.unit" value="${reports.dir}/unit" />
+	<property name="reports.coverage" value="${reports.dir}/coverage" />
 	
 	<!-- NOTE: antcontrib must be in ANT_HOME/lib -->
 	<taskdef resource="net/sf/antcontrib/antlib.xml" />
@@ -54,7 +61,7 @@
 		</path>
 		
 		<path id="emma.test.path">
-			<pathelement location="${build.dir}/instr"/>
+			<pathelement location="${instr.dir}"/>
 			<path refid="test.path"/>
 		</path>
 		
@@ -65,8 +72,7 @@
 		<taskdef resource="emma_ant.properties" classpathref="lib.emma-2.0.5312.path"/>
 	</target>
 	
-    <target name="all" depends="clean, jar, unit-test, coverage-report" description="builds and tests everything" />
-	 
+    <target name="all" depends="clean, jar, unit-test, coverage-report, javadoc, post-clean" description="builds and tests everything" />
 
 	<target name="compile">
 		<mkdir dir="${build.classes.dir}"/>
@@ -86,29 +92,29 @@
     <target name="jar" depends="compile, compile-test">
     	<mkdir dir="${dist.dir}"/>
     	<jar destfile="${dist.dir}/${ant.project.name}.jar" basedir="${build.classes.dir}" includes="**/*.class"/>
-    	<jar destfile="${dist.dir}/${ant.project.name}-test.jar" basedir="${build.test.classes.dir}" includes="**/*.class"/>
     </target>
 	
 	<target name="instr" depends="init, jar">
+    	<mkdir dir="${reports.coverage}" />  	
 		<emma>
 	      <instr instrpathref="build.classpath"
-	             destdir="${build.dir}/instr"	
-	             metadatafile="${test.results.dir}/metadata.emma"
+	             destdir="${instr.dir}"	
+	             metadatafile="${reports.coverage}/metadata.emma"
 	             merge="true"
 	      />
 	    </emma>
 	</target>
 	
     <target name="unit-test" depends="instr">
-    	<mkdir dir="${test.results.dir}" />  	
+    	<mkdir dir="${reports.unit}" />  	
     	<junit showoutput="yes" printsummary="yes" haltonerror="yes" haltonfailure="yes" fork="true">	
     		<classpath refid="emma.test.path" />
-			<sysproperty key="emma.coverage.out.file" value="${test.results.dir}/coverage.emma" />
+			<sysproperty key="emma.coverage.out.file" value="${reports.coverage}/coverage.emma" />
 			<sysproperty key="emma.coverage.out.merge" value="true" />
     		<jvmarg line="-ea"/>
-    		<batchtest todir="${test.results.dir}">
+    		<batchtest todir="${reports.unit}">
     			<fileset includes="**/*Test.java" dir="${test.unit.dir}" />
-    			<fileset includes="**/*Test.java" excludes="**/MessageRoundTripTest.java" dir="${test.acceptance.dir}" />
+    			<fileset includes="**/*Test.java" dir="${test.acceptance.dir}" />
     			<formatter type="xml" usefile="true" />
     		</batchtest>
 			<formatter type="xml"/>
@@ -118,30 +124,32 @@
 	<target name="coverage-report" depends="unit-test">
 		<emma>
 		   <report sourcepath="${src.dir}" >
-		      <fileset dir="${test.results.dir}" >
+		      <fileset dir="${reports.coverage}" >
 		         <include name="*.emma" />
 		      </fileset>
-		      <html outfile="${test.results.dir}/coverage.html" />
+		      <html outfile="${reports.coverage}/coverage.html" />
 		   </report>
 		</emma>
 	</target>
 	
-	<javadoc 
-			destdir="doc"
-			author="true"
-			version="true"
-			windowtitle="OpenFAST Documentation">
-		
-		<packageset dir="${src.dir}">
-		</packageset>
-	</javadoc>
+	<target name="javadoc">
+		<javadoc 
+				destdir="${javadoc.dir}"
+				author="true"
+				version="true"
+				windowtitle="OpenFAST Documentation">
+			
+			<packageset dir="${src.dir}">
+			</packageset>
+		</javadoc>
+	</target>
 
 	<target name="clean">
 		<delete dir="${build.dir}"/>
 	</target>
-
-
-
-
+	
+	<target name="post-clean">
+		<delete dir="${work.dir}"/>
+	</target>
 </project>
 

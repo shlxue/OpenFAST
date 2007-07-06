@@ -28,25 +28,21 @@ import org.openfast.session.FastConnectionException;
 import org.openfast.session.FastServer;
 import org.openfast.session.Session;
 import org.openfast.session.tcp.TcpSessionFactory;
-
 import org.openfast.template.MessageTemplate;
 import org.openfast.template.loader.XMLMessageTemplateLoader;
 
 
 public class Producer implements ConnectionListener {
     private MessageTemplate template;
-    private int templateId;
 
     public Producer() {
         XMLMessageTemplateLoader messageTemplateLoader = new XMLMessageTemplateLoader();
         template = messageTemplateLoader.load(this.getClass()
                                                   .getResourceAsStream("template.xml"))[0];
-        templateId = 1;
     }
 
     public void start() {
-        FastServer acceptor = new FastServer("Producer",
-                new TcpSessionFactory(2020));
+        FastServer acceptor = new FastServer("Producer", new TcpSessionFactory(2020));
         acceptor.setConnectionListener(this);
 
         try {
@@ -64,14 +60,12 @@ public class Producer implements ConnectionListener {
     public void onConnect(Session session) {
         session.in.registerTemplate(1, template);
 
-        Message message = createMessage(1, "John Doe", "555-555-5555");
+        Message message = createMessage("John Doe", "555-555-5555");
         session.out.writeMessage(message);
     }
 
-    private Message createMessage(int id, String name, String phoneNumber) {
-        Message message = new Message(template, templateId);
-
-        return message;
+    private Message createMessage(String name, String phoneNumber) {
+        return new Message(template);
     }
 
     public static void main(String[] args) {

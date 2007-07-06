@@ -28,13 +28,13 @@ import java.util.Map;
 
 import org.openfast.error.ErrorHandler;
 import org.openfast.error.FastConstants;
-import org.openfast.session.SessionConstants;
 import org.openfast.template.Group;
 import org.openfast.template.MessageTemplate;
 
 
-public class Context {
+public class Context implements TemplateRegistry {
 	private Map templates = new HashMap();
+	private Map templateIds = new HashMap();
     private int lastTemplateId;
     private Map dictionaries = new HashMap();
     private ErrorHandler errorHandler = ErrorHandler.DEFAULT;
@@ -46,20 +46,28 @@ public class Context {
         dictionaries.put("type", new ApplicationTypeDictionary());
     }
 
-    public MessageTemplate getTemplate(int templateId) {
-        if (!templates.containsKey(new Integer(templateId))) {
-            errorHandler.error(SessionConstants.TEMPLATE_NOT_SUPPORTED,
-                "The template with id " + templateId +
-                " has not been registered.");
+    public int getId(MessageTemplate template) {
+        if (!templateIds.containsKey(template)) {
+            errorHandler.error(FastConstants.D9_TEMPLATE_NOT_REGISTERED, "The template " + template + " has not been registered.");
+            return 0;
+        }
 
+		return ((Integer) templateIds.get(template)).intValue();
+	}
+
+	public MessageTemplate getTemplate(int templateId) {
+        if (!templates.containsKey(new Integer(templateId))) {
+            errorHandler.error(FastConstants.D9_TEMPLATE_NOT_REGISTERED, "The template with id " + templateId + " has not been registered.");
             return null;
         }
 
         return (MessageTemplate) templates.get(new Integer(templateId));
     }
 
-    public void registerTemplate(int templateId, Group template) {
-        templates.put(new Integer(templateId), template);
+    public void registerTemplate(int templateId, MessageTemplate template) {
+        Integer id = new Integer(templateId);
+		templates.put(id, template);
+		templateIds.put(template, id);
     }
 
     public int getLastTemplateId() {

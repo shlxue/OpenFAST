@@ -33,7 +33,7 @@ import org.openfast.template.type.Type;
 public class DeltaDecimalOperatorTest extends TestCase {
     public void testGetValueToEncodeForMandatory() {
         Scalar field = new Scalar("", Type.DECIMAL, Operator.DELTA, ScalarValue.UNDEFINED, false);
-        Operator operator = field.getOperator();
+        OperatorCodec operator = field.getOperatorCodec();
 
         DecimalValue value = (DecimalValue) operator.getValueToEncode(d(9427.55),
                 ScalarValue.UNDEFINED, field);
@@ -56,7 +56,7 @@ public class DeltaDecimalOperatorTest extends TestCase {
 
     public void testGetValueToEncodeForOptional() {
         Scalar field = new Scalar("", Type.DECIMAL, Operator.DELTA, ScalarValue.UNDEFINED, true);
-        Operator operator = field.getOperator();
+        OperatorCodec operator = field.getOperatorCodec();
 
         DecimalValue value = (DecimalValue) operator.getValueToEncode(d(9427.55),
                 ScalarValue.UNDEFINED, field);
@@ -91,23 +91,23 @@ public class DeltaDecimalOperatorTest extends TestCase {
     public void testGetValueToEncodeForMandatoryFieldAndDefaultValue() {
         Scalar field = new Scalar("", Type.DECIMAL, Operator.DELTA, d(12000),
                 false);
-        DecimalValue value = (DecimalValue) field.getOperator()
+        DecimalValue value = (DecimalValue) field.getOperatorCodec()
                                                  .getValueToEncode(d(12000),
                 ScalarValue.UNDEFINED, field);
         assertEquals(0, value.mantissa);
         assertEquals(0, value.exponent);
 
-        value = (DecimalValue) field.getOperator()
+        value = (DecimalValue) field.getOperatorCodec()
                                     .getValueToEncode(d(12100), d(12000), field);
         assertEquals(109, value.mantissa);
         assertEquals(-1, value.exponent);
 
-        value = (DecimalValue) field.getOperator()
+        value = (DecimalValue) field.getOperatorCodec()
                                     .getValueToEncode(d(12150), d(12100), field);
         assertEquals(1094, value.mantissa);
         assertEquals(-1, value.exponent);
 
-        value = (DecimalValue) field.getOperator()
+        value = (DecimalValue) field.getOperatorCodec()
                                     .getValueToEncode(d(12200), d(12150), field);
         assertEquals(-1093, value.mantissa);
         assertEquals(1, value.exponent);
@@ -117,19 +117,19 @@ public class DeltaDecimalOperatorTest extends TestCase {
         Scalar field = new Scalar("", Type.DECIMAL, Operator.DELTA, d(12000),
                 false);
         assertEquals(d(12000),
-            Operator.DELTA_DECIMAL.decodeEmptyValue(ScalarValue.UNDEFINED, field));
+            OperatorCodec.DELTA_DECIMAL.decodeEmptyValue(ScalarValue.UNDEFINED, field));
         assertEquals(d(12100),
-            Operator.DELTA_DECIMAL.decodeValue(d(109, -1), d(12000), field));
+            OperatorCodec.DELTA_DECIMAL.decodeValue(d(109, -1), d(12000), field));
         assertEquals(d(12150),
-            Operator.DELTA_DECIMAL.decodeValue(d(1094, -1), d(12100), field));
+            OperatorCodec.DELTA_DECIMAL.decodeValue(d(1094, -1), d(12100), field));
         assertEquals(d(12200),
-            Operator.DELTA_DECIMAL.decodeValue(d(-1093, 1), d(12150), field));
+            OperatorCodec.DELTA_DECIMAL.decodeValue(d(-1093, 1), d(12150), field));
     }
 
     public void testEncodeDecimalValueWithEmptyPriorValue() {
         try {
             Scalar field = new Scalar("", Type.DECIMAL, Operator.DELTA, ScalarValue.UNDEFINED, false);
-            field.getOperator()
+            field.getOperatorCodec()
                  .getValueToEncode(null, ScalarValue.UNDEFINED, field);
             fail();
         } catch (IllegalArgumentException e) {

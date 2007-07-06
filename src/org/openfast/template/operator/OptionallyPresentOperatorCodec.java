@@ -31,9 +31,9 @@ import org.openfast.template.Scalar;
 import org.openfast.template.type.Type;
 
 
-public abstract class OptionallyPresentOperator extends Operator {
-    protected OptionallyPresentOperator(String name, Type[] types) {
-        super(name, types);
+public abstract class OptionallyPresentOperatorCodec extends OperatorCodec {
+    protected OptionallyPresentOperatorCodec(Operator operator, Type[] types) {
+        super(operator, types);
     }
 
     /**

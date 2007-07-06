@@ -29,9 +29,9 @@ import org.openfast.template.Scalar;
 import org.openfast.template.type.Type;
 
 
-public class CopyOperator extends OptionallyPresentOperator {
-    protected CopyOperator() {
-        super(COPY, Type.ALL_TYPES);
+public class CopyOperatorCodec extends OptionallyPresentOperatorCodec {
+    protected CopyOperatorCodec() {
+        super(Operator.COPY, Type.ALL_TYPES);
     }
 
     /**

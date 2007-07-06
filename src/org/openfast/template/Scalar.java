@@ -22,26 +22,25 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast.template;
 
-import org.openfast.BitVector;
+import java.io.InputStream;
+
 import org.openfast.BitVectorBuilder;
 import org.openfast.Context;
 import org.openfast.FieldValue;
 import org.openfast.Global;
 import org.openfast.ScalarValue;
-
 import org.openfast.error.FastConstants;
 import org.openfast.template.operator.Operator;
+import org.openfast.template.operator.OperatorCodec;
 import org.openfast.template.type.Type;
 import org.openfast.template.type.codec.TypeCodec;
 
-import java.io.InputStream;
-
 
 public class Scalar extends Field {
-    private final TypeCodec typeCodec;
     private final Operator operator;
+    private final OperatorCodec operatorCodec;
     private final Type type;
-    private final String operatorName;
+    private final TypeCodec typeCodec;
     private String dictionary;
     private ScalarValue defaultValue = ScalarValue.UNDEFINED;
     private final ScalarValue initialValue;
@@ -57,7 +56,7 @@ public class Scalar extends Field {
     public Scalar(String name, Type type, Operator operator, ScalarValue defaultValue, boolean optional) {
         super(name, optional);
         this.operator = operator;
-        this.operatorName = operator.getName();
+        this.operatorCodec = operator.getCodec(type);
         this.dictionary = "global";
         this.defaultValue = (defaultValue == null) ? ScalarValue.UNDEFINED : defaultValue;
         this.type = type;
@@ -68,20 +67,31 @@ public class Scalar extends Field {
         validate();
     }
 
-	public Scalar(String name, Type type, String operator, ScalarValue defaultValue, boolean optional) {
-        this(name, type, Operator.getOperator(operator, type), defaultValue, optional);
-    }
+    public Scalar(String name, Type type, OperatorCodec operatorCodec, ScalarValue defaultValue, boolean optional) {
+        super(name, optional);
+        this.operator = operatorCodec.getOperator();
+        this.operatorCodec = operatorCodec;
+        this.dictionary = "global";
+        this.defaultValue = (defaultValue == null) ? ScalarValue.UNDEFINED : defaultValue;
+        this.type = type;
+        this.typeCodec = type.getCodec(operator, optional);
+        this.initialValue = ((defaultValue == null) || defaultValue.isUndefined()) 
+        								? this.type.getDefaultValue()
+                                        : defaultValue;
+        validate();
 
-    /**
+	}
+
+	/**
      * 
      * Checks to make sure there is a default value for the operators.
      *
      */
     private void validate() {
     	// TODO - move this validation into the operator class.
-    	if (operatorName.equals(Operator.CONSTANT) && defaultValue.isUndefined())
+    	if (operator.equals(Operator.CONSTANT) && defaultValue.isUndefined())
     		Global.handleError(FastConstants.S4_NO_INITIAL_VALUE_FOR_CONST, "The field \"" + name + "\" must have a default value defined.");
-    	if (operatorName.equals(Operator.DEFAULT) && !optional && defaultValue.isUndefined())
+    	if (operator.equals(Operator.DEFAULT) && !optional && defaultValue.isUndefined())
     		Global.handleError(FastConstants.S5_NO_INITVAL_MNDTRY_DFALT, "The field \"" + name + "\" must have a default value defined.");
 	}
 
@@ -97,16 +107,16 @@ public class Scalar extends Field {
      * 
      * @return Returns the Operator object
      */
-    public Operator getOperator() {
-        return operator;
+    public OperatorCodec getOperatorCodec() {
+        return operatorCodec;
     }
 
     /**
      * 
      * @return Returns the operator name as a string
      */
-    public String getOperatorName() {
-        return operatorName;
+    public Operator getOperator() {
+        return operator;
     }
 
     /**
@@ -117,28 +127,25 @@ public class Scalar extends Field {
      * @return 
      * @throw Throws RuntimeException if the encoding fails - will print to console the name of the scalar to fail
      */
-    public byte[] encode(FieldValue value, Group template, Context context, BitVectorBuilder presenceMapBuilder) {
-        try {
-            ScalarValue priorValue = (ScalarValue) context.lookup(getDictionary(),
-                    template, getKey());
-            ScalarValue valueToEncode = operator.getValueToEncode((ScalarValue) value, priorValue, this, presenceMapBuilder);
+    public byte[] encode(FieldValue fieldValue, Group template, Context context, BitVectorBuilder presenceMapBuilder) {
+        ScalarValue priorValue = (ScalarValue) context.lookup(getDictionary(),
+                template, getKey());
+        ScalarValue value = (ScalarValue) fieldValue;
+        if (!operatorCodec.canEncode(value, this))
+        	Global.handleError(FastConstants.D3_CANT_ENCODE_VALUE, "The scalar " + this + " cannot encode the value " + value);
+        ScalarValue valueToEncode = operatorCodec.getValueToEncode((ScalarValue) value, priorValue, this, presenceMapBuilder);
 
-            // TODO - move this operator specific code out
-            if (!((operatorName == Operator.DELTA) && (value == null))) {
-                context.store(getDictionary(), template, getKey(),
-                    (ScalarValue) value);
-            }
-
-            if (valueToEncode == null) {
-                return new byte[0];
-            }
-
-            return typeCodec.encode(valueToEncode);
-        } catch (Exception e) {
-            throw new RuntimeException(
-                "Error occurred while encoding scalar \"" + getName() + "\": " +
-                e.getMessage(), e);
+        // TODO - move this operator specific code out
+        if (!((operator == Operator.DELTA) && (value == null))) {
+            context.store(getDictionary(), template, getKey(),
+                (ScalarValue) value);
         }
+
+        if (valueToEncode == null) {
+            return new byte[0];
+        }
+
+        return typeCodec.encode(valueToEncode);
     }
 
     /**
@@ -157,7 +164,7 @@ public class Scalar extends Field {
      */
     public ScalarValue decodeValue(ScalarValue newValue,
         ScalarValue previousValue) {
-        return operator.decodeValue(newValue, previousValue, this);
+        return operatorCodec.decodeValue(newValue, previousValue, this);
     }
 
     /**
@@ -176,8 +183,8 @@ public class Scalar extends Field {
      */
     public ScalarValue decode(InputStream in, ScalarValue previousValue) {
         // TODO - Refactor out this if condition
-        if (operatorName == Operator.CONSTANT) {
-            return operator.decodeValue(null, null, this);
+        if (operator == Operator.CONSTANT) {
+            return operatorCodec.decodeValue(null, null, this);
         }
 
         return decodeValue(typeCodec.decode(in), previousValue);
@@ -189,29 +196,21 @@ public class Scalar extends Field {
      * @return Depending on the operator, various ScalarValues could be returned
      */
     public ScalarValue decode(ScalarValue previousValue) {
-        return operator.decodeEmptyValue(previousValue, this);
-    }
-    
-    /**
-     * Only returns the presenceMap index if there is a map present and the optional boolean is set to true
-     * @return Returns the presenceMap index
-     */
-    public int encodePresenceMap(BitVector presenceMap, int presenceMapIndex, byte[] encoding, FieldValue fieldValue) {
-    	return operator.encodePresenceMap(presenceMap, presenceMapIndex, encoding, fieldValue, optional);
+        return operatorCodec.decodeEmptyValue(previousValue, this);
     }
     
     /**
      * @return Returns true
      */
     public boolean usesPresenceMapBit() {
-        return operator.usesPresenceMapBit(optional);
+        return operatorCodec.usesPresenceMapBit(optional);
     }
 
     /**
      * @return Returns true if the byte array has a length 
      */
     public boolean isPresenceMapBitSet(byte[] encoding, FieldValue fieldValue) {
-        return operator.isPresenceMapBitSet(encoding, fieldValue);
+        return operatorCodec.isPresenceMapBitSet(encoding, fieldValue);
     }
 
     /**
@@ -237,7 +236,7 @@ public class Scalar extends Field {
         
         validateDecodedValueIsCorrectForType(value, type);
 
-        if (!((getOperatorName() == Operator.DELTA) && (value == null))) {
+        if (!((getOperator() == Operator.DELTA) && (value == null))) {
             context.store(getDictionary(), template, getKey(), value);
         }
 

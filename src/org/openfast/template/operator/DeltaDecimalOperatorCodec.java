@@ -26,20 +26,23 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 package org.openfast.template.operator;
 
 import org.openfast.DecimalValue;
+import org.openfast.Global;
 import org.openfast.ScalarValue;
+import org.openfast.error.FastConstants;
 import org.openfast.template.Scalar;
 import org.openfast.template.type.Type;
 
 
-final class DeltaDecimalOperator extends AlwaysPresentOperator {
-    DeltaDecimalOperator() {
-        super(DELTA, new Type[] { Type.DECIMAL });
+final class DeltaDecimalOperatorCodec extends AlwaysPresentOperatorCodec {
+    DeltaDecimalOperatorCodec() {
+        super(Operator.DELTA, new Type[] { Type.DECIMAL });
     }
 
     public ScalarValue getValueToEncode(ScalarValue val, ScalarValue priorVal,
         Scalar field) {
         if (priorVal == null) {
-            throw new IllegalStateException(Operator.ERR_D9);
+        	Global.handleError(FastConstants.D6_MNDTRY_FIELD_NOT_PRESENT, "The field " + field + " must have a priorValue defined.");
+        	return null;
         }
 
         if (val == null) {
@@ -63,16 +66,11 @@ final class DeltaDecimalOperator extends AlwaysPresentOperator {
             value.exponent - priorValue.exponent);
     }
 
-    /**
-     * @param val
-     * @param priorVal
-     * @return Returns null if either of the passed objects are null,
-     * otherwise 
-     */
     public ScalarValue decodeValue(ScalarValue val, ScalarValue priorVal,
         Scalar field) {
         if (priorVal == null) {
-            throw new IllegalStateException(Operator.ERR_D9);
+        	Global.handleError(FastConstants.D6_MNDTRY_FIELD_NOT_PRESENT, "The field " + field + " must have a priorValue defined.");
+        	return null;
         }
 
         if (val == null) {
@@ -103,15 +101,6 @@ final class DeltaDecimalOperator extends AlwaysPresentOperator {
             value.exponent + priorValue.exponent);
     }
 
-    /**
-     * @param previousValue The previous value of the Field, used in 
-	 * determining the corresponding field value for the current
-	 * message being decoded.
-     * @param field The Scalar object being checked
-     * @return If the passed objects are undefined, return null, if the 
-     * passed values are not optional return the previousValue, otherwise
-     * return the default value of the passed field.
-     */
     public ScalarValue decodeEmptyValue(ScalarValue previousValue, Scalar field) {
         if (field.getDefaultValue().isUndefined()) {
             if (field.isOptional()) {

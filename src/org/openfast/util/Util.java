@@ -54,29 +54,21 @@ public class Util {
         String base = priorValue.value;
         int appendIndex = 0;
 
-        for (;
-                (appendIndex < base.length()) &&
-                (appendIndex < value.length()) &&
-                (value.charAt(appendIndex) == base.charAt(appendIndex));
-                appendIndex++)
-            ;
+        while ((appendIndex < base.length()) &&
+               (appendIndex < value.length()) &&
+               (value.charAt(appendIndex) == base.charAt(appendIndex)))
+            appendIndex++;
 
         String append = value.substring(appendIndex);
 
         int prependIndex = 1;
 
-        for (;
-                (prependIndex <= value.length()) &&
-                (prependIndex <= base.length()) &&
-                (value.charAt(value.length() - prependIndex) == base.charAt(base.length() -
-                    prependIndex)); prependIndex++)
-            ;
+        while((prependIndex <= value.length()) &&
+              (prependIndex <= base.length()) &&
+              (value.charAt(value.length() - prependIndex) == base.charAt(base.length() - prependIndex)))
+        	prependIndex++;
 
         String prepend = value.substring(0, value.length() - prependIndex + 1);
-
-        if ((prepend.length() == 0) || (append.length() == 0)) {
-            return ScalarValue.NULL;
-        }
 
         if (prepend.length() < append.length()) {
             return new TwinValue(new IntegerValue(prependIndex - base.length() -
