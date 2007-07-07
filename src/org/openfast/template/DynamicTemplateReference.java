@@ -14,31 +14,60 @@ public class DynamicTemplateReference extends Field {
 		super(null, false);
 	}
 
+	/**
+	 * @return Returns null
+	 */
 	public FieldValue createValue(String value) {
 		return null;
 	}
 
+	/**
+	 * @param in
+	 * @param template
+	 * @param context
+	 * @param present
+	 * @return
+	 */
 	public FieldValue decode(InputStream in, Group template, Context context, boolean present) {
 		return new FastDecoder(context, in).readMessage();
 	}
 
+	/**
+	 * @param value
+	 * @param template
+	 * @param context
+	 * @param presenceMapBuilder
+	 * @return
+	 */
 	public byte[] encode(FieldValue value, Group template, Context context, BitVectorBuilder presenceMapBuilder) {
 		Message message = (Message) value;
 		return message.getTemplate().encode(message, context);
 	}
 
+	/**
+	 * @return Returns null
+	 */
 	public String getTypeName() {
 		return null;
 	}
 
+	/**
+	 * @return Returns null
+	 */
 	public Class getValueType() {
 		return null;
 	}
 
+	/**
+	 * @return Returns false
+	 */
 	public boolean isPresenceMapBitSet(byte[] encoding, FieldValue fieldValue) {
 		return false;
 	}
 
+	/**
+	 * @return Returns false
+	 */
 	public boolean usesPresenceMapBit() {
 		return false;
 	}

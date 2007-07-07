@@ -125,6 +125,10 @@ public class MessageTemplate extends Group implements FieldSet {
         return fields;
     }
     
+    /**
+     * Returns a field array of the current stored fields
+     * @return Returns a field array 
+     */
     public Field[] getTemplateFields() {
     	Field[] f = new Field[fields.length - 1];
     	System.arraycopy(fields, 1, f, 0, fields.length-1);

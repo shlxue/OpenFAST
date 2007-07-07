@@ -67,6 +67,14 @@ public class Scalar extends Field {
         validate();
     }
 
+    /**
+     * Scalar constructor - sets the dictionary as global and validates the entries 
+     * @param name The name of Scalar as a string
+     * @param typeName The name of the type as a string
+     * @param operatorCodec Which operatorCodec object is being used
+     * @param defaultValue The default value of the ScalarValue
+     * @param optional Determines if the Scalar is required or not for the data
+     */
     public Scalar(String name, Type type, OperatorCodec operatorCodec, ScalarValue defaultValue, boolean optional) {
         super(name, optional);
         this.operator = operatorCodec.getOperator();
