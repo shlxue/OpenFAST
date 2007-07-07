@@ -38,6 +38,11 @@ import org.openfast.error.FastException;
 final class UnicodeString extends NotStopBitEncodedType {
     UnicodeString() { }
 
+    /**
+     * Takes a ScalarValue object, and converts it to a byte array
+     * @param value The ScalarValue to be encoded
+     * @return Returns a byte array of the passed object
+     */
     public byte[] encodeValue(ScalarValue value) {
         try {
 			byte[] utf8encoding = ((StringValue) value).value.getBytes("UTF8");
@@ -47,6 +52,11 @@ final class UnicodeString extends NotStopBitEncodedType {
 		}
     }
 
+    /**
+     * Reads in a stream of data and stores it to a StringValue object
+     * @param in The InputStream to be decoded
+     * @return Returns a new StringValue object with the data stream as a String
+     */	
     public ScalarValue decode(InputStream in) {
     	ByteVectorValue value = (ByteVectorValue) TypeCodec.BYTE_VECTOR_TYPE.decode(in);
         try {
@@ -56,10 +66,17 @@ final class UnicodeString extends NotStopBitEncodedType {
 		}
     }
 
+    /**
+     * @return Returns a new StringValue object with the passed value
+     */
     public ScalarValue fromString(String value) {
         return new StringValue(value);
     }
 
+    /**
+     * 
+     * @return Returns a new StringValue with a default value
+     */
     public ScalarValue getDefaultValue() {
         return new StringValue("");
     }

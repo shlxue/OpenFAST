@@ -36,6 +36,11 @@ import org.openfast.template.TwinValue;
 final class TwinFieldDecimal extends TypeCodec {
     TwinFieldDecimal() { }
 
+    /**
+     * Takes a ScalarValue object, and converts it to a byte array
+     * @param v The ScalarValue to be encoded
+     * @return Returns a byte array of the passed object
+     */
     public byte[] encodeValue(ScalarValue v) {
     	if (v.isNull())
     		return NULL_VALUE_ENCODING;
@@ -49,14 +54,28 @@ final class TwinFieldDecimal extends TypeCodec {
         return new byte[] {};
     }
 
+    /**
+     * Reads in a stream of data and stores it to a TwinValue object
+     * @param in The InputStream to be decoded
+     * @return Returns a TwinValue object with the data stream
+     */
     public ScalarValue decode(InputStream in) {
         return new TwinValue(TypeCodec.INTEGER.decode(in), TypeCodec.INTEGER.decode(in));
     }
 
+    /**
+     * 
+     * @param value The string value to be converted
+     * @return Returns a DecimalValue object with the passed string as its parameter
+     */
     public ScalarValue fromString(String value) {
         return new DecimalValue(Double.parseDouble(value));
     }
 
+    /**
+     * 
+     * @return Returns a new DecimalValue object with a default value of 0.0
+     */
     public ScalarValue getDefaultValue() {
         return new DecimalValue(0.0);
     }

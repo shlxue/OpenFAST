@@ -40,6 +40,11 @@ import java.io.InputStream;
 final class SingleFieldDecimal extends TypeCodec {
     SingleFieldDecimal() { }
 
+    /**
+     * Takes a ScalarValue object, and converts it to a byte array
+     * @param v The ScalarValue to be encoded
+     * @return Returns a byte array of the passed object
+     */
     public byte[] encodeValue(ScalarValue v) {
         if (v == ScalarValue.NULL) {
             return TypeCodec.NULL_VALUE_ENCODING;
@@ -63,6 +68,11 @@ final class SingleFieldDecimal extends TypeCodec {
         return buffer.toByteArray();
     }
 
+    /**
+     * Reads in a stream of data and stores it to a decimalValue object
+     * @param in The InputStream to be decoded
+     * @return Returns a decimalValue object with the data stream
+     */
     public ScalarValue decode(InputStream in) {
         int exponent = ((IntegerValue) TypeCodec.INTEGER.decode(in)).value;
 
@@ -77,10 +87,19 @@ final class SingleFieldDecimal extends TypeCodec {
         return decimalValue;
     }
 
+    /**
+     * Convert a string to a DecimalValue object with the string as the passed value
+     * @param value The value as a string to be converted
+     * @return Returns a new DecimalValue object
+     */
     public ScalarValue fromString(String value) {
         return new DecimalValue(Double.parseDouble(value));
     }
 
+    /**
+     * 
+     * @return Returns a new DecimalValue object with a default value
+     */
     public ScalarValue getDefaultValue() {
         return new DecimalValue(0.0);
     }

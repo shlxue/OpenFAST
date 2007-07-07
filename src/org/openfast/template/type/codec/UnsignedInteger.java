@@ -35,6 +35,11 @@ import org.openfast.ScalarValue;
 public final class UnsignedInteger extends IntegerCodec {
     UnsignedInteger() { }
 
+    /**
+     * Takes a ScalarValue object, and converts it to a byte array
+     * @param value The ScalarValue to be encoded
+     * @return Returns a byte array of the passed object
+     */
     public byte[] encodeValue(ScalarValue scalarValue) {
         long value;
 
@@ -55,6 +60,11 @@ public final class UnsignedInteger extends IntegerCodec {
         return encoded;
     }
 
+    /**
+     * 
+     * @param in The InputStream to be decoded
+     * @return 
+     */
     public ScalarValue decode(InputStream in) {
         long value = 0;
         int byt;

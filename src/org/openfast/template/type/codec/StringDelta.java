@@ -33,6 +33,11 @@ import java.io.InputStream;
 public class StringDelta extends TypeCodec {
     public StringDelta() { }
 
+    /**
+     * Reads in a stream of data and stores it to a TwinValue object
+     * @param in The InputStream to be decoded
+     * @return Returns a TwinValue object with the data stream
+     */
     public ScalarValue decode(InputStream in) {
         ScalarValue subtractionLength = TypeCodec.INTEGER.decode(in);
         ScalarValue difference = TypeCodec.ASCII.decode(in);
@@ -40,6 +45,11 @@ public class StringDelta extends TypeCodec {
         return new TwinValue(subtractionLength, difference);
     }
 
+    /**
+     * Takes a ScalarValue object, and converts it to a byte array
+     * @param v The ScalarValue to be encoded
+     * @return Returns a byte array of the passed object
+     */
     public byte[] encodeValue(ScalarValue value) {
         if ((value == null) || (value == ScalarValue.NULL)) {
             throw new IllegalStateException(
@@ -58,10 +68,19 @@ public class StringDelta extends TypeCodec {
         return encoded;
     }
 
+    /**
+     * 
+     * @return Returns a new StringValue object with a default value
+     */
     public ScalarValue getDefaultValue() {
         return new StringValue("");
     }
 
+    /**
+     * Convert a string to a StringValue object with the string as the passed value
+     * @param value The value as a string to be converted
+     * @return Returns a new StringValue object
+     */
     public ScalarValue fromString(String value) {
         return new StringValue(value);
     }
