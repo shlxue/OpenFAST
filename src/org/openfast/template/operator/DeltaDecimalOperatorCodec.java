@@ -49,8 +49,8 @@ final class DeltaDecimalOperatorCodec extends AlwaysPresentOperatorCodec {
             if (field.isOptional()) {
                 return ScalarValue.NULL;
             } else {
-                throw new IllegalArgumentException(
-                    "Mandatory fields can't be null.");
+                Global.handleError(FastConstants.D6_MNDTRY_FIELD_NOT_PRESENT, "");
+                return null;
             }
         }
 

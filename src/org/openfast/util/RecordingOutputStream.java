@@ -29,7 +29,7 @@ import java.io.OutputStream;
 
 
 public class RecordingOutputStream extends OutputStream {
-    private byte[] buffer = new byte[1024]; // TODO - listify buffer.
+    private byte[] buffer = new byte[1024];
     private int index = 0;
     private OutputStream out;
 

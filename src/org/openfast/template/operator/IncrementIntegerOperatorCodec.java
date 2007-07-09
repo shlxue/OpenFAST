@@ -13,7 +13,6 @@ final class IncrementIntegerOperatorCodec extends OperatorCodec {
 		super(operator, types);
 	}
 
-	// TODO - refactor for efficiency
 	public ScalarValue getValueToEncode(ScalarValue value,
 	    ScalarValue priorValue, Scalar field) {
 	    if (priorValue == null) {

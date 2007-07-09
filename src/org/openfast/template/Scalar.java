@@ -64,7 +64,7 @@ public class Scalar extends Field {
         this.initialValue = ((defaultValue == null) || defaultValue.isUndefined()) 
         								? this.type.getDefaultValue()
                                         : defaultValue;
-        validate();
+        operator.validate(this);
     }
 
     /**
@@ -86,21 +86,8 @@ public class Scalar extends Field {
         this.initialValue = ((defaultValue == null) || defaultValue.isUndefined()) 
         								? this.type.getDefaultValue()
                                         : defaultValue;
-        validate();
+        operator.validate(this);
 
-	}
-
-	/**
-     * 
-     * Checks to make sure there is a default value for the operators.
-     *
-     */
-    private void validate() {
-    	// TODO - move this validation into the operator class.
-    	if (operator.equals(Operator.CONSTANT) && defaultValue.isUndefined())
-    		Global.handleError(FastConstants.S4_NO_INITIAL_VALUE_FOR_CONST, "The field \"" + name + "\" must have a default value defined.");
-    	if (operator.equals(Operator.DEFAULT) && !optional && defaultValue.isUndefined())
-    		Global.handleError(FastConstants.S5_NO_INITVAL_MNDTRY_DFALT, "The field \"" + name + "\" must have a default value defined.");
 	}
 
 	/**
@@ -143,10 +130,8 @@ public class Scalar extends Field {
         	Global.handleError(FastConstants.D3_CANT_ENCODE_VALUE, "The scalar " + this + " cannot encode the value " + value);
         ScalarValue valueToEncode = operatorCodec.getValueToEncode((ScalarValue) value, priorValue, this, presenceMapBuilder);
 
-        // TODO - move this operator specific code out
-        if (!((operator == Operator.DELTA) && (value == null))) {
-            context.store(getDictionary(), template, getKey(),
-                (ScalarValue) value);
+        if (operator.shouldStoreValue(value)) {
+        	context.store(getDictionary(), template, getKey(), (ScalarValue) value);
         }
 
         if (valueToEncode == null) {
@@ -190,8 +175,7 @@ public class Scalar extends Field {
      * @return 
      */
     public ScalarValue decode(InputStream in, ScalarValue previousValue) {
-        // TODO - Refactor out this if condition
-        if (operator == Operator.CONSTANT) {
+    	if (!operatorCodec.shouldDecodeType()) {
             return operatorCodec.decodeValue(null, null, this);
         }
 
@@ -282,7 +266,7 @@ public class Scalar extends Field {
     }
 
     /**
-     * @return Returns the string 'Scalar [name=XXX, operator=XXX, dictionary=XXX]'
+     * @return Returns the string 'Scalar [name=X, operator=X, dictionary=X]'
      */
     public String toString() {
         return "Scalar [name=" + name + ", operator=" + operator +

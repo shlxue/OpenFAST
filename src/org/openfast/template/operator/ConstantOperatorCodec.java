@@ -34,6 +34,10 @@ final class ConstantOperatorCodec extends OperatorCodec {
 	    FieldValue fieldValue) {
 	    return fieldValue != null;
 	}
+	
+	public boolean shouldDecodeType() {
+		return false;
+	}
 
 	/**
 	 * @param previousValue 

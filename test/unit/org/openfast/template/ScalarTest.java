@@ -73,7 +73,7 @@ public class ScalarTest extends OpenFastTestCase {
 			 fail();
 		 } catch (FastException e) {
 			 assertEquals(FastConstants.S4_NO_INITIAL_VALUE_FOR_CONST, e.getCode());
-			 assertEquals("The field \"malformed\" must have a default value defined.", e.getMessage());
+			 assertEquals("The field Scalar [name=malformed, operator=constant, dictionary=global] must have a default value defined.", e.getMessage());
 		 }
 	}
 	
@@ -84,7 +84,7 @@ public class ScalarTest extends OpenFastTestCase {
 			fail();
 		} catch (FastException e) {
 			assertEquals(FastConstants.S5_NO_INITVAL_MNDTRY_DFALT, e.getCode());
-			assertEquals("The field \"malformed\" must have a default value defined.", e.getMessage());
+			assertEquals("The field Scalar [name=malformed, operator=default, dictionary=global] must have a default value defined.", e.getMessage());
 		}
 	}
 	

@@ -136,4 +136,8 @@ public abstract class OperatorCodec {
 	public boolean canEncode(ScalarValue value, Scalar field) {
 		return true;
 	}
+
+	public boolean shouldDecodeType() {
+		return true;
+	}
 }

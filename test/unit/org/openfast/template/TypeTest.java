@@ -116,13 +116,10 @@ public class TypeTest extends OpenFastTestCase {
 
     /*** SIGNED INTEGER WITH NULL SUPPORT ***/
     public void testSignedIntegerWithNullSupportEncoding() {
-        //TestUtil.assertBitVectorEquals("10000000", Type.NULLABLE_INTEGER.encode(IntegerValue.NULL));
         TestUtil.assertBitVectorEquals("10000001",
             TypeCodec.NULLABLE_INTEGER.encode(new IntegerValue(0)));
         TestUtil.assertBitVectorEquals("00000100 11111111",
             TypeCodec.NULLABLE_INTEGER.encode(new IntegerValue(638)));
-        // TODO - Support long values
-        //TestUtil.assertBitVectorEquals("00001000 00000000 00000000 00000000 10000000", Type.NULLABLE_SIGNED_INTEGER.encode(new IntegerValue(2147483647)));
         TestUtil.assertBitVectorEquals("01111000 00000000 00000000 00000000 10000000",
             TypeCodec.NULLABLE_INTEGER.encode(new IntegerValue(-2147483648)));
         //newly added tests
@@ -150,11 +147,6 @@ public class TypeTest extends OpenFastTestCase {
         assertFalse(decodedValue.isNull());
         assertEquals(new IntegerValue(638), decodedValue);
 
-        // TODO - Support long values
-        //		in = ByteUtil.createByteStream("00001000 00000000 00000000 00000000 10000000");
-        //		decodedValue = ((IntegerValue)Type.NULLABLE_SIGNED_INTEGER.decode(in));
-        //		assertFalse(decodedValue.isNull());
-        //		assertEquals(new IntegerValue(2147483647), decodedValue);
         in = ByteUtil.createByteStream(
                 "01111000 00000000 00000000 00000000 10000000");
         decodedValue = ((IntegerValue) TypeCodec.NULLABLE_INTEGER.decode(in));
@@ -216,8 +208,7 @@ public class TypeTest extends OpenFastTestCase {
             TypeCodec.NULLABLE_UNSIGNED_INTEGER.encode(new IntegerValue(126)));
         TestUtil.assertBitVectorEquals("01111111 11111111",
             TypeCodec.NULLABLE_UNSIGNED_INTEGER.encode(new IntegerValue(16382)));
-        // TODO - Support long values
-        //TestUtil.assertBitVectorEquals("00010000 00000000 00000000 00000000 10000000", Type.NULLABLE_UNSIGNED_INTEGER.encode(new IntegerValue(2147483647)));
+
         //newly added tests
         TestUtil.assertBitVectorEquals("10001000",
             TypeCodec.NULLABLE_UNSIGNED_INTEGER.encode(new IntegerValue(7)));
@@ -242,9 +233,6 @@ public class TypeTest extends OpenFastTestCase {
         assertEquals(new IntegerValue(126),
             TypeCodec.NULLABLE_UNSIGNED_INTEGER.decode(ByteUtil.createByteStream(
                     "11111111")));
-
-        // TODO - Support long values
-        // TestUtil.assertBitVectorEquals("00010000 00000000 00000000 00000000 10000000", Type.NULLABLE_UNSIGNED_INTEGER.encode(new IntegerValue (2147483647)));
     }
 
     /*** SINGLE FIELD SCALED NUMBER ***/

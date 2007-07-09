@@ -26,6 +26,8 @@ import junit.framework.TestCase;
 
 import org.openfast.DecimalValue;
 import org.openfast.ScalarValue;
+import org.openfast.error.FastConstants;
+import org.openfast.error.FastException;
 import org.openfast.template.Scalar;
 import org.openfast.template.type.Type;
 
@@ -132,8 +134,8 @@ public class DeltaDecimalOperatorTest extends TestCase {
             field.getOperatorCodec()
                  .getValueToEncode(null, ScalarValue.UNDEFINED, field);
             fail();
-        } catch (IllegalArgumentException e) {
-            // TODO - more meaningful exceptions
+        } catch (FastException e) {
+        	assertEquals(FastConstants.D6_MNDTRY_FIELD_NOT_PRESENT, e.getCode());
         }
     }
 }
