@@ -48,6 +48,8 @@ import org.openfast.template.type.codec.TypeCodec;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.Calendar;
+import java.util.Date;
 
 
 public abstract class OpenFastTestCase extends TestCase {
@@ -105,6 +107,22 @@ public abstract class OpenFastTestCase extends TestCase {
 		Context context = new Context();
 		context.registerTemplate(1, template);
 		return new FastEncoder(context);
+	}
+
+	protected static Date date(int year, int month, int day) {
+		Calendar cal = Calendar.getInstance();
+		cal.set(year, month, day, 0, 0, 0);
+		cal.set(Calendar.MILLISECOND, 0);
+		return cal.getTime();
+	}
+
+	protected static Date time(int hour, int min, int sec, int ms) {
+		Calendar cal = Calendar.getInstance();
+		cal.set(Calendar.HOUR_OF_DAY, hour);
+		cal.set(Calendar.MINUTE, min);
+		cal.set(Calendar.SECOND, sec);
+		cal.set(Calendar.MILLISECOND, ms);
+		return cal.getTime();
 	}
 
 	protected byte[] byt(String hexString) {

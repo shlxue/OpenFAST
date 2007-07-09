@@ -19,18 +19,14 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
                 Craig Otis <cotis@lasalletech.com>
 */
 
-
 package org.openfast.error;
-
-
 
 public interface FastConstants {
 	String ANY = "any";
-	
+
 	FastAlertSeverity ERROR = FastAlertSeverity.ERROR;
 	FastAlertSeverity WARN = FastAlertSeverity.WARN;
 	FastAlertSeverity FATAL = FastAlertSeverity.FATAL;
-	
     // Error Types
     ErrorType DYNAMIC = new ErrorType("Dynamic");
     ErrorType STATIC = new ErrorType("Static");
@@ -55,13 +51,17 @@ public interface FastConstants {
     ErrorCode D9_TEMPLATE_NOT_REGISTERED = new ErrorCode(DYNAMIC, 9, "ERR D9", "The template has not been registered.", ERROR);
 
     // Reportable Errors
-    ErrorCode R1_LARGE_DECIMAL = new ErrorCode(REPORTABLE, 1, "ERR R1", "Decimal exponent does not fit into range -63...63", ERROR);
-    ErrorCode R4_NUMERIC_VALUE_TOO_LARGE = new ErrorCode(REPORTABLE, 4, "ERR R4", "The value is too large.", ERROR);
-    ErrorCode R5_DECIMAL_CANT_CONVERT_TO_INT = new ErrorCode(REPORTABLE, 5, "ERR R5", "The decimal value cannot convert to an integer because of trailing decimal part.", ERROR);
-    
+    ErrorCode R1_LARGE_DECIMAL = new ErrorCode(REPORTABLE, 1, "ERR R1", "Decimal exponent does not fit into range -63...63", WARN);
+    ErrorCode R4_NUMERIC_VALUE_TOO_LARGE = new ErrorCode(REPORTABLE, 4, "ERR R4", "The value is too large.", WARN);
+    ErrorCode R5_DECIMAL_CANT_CONVERT_TO_INT = new ErrorCode(REPORTABLE, 5, "ERR R5", "The decimal value cannot convert to an integer because of trailing decimal part.", WARN);
+    ErrorCode R7_PMAP_OVERLONG = new ErrorCode(REPORTABLE, 7, "ERR R7", "The presence map is overlong.", WARN);
+    ErrorCode R8_PMAP_TOO_MANY_BITS = new ErrorCode(REPORTABLE, 8, "ERR R8", "The presence map has too many bits.", WARN);
+    ErrorCode R9_STRING_OVERLONG = new ErrorCode(REPORTABLE, 9, "ERR R9", "The string is overlong.", ERROR);
+
     // Errors not defined in the FAST specification
 	ErrorCode IMPOSSIBLE_EXCEPTION = new ErrorCode(DYNAMIC, 101, "IMPOSSIBLE", "This should never happen.", ERROR);
 	ErrorCode IO_ERROR = new ErrorCode(DYNAMIC, 102, "IOERROR", "An IO error occurred.", FATAL);
+	ErrorCode PARSE_ERROR = new ErrorCode(DYNAMIC, 103, "PARSEERR", "An exception occurred while parsing.", ERROR);
 
 
 

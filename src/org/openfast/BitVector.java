@@ -103,4 +103,10 @@ public class BitVector {
         return "BitVector [" + ByteUtil.convertByteArrayToBitString(bytes) +
         "]";
     }
+
+	public int indexOfLastSet() {
+		int index = bytes.length * 7 - 1;
+		while (index >= 0 && !isSet(index)) index--;
+		return index;
+	}
 }

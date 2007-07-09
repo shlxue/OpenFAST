@@ -49,6 +49,9 @@ public abstract class TypeCodec {
     public static final TypeCodec NULLABLE_BYTE_VECTOR_TYPE = new NullableByteVector();
     public static final TypeCodec NULLABLE_SF_SCALED_NUMBER = new NullableSingleFieldDecimal();
     public static final TypeCodec NULLABLE_STRING_DELTA = new NullableStringDelta();
+	public static final TypeCodec EPOCH_TIMESTAMP = new EpochTimestamp();
+	public static final TypeCodec DATE_STRING = new DateString();
+	public static final TypeCodec TIME_IN_MS = new MillisecondsSinceMidnight();
     
     public abstract byte[] encodeValue(ScalarValue value);
     public abstract ScalarValue decode(InputStream in);

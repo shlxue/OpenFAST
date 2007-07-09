@@ -49,7 +49,7 @@ public class ObjectMother {
 
     public static MessageTemplate quoteTemplate() {
         if (quoteTemplate == null) {
-            quoteTemplate = new MessageTemplate(null,
+            quoteTemplate = new MessageTemplate("Quote",
                     new Field[] {
                         new Scalar("bid", Type.DECIMAL, Operator.DELTA, ScalarValue.UNDEFINED, false),
                         new Scalar("ask", Type.DECIMAL, Operator.DELTA, ScalarValue.UNDEFINED, false)

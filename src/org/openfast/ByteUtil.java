@@ -107,4 +107,10 @@ public class ByteUtil {
 		System.arraycopy(second, 0, result, first.length, second.length);
 		return result;
 	}
+
+	public static boolean isEmpty(byte[] bytes) {
+		for (int i=0; i<bytes.length; i++)
+			if ((bytes[i] & 0x7f) != 0) return false;
+		return true;
+	}
 }

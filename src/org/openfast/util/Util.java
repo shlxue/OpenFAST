@@ -22,7 +22,9 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast.util;
 
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 
 import org.openfast.IntegerValue;
@@ -106,5 +108,11 @@ public class Util {
 		buffer.deleteCharAt(buffer.length()-1);
 		buffer.append("}");
 		return buffer.toString();
+	}
+
+	public static int millisecondsSinceMidnight(Date date) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		return cal.get(Calendar.HOUR_OF_DAY) * 3600000 + cal.get(Calendar.MINUTE) * 60000 + cal.get(Calendar.SECOND) * 1000 + cal.get(Calendar.MILLISECOND);
 	}
 }

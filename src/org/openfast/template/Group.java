@@ -33,7 +33,9 @@ import org.openfast.BitVectorBuilder;
 import org.openfast.BitVectorValue;
 import org.openfast.Context;
 import org.openfast.FieldValue;
+import org.openfast.Global;
 import org.openfast.GroupValue;
+import org.openfast.error.FastConstants;
 import org.openfast.template.type.codec.TypeCodec;
 
 
@@ -163,6 +165,8 @@ public class Group extends Field {
         Context context) {
     	if (usesPresenceMap) {
     		BitVector pmap = ((BitVectorValue) TypeCodec.BIT_VECTOR.decode(in)).value;
+    		if (pmap.isOverlong())
+    			Global.handleError(FastConstants.R7_PMAP_OVERLONG, "The presence map " + pmap + " for the group " + this + " is overlong.");
     		return decodeFieldValues(in, template, pmap, context, 0);
     	} else {
     		return decodeFieldValues(in, template, context, 0);
@@ -205,6 +209,7 @@ public class Group extends Field {
         BitVector pmap, Context context, int start) {
         FieldValue[] values = new FieldValue[fields.length];
         int presenceMapIndex = start;
+        
 
         for (int fieldIndex = start; fieldIndex < fields.length;
                 fieldIndex++) {
@@ -217,6 +222,9 @@ public class Group extends Field {
                 if (field.usesPresenceMapBit()) {
                     presenceMapIndex++;
                 }
+        }
+        if (pmap.indexOfLastSet() > presenceMapIndex) {
+        	Global.handleError(FastConstants.R8_PMAP_TOO_MANY_BITS, "The presence map " + pmap + " has too many bits for the group " + this);
         }
         return values;
     }

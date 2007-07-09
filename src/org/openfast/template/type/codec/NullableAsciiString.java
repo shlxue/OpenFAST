@@ -25,8 +25,11 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
  */
 package org.openfast.template.type.codec;
 
+import org.openfast.ByteUtil;
+import org.openfast.Global;
 import org.openfast.ScalarValue;
 import org.openfast.StringValue;
+import org.openfast.error.FastConstants;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -78,10 +81,14 @@ final class NullableAsciiString extends TypeCodec {
         byte[] bytes = buffer.toByteArray();
         bytes[bytes.length - 1] &= 0x7f;
 
-        if ((bytes.length == 1) && (bytes[0] == 0)) {
-            return ScalarValue.NULL;
-        } else if ((bytes.length == 2) && (bytes[0] == 0) && (bytes[1] == 0)) {
-            return new StringValue("");
+        if (bytes[0] == 0) {
+        	if (!ByteUtil.isEmpty(bytes))
+        		Global.handleError(FastConstants.R9_STRING_OVERLONG, null);
+	        if ((bytes.length == 1)) {
+	            return null;
+	        } else {
+	            return new StringValue("");
+	        }
         }
 
         return new StringValue(new String(bytes));

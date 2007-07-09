@@ -102,4 +102,9 @@ public class BitVectorTest extends TestCase {
         actual.set(2);
         assertEquals(expected, actual);
     }
+    
+    public void testIndexLastSet() {
+    	BitVector bv = new BitVector(new byte[] { 0x70, 0x00, 0x04 });
+    	assertEquals(18, bv.indexOfLastSet());
+    }
 }

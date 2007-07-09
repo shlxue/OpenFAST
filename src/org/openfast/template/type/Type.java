@@ -79,6 +79,9 @@ public abstract class Type {
 	public final static Type UNICODE = new StringType("unicode", TypeCodec.UNICODE, TypeCodec.NULLABLE_UNICODE);
 	public final static Type BYTE_VECTOR = new ByteVectorType();
 	public final static Type DECIMAL = new DecimalType();
+	public final static Type TIMESTAMP = new DateType();
+	public final static Type DATE = new DateType();
+	public final static Type TIME = new DateType();
 		
 	public static final Type[] ALL_TYPES = new Type[] { U8, U16, U32, U64, I8, I16, I32, I64, STRING, ASCII, UNICODE, BYTE_VECTOR, DECIMAL };
 	public static final Type[] INTEGER_TYPES = new Type[] { U8, U16, U32, U64, I8, I16, I32, I64 };

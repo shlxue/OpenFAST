@@ -33,8 +33,11 @@ import org.openfast.IntegerValue;
 import org.openfast.Message;
 import org.openfast.ScalarValue;
 import org.openfast.codec.FastDecoder;
+import org.openfast.error.FastConstants;
+import org.openfast.error.FastException;
 import org.openfast.template.operator.Operator;
 import org.openfast.template.type.Type;
+import org.openfast.test.ObjectMother;
 import org.openfast.test.OpenFastTestCase;
 import org.openfast.test.TestUtil;
 
@@ -105,5 +108,25 @@ public class GroupTest extends OpenFastTestCase {
     	
     	byte[] encoding = template.encode(message, encodingContext);
     	assertEquals(encodedBits, encoding);
+    }
+    
+    public void testDecodeGroupWithOverlongPresenceMap() {
+    	try {
+    		ObjectMother.quoteTemplate().decode(bitStream("00000000 10000000"), ObjectMother.quoteTemplate(), new Context(), true);
+    		fail();
+    	} catch (FastException e) {
+    		assertEquals(FastConstants.R7_PMAP_OVERLONG, e.getCode());
+    	}
+    }
+    
+    public void testDecodeGroupWithPresenceMapWithTooManyBits() {
+    	MessageTemplate g = ObjectMother.quoteTemplate();
+    	Context c = new Context();
+    	c.registerTemplate(1, g);
+    	try {
+    		g.decode(bitStream("11111000 10000001 10000000 10000110 10000000 10000110"), g, c, true);
+    	} catch (FastException e) {
+    		assertEquals(FastConstants.R8_PMAP_TOO_MANY_BITS, e.getCode());
+    	}
     }
 }

@@ -25,8 +25,11 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
  */
 package org.openfast.template.type.codec;
 
+import org.openfast.ByteUtil;
+import org.openfast.Global;
 import org.openfast.ScalarValue;
 import org.openfast.StringValue;
+import org.openfast.error.FastConstants;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -77,7 +80,9 @@ final class AsciiString extends TypeCodec {
         byte[] bytes = buffer.toByteArray();
         bytes[bytes.length - 1] &= 0x7f;
 
-        if ((bytes.length == 1) && (bytes[0] == 0)) {
+        if (bytes[0] == 0) {
+        	if (!ByteUtil.isEmpty(bytes))
+        		Global.handleError(FastConstants.R9_STRING_OVERLONG, null);
             return new StringValue("");
         }
 
