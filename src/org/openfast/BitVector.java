@@ -69,6 +69,7 @@ public class BitVector {
     }
 
     public boolean isSet(int fieldIndex) {
+    	if (fieldIndex >= bytes.length * 7) return false;
         return ((bytes[fieldIndex / 7] & (1 << (6 - (fieldIndex % 7)))) > 0);
     }
 

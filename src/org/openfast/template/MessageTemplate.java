@@ -30,6 +30,7 @@ import org.openfast.FieldValue;
 import org.openfast.IntegerValue;
 import org.openfast.Message;
 import org.openfast.ScalarValue;
+import org.openfast.error.FastException;
 import org.openfast.template.operator.Operator;
 import org.openfast.template.type.Type;
 
@@ -89,12 +90,16 @@ public class MessageTemplate extends Group implements FieldSet {
      */
     public Message decode(InputStream in, int templateId, BitVector pmap,
         Context context) {
-        FieldValue[] fieldValues = super.decodeFieldValues(in, this, pmap,
-                context, 1);
-        System.out.println();
-        fieldValues[0] = new IntegerValue(templateId);
-
-        return new Message(this, fieldValues);
+    	try {
+	        FieldValue[] fieldValues = super.decodeFieldValues(in, this, pmap,
+	                context, 1);
+	        System.out.println();
+	        fieldValues[0] = new IntegerValue(templateId);
+	
+	        return new Message(this, fieldValues);
+    	} catch (FastException e) {
+    		throw new FastException("An error occurred while decoding " + this, e.getCode(), e);
+    	}
     }
 
     /**
@@ -103,12 +108,9 @@ public class MessageTemplate extends Group implements FieldSet {
     public Class getValueType() {
         return Message.class;
     }
-
-    /**
-     * @return Returns the string 'MessageTemplate [NAME]'
-     */
+    
     public String toString() {
-        return "MessageTemplate [" + name + "]";
+        return name;
     }
 
     /**

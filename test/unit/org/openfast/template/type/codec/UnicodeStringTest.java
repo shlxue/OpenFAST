@@ -1,9 +1,9 @@
-package org.openfast.template.type;
+package org.openfast.template.type.codec;
 
 import org.openfast.template.type.codec.TypeCodec;
 import org.openfast.test.OpenFastTestCase;
 
-public class UnicodeStringTypeTest extends OpenFastTestCase {
+public class UnicodeStringTest extends OpenFastTestCase {
 
 	public void testEncodeValue() throws Exception {
 		assertEncodeDecode(string("Yo"), "10000010 01011001 01101111", TypeCodec.UNICODE);

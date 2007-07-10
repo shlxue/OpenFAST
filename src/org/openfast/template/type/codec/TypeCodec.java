@@ -37,7 +37,7 @@ public abstract class TypeCodec {
     public static final TypeCodec ASCII = new AsciiString();
     public static final TypeCodec UNICODE = new UnicodeString();
     public static final TypeCodec BIT_VECTOR = new BitVectorType();
-    public static final TypeCodec BYTE_VECTOR_TYPE = new ByteVectorType();
+    public static final TypeCodec BYTE_VECTOR = new ByteVectorType();
     public static final TypeCodec SF_SCALED_NUMBER = new SingleFieldDecimal();
     public static final TypeCodec TF_SCALED_NUMBER = new TwinFieldDecimal();
     public static final TypeCodec STRING_DELTA = new StringDelta();

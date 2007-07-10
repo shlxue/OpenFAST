@@ -36,6 +36,7 @@ import org.openfast.codec.FastDecoder;
 import org.openfast.codec.FastEncoder;
 import org.openfast.template.FieldSet;
 import org.openfast.template.Group;
+import org.openfast.template.LongValue;
 import org.openfast.template.MessageTemplate;
 import org.openfast.template.Scalar;
 import org.openfast.template.Sequence;
@@ -61,6 +62,10 @@ public abstract class OpenFastTestCase extends TestCase {
         return new IntegerValue(value);
     }
 
+    protected static LongValue l(long value) {
+        return new LongValue(value);
+    }
+
     protected static TwinValue twin(ScalarValue first, ScalarValue second) {
         return new TwinValue(first, second);
     }
@@ -75,7 +80,7 @@ public abstract class OpenFastTestCase extends TestCase {
         assertEquals(value, type.decode(ByteUtil.createByteStream(bitString)));
     }
 
-    protected static InputStream bitStream(String bitString) {
+	protected static InputStream bitStream(String bitString) {
         return ByteUtil.createByteStream(bitString);
     }
     

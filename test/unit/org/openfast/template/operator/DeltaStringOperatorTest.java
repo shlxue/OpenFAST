@@ -52,10 +52,10 @@ public class DeltaStringOperatorTest extends OpenFastTestCase {
         field = new Scalar(null, Type.ASCII, Operator.DELTA, ScalarValue.UNDEFINED, false);
 
         assertEquals(tv(0, "ABCD"), encode("ABCD", ScalarValue.UNDEFINED));
-        assertEquals(tv(1, "E"), encode("ABCE", s("ABCD")));
-        assertEquals(tv(-2, "Z"), encode("ZBCE", s("ABCE")));
-        assertEquals(tv(-1, "Y"), encode("YZBCE", s("ZBCE")));
-        assertEquals(tv(0, "F"), encode("YZBCEF", s("YZBCE")));
+        assertEquals(tv(1, "E"), encode("ABCE", string("ABCD")));
+        assertEquals(tv(-2, "Z"), encode("ZBCE", string("ABCE")));
+        assertEquals(tv(-1, "Y"), encode("YZBCE", string("ZBCE")));
+        assertEquals(tv(0, "F"), encode("YZBCEF", string("YZBCE")));
     }
 
     public void testDecodeValueMandatory() {
@@ -63,10 +63,10 @@ public class DeltaStringOperatorTest extends OpenFastTestCase {
 
         assertEquals(new StringValue("ABCD"),
             decode(tv(0, "ABCD"), ScalarValue.UNDEFINED));
-        assertEquals(new StringValue("ABCE"), decode(tv(1, "E"), s("ABCD")));
-        assertEquals(new StringValue("ZBCE"), decode(tv(-2, "Z"), s("ABCE")));
-        assertEquals(new StringValue("YZBCE"), decode(tv(-1, "Y"), s("ZBCE")));
-        assertEquals(new StringValue("YZBCEF"), decode(tv(0, "F"), s("YZBCE")));
+        assertEquals(new StringValue("ABCE"), decode(tv(1, "E"), string("ABCD")));
+        assertEquals(new StringValue("ZBCE"), decode(tv(-2, "Z"), string("ABCE")));
+        assertEquals(new StringValue("YZBCE"), decode(tv(-1, "Y"), string("ZBCE")));
+        assertEquals(new StringValue("YZBCEF"), decode(tv(0, "F"), string("YZBCE")));
     }
 
     public void testGetValueToEncodeOptional() {
@@ -74,11 +74,11 @@ public class DeltaStringOperatorTest extends OpenFastTestCase {
                 ScalarValue.UNDEFINED, true);
 
         assertEquals(tv(0, "ABCD"), encode("ABCD", ScalarValue.UNDEFINED));
-        assertEquals(tv(1, "E"), encode("ABCE", s("ABCD")));
-        assertEquals(tv(-2, "Z"), encode("ZBCE", s("ABCE")));
-        assertEquals(tv(-1, "Y"), encode("YZBCE", s("ZBCE")));
-        assertEquals(tv(0, "F"), encode("YZBCEF", s("YZBCE")));
-        assertEquals(ScalarValue.NULL, encode(null, s("YZBCEF")));
+        assertEquals(tv(1, "E"), encode("ABCE", string("ABCD")));
+        assertEquals(tv(-2, "Z"), encode("ZBCE", string("ABCE")));
+        assertEquals(tv(-1, "Y"), encode("YZBCE", string("ZBCE")));
+        assertEquals(tv(0, "F"), encode("YZBCEF", string("YZBCE")));
+        assertEquals(ScalarValue.NULL, encode(null, string("YZBCEF")));
     }
 
     public void testDecodeValueOptional() {
@@ -87,15 +87,11 @@ public class DeltaStringOperatorTest extends OpenFastTestCase {
 
         assertEquals(new StringValue("ABCD"),
             decode(tv(0, "ABCD"), ScalarValue.UNDEFINED));
-        assertEquals(new StringValue("ABCE"), decode(tv(1, "E"), s("ABCD")));
-        assertEquals(new StringValue("ZBCE"), decode(tv(-2, "Z"), s("ABCE")));
-        assertEquals(new StringValue("YZBCE"), decode(tv(-1, "Y"), s("ZBCE")));
-        assertEquals(new StringValue("YZBCEF"), decode(tv(0, "F"), s("YZBCE")));
-        assertEquals(null, decode(ScalarValue.NULL, s("YZBCEF")));
-    }
-
-    private ScalarValue s(String value) {
-        return new StringValue(value);
+        assertEquals(new StringValue("ABCE"), decode(tv(1, "E"), string("ABCD")));
+        assertEquals(new StringValue("ZBCE"), decode(tv(-2, "Z"), string("ABCE")));
+        assertEquals(new StringValue("YZBCE"), decode(tv(-1, "Y"), string("ZBCE")));
+        assertEquals(new StringValue("YZBCEF"), decode(tv(0, "F"), string("YZBCE")));
+        assertEquals(null, decode(ScalarValue.NULL, string("YZBCEF")));
     }
 
     private ScalarValue encode(String value, ScalarValue priorValue) {

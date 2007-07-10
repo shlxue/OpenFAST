@@ -30,6 +30,7 @@ import org.openfast.FieldValue;
 import org.openfast.Global;
 import org.openfast.ScalarValue;
 import org.openfast.error.FastConstants;
+import org.openfast.error.FastException;
 import org.openfast.template.operator.Operator;
 import org.openfast.template.operator.OperatorCodec;
 import org.openfast.template.type.Type;
@@ -123,8 +124,7 @@ public class Scalar extends Field {
      * @throw Throws RuntimeException if the encoding fails - will print to console the name of the scalar to fail
      */
     public byte[] encode(FieldValue fieldValue, Group template, Context context, BitVectorBuilder presenceMapBuilder) {
-        ScalarValue priorValue = (ScalarValue) context.lookup(getDictionary(),
-                template, getKey());
+        ScalarValue priorValue = (ScalarValue) context.lookup(getDictionary(), template, getKey());
         ScalarValue value = (ScalarValue) fieldValue;
         if (!operatorCodec.canEncode(value, this))
         	Global.handleError(FastConstants.D3_CANT_ENCODE_VALUE, "The scalar " + this + " cannot encode the value " + value);
@@ -216,23 +216,27 @@ public class Scalar extends Field {
      */
     public FieldValue decode(InputStream in, Group template, Context context,
         boolean present) {
-        ScalarValue previousValue = context.lookup( getDictionary(), template, getKey());
-        validateDictionaryTypeAgainstFieldType(previousValue, this.type);
-        ScalarValue value;
-
-        if (present) {
-            value = decode(in, previousValue);
-        } else {
-            value = decode(previousValue);
-        }
-        
-        validateDecodedValueIsCorrectForType(value, type);
-
-        if (!((getOperator() == Operator.DELTA) && (value == null))) {
-            context.store(getDictionary(), template, getKey(), value);
-        }
-
-        return value;
+    	try {
+	        ScalarValue previousValue = context.lookup( getDictionary(), template, getKey());
+	        validateDictionaryTypeAgainstFieldType(previousValue, this.type);
+	        ScalarValue value;
+	
+	        if (present) {
+	            value = decode(in, previousValue);
+	        } else {
+	            value = decode(previousValue);
+	        }
+	        
+	        validateDecodedValueIsCorrectForType(value, type);
+	
+	        if (!((getOperator() == Operator.DELTA) && (value == null))) {
+	            context.store(getDictionary(), template, getKey(), value);
+	        }
+	
+	        return value;
+    	} catch (FastException e) {
+    		throw new FastException("Error occurred while decoding " + this, e.getCode(), e);
+    	}
     }
 
     /**
@@ -269,7 +273,7 @@ public class Scalar extends Field {
      * @return Returns the string 'Scalar [name=X, operator=X, dictionary=X]'
      */
     public String toString() {
-        return "Scalar [name=" + name + ", operator=" + operator +
+        return "Scalar [name=" + name + ", operator=" + operator + ", type=" + type +
         ", dictionary=" + dictionary + "]";
     }
 

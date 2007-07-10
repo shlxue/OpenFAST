@@ -31,12 +31,12 @@ public class FastException extends RuntimeException {
         this.code = code;
     }
 
-    public FastException(ErrorCode code, String message, Throwable cause) {
+    public FastException(String message, ErrorCode code, Throwable cause) {
         super(message, cause);
         this.code = code;
     }
 
-    public ErrorCode getCode() {
+	public ErrorCode getCode() {
         return code;
     }
 }

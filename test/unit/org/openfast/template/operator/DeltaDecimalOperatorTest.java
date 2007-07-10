@@ -22,17 +22,17 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast.template.operator;
 
-import junit.framework.TestCase;
-
 import org.openfast.DecimalValue;
 import org.openfast.ScalarValue;
 import org.openfast.error.FastConstants;
 import org.openfast.error.FastException;
 import org.openfast.template.Scalar;
 import org.openfast.template.type.Type;
+import org.openfast.template.type.codec.TypeCodec;
+import org.openfast.test.OpenFastTestCase;
 
 
-public class DeltaDecimalOperatorTest extends TestCase {
+public class DeltaDecimalOperatorTest extends OpenFastTestCase {
     public void testGetValueToEncodeForMandatory() {
         Scalar field = new Scalar("", Type.DECIMAL, Operator.DELTA, ScalarValue.UNDEFINED, false);
         OperatorCodec operator = field.getOperatorCodec();
@@ -82,14 +82,6 @@ public class DeltaDecimalOperatorTest extends TestCase {
             operator.getValueToEncode(null, d(30.6), field));
     }
 
-    private DecimalValue d(double value) {
-        return new DecimalValue(value);
-    }
-
-    private ScalarValue d(int mantissa, int exponent) {
-        return new DecimalValue(mantissa, exponent);
-    }
-
     public void testGetValueToEncodeForMandatoryFieldAndDefaultValue() {
         Scalar field = new Scalar("", Type.DECIMAL, Operator.DELTA, d(12000),
                 false);
@@ -137,5 +129,9 @@ public class DeltaDecimalOperatorTest extends TestCase {
         } catch (FastException e) {
         	assertEquals(FastConstants.D6_MNDTRY_FIELD_NOT_PRESENT, e.getCode());
         }
+    }
+    
+    public void testEncodeDecimalValueWithOptionalField() {
+    	assertEncodeDecode(d(-37.0), "10000001 11011011", TypeCodec.NULLABLE_SF_SCALED_NUMBER);
     }
 }

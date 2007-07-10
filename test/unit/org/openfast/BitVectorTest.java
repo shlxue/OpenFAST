@@ -73,6 +73,11 @@ public class BitVectorTest extends TestCase {
         assertFalse(vector.isSet(1));
         vector.set(1);
         assertTrue(vector.isSet(1));
+        assertFalse(vector.isSet(6));
+        vector.set(6);
+        assertTrue(vector.isSet(6));
+        assertFalse(vector.isSet(7));
+        assertFalse(vector.isSet(8));
     }
 
     /*

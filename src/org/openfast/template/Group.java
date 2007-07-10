@@ -36,6 +36,7 @@ import org.openfast.FieldValue;
 import org.openfast.Global;
 import org.openfast.GroupValue;
 import org.openfast.error.FastConstants;
+import org.openfast.error.FastException;
 import org.openfast.template.type.codec.TypeCodec;
 
 
@@ -147,9 +148,13 @@ public class Group extends Field {
      * @param present
      * @return Returns a new GroupValue
      */
-    public FieldValue decode(InputStream in, Group group, Context context,
-        boolean present) {
-        return new GroupValue(this, decodeFieldValues(in, group, context));
+    public FieldValue decode(InputStream in, Group group, Context context, boolean present) {
+    	try {
+    		if (!present) return null;
+    		return new GroupValue(this, decodeFieldValues(in, group, context));
+    	} catch (FastException e) {
+    		throw new FastException("Error occurred while decoding " + this, e.getCode(), e);
+    	}
     }
 
     /**
@@ -211,21 +216,19 @@ public class Group extends Field {
         int presenceMapIndex = start;
         
 
-        for (int fieldIndex = start; fieldIndex < fields.length;
-                fieldIndex++) {
+        for (int fieldIndex = start; fieldIndex < fields.length; fieldIndex++) {
             Field field = getField(fieldIndex);
 
-                boolean present = isPresent(pmap, presenceMapIndex, field);
-                values[fieldIndex] = fields[fieldIndex].decode(in, template,
-                        context, present);
+            boolean present = isPresent(pmap, presenceMapIndex, field);
+            values[fieldIndex] = fields[fieldIndex].decode(in, template, context, present);
 
-                if (field.usesPresenceMapBit()) {
-                    presenceMapIndex++;
-                }
+            if (field.usesPresenceMapBit()) {
+                presenceMapIndex++;
+            }
         }
-        if (pmap.indexOfLastSet() > presenceMapIndex) {
+        if (pmap.indexOfLastSet() > presenceMapIndex)
         	Global.handleError(FastConstants.R8_PMAP_TOO_MANY_BITS, "The presence map " + pmap + " has too many bits for the group " + this);
-        }
+        	
         return values;
     }
 
@@ -414,5 +417,7 @@ public class Group extends Field {
     	return typeReference != null;
     }
     
-    
+    public String toString() {
+    	return name;
+    }
 }

@@ -50,7 +50,7 @@ final class NullableUnicodeString extends NotStopBitEncodedType {
 			byte[] utf8encoding = ((StringValue) value).value.getBytes("UTF8");
 			return TypeCodec.NULLABLE_BYTE_VECTOR_TYPE.encode(new ByteVectorValue(utf8encoding));
 		} catch (UnsupportedEncodingException e) {
-			throw new FastException(FastConstants.IMPOSSIBLE_EXCEPTION, "Apparently Unicode is no longer supported by Java.", e);
+			throw new FastException("Apparently Unicode is no longer supported by Java.", FastConstants.IMPOSSIBLE_EXCEPTION, e);
 		}
     }
 
@@ -66,7 +66,7 @@ final class NullableUnicodeString extends NotStopBitEncodedType {
         try {
 			return new StringValue(new String(value.value, "UTF8"));
 		} catch (UnsupportedEncodingException e) {
-			throw new FastException(FastConstants.IMPOSSIBLE_EXCEPTION, "Apparently Unicode is no longer supported by Java.", e);
+			throw new FastException("Apparently Unicode is no longer supported by Java.", FastConstants.IMPOSSIBLE_EXCEPTION, e);
 		}
     }
 

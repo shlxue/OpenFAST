@@ -29,7 +29,7 @@ public interface ErrorHandler {
             }
 
             public void error(ErrorCode code, String message, Throwable t) {
-                throw new FastException(code, message, t);
+                throw new FastException(message, code, t);
             }
         };
 

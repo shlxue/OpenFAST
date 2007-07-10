@@ -9,7 +9,7 @@ import org.openfast.template.type.codec.TypeCodec;
 
 final class ByteVectorType extends SimpleType {
 	ByteVectorType() {
-		super("byte", TypeCodec.BYTE_VECTOR_TYPE, TypeCodec.NULLABLE_BYTE_VECTOR_TYPE);
+		super("byte", TypeCodec.BYTE_VECTOR, TypeCodec.NULLABLE_BYTE_VECTOR_TYPE);
 	}
 
 	/**

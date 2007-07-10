@@ -1,9 +1,9 @@
-package org.openfast.template.type;
+package org.openfast.template.type.codec;
 
 import org.openfast.template.type.codec.TypeCodec;
 import org.openfast.test.OpenFastTestCase;
 
-public class NullableByteVectorTypeTest extends OpenFastTestCase {
+public class NullableByteVectorTest extends OpenFastTestCase {
 
 	public void testEncoding() {
 		assertEncodeDecode(null, "10000000", TypeCodec.NULLABLE_BYTE_VECTOR_TYPE);

@@ -54,7 +54,7 @@ public class IntegerTypeTest extends OpenFastTestCase {
     		fail();
     	} catch (FastException e) {
     		assertEquals(FastConstants.D2_INT_OUT_OF_RANGE, e.getCode());
-    		assertEquals("The value 17179869183 is out of range for the type uInt32", e.getMessage());
+    		assertEquals("The value 17179869183 is out of range for the type uInt32", e.getCause().getCause().getMessage());
     	}
     }
 }

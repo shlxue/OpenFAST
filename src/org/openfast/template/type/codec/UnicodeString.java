@@ -46,9 +46,9 @@ final class UnicodeString extends NotStopBitEncodedType {
     public byte[] encodeValue(ScalarValue value) {
         try {
 			byte[] utf8encoding = ((StringValue) value).value.getBytes("UTF8");
-			return TypeCodec.BYTE_VECTOR_TYPE.encode(new ByteVectorValue(utf8encoding));
+			return TypeCodec.BYTE_VECTOR.encode(new ByteVectorValue(utf8encoding));
 		} catch (UnsupportedEncodingException e) {
-			throw new FastException(FastConstants.IMPOSSIBLE_EXCEPTION, "Apparently Unicode is no longer supported by Java.", e);
+			throw new FastException("Apparently Unicode is no longer supported by Java.", FastConstants.IMPOSSIBLE_EXCEPTION, e);
 		}
     }
 
@@ -58,11 +58,11 @@ final class UnicodeString extends NotStopBitEncodedType {
      * @return Returns a new StringValue object with the data stream as a String
      */	
     public ScalarValue decode(InputStream in) {
-    	ByteVectorValue value = (ByteVectorValue) TypeCodec.BYTE_VECTOR_TYPE.decode(in);
+    	ByteVectorValue value = (ByteVectorValue) TypeCodec.BYTE_VECTOR.decode(in);
         try {
 			return new StringValue(new String(value.value, "UTF8"));
 		} catch (UnsupportedEncodingException e) {
-			throw new FastException(FastConstants.IMPOSSIBLE_EXCEPTION, "Apparently Unicode is no longer supported by Java.", e);
+			throw new FastException("Apparently Unicode is no longer supported by Java.", FastConstants.IMPOSSIBLE_EXCEPTION, e);
 		}
     }
 

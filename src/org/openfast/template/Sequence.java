@@ -184,8 +184,7 @@ public class Sequence extends Field implements FieldSet {
      * @return If there is nothing to decode - returns null, otherwise 
      * returns a sequenceValue object that has the decoded information stored.
      */
-    public FieldValue decode(InputStream in, Group template, Context context,
-        boolean present) {
+    public FieldValue decode(InputStream in, Group template, Context context, boolean present) {
         SequenceValue sequenceValue = new SequenceValue(this);
         FieldValue lengthValue = length.decode(in, template, context, present);
 
@@ -196,8 +195,7 @@ public class Sequence extends Field implements FieldSet {
         int len = ((IntegerValue) lengthValue).value;
 
         for (int i = 0; i < len; i++)
-            sequenceValue.add((GroupValue) group.decode(in, template, context,
-                    present));
+            sequenceValue.add((GroupValue) group.decode(in, template, context, present));
 
         return sequenceValue;
     }
@@ -272,5 +270,9 @@ public class Sequence extends Field implements FieldSet {
 	 */
 	public boolean hasTypeReference() {
 		return typeReference != null;
+	}
+	
+	public String toString() {
+		return name;
 	}
 }

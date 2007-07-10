@@ -20,7 +20,7 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 */
 
 
-package org.openfast.template.type;
+package org.openfast.template.type.codec;
 
 import org.openfast.error.FastConstants;
 import org.openfast.error.FastException;

@@ -20,32 +20,16 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 */
 
 
-package org.openfast.template.type;
+package org.openfast.template.type.codec;
 
-import junit.framework.TestCase;
-
-import org.openfast.ByteUtil;
-import org.openfast.IntegerValue;
-import org.openfast.StringValue;
-
-import org.openfast.template.TwinValue;
 import org.openfast.template.type.codec.TypeCodec;
-import org.openfast.test.TestUtil;
-
-import java.io.InputStream;
+import org.openfast.test.OpenFastTestCase;
 
 
-public class StringDeltaTest extends TestCase {
-    public void testEncodeValue() {
-        TestUtil.assertBitVectorEquals("10000001 11000001",
-            TypeCodec.STRING_DELTA.encodeValue(
-                new TwinValue(new IntegerValue(1), new StringValue("A"))));
-    }
-
-    public void testDecode() {
-        InputStream in = ByteUtil.createByteStream("10000001 11000001");
-        assertEquals(new TwinValue(new IntegerValue(1), new StringValue("A")),
-            TypeCodec.STRING_DELTA.decode(in));
-        in = ByteUtil.createByteStream("10000000");
-    }
+public class NullableStringDeltaTest extends OpenFastTestCase {
+	public void testEncodeDecode() {
+		assertEncodeDecode(null, "10000000", TypeCodec.NULLABLE_STRING_DELTA);
+		assertEncodeDecode(twin(i(1), string("A")), "10000010 11000001", TypeCodec.NULLABLE_STRING_DELTA);
+		assertEncodeDecode(twin(i(-1), string("A")), "11111111 11000001", TypeCodec.NULLABLE_STRING_DELTA);
+	}
 }

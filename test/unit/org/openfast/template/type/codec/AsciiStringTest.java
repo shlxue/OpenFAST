@@ -1,9 +1,9 @@
-package org.openfast.template.type;
+package org.openfast.template.type.codec;
 
 import org.openfast.error.FastConstants;
 import org.openfast.error.FastException;
 import org.openfast.template.operator.Operator;
-import org.openfast.template.type.codec.TypeCodec;
+import org.openfast.template.type.Type;
 import org.openfast.test.OpenFastTestCase;
 
 public class AsciiStringTest extends OpenFastTestCase {
