@@ -15,7 +15,7 @@ import org.openfast.util.Key;
 public final class Global {
 	private static ErrorHandler errorHandler = ErrorHandler.DEFAULT;
 	private static int currentImplicitId = (int) (System.currentTimeMillis() % 10000);  // why? because I felt like it
-	private static DateFormat dateFormat = new SimpleDateFormat("yyyyMMddhhmmss");
+	private static DateFormat timestampFormat = new SimpleDateFormat("yyyyMMddhhmmss");
 	private static Map codecMap = new HashMap();
 	
 	static {
@@ -43,12 +43,12 @@ public final class Global {
 		return prefix + "@" + currentImplicitId++;  // that should be unique enough
 	}
 
-	public static DateFormat getDateFormatter() {
-		return dateFormat;
+	public static DateFormat getTimestampFormatter() {
+		return timestampFormat;
 	}
 	
-	public static void setDateFormatter(DateFormat dateFormat) {
-		Global.dateFormat = dateFormat;
+	public static void setTimestampFormat(String format) {
+		Global.timestampFormat = new SimpleDateFormat(format);
 	}
 
 	public static TypeCodec getCodec(Type type, Operator operator, boolean optional) {

@@ -28,7 +28,7 @@ public class DateType extends Type {
 
 	public ScalarValue getValue(String value) {
 		try {
-			return new DateValue(Global.getDateFormatter().parse(value));
+			return new DateValue(Global.getTimestampFormatter().parse(value));
 		} catch (ParseException e) {
 			throw new RuntimeException(e);
 		}

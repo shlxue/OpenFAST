@@ -2,86 +2,61 @@
 <project name="openfast4j" default="all">
 
 	<property name="src.dir" value="src" />
+	<property name="lib" value="${basedir}/lib" />
 	<property name="demo.dir" value="demo" />
 	<property name="test.dir" value="test" />
 	<property name="test.unit.dir" value="${test.dir}/unit" />
 	<property name="test.acceptance.dir" value="${test.dir}/acceptance" />
-	<property name="build.dir" value="build" />
-	<property name="work.dir" value="${build.dir}/work" />
 	<property name="docs.dir" value="${build.dir}/docs" />
 	<property name="javadoc.dir" value="${docs.dir}/api" />
 
+	<property name="build.dir" value="build" />
+	
+	<property name="work.dir" value="${build.dir}/work" />
 	<property name="build.classes.dir" value="${work.dir}/classes" />
 	<property name="build.test.classes.dir" value="${work.dir}/test-classes" />
 	<property name="instr.dir" value="${work.dir}/instr" />
 
 	<property name="dist.dir" value="${build.dir}/dist" />
-	<property name="lib" value="${basedir}/lib" />
-
 	<property name="reports.dir" value="${build.dir}/reports" />
+
 	<property name="reports.unit" value="${reports.dir}/unit" />
 	<property name="reports.coverage" value="${reports.dir}/coverage" />
 	<property name="reports.dependency" value="${reports.dir}/dependency" />
+	
+	<path id="lib.emma.path">
+		<pathelement location="${lib}/emma-2.0.5312/emma_ant.jar"/>
+		<pathelement location="${lib}/emma-2.0.5312/emma.jar"/>
+	</path>
+	
+	<path id="lib.junit.path">
+		<pathelement location="${lib}/junit-3.8.1/junit.jar"/>
+	</path>
 
-	<!-- NOTE: antcontrib must be in ANT_HOME/lib -->
-	<taskdef resource="net/sf/antcontrib/antlib.xml" />
+	<path id="test.path">
+		<pathelement location="${build.classes.dir}" />
+		<pathelement location="${build.test.classes.dir}" />
+		<path refid="lib.junit.path" />
+		<path refid="lib.emma.path" />
+	</path>
 
-	<target name="init">
-		<!-- GENERATE LIBRARY PROPERTIES -->
-		<dirset dir="${lib}" id="lib.dirs" includes="*" />
-		<pathconvert property="lib.versions" refid="lib.dirs" pathsep=",">
-			<mapper type="flatten" />
-		</pathconvert>
-		<for param="cur.lib" list="${lib.versions}">
-			<sequential>
-				<fileset id="lib.@{cur.lib}.files" dir="${lib}/@{cur.lib}" includes="*.jar" />
-				<path id="lib.@{cur.lib}.path">
-					<fileset refid="lib.@{cur.lib}.files" />
-				</path>
-			</sequential>
-		</for>
+	<path id="emma.test.path">
+		<pathelement location="${instr.dir}" />
+		<path refid="test.path" />
+	</path>
 
-		<!-- SET UP SRC AND TEST CLASSPATHS -->
-		<path id="src.path">
-		</path>
+	<path id="build.classpath">
+		<pathelement location="${build.classes.dir}" />
+	</path>
 
-		<path id="src.code">
-			<pathelement location="${src.dir}" />
-			<pathelement location="${demo.dir}" />
-		</path>
-
-		<path id="test.code">
-			<pathelement location="${test.unit.dir}" />
-		</path>
-
-		<path id="test.path">
-			<pathelement location="${build.classes.dir}" />
-			<pathelement location="${build.test.classes.dir}" />
-			<path refid="lib.junit-3.8.1.path" />
-			<path refid="lib.emma-2.0.5312.path" />
-		</path>
-
-		<path id="emma.test.path">
-			<pathelement location="${instr.dir}" />
-			<path refid="test.path" />
-		</path>
-
-		<path id="build.classpath">
-			<pathelement location="${build.classes.dir}" />
-		</path>
-
-		<taskdef resource="emma_ant.properties" classpathref="lib.emma-2.0.5312.path" />
-	</target>
-
-	<target name="all" depends="clean, jar, unit-test, coverage-report, jdepend, javadoc, post-clean" description="builds and tests everything" />
+	<target name="all" depends="clean, jdepend, coverage-report, javadoc, post-clean" description="builds and tests everything" />
 
 	<target name="compile">
 		<mkdir dir="${build.classes.dir}" />
 		<javac srcdir="${src.dir}" destdir="${build.classes.dir}" debug="yes" debuglevel="lines,source,vars" />
-		<!--javac srcdir="${demo.dir}" destdir="${build.classes.dir}" classpath="${build.classes.dir}" debug="yes" debuglevel="lines,source,vars"/-->
 	</target>
 
-	<target name="compile-test" depends="init,compile">
+	<target name="compile-test" depends="compile">
 		<mkdir dir="${build.test.classes.dir}" />
 		<javac srcdir="${test.unit.dir}" destdir="${build.test.classes.dir}" classpathref="test.path" debug="yes" debuglevel="lines,source,vars" />
 		<javac srcdir="${test.acceptance.dir}" destdir="${build.test.classes.dir}" classpathref="test.path" debug="yes" debuglevel="lines,source,vars" />
@@ -95,8 +70,9 @@
 		<jar destfile="${dist.dir}/${ant.project.name}.jar" basedir="${build.classes.dir}" includes="**/*.class" />
 	</target>
 
-	<target name="instr" depends="init, jar">
+	<target name="instr" depends="jar">
 		<mkdir dir="${reports.coverage}" />
+		<taskdef resource="emma_ant.properties" classpathref="lib.emma.path"/>
 		<emma>
 			<instr instrpathref="build.classpath" destdir="${instr.dir}" metadatafile="${work.dir}/metadata.emma" merge="true" />
 		</emma>
@@ -129,7 +105,18 @@
 		</emma>
 	</target>
 
-	<target name="jdepend">
+	<condition property="jdepend.not.installed">
+		<not>
+			<available file="${ant.home}/lib/jdepend-2.9.jar"/>
+		</not>
+	</condition>
+	
+	<target name="install-jdepend" if="jdepend.not.installed">
+		<copy todir="${ant.home}/lib" file="${lib}/jdepend-2.9/jdepend-2.9.jar"/>
+		<fail message="The jdepend library was not present in your Ant distribution prior to running.  It has now been successfully installed.  Please rerun the ant build."/>
+	</target>
+	
+	<target name="jdepend" depends="install-jdepend, jar">
 		<mkdir dir="${reports.dependency}"/>
 		<jdepend outputfile="${reports.dependency}/jdepend-report.xml" format="xml">
 			<exclude name="java.*" />
@@ -141,7 +128,6 @@
 		</jdepend>
 
 		<style basedir="${reports.dependency}" destdir="${reports.dependency}" includes="jdepend-report.xml" style="${ant.home}/etc/jdepend.xsl" />
-
 	</target>
 
 	<target name="javadoc">

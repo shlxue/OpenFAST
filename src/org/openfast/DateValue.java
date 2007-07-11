@@ -14,7 +14,7 @@ public class DateValue extends ScalarValue {
 	}
 	
 	public String toString() {
-		return Global.getDateFormatter().format(value);
+		return Global.getTimestampFormatter().format(value);
 	}
 	
 	public boolean equals(Object other) {
