@@ -59,9 +59,11 @@ public interface FastConstants {
     ErrorCode R9_STRING_OVERLONG = new ErrorCode(REPORTABLE, 9, "ERR R9", "The string is overlong.", ERROR);
 
     // Errors not defined in the FAST specification
+    ErrorCode GENERAL_ERROR = new ErrorCode(DYNAMIC, 100, "GENERAL", "An error has occurred.", ERROR);
 	ErrorCode IMPOSSIBLE_EXCEPTION = new ErrorCode(DYNAMIC, 101, "IMPOSSIBLE", "This should never happen.", ERROR);
 	ErrorCode IO_ERROR = new ErrorCode(DYNAMIC, 102, "IOERROR", "An IO error occurred.", FATAL);
 	ErrorCode PARSE_ERROR = new ErrorCode(DYNAMIC, 103, "PARSEERR", "An exception occurred while parsing.", ERROR);
+
 
 
 

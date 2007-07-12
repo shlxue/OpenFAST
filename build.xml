@@ -23,10 +23,18 @@
 	<property name="reports.unit" value="${reports.dir}/unit" />
 	<property name="reports.coverage" value="${reports.dir}/coverage" />
 	<property name="reports.dependency" value="${reports.dir}/dependency" />
+	<property name="reports.complexity" value="${reports.dir}/complexity" />
 	
 	<path id="lib.emma.path">
 		<pathelement location="${lib}/emma-2.0.5312/emma_ant.jar"/>
 		<pathelement location="${lib}/emma-2.0.5312/emma.jar"/>
+	</path>
+	
+	<path id="lib.pmd.path">
+		<pathelement location="${lib}/pmd-3.9/pmd-3.9.jar"/>
+		<pathelement location="${lib}/pmd-3.9/asm-3.0.jar"/>
+		<pathelement location="${lib}/pmd-3.9/jaxen-1.1.jar"/>
+		<pathelement location="${lib}/pmd-3.9/backport-util-concurrent.jar"/>
 	</path>
 	
 	<path id="lib.junit.path">
@@ -49,7 +57,7 @@
 		<pathelement location="${build.classes.dir}" />
 	</path>
 
-	<target name="all" depends="clean, jdepend, coverage-report, javadoc, post-clean" description="builds and tests everything" />
+	<target name="all" depends="clean, jdepend, complexity, coverage-report, javadoc, post-clean" description="builds and tests everything" />
 
 	<target name="compile">
 		<mkdir dir="${build.classes.dir}" />
@@ -128,6 +136,19 @@
 		</jdepend>
 
 		<style basedir="${reports.dependency}" destdir="${reports.dependency}" includes="jdepend-report.xml" style="${ant.home}/etc/jdepend.xsl" />
+	</target>
+	
+	<target name="complexity">
+		<taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" classpathref="lib.pmd.path" />
+		<mkdir dir="${reports.complexity}"/>
+		<pmd rulesetfiles="basic,design">
+			<formatter type="xml" toFile="${reports.complexity}/pmd.xml" />
+			<fileset dir="${src.dir}"/>
+		</pmd>
+		<xslt in="${reports.complexity}/pmd.xml" out="${reports.complexity}/pmd.html" style="${lib}/pmd-3.9/pmd-report-per-class.xslt"/>
+		<copy file="${lib}/pmd-3.9/sorttable.js" todir="${reports.complexity}"/>
+		<copy file="${lib}/pmd-3.9/arrow_up.gif" todir="${reports.complexity}"/>
+		<copy file="${lib}/pmd-3.9/arrow_down.gif" todir="${reports.complexity}"/>
 	</target>
 
 	<target name="javadoc">

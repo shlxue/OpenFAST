@@ -40,4 +40,8 @@ public class BitVectorValue extends ScalarValue {
     public boolean equals(BitVectorValue other) {
         return other.value.equals(this.value);
     }
+    
+    public int hashCode() {
+    	return value.hashCode();
+    }
 }

@@ -101,6 +101,10 @@ public class StringValue extends ScalarValue {
     private boolean equals(StringValue otherValue) {
         return value.equals(otherValue.value);
     }
+    
+    public int hashCode() {
+    	return value.hashCode();
+    }
 
     public boolean equalsValue(String defaultValue) {
         return value.equals(defaultValue);

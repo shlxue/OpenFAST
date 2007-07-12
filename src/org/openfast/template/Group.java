@@ -318,7 +318,7 @@ public class Group extends Field {
      * @param fields The name of the field array that is going to be placed into a new map object
      * @return Returns a map object of the field array passed to it
      */
-    protected Map constructFieldNameMap(Field[] fields) {
+    private static Map constructFieldNameMap(Field[] fields) {
         Map map = new HashMap();
 
         for (int i = 0; i < fields.length; i++)
@@ -332,7 +332,7 @@ public class Group extends Field {
      * @param fields The name of the field array that is going to be placed into a new map object
      * @return Returns a map object of the field array passed to it
      */
-    protected Map constructFieldIndexMap(Field[] fields) {
+    private static Map constructFieldIndexMap(Field[] fields) {
         Map map = new HashMap();
 
         for (int i = 0; i < fields.length; i++)

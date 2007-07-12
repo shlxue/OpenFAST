@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.openfast.error.ErrorCode;
 import org.openfast.error.ErrorHandler;
+import org.openfast.error.FastConstants;
 import org.openfast.template.operator.Operator;
 import org.openfast.template.type.Type;
 import org.openfast.template.type.codec.TypeCodec;
@@ -52,10 +53,10 @@ public final class Global {
 	}
 
 	public static TypeCodec getCodec(Type type, Operator operator, boolean optional) {
-		if (!codecMap.containsKey(new Key(type, operator, new Boolean(optional)))) {
-			
+		if (!codecMap.containsKey(new Key(type, operator, Boolean.valueOf(optional)))) {
+			handleError(FastConstants.GENERAL_ERROR, "No codec has been registered for type " + type);
 		}
-		return (TypeCodec) codecMap.get(new Key(type, operator, new Boolean(optional)));
+		return (TypeCodec) codecMap.get(new Key(type, operator, Boolean.valueOf(optional)));
 	}
 	
 	public static void registerCodec(Type type, boolean optional, TypeCodec codec) {

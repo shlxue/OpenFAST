@@ -91,6 +91,10 @@ public class SequenceValue implements FieldValue {
 
         return true;
     }
+    
+    public int hashCode() {
+    	return elements.hashCode() * 37 + sequence.hashCode();
+    }
 
     public String toString() {
         StringBuilder builder = new StringBuilder();

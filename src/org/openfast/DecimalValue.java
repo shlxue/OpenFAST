@@ -142,4 +142,8 @@ public class DecimalValue extends NumericValue {
     public String toString() {
         return String.valueOf(value);
     }
+    
+    public int hashCode() {
+    	return exponent * 37 + mantissa;
+    }
 }

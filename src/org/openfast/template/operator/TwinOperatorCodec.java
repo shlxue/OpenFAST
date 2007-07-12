@@ -147,6 +147,10 @@ public class TwinOperatorCodec extends OperatorCodec {
         return exponentOperator.equals(other.exponentOperator) &&
         mantissaOperator.equals(other.mantissaOperator);
     }
+    
+    public int hashCode() {
+    	return exponentOperator.hashCode() * 37 + mantissaOperator.hashCode();
+    }
 
 	public ScalarValue getValueToEncode(ScalarValue value, ScalarValue priorValue, Scalar field) {
 		throw new NotImplementedException();

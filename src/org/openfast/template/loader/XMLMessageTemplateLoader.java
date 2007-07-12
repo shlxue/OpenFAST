@@ -64,7 +64,7 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
     private static final ErrorCode XML_PARSING_ERROR = new ErrorCode(FastConstants.STATIC,
             -1, "XMLPARSEERR", "XML Parsing Error", FastAlertSeverity.ERROR);
     private ErrorHandler errorHandler = ErrorHandler.DEFAULT;
-    private DelegatingTemplateRepository templateRepository = new DelegatingTemplateRepository(TemplateRepository.NULL);
+    private final DelegatingTemplateRepository templateRepository = new DelegatingTemplateRepository(TemplateRepository.NULL);
 
     /**
      * Parses the XML stream and creates an array of the elements
@@ -159,20 +159,20 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
             	if (isMessageFieldElement(item))
             		fields.add(parseField((Element) item, dictionary));
             	else if (item.getNodeName().equals("templateRef"))
-            		fields.addAll(parseTemplateRef((Element) item, dictionary));
+            		fields.addAll(parseTemplateRef((Element) item));
             }
         }
 
         return (Field[]) fields.toArray(new Field[] {  });
     }
 
-    private List/*<Field>*/ parseTemplateRef(Element element, String dictionary) {
+    private List/*<Field>*/ parseTemplateRef(Element element) {
     	if (element.hasAttribute("name")) {
     		String templateName = element.getAttribute("name");
-    		if (!hasTemplate(templateName))
-    			errorHandler.error(FastConstants.D8_TEMPLATE_NOT_EXIST, "The template \"" + templateName + "\" was not found.");
-    		else {
+    		if (hasTemplate(templateName))
     			return Arrays.asList(getTemplate(templateName).getTemplateFields());
+    		else {
+    			errorHandler.error(FastConstants.D8_TEMPLATE_NOT_EXIST, "The template \"" + templateName + "\" was not found.");
     		}
     	} else {
     		return Arrays.asList(new Field[] { new DynamicTemplateReference() });
@@ -192,29 +192,27 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
         String type = fieldNode.getNodeName();
         boolean optional = false;
 
-        if (fieldNode.hasAttribute("presence")) {
-            optional = fieldNode.getAttribute("presence").equals("optional");
-        }
+        optional = "optional".equals(fieldNode.getAttribute("presence"));
 
-        if (type.equals("sequence")) {
+        if ("sequence".equals(type)) {
             return parseSequence(fieldNode, optional, dictionary);
-        } else if (type.equals("group")) {
+        } else if ("group".equals(type)) {
             return parseGroup(fieldNode, optional, dictionary);
-        } else if (type.equals("string")) {
+        } else if ("string".equals(type)) {
         	if (fieldNode.hasAttribute("charset"))
         		type = fieldNode.getAttribute("charset");
         	else
         		type = "ascii";
-        } else if (type.equals("decimal")) {
+        } else if ("decimal".equals(type)) {
             // Check for "decimal" special case where there are two separate operators for the mantissa and exponent
             NodeList fieldChildren = fieldNode.getChildNodes();
             Node mantissaNode = null;
             Node exponentNode = null;
 
             for (int i = 0; i < fieldChildren.getLength(); i++) {
-                if (fieldChildren.item(i).getNodeName().equals("mantissa")) {
+                if ("mantissa".equals(fieldChildren.item(i).getNodeName())) {
                     mantissaNode = fieldChildren.item(i);
-                } else if (fieldChildren.item(i).getNodeName().equals("exponent")) {
+                } else if ("exponent".equals(fieldChildren.item(i).getNodeName())) {
                     exponentNode = fieldChildren.item(i);
                 }
             }

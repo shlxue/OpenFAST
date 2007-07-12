@@ -59,6 +59,10 @@ public class TwinValue extends ScalarValue {
     private boolean equals(TwinValue other) {
         return (first.equals(other.first) && second.equals(other.second));
     }
+    
+    public int hashCode() {
+    	return first.hashCode() * 37 + second.hashCode();
+    }
 
     /**
      * Converts the ScalarValues first and second to strings

@@ -94,6 +94,10 @@ public class BitVector {
 
         return true;
     }
+    
+    public int hashCode() {
+    	return bytes.hashCode();
+    }
 
     public boolean isOverlong() {
         return (bytes.length > 1) &&

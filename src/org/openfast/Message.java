@@ -82,6 +82,10 @@ public class Message extends GroupValue {
 
         return true;
     }
+    
+    public int hashCode() {
+    	return super.hashCode() + template.hashCode();
+    }
 
     public int getFieldCount() {
         return values.length;

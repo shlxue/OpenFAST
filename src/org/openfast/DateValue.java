@@ -26,4 +26,8 @@ public class DateValue extends ScalarValue {
 	private boolean equals(DateValue other) {
 		return other.value.equals(value);
 	}
+
+    public int hashCode() {
+    	return value.hashCode();
+    }
 }

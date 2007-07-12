@@ -56,10 +56,8 @@ public abstract class Type {
 	public final static Type U16 = new UnsignedIntegerType(16); 
 	public final static Type U32 = new UnsignedIntegerType(32) {
 		public void validateValue(ScalarValue value) {
-			if (value instanceof LongValue) {
-				if (value.toLong() > Integer.MAX_VALUE || value.toLong() < Integer.MIN_VALUE)
-					Global.handleError(FastConstants.D2_INT_OUT_OF_RANGE, "The value " + value + " is out of range for the type " + this);
-			}
+			if (value instanceof LongValue && (value.toLong() > Integer.MAX_VALUE || value.toLong() < Integer.MIN_VALUE))
+				Global.handleError(FastConstants.D2_INT_OUT_OF_RANGE, "The value " + value + " is out of range for the type " + this);
 		}
 	}; 
 	public final static Type U64 = new UnsignedIntegerType(64);
@@ -67,8 +65,7 @@ public abstract class Type {
 	public final static Type I16 = new SignedIntegerType(16); 
 	public final static Type I32 = new SignedIntegerType(32) {
 		public void validateValue(ScalarValue value) {
-			if (value instanceof LongValue) {
-				if (value.toLong() > Integer.MAX_VALUE || value.toLong() < Integer.MIN_VALUE)
+			if (value instanceof LongValue && (value.toLong() > Integer.MAX_VALUE || value.toLong() < Integer.MIN_VALUE)) {
 					Global.handleError(FastConstants.D2_INT_OUT_OF_RANGE, "The value " + value + " is out of range for the type " + this);
 			}
 		}

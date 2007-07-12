@@ -209,6 +209,10 @@ public class GroupValue implements FieldValue {
 
         return true;
     }
+    
+    public int hashCode() {
+    	return values.hashCode();
+    }
 
     public String toString() {
         StringBuilder builder = new StringBuilder();

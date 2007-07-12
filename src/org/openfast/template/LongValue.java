@@ -57,6 +57,10 @@ public class LongValue extends NumericValue {
     private boolean equals(LongValue otherValue) {
         return value == otherValue.value;
     }
+    
+    public int hashCode() {
+    	return (int) value;
+    }
 
     /**
      * Compares a string that is converted to an integer to the value of LogValue

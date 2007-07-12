@@ -169,9 +169,9 @@ public class Sequence extends Field implements FieldSet {
                         context));
             }
         } catch (IOException e) {
+        	Global.handleError(FastConstants.IO_ERROR, "An IO error occurred while encoding " + this, e);
         }
 
-        //		System.out.print("]");
         return buffer.toByteArray();
     }
 

@@ -46,6 +46,10 @@ public class IntegerValue extends NumericValue {
     private boolean equals(IntegerValue otherValue) {
         return value == otherValue.value;
     }
+    
+    public int hashCode() {
+    	return value;
+    }
 
     public boolean equalsValue(String defaultValue) {
         return Integer.parseInt(defaultValue) == value;

@@ -64,4 +64,8 @@ public class ByteVectorValue extends ScalarValue {
 
         return true;
     }
+
+    public int hashCode() {
+    	return value.hashCode();
+    }
 }
