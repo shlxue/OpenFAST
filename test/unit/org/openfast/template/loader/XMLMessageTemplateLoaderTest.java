@@ -52,7 +52,7 @@ public class XMLMessageTemplateLoaderTest extends OpenFastTestCase {
             "		<decimal name=\"open\"><copy /></decimal>" +
             "		<decimal name=\"close\"><copy /></decimal>" + "	</template>" +
             "</templates>";
-        XMLMessageTemplateLoader loader = new XMLMessageTemplateLoader();
+        MessageTemplateLoader loader = new XMLMessageTemplateLoader();
         MessageTemplate[] templates = loader.load(new ByteArrayInputStream(
                     templateXml.getBytes()));
         MessageTemplate messageTemplate = templates[0];
@@ -79,7 +79,7 @@ public class XMLMessageTemplateLoaderTest extends OpenFastTestCase {
             "		<group name=\"guy\"><string name=\"First Name\"></string><string name=\"Last Name\"></string></group>" +
             "	</template>" + "</templates>";
 
-        XMLMessageTemplateLoader loader = new XMLMessageTemplateLoader();
+        MessageTemplateLoader loader = new XMLMessageTemplateLoader();
         MessageTemplate[] templates = loader.load(new ByteArrayInputStream(
                     templateXml.getBytes()));
         MessageTemplate messageTemplate = templates[0];
@@ -97,7 +97,7 @@ public class XMLMessageTemplateLoaderTest extends OpenFastTestCase {
             "		<uInt32 name=\"value\"><copy key=\"integer\" /></uInt32>" +
             "	</template>" + "</templates>";
 
-        XMLMessageTemplateLoader loader = new XMLMessageTemplateLoader();
+        MessageTemplateLoader loader = new XMLMessageTemplateLoader();
         MessageTemplate[] templates = loader.load(new ByteArrayInputStream(
                     templateXml.getBytes()));
         MessageTemplate messageTemplate = templates[0];
@@ -116,7 +116,7 @@ public class XMLMessageTemplateLoaderTest extends OpenFastTestCase {
             "		<string name=\"id2\" charset=\"ascii\" presence=\"optional\"><copy /></string>" +
             "	</template>" + "</templates>";
 
-        XMLMessageTemplateLoader loader = new XMLMessageTemplateLoader();
+        MessageTemplateLoader loader = new XMLMessageTemplateLoader();
         MessageTemplate[] templates = loader.load(new ByteArrayInputStream(
                     templateXml.getBytes()));
         MessageTemplate messageTemplate = templates[0];
@@ -140,7 +140,7 @@ public class XMLMessageTemplateLoaderTest extends OpenFastTestCase {
     public void testLoadMdIncrementalRefreshTemplate() {
         InputStream templateStream = this.getClass()
                                          .getResourceAsStream("mdIncrementalRefreshTemplate.xml");
-        XMLMessageTemplateLoader loader = new XMLMessageTemplateLoader();
+        MessageTemplateLoader loader = new XMLMessageTemplateLoader();
         MessageTemplate messageTemplate = loader.load(templateStream)[0];
 
         assertEquals("MDIncrementalRefresh",
@@ -260,8 +260,8 @@ public class XMLMessageTemplateLoaderTest extends OpenFastTestCase {
 			"  <decimal name=\"price\"/>" +
 			"</template>";
 
-    	XMLMessageTemplateLoader loader1 = new XMLMessageTemplateLoader();
-    	XMLMessageTemplateLoader loader2 = new XMLMessageTemplateLoader();
+    	MessageTemplateLoader loader1 = new XMLMessageTemplateLoader();
+    	MessageTemplateLoader loader2 = new XMLMessageTemplateLoader();
     	loader2.setTemplateRepository(loader1);
     	
 		loader1.load(stream(template1Xml));
@@ -284,7 +284,7 @@ public class XMLMessageTemplateLoaderTest extends OpenFastTestCase {
 			"  <decimal name=\"price\"/>" +
 			"</template>";
 
-    	XMLMessageTemplateLoader loader = new XMLMessageTemplateLoader();
+    	MessageTemplateLoader loader = new XMLMessageTemplateLoader();
 		loader.load(stream(template1Xml));
 		MessageTemplate[] templates = loader.load(stream(template2Xml));
 		
@@ -306,7 +306,7 @@ public class XMLMessageTemplateLoaderTest extends OpenFastTestCase {
 			"  <decimal name=\"price\"/>" +
 			"</template>";
 
-    	XMLMessageTemplateLoader loader = new XMLMessageTemplateLoader();
+    	MessageTemplateLoader loader = new XMLMessageTemplateLoader();
 		loader.load(stream(template1Xml));
 		MessageTemplate[] templates = loader.load(stream(template2Xml));
 		

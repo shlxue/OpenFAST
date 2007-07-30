@@ -29,6 +29,7 @@ import org.openfast.session.FastServer;
 import org.openfast.session.Session;
 import org.openfast.session.tcp.TcpSessionFactory;
 import org.openfast.template.MessageTemplate;
+import org.openfast.template.loader.MessageTemplateLoader;
 import org.openfast.template.loader.XMLMessageTemplateLoader;
 
 
@@ -36,7 +37,7 @@ public class Producer implements ConnectionListener {
     private MessageTemplate template;
 
     public Producer() {
-        XMLMessageTemplateLoader messageTemplateLoader = new XMLMessageTemplateLoader();
+        MessageTemplateLoader messageTemplateLoader = new XMLMessageTemplateLoader();
         template = messageTemplateLoader.load(this.getClass()
                                                   .getResourceAsStream("template.xml"))[0];
     }

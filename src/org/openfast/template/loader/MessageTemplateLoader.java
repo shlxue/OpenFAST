@@ -32,4 +32,5 @@ import java.io.InputStream;
  */
 public interface MessageTemplateLoader extends TemplateRepository {
     MessageTemplate[] load(InputStream source);
+	void setTemplateRepository(TemplateRepository templateRepository);
 }

@@ -59,16 +59,6 @@ public class Sequence extends Field implements FieldSet {
     }
 
     /**
-     * Sequence Constructor - Calls the first constructor, passing the optional boolean as false
-     * @param name The name of the sequence as a string
-     * @param length The length of the sequence as a Scalar value
-     * @param fields Field array
-     */
-    public Sequence(String name, Scalar length, Field[] fields) {
-        this(name, length, fields, false);
-    }
-
-    /**
      * Sequence Constructor - If no length, a length is created and the implicitLength is set to true.  A new Group is also created with
      * with the respected information.
      * @param name Name of the sequence, a string

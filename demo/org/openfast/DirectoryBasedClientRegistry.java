@@ -25,6 +25,7 @@ package org.openfast;
 import org.openfast.session.Client;
 
 import org.openfast.template.Group;
+import org.openfast.template.loader.MessageTemplateLoader;
 import org.openfast.template.loader.XMLMessageTemplateLoader;
 
 import java.io.File;
@@ -86,7 +87,7 @@ public class DirectoryBasedClientRegistry implements ClientRegistry {
         public Map getTemplateMap() {
             if (templateFile.lastModified() > lastModified) {
                 try {
-                    XMLMessageTemplateLoader loader = new XMLMessageTemplateLoader();
+                    MessageTemplateLoader loader = new XMLMessageTemplateLoader();
                     Group[] templates = loader.load(new FileInputStream(
                                 templateFile));
                     templateMap = new HashMap();

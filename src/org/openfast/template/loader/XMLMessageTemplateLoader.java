@@ -64,7 +64,7 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
     private static final ErrorCode XML_PARSING_ERROR = new ErrorCode(FastConstants.STATIC,
             -1, "XMLPARSEERR", "XML Parsing Error", FastAlertSeverity.ERROR);
     private ErrorHandler errorHandler = ErrorHandler.DEFAULT;
-    private final DelegatingTemplateRepository templateRepository = new DelegatingTemplateRepository(TemplateRepository.NULL);
+    final DelegatingTemplateRepository templateRepository = new DelegatingTemplateRepository(TemplateRepository.NULL);
 
     /**
      * Parses the XML stream and creates an array of the elements

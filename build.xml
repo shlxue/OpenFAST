@@ -7,19 +7,19 @@
 	<property name="test.dir" value="test" />
 	<property name="test.unit.dir" value="${test.dir}/unit" />
 	<property name="test.acceptance.dir" value="${test.dir}/acceptance" />
-	<property name="docs.dir" value="${build.dir}/docs" />
-	<property name="javadoc.dir" value="${docs.dir}/api" />
 
 	<property name="build.dir" value="build" />
-	
+
 	<property name="work.dir" value="${build.dir}/work" />
 	<property name="build.classes.dir" value="${work.dir}/classes" />
 	<property name="build.test.classes.dir" value="${work.dir}/test-classes" />
 	<property name="instr.dir" value="${work.dir}/instr" />
 
+	<property name="docs.dir" value="${build.dir}/docs" />
 	<property name="dist.dir" value="${build.dir}/dist" />
 	<property name="reports.dir" value="${build.dir}/reports" />
 
+	<property name="javadoc.dir" value="${docs.dir}/api" />
 	<property name="reports.unit" value="${reports.dir}/unit" />
 	<property name="reports.coverage" value="${reports.dir}/coverage" />
 	<property name="reports.dependency" value="${reports.dir}/dependency" />
