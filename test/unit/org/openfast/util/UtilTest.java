@@ -22,6 +22,9 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast.util;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -34,6 +37,11 @@ import org.openfast.template.TwinValue;
 
 
 public class UtilTest extends TestCase {
+	public void testIt() {
+		DateFormat format = new SimpleDateFormat("mm:ss.S");
+//		assertEquals("10:01.2", format.format(new Date(10 * 60000 + 1000 + 202)));
+		System.out.println((int) 'T');
+	}
 	public void testCollectionToString() {
 		Map map = new LinkedHashMap();
 		map.put("abc", "123");

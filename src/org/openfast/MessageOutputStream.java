@@ -28,6 +28,7 @@ import org.openfast.error.FastConstants;
 import org.openfast.session.Session;
 
 import org.openfast.template.MessageTemplate;
+import org.openfast.template.TemplateRegistry;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -106,4 +107,40 @@ public class MessageOutputStream implements MessageStream {
 
         handlers.put(template, handler);
     }
+
+	public void setTemplateRegistry(TemplateRegistry registry) {
+		context.setTemplateRegistry(registry);
+	}
+
+	public MessageTemplate get(int templateId) {
+		return context.get(templateId);
+	}
+
+	public MessageTemplate get(String templateName) {
+		return context.get(templateName);
+	}
+
+	public int getTemplateId(String templateName) {
+		return context.getTemplateId(templateName);
+	}
+
+	public int getTemplateId(MessageTemplate template) {
+		return context.getTemplateId(template);
+	}
+
+	public boolean isRegistered(String templateName) {
+		return context.isRegistered(templateName);
+	}
+
+	public boolean isRegistered(int templateId) {
+		return context.isRegistered(templateId);
+	}
+
+	public boolean isRegistered(MessageTemplate template) {
+		return context.isRegistered(template);
+	}
+
+	public MessageTemplate[] getTemplates() {
+		return context.getTemplates();
+	}
 }

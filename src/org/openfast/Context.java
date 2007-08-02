@@ -28,14 +28,14 @@ import java.util.Map;
 
 import org.openfast.error.ErrorHandler;
 import org.openfast.error.FastConstants;
+import org.openfast.template.BasicTemplateRegistry;
 import org.openfast.template.Group;
 import org.openfast.template.MessageTemplate;
 import org.openfast.template.TemplateRegistry;
 
 
 public class Context implements TemplateRegistry {
-	private Map templates = new HashMap();
-	private Map templateIds = new HashMap();
+	private TemplateRegistry templateRegistry = new BasicTemplateRegistry();
     private int lastTemplateId;
     private Map dictionaries = new HashMap();
     private ErrorHandler errorHandler = ErrorHandler.DEFAULT;
@@ -47,28 +47,26 @@ public class Context implements TemplateRegistry {
         dictionaries.put("type", new ApplicationTypeDictionary());
     }
 
-    public int getId(MessageTemplate template) {
-        if (!templateIds.containsKey(template)) {
+    public int getTemplateId(MessageTemplate template) {
+        if (!templateRegistry.isRegistered(template)) {
             errorHandler.error(FastConstants.D9_TEMPLATE_NOT_REGISTERED, "The template " + template + " has not been registered.");
             return 0;
         }
 
-		return ((Integer) templateIds.get(template)).intValue();
+		return templateRegistry.getTemplateId(template);
 	}
 
 	public MessageTemplate getTemplate(int templateId) {
-        if (!templates.containsKey(new Integer(templateId))) {
+        if (!templateRegistry.isRegistered(templateId)) {
             errorHandler.error(FastConstants.D9_TEMPLATE_NOT_REGISTERED, "The template with id " + templateId + " has not been registered.");
             return null;
         }
 
-        return (MessageTemplate) templates.get(new Integer(templateId));
+        return templateRegistry.get(templateId);
     }
 
     public void registerTemplate(int templateId, MessageTemplate template) {
-        Integer id = new Integer(templateId);
-		templates.put(id, template);
-		templateIds.put(template, id);
+        templateRegistry.registerTemplate(templateId, template);
     }
 
     public int getLastTemplateId() {
@@ -112,5 +110,37 @@ public class Context implements TemplateRegistry {
 
 	public void setCurrentApplicationType(String typeReference) {
 		currentApplicationType = typeReference;
+	}
+
+	public void setTemplateRegistry(TemplateRegistry registry) {
+		this.templateRegistry = registry;
+	}
+
+	public MessageTemplate get(int templateId) {
+		return templateRegistry.get(templateId);
+	}
+
+	public MessageTemplate get(String templateName) {
+		return templateRegistry.get(templateName);
+	}
+
+	public int getTemplateId(String templateName) {
+		return templateRegistry.getTemplateId(templateName);
+	}
+
+	public boolean isRegistered(String templateName) {
+		return templateRegistry.isRegistered(templateName);
+	}
+
+	public boolean isRegistered(int templateId) {
+		return templateRegistry.isRegistered(templateId);
+	}
+
+	public boolean isRegistered(MessageTemplate template) {
+		return templateRegistry.isRegistered(template);
+	}
+
+	public MessageTemplate[] getTemplates() {
+		return templateRegistry.getTemplates();
 	}
 }

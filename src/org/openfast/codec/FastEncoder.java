@@ -54,4 +54,36 @@ public class FastEncoder implements Coder, TemplateRegistry {
     public void registerTemplate(int templateId, MessageTemplate template) {
         context.registerTemplate(templateId, template);
     }
+
+	public MessageTemplate get(int templateId) {
+		return context.get(templateId);
+	}
+
+	public MessageTemplate get(String templateName) {
+		return context.get(templateName);
+	}
+
+	public int getTemplateId(String templateName) {
+		return context.getTemplateId(templateName);
+	}
+
+	public boolean isRegistered(String templateName) {
+		return context.isRegistered(templateName);
+	}
+
+	public boolean isRegistered(int templateId) {
+		return context.isRegistered(templateId);
+	}
+
+	public boolean isRegistered(MessageTemplate template) {
+		return context.isRegistered(template);
+	}
+
+	public int getTemplateId(MessageTemplate template) {
+		return context.getTemplateId(template);
+	}
+
+	public MessageTemplate[] getTemplates() {
+		return context.getTemplates();
+	}
 }

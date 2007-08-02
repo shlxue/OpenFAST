@@ -26,4 +26,17 @@ package org.openfast.template;
 
 public interface TemplateRegistry {
 	void registerTemplate(int templateId, MessageTemplate template);
+	
+	MessageTemplate get(int templateId);
+	MessageTemplate get(String templateName);
+	MessageTemplate[] getTemplates();
+	
+	int getTemplateId(String templateName);
+	int getTemplateId(MessageTemplate template);
+	
+	boolean isRegistered(String templateName);
+	boolean isRegistered(int templateId);
+	boolean isRegistered(MessageTemplate template);
+
+
 }

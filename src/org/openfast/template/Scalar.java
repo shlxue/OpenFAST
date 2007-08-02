@@ -314,4 +314,8 @@ public class Scalar extends Field {
     public TypeCodec getTypeCodec() {
     	return typeCodec;
     }
+
+	public String serialize(ScalarValue value) {
+		return type.serialize(value);
+	}
 }

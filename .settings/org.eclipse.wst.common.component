@@ -3,7 +3,6 @@
     <wb-module deploy-name="openfast4j">
         <wb-resource deploy-path="/" source-path="/src"/>
         <wb-resource deploy-path="/" source-path="/test/unit"/>
-        <wb-resource deploy-path="/" source-path="/demo"/>
         <wb-resource deploy-path="/" source-path="/test/acceptance"/>
     </wb-module>
 </project-modules>

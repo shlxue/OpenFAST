@@ -350,6 +350,10 @@ public class Group extends Field {
         return ((Integer) fieldIndexMap.get(getField(fieldName))).intValue();
     }
 
+	public int getFieldIndex(Field field) {
+		return ((Integer)fieldIndexMap.get(field)).intValue();
+	}
+
     /**
      * Get the Sequence of the passed fieldName
      * @param fieldName The field name that is being searched for
@@ -367,6 +371,10 @@ public class Group extends Field {
     public Scalar getScalar(String fieldName) {
         return (Scalar) getField(fieldName);
     }
+
+	public Scalar getScalar(int index) {
+		return (Scalar) getField(index);
+	}
 
     /**
      * Find the group with the passed fieldName

@@ -26,7 +26,11 @@ public class Operator {
 	    		Global.handleError(FastConstants.S5_NO_INITVAL_MNDTRY_DFALT, "The field " + scalar + " must have a default value defined.");
 		}
 	};
-	public static final Operator COPY = new Operator("copy");
+	public static final Operator COPY = new Operator("copy") {
+		public OperatorCodec getCodec(Type type) {
+			return OperatorCodec.COPY_ALL;
+		}
+	};
 	public static final Operator INCREMENT = new Operator("increment");
 	public static final Operator DELTA = new Operator("delta") {
 		public boolean shouldStoreValue(ScalarValue value) {

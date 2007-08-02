@@ -76,7 +76,7 @@ public class MessageTemplate extends Group implements FieldSet {
      * @return Returns a byte array of the encoded message
      */
     public byte[] encode(Message message, Context context) {
-        message.setInteger(0, context.getId(message.getTemplate()));
+        message.setInteger(0, context.getTemplateId(message.getTemplate()));
         return super.encode(message, this, context);
     }
 

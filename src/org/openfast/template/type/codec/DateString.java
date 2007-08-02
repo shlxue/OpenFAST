@@ -12,8 +12,12 @@ import org.openfast.StringValue;
 import org.openfast.error.FastConstants;
 
 public class DateString extends TypeCodec {
-	private final DateFormat formatter = new SimpleDateFormat("yyyyMMdd");
+	private final DateFormat formatter;
 
+	public DateString(String format) {
+		formatter = new SimpleDateFormat(format);
+	}
+	
 	public ScalarValue decode(InputStream in) {
 		try {
 			return new DateValue(formatter.parse(TypeCodec.ASCII.decode(in).toString()));

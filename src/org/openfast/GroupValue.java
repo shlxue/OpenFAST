@@ -22,6 +22,7 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast;
 
+import org.openfast.template.Field;
 import org.openfast.template.Group;
 
 import org.openfast.util.ArrayIterator;
@@ -152,8 +153,16 @@ public class GroupValue implements FieldValue {
 	    return group;
 	}
 
-	public void setFieldValue(int fieldIndex, FieldValue value) {
-        values[fieldIndex] = value;
+	public void setString(Field field, String value) {
+		setFieldValue(field, field.createValue(value));
+	}
+
+	private void setFieldValue(Field field, FieldValue value) {
+		setFieldValue(group.getFieldIndex(field), value);
+	}
+	
+	public void setFieldValue(int IndexfieldIndex, FieldValue value) {
+        values[IndexfieldIndex] = value;
     }
 
     public void setBitVector(int fieldIndex, BitVector vector) {
@@ -182,7 +191,7 @@ public class GroupValue implements FieldValue {
 
     public void setString(String fieldName, String value) {
         setFieldValue(fieldName, group.getField(fieldName).createValue(value));
-    }
+	}
 
     public boolean equals(Object other) {
         if (other == this) {

@@ -31,7 +31,7 @@ public abstract class TypeCodec {
     protected static final byte STOP_BIT = (byte) 0x80;
     static final byte[] NULL_VALUE_ENCODING = new byte[] { STOP_BIT };
 
-    // Type Definitions
+    // Codec Definitions
     public static final TypeCodec UINT = new UnsignedInteger();
     public static final TypeCodec INTEGER = new SignedInteger();
     public static final TypeCodec ASCII = new AsciiString();
@@ -49,8 +49,15 @@ public abstract class TypeCodec {
     public static final TypeCodec NULLABLE_BYTE_VECTOR_TYPE = new NullableByteVector();
     public static final TypeCodec NULLABLE_SF_SCALED_NUMBER = new NullableSingleFieldDecimal();
     public static final TypeCodec NULLABLE_STRING_DELTA = new NullableStringDelta();
+    
+    // DATE CODECS
+	public static final TypeCodec DATE_STRING = new DateString("yyyyMMdd");
+	public static final TypeCodec DATE_INTEGER = new DateInteger();
+	public static final TypeCodec TIMESTAMP_STRING = new DateString("yyyyMMddhhmmssSSS");
+	public static final TypeCodec TIMESTAMP_INTEGER = new TimestampInteger();
 	public static final TypeCodec EPOCH_TIMESTAMP = new EpochTimestamp();
-	public static final TypeCodec DATE_STRING = new DateString();
+	public static final TypeCodec TIME_STRING = new DateString("hhmmssSSS");
+	public static final TypeCodec TIME_INTEGER = new TimeInteger();
 	public static final TypeCodec TIME_IN_MS = new MillisecondsSinceMidnight();
     
     public abstract byte[] encodeValue(ScalarValue value);

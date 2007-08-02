@@ -27,6 +27,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -63,8 +64,10 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
             -1, "IOERROR", "IO Error", FastAlertSeverity.ERROR);
     private static final ErrorCode XML_PARSING_ERROR = new ErrorCode(FastConstants.STATIC,
             -1, "XMLPARSEERR", "XML Parsing Error", FastAlertSeverity.ERROR);
+    
+    private final DelegatingTemplateRepository templateRepository = new DelegatingTemplateRepository(TemplateRepository.NULL);
     private ErrorHandler errorHandler = ErrorHandler.DEFAULT;
-    final DelegatingTemplateRepository templateRepository = new DelegatingTemplateRepository(TemplateRepository.NULL);
+    private Map typeMap = Type.getRegisteredTypeMap();
 
     /**
      * Parses the XML stream and creates an array of the elements
@@ -299,7 +302,7 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
 	        if (operatorElement.hasAttribute("key"))
 	        	key = operatorElement.getAttribute("key");
         }
-        Type type = Type.getType(typeName);
+        Type type = (Type) typeMap.get(typeName);
 		Scalar scalar = new Scalar(name, type, operator, type.getValue(defaultValue), optional);
 		if (fieldNode.hasAttribute("id"))
     		scalar.setId(fieldNode.getAttribute("id"));
@@ -456,5 +459,9 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
 
 	public MessageTemplate[] toArray() {
 		return templateRepository.toArray();
+	}
+
+	public void setTypeMap(Map typeMap) {
+		this.typeMap = typeMap;
 	}
 }
