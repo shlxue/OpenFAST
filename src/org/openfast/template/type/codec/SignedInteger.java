@@ -62,7 +62,7 @@ public final class SignedInteger extends IntegerCodec {
     /**
      * 
      * @param in The InputStream to be decoded
-     * @return 
+     * @return the decoded value from the fast input stream
      */
     public ScalarValue decode(InputStream in) {
         long value = 0;

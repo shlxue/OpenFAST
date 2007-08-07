@@ -37,7 +37,7 @@ public final class UnsignedInteger extends IntegerCodec {
 
     /**
      * Takes a ScalarValue object, and converts it to a byte array
-     * @param value The ScalarValue to be encoded
+     * @param scalarValue The value to be encoded
      * @return Returns a byte array of the passed object
      */
     public byte[] encodeValue(ScalarValue scalarValue) {
@@ -63,7 +63,7 @@ public final class UnsignedInteger extends IntegerCodec {
     /**
      * 
      * @param in The InputStream to be decoded
-     * @return 
+     * @return the decoded value from the fast input stream
      */
     public ScalarValue decode(InputStream in) {
         long value = 0;

@@ -47,7 +47,7 @@ public class StringDelta extends TypeCodec {
 
     /**
      * Takes a ScalarValue object, and converts it to a byte array
-     * @param v The ScalarValue to be encoded
+     * @param value The ScalarValue to be encoded
      * @return Returns a byte array of the passed object
      */
     public byte[] encodeValue(ScalarValue value) {
