@@ -25,14 +25,12 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
  */
 package org.openfast.template.type.codec;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 import org.openfast.ByteVectorValue;
 import org.openfast.IntegerValue;
 import org.openfast.ScalarValue;
-
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
-import java.io.IOException;
-import java.io.InputStream;
 
 
 final class ByteVectorType extends TypeCodec {
@@ -76,7 +74,7 @@ final class ByteVectorType extends TypeCodec {
     }
 
     public byte[] encodeValue(ScalarValue value) {
-        throw new NotImplementedException();
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -85,4 +83,8 @@ final class ByteVectorType extends TypeCodec {
     public ScalarValue fromString(String value) {
         return new ByteVectorValue(value.getBytes());
     }
+
+	public boolean equals(Object obj) {
+		return obj != null && obj.getClass() == getClass();
+	}
 }

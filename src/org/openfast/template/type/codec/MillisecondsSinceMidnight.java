@@ -33,4 +33,7 @@ public class MillisecondsSinceMidnight extends TypeCodec {
 		return TypeCodec.INTEGER.encodeValue(new IntegerValue(millisecondsSinceMidnight));
 	}
 
+	public boolean equals(Object obj) {
+		return obj != null && obj.getClass() == getClass();
+	}
 }

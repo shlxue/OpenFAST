@@ -80,4 +80,8 @@ public final class UnsignedInteger extends IntegerCodec {
 
         return createValue(value);
     }
+    
+    public boolean equals(Object obj) {
+    	return obj != null && getClass() == obj.getClass();
+    }
 }

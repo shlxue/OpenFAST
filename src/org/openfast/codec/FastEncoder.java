@@ -39,7 +39,7 @@ public class FastEncoder implements Coder, TemplateRegistry {
     /**
      * WARNING: Not thread-safe.
      * @param message
-     * @return
+     * @return the fast encoding of the message
      */
     public byte[] encode(Message message) {
         MessageTemplate template = message.getTemplate();

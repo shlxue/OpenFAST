@@ -110,4 +110,8 @@ final class NullableSingleFieldDecimal extends TypeCodec {
     public boolean isNullable() {
     	return true;
     }
+
+	public boolean equals(Object obj) {
+		return obj != null && obj.getClass() == getClass();
+	}
 }

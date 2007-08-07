@@ -9,8 +9,6 @@ import org.openfast.ScalarValue;
 import org.openfast.template.Scalar;
 import org.openfast.template.type.Type;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 final class ConstantOperatorCodec extends OperatorCodec {
 	protected ConstantOperatorCodec(Operator operator, Type[] types) {
 		super(operator, types);
@@ -61,11 +59,15 @@ final class ConstantOperatorCodec extends OperatorCodec {
 	}
 
 	public ScalarValue getValueToEncode(ScalarValue value, ScalarValue priorValue, Scalar field) {
-		throw new NotImplementedException();
+		throw new UnsupportedOperationException();
 	}
 	
 	public boolean canEncode(ScalarValue value, Scalar field) {
 		if (field.isOptional() && value == null) return true;
 		return field.getDefaultValue().equals(value);
+	}
+
+	public boolean equals(Object obj) {
+		return obj != null && obj.getClass() == getClass();
 	}
 }

@@ -26,7 +26,7 @@ public class DynamicTemplateReference extends Field {
 	 * @param template
 	 * @param context
 	 * @param present
-	 * @return
+	 * @return the next message in the decoder
 	 */
 	public FieldValue decode(InputStream in, Group template, Context context, boolean present) {
 		return new FastDecoder(context, in).readMessage();
@@ -37,7 +37,7 @@ public class DynamicTemplateReference extends Field {
 	 * @param template
 	 * @param context
 	 * @param presenceMapBuilder
-	 * @return
+	 * @return the encoding of the message given its template
 	 */
 	public byte[] encode(FieldValue value, Group template, Context context, BitVectorBuilder presenceMapBuilder) {
 		Message message = (Message) value;

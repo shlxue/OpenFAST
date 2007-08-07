@@ -31,4 +31,7 @@ public class DateString extends TypeCodec {
 		return TypeCodec.ASCII.encode(new StringValue(formatter.format(((DateValue) value).value)));
 	}
 
+	public boolean equals(Object obj) {
+		return obj != null && obj.getClass() == getClass();
+	}
 }

@@ -30,4 +30,8 @@ final class DefaultOperatorCodec extends OperatorCodec {
 	    Scalar field) {
 	    return field.getDefaultValue();
 	}
+
+	public boolean equals(Object obj) {
+		return obj != null && obj.getClass() == getClass();
+	}
 }

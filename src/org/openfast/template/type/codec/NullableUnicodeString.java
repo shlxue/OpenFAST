@@ -85,4 +85,8 @@ final class NullableUnicodeString extends NotStopBitEncodedType {
     public ScalarValue getDefaultValue() {
         return new StringValue("");
     }
+
+	public boolean equals(Object obj) {
+		return obj != null && obj.getClass() == getClass();
+	}
 }

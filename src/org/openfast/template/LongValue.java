@@ -38,7 +38,7 @@ public class LongValue extends NumericValue {
 
     /**
      * Compares a LongValue object with another LongValue object
-     * @param LongValue Object
+     * @param obj the object to compare to
      * @return True if the two objects are the same, false otherwise
      */
     public boolean equals(Object obj) {

@@ -69,4 +69,14 @@ public class Operator {
 
 	public void validate(Scalar scalar) {
 	}
+
+	public boolean equals(Object other) {
+		if (other == this) return true;
+		if (other == null || !(other instanceof Operator)) return false;
+		return equals((Operator) other);
+	}
+	
+	private boolean equals(Operator other) {
+		return name.equals(other.name);
+	}
 }

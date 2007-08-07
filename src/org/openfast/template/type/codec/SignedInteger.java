@@ -86,4 +86,8 @@ public final class SignedInteger extends IntegerCodec {
 
         return createValue(value);
     }
+
+	public boolean equals(Object obj) {
+		return obj != null && obj.getClass() == getClass();
+	}
 }

@@ -29,4 +29,7 @@ public class TimestampInteger extends TypeCodec {
 		return TypeCodec.UINT.encode(new IntegerValue(intValue));
 	}
 
+	public boolean equals(Object obj) {
+		return obj != null && obj.getClass() == getClass();
+	}
 }

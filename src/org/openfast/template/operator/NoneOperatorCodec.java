@@ -31,4 +31,8 @@ final class NoneOperatorCodec extends AlwaysPresentOperatorCodec {
 	    throw new IllegalStateException(
 	        "This method should never be called.");
 	}
+
+	public boolean equals(Object obj) {
+		return obj != null && obj.getClass() == getClass();
+	}
 }

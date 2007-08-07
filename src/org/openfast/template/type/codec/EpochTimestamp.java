@@ -17,4 +17,7 @@ public class EpochTimestamp extends TypeCodec {
 		return TypeCodec.INTEGER.encodeValue(new LongValue(value.toLong()));
 	}
 
+	public boolean equals(Object obj) {
+		return obj != null && obj.getClass() == getClass();
+	}
 }

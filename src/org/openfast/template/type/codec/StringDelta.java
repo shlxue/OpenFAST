@@ -84,4 +84,8 @@ public class StringDelta extends TypeCodec {
     public ScalarValue fromString(String value) {
         return new StringValue(value);
     }
+
+	public boolean equals(Object obj) {
+		return obj != null && obj.getClass() == getClass();
+	}
 }

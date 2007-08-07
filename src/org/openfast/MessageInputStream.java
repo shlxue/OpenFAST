@@ -53,7 +53,7 @@ public class MessageInputStream implements MessageStream {
 
     /**
      * @throws java.io.EOFException
-     * @return
+     * @return the next message in the stream
      */
     public Message readMessage() {
         Message message = decoder.readMessage();

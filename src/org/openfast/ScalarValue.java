@@ -24,8 +24,6 @@ package org.openfast;
 
 import java.math.BigDecimal;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 
 public class ScalarValue implements FieldValue {
     public static final ScalarValue UNDEFINED = new ScalarValue() {
@@ -73,34 +71,34 @@ public class ScalarValue implements FieldValue {
     }
 
     public byte toByte() {
-    	throw new NotImplementedException();
+    	throw new UnsupportedOperationException();
     }
     
     public short toShort() {
-    	throw new NotImplementedException();
+    	throw new UnsupportedOperationException();
     }
     
     public int toInt() {
-    	throw new NotImplementedException();
+    	throw new UnsupportedOperationException();
     }
     
     public long toLong() {
-    	throw new NotImplementedException();
+    	throw new UnsupportedOperationException();
     }
     
     public String toString() {
-    	throw new NotImplementedException();
+    	throw new UnsupportedOperationException();
     }
     
     public byte[] getBytes() {
-    	throw new NotImplementedException();
+    	throw new UnsupportedOperationException();
     }
     
     public double toDouble() {
-    	throw new NotImplementedException();
+    	throw new UnsupportedOperationException();
     }
     
     public BigDecimal toBigDecimal() {
-    	throw new NotImplementedException();
+    	throw new UnsupportedOperationException();
     }
 }

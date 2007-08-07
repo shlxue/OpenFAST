@@ -85,4 +85,8 @@ public class CopyOperatorCodec extends OptionallyPresentOperatorCodec {
         ScalarValue priorValue, Scalar field) {
         return newValue;
     }
+
+	public boolean equals(Object obj) {
+		return obj != null && obj.getClass() == getClass();
+	}
 }

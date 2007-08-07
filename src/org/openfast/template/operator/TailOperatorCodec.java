@@ -83,4 +83,8 @@ final class TailOperatorCodec extends OperatorCodec {
 	
 	    return previousValue;
 	}
+
+	public boolean equals(Object obj) {
+		return obj != null && obj.getClass() == getClass();
+	}
 }

@@ -103,4 +103,8 @@ final class SingleFieldDecimal extends TypeCodec {
     public ScalarValue getDefaultValue() {
         return new DecimalValue(0.0);
     }
+
+	public boolean equals(Object obj) {
+		return obj != null && obj.getClass() == getClass();
+	}
 }

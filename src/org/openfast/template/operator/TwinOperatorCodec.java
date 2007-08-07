@@ -30,8 +30,6 @@ import org.openfast.template.Scalar;
 import org.openfast.template.TwinValue;
 import org.openfast.template.type.Type;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 
 public class TwinOperatorCodec extends OperatorCodec {
     private static final TwinValue DEFAULT = new TwinValue(new IntegerValue(0), new IntegerValue(0));
@@ -153,7 +151,7 @@ public class TwinOperatorCodec extends OperatorCodec {
     }
 
 	public ScalarValue getValueToEncode(ScalarValue value, ScalarValue priorValue, Scalar field) {
-		throw new NotImplementedException();
+		throw new UnsupportedOperationException();
 	}
 	
 	public boolean canEncode(ScalarValue val, Scalar field) {

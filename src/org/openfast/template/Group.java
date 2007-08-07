@@ -25,6 +25,7 @@ package org.openfast.template;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,7 +42,8 @@ import org.openfast.template.type.codec.TypeCodec;
 
 
 public class Group extends Field {
-    private String typeReference = null;
+
+	private String typeReference = null;
     protected final Field[] fields;
     protected final Map fieldIndexMap;
     protected final Map fieldNameMap;
@@ -428,4 +430,41 @@ public class Group extends Field {
     public String toString() {
     	return name;
     }
+
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + Group.hashCode(fields);
+		result = prime * result + ((typeReference == null) ? 0 : typeReference.hashCode());
+		return result;
+	}
+
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final Group other = (Group) obj;
+		if (!Arrays.equals(fields, other.fields))
+			return false;
+		if (typeReference == null) {
+			if (other.typeReference != null)
+				return false;
+		} else if (!typeReference.equals(other.typeReference))
+			return false;
+		return true;
+	}
+	
+    private static int hashCode(Object[] array) {
+		final int prime = 31;
+		if (array == null)
+			return 0;
+		int result = 1;
+		for (int index = 0; index < array.length; index++) {
+			result = prime * result + (array[index] == null ? 0 : array[index].hashCode());
+		}
+		return result;
+	}
 }

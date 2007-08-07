@@ -49,4 +49,32 @@ public class DateType extends Type {
 		return dateFormatter.format(((DateValue) value).value);
 	}
 
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((dateCodec == null) ? 0 : dateCodec.hashCode());
+		result = prime * result + ((dateFormatter == null) ? 0 : dateFormatter.hashCode());
+		return result;
+	}
+
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final DateType other = (DateType) obj;
+		if (dateCodec == null) {
+			if (other.dateCodec != null)
+				return false;
+		} else if (!dateCodec.equals(other.dateCodec))
+			return false;
+		if (dateFormatter == null) {
+			if (other.dateFormatter != null)
+				return false;
+		} else if (!dateFormatter.equals(other.dateFormatter))
+			return false;
+		return true;
+	}
 }

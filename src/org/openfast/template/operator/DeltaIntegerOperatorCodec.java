@@ -77,4 +77,8 @@ final class DeltaIntegerOperatorCodec extends AlwaysPresentOperatorCodec {
 	
 	    return previousValue;
 	}
+
+	public boolean equals(Object obj) {
+		return obj != null && obj.getClass() == getClass();
+	}
 }

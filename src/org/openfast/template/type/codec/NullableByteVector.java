@@ -65,4 +65,7 @@ public class NullableByteVector extends NotStopBitEncodedType {
 		return new ByteVectorValue(value.getBytes());
 	}
 
+	public boolean equals(Object obj) {
+		return obj != null && obj.getClass() == getClass();
+	}
 }

@@ -90,4 +90,8 @@ final class DeltaStringOperatorCodec extends AlwaysPresentOperatorCodec {
         throw new IllegalStateException(
             "As of FAST v1.1 Delta values must be present in stream");
     }
+
+	public boolean equals(Object obj) {
+		return obj != null && obj.getClass() == getClass();
+	}
 }

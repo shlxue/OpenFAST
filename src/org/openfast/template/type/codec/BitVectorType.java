@@ -87,4 +87,8 @@ public final class BitVectorType extends TypeCodec {
     public ScalarValue getDefaultValue() {
         return new BitVectorValue(new BitVector(0));
     }
+
+	public boolean equals(Object obj) {
+		return obj != null && obj.getClass() == getClass();
+	}
 }

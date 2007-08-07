@@ -42,4 +42,8 @@ public abstract class AlwaysPresentOperatorCodec extends OperatorCodec {
     public ScalarValue getValueToEncode(ScalarValue value, ScalarValue priorValue, Scalar scalar, BitVectorBuilder presenceMapBuilder) {
     	return getValueToEncode(value, priorValue, scalar);
     }
+
+	public boolean equals(Object obj) {
+		return obj != null && obj.getClass() == getClass();
+	}
 }

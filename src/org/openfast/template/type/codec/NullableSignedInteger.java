@@ -80,4 +80,8 @@ public final class NullableSignedInteger extends IntegerCodec {
     public boolean isNullable() {
     	return true;
     }
+
+	public boolean equals(Object obj) {
+		return obj != null && obj.getClass() == getClass();
+	}
 }

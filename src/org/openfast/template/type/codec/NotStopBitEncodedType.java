@@ -7,4 +7,8 @@ public abstract class NotStopBitEncodedType extends TypeCodec {
 	public byte[] encode(ScalarValue value) {
 		return encodeValue(value);
 	}
+
+	public boolean equals(Object obj) {
+		return obj != null && obj.getClass() == getClass();
+	}
 }

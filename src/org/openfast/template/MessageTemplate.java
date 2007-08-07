@@ -136,4 +136,27 @@ public class MessageTemplate extends Group implements FieldSet {
     	System.arraycopy(fields, 1, f, 0, fields.length-1);
     	return f;
     }
+    
+    public boolean equals(Object obj) {
+    	if (obj == this) return true;
+    	if (obj == null || !(obj instanceof MessageTemplate)) return false;
+    	return equals((MessageTemplate) obj);
+    }
+    
+    private boolean equals(MessageTemplate other) {
+    	if (!name.equals(other.name)) return false;
+    	if (fields.length != other.fields.length) return false;
+    	for (int i=0; i<fields.length; i++) {
+    		if (!fields[i].equals(other.fields[i]))
+    			return false;
+    	}
+    	return true;
+    }
+    
+    public int hashCode() {
+    	int hashCode = name.hashCode();
+    	for (int i=0; i<fields.length; i++)
+    		hashCode += fields[i].hashCode();
+    	return hashCode;
+    }
 }

@@ -115,4 +115,8 @@ final class DeltaDecimalOperatorCodec extends AlwaysPresentOperatorCodec {
             return field.getDefaultValue();
         }
     }
+
+	public boolean equals(Object obj) {
+		return obj != null && obj.getClass() == getClass();
+	}
 }

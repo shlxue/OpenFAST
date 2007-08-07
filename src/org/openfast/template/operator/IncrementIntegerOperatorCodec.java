@@ -68,4 +68,8 @@ final class IncrementIntegerOperatorCodec extends OperatorCodec {
 	
 	    return ((NumericValue) previousValue).increment();
 	}
+
+	public boolean equals(Object obj) {
+		return obj != null && obj.getClass() == getClass();
+	}
 }

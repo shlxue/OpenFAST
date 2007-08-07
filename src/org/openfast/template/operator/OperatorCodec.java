@@ -140,4 +140,8 @@ public abstract class OperatorCodec {
 	public boolean shouldDecodeType() {
 		return true;
 	}
+
+	public boolean equals(Object obj) {
+		return obj != null && obj.getClass() == getClass();
+	}
 }

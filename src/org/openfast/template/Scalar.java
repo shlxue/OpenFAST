@@ -172,7 +172,7 @@ public class Scalar extends Field {
      * 
      * @param in The InputStream to be decoded
      * @param previousValue 
-     * @return 
+     * @return the decoded value
      */
     public ScalarValue decode(InputStream in, ScalarValue previousValue) {
     	if (!operatorCodec.shouldDecodeType()) {
@@ -317,5 +317,25 @@ public class Scalar extends Field {
 
 	public String serialize(ScalarValue value) {
 		return type.serialize(value);
+	}
+	
+	public boolean equals(Object other) {
+		if (other == this) return true;
+		if (other == null || !(other instanceof Scalar)) return false;
+		return equals((Scalar) other);
+	}
+	
+	private boolean equals(Scalar other) {
+		return name.equals(other.name) &&
+			   type.equals(other.type) &&
+			   typeCodec.equals(other.typeCodec) &&
+			   operator.equals(other.operator) &&
+			   operatorCodec.equals(other.operatorCodec) &&
+			   initialValue.equals(other.initialValue) &&
+			   dictionary.equals(other.dictionary);
+	}
+	
+	public int hashCode() {
+		return name.hashCode() + type.hashCode() + typeCodec.hashCode() + operator.hashCode() + operatorCodec.hashCode() + initialValue.hashCode() + dictionary.hashCode();
 	}
 }
