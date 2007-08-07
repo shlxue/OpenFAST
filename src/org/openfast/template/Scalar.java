@@ -71,7 +71,7 @@ public class Scalar extends Field {
     /**
      * Scalar constructor - sets the dictionary as global and validates the entries 
      * @param name The name of Scalar as a string
-     * @param typeName The name of the type as a string
+     * @param type The type of the scalar field
      * @param operatorCodec Which operatorCodec object is being used
      * @param defaultValue The default value of the ScalarValue
      * @param optional Determines if the Scalar is required or not for the data
@@ -116,12 +116,12 @@ public class Scalar extends Field {
     }
 
     /**
-     * @param value The Field value
+     * @param fieldValue The Field value
      * @param template The Group object
      * @param context The previous object to keep the data in sync
      * @param presenceMapBuilder The BitVector builder
-     * @return 
-     * @throw Throws RuntimeException if the encoding fails - will print to console the name of the scalar to fail
+     * @return byte encoding of field
+     * @throws Throws RuntimeException if the encoding fails - will print to console the name of the scalar to fail
      */
     public byte[] encode(FieldValue fieldValue, Group template, Context context, BitVectorBuilder presenceMapBuilder) {
         ScalarValue priorValue = (ScalarValue) context.lookup(getDictionary(), template, getKey());
@@ -152,8 +152,8 @@ public class Scalar extends Field {
     /**
      * 
      * @param newValue
-     * @param previousValue
-     * @return
+     * @param previousValue the previous value that was decoded
+     * @return the actual value given the previous value and newly decoded value
      */
     public ScalarValue decodeValue(ScalarValue newValue,
         ScalarValue previousValue) {
