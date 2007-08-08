@@ -52,7 +52,7 @@ public class TwinOperatorCodec extends OperatorCodec {
     /**
      * @param val
      * @param priorVal
-     * @return 
+     * @return the actual value given the previous value and current value 
      */
     public ScalarValue decodeValue(ScalarValue val, ScalarValue priorVal,
         Scalar field) {
@@ -81,7 +81,7 @@ public class TwinOperatorCodec extends OperatorCodec {
      * @param priorVal The prior ScalarValue object
      * @param field The Scalar object
      * @param presenceMapBuilder The BitVector object
-     * @return 
+     * @return the value that should be encoded over the fast stream
      */
     public ScalarValue getValueToEncode(ScalarValue val, ScalarValue priorVal, Scalar field, BitVectorBuilder presenceMapBuilder) {
         ScalarValue priorValue = priorVal.isUndefined() ? field.getDefaultValue() : toTwin(priorVal);

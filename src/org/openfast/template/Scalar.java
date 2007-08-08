@@ -49,7 +49,7 @@ public class Scalar extends Field {
     /**
      * Scalar constructor - sets the dictionary as global and validates the entries 
      * @param name The name of Scalar as a string
-     * @param typeName The name of the type as a string
+     * @param type The type of this Scalar
      * @param operator Which operator object is being used
      * @param defaultValue The default value of the ScalarValue
      * @param optional Determines if the Scalar is required or not for the data

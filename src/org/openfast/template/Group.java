@@ -292,7 +292,7 @@ public class Group extends Field {
     }
 
     /**
-     * @param The value that the fieldValue that is to be created
+     * @param value The value that the fieldValue that is to be created
      * @return Returns a new GroupValue
      */
     public FieldValue createValue(String value) {

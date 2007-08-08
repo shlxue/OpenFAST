@@ -68,7 +68,7 @@ public abstract class OperatorCodec {
 
     /**
      * Find the operator by the key
-     * @param name The name of the operator, stored to the key
+     * @param operator the fast operator 
      * @param type The type of the operator, stored to the key
      * @return Returns the operator object with the specified key
      */
@@ -118,7 +118,7 @@ public abstract class OperatorCodec {
 	 * @param priorValue
 	 * @param scalar
 	 * @param presenceMapBuilder
-	 * @return
+	 * @return the value that should be encoded given the previous value
 	 */
 	public ScalarValue getValueToEncode(ScalarValue value, ScalarValue priorValue, Scalar scalar, BitVectorBuilder presenceMapBuilder) {
 		ScalarValue valueToEncode = getValueToEncode(value, priorValue, scalar);

@@ -61,13 +61,19 @@
 
 	<target name="compile">
 		<mkdir dir="${build.classes.dir}" />
-		<javac srcdir="${src.dir}" destdir="${build.classes.dir}" debug="yes" debuglevel="lines,source,vars" />
+		<javac srcdir="${src.dir}" destdir="${build.classes.dir}" debug="yes" debuglevel="lines,source,vars" target="1.4" source="1.4">
+			<compilerarg line="-Xlint:deprecation -Xlint:unchecked"/>
+		</javac>
 	</target>
 
 	<target name="compile-test" depends="compile">
 		<mkdir dir="${build.test.classes.dir}" />
-		<javac srcdir="${test.unit.dir}" destdir="${build.test.classes.dir}" classpathref="test.path" debug="yes" debuglevel="lines,source,vars" />
-		<javac srcdir="${test.acceptance.dir}" destdir="${build.test.classes.dir}" classpathref="test.path" debug="yes" debuglevel="lines,source,vars" />
+		<javac srcdir="${test.unit.dir}" destdir="${build.test.classes.dir}" classpathref="test.path" debug="yes" debuglevel="lines,source,vars" target="1.4" source="1.4">
+			<compilerarg line="-Xlint:deprecation -Xlint:unchecked"/>
+		</javac>
+		<javac srcdir="${test.acceptance.dir}" destdir="${build.test.classes.dir}" classpathref="test.path" debug="yes" debuglevel="lines,source,vars" target="1.4" source="1.4">
+			<compilerarg line="-Xlint:deprecation -Xlint:unchecked"/>
+		</javac>
 		<copy todir="${build.test.classes.dir}">
 			<fileset dir="${test.unit.dir}" includes="**/*.xml" />
 		</copy>
@@ -88,7 +94,7 @@
 
 	<target name="unit-test" depends="instr">
 		<mkdir dir="${reports.unit}" />
-		<junit showoutput="yes" printsummary="yes" haltonerror="yes" haltonfailure="yes" fork="true">
+		<junit showoutput="yes" printsummary="yes" haltonerror="yes" haltonfailure="yes" fork="false">
 			<classpath refid="emma.test.path" />
 			<sysproperty key="emma.coverage.out.file" value="${work.dir}/coverage.emma" />
 			<sysproperty key="emma.coverage.out.merge" value="true" />
@@ -135,7 +141,7 @@
 			<classpath location="${build.classes.dir}" />
 		</jdepend>
 
-		<style basedir="${reports.dependency}" destdir="${reports.dependency}" includes="jdepend-report.xml" style="${ant.home}/etc/jdepend.xsl" />
+		<xslt basedir="${reports.dependency}" destdir="${reports.dependency}" includes="jdepend-report.xml" style="${ant.home}/etc/jdepend.xsl" />
 	</target>
 	
 	<target name="complexity">

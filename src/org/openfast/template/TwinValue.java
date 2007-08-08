@@ -40,7 +40,7 @@ public class TwinValue extends ScalarValue {
 
     /**
      * Checks to see if the object passed to it is a TwinValue object
-     * @param The object to be checked if it is a TwinValue object
+     * @param obj The object to be checked if it is a TwinValue object
      * @return If the passed object is a TwinValue object, returns true, false otherwise
      */
     public boolean equals(Object obj) {

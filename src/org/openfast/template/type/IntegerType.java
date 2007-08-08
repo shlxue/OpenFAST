@@ -58,7 +58,7 @@ public abstract class IntegerType extends SimpleType {
 	
 	/**
 	 * @param value
-	 * @return 
+	 * @return either longvalue or integervalue depending on size of parsed number 
 	 */
 	protected ScalarValue getVal(String value) {
 		long longValue;

@@ -15,7 +15,7 @@ public class StringType extends SimpleType {
 	
 	/**
 	 * @param value
-	 * @return 
+	 * @return StringValue of given value
 	 */
 	public ScalarValue getVal(String value) {
 		return new StringValue(value);

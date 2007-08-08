@@ -31,7 +31,7 @@ public abstract class SimpleType extends Type {
 	
 	/**
 	 * @param value
-	 * @return 
+	 * @return wrapper that checks for null so concrete classes don't have to
 	 */
 	public ScalarValue getValue(String value) {
 		if (value == null) return null;

@@ -79,10 +79,9 @@ public class CopyOperatorCodec extends OptionallyPresentOperatorCodec {
     }
 
     /**
-     * @returns the variable newValue
+     * @return newValue
      */
-    public ScalarValue decodeValue(ScalarValue newValue,
-        ScalarValue priorValue, Scalar field) {
+    public ScalarValue decodeValue(ScalarValue newValue, ScalarValue priorValue, Scalar field) {
         return newValue;
     }
 
