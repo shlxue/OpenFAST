@@ -6,6 +6,7 @@ import java.util.Date;
 import org.openfast.DateValue;
 import org.openfast.IntegerValue;
 import org.openfast.ScalarValue;
+import org.openfast.util.Util;
 
 public class TimeInteger extends TypeCodec {
 	public ScalarValue decode(InputStream in) {
@@ -22,7 +23,7 @@ public class TimeInteger extends TypeCodec {
 
 	public byte[] encodeValue(ScalarValue value) {
 		Date date = ((DateValue) value).value;
-		int intValue = (int) (date.getHours() * 10000000 + date.getMinutes() * 100000 + date.getSeconds() * 1000 + date.getTime() % 1000);
+		int intValue = Util.timeToInt(date);
 		return TypeCodec.UINT.encode(new IntegerValue(intValue));
 	}
 

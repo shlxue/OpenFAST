@@ -1,16 +1,12 @@
 package org.openfast.template.type.codec;
 
 import java.io.InputStream;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.openfast.DateValue;
-import org.openfast.Global;
 import org.openfast.IntegerValue;
 import org.openfast.ScalarValue;
-import org.openfast.error.FastConstants;
+import org.openfast.util.Util;
 
 public class DateInteger extends TypeCodec {
 
@@ -19,12 +15,12 @@ public class DateInteger extends TypeCodec {
 		int year = (int) (longValue / 10000);
 		int month = (int) ((longValue - (year * 10000)) / 100);
 		int day = (int) (longValue % 100);
-		return new DateValue(new Date(year - 1900, month - 1, day));
+		return new DateValue(Util.date(year, month, day));
 	}
 
 	public byte[] encodeValue(ScalarValue value) {
 		Date date = ((DateValue) value).value;
-		int intValue = date.getDate() + (date.getMonth()+1) * 100 + (1900+date.getYear()) * 10000;
+		int intValue = Util.dateToInt(date);
 		return TypeCodec.UINT.encode(new IntegerValue(intValue));
 	}
 

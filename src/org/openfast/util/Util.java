@@ -115,4 +115,57 @@ public class Util {
 		cal.setTime(date);
 		return cal.get(Calendar.HOUR_OF_DAY) * 3600000 + cal.get(Calendar.MINUTE) * 60000 + cal.get(Calendar.SECOND) * 1000 + cal.get(Calendar.MILLISECOND);
 	}
+
+	/**
+	 * 
+	 * @param year the year yyyy
+	 * @param month 1-based index of month
+	 * @param day day of month
+	 * @return the corresponding date
+	 */
+	public static Date date(int year, int month, int day) {
+		Calendar cal = Calendar.getInstance();
+		cal.set(year - 1900, month - 1, day);
+		return cal.getTime();
+	}
+
+	public static int dateToInt(Date date) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		return cal.get(Calendar.YEAR)       * 10000 + 
+		      (cal.get(Calendar.MONTH) + 1) * 100 + 
+		       cal.get(Calendar.DATE);
+	}
+
+	public static int timeToInt(Date date) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		return cal.get(Calendar.HOUR_OF_DAY) * 10000000 + 
+		       cal.get(Calendar.MINUTE)      * 100000 + 
+		       cal.get(Calendar.SECOND)      * 1000 + 
+		       cal.get(Calendar.MILLISECOND);
+	}
+
+	public static int timestampToInt(Date date) {
+		return dateToInt(date) * 1000000000 + timeToInt(date);
+	}
+
+	public static Date toTimestamp(long value) {
+		Calendar cal = Calendar.getInstance();
+		int year  = (int)(value / 10000000000000L);
+		value %= 10000000000000L;
+		int month = (int)(value / 100000000000L);
+		value %= 100000000000L;
+		int day   = (int)(value / 1000000000);
+		value %= 1000000000;
+		int hour  = (int)(value / 10000000);
+		value %= 10000000;
+		int min   = (int)(value / 100000);
+		value %= 100000;
+		int sec   = (int)(value / 1000);
+		int ms = (int) (value % 1000);
+		cal.set(year, month-1, day, hour, min, sec);
+		cal.set(Calendar.MILLISECOND, ms);
+		return cal.getTime();
+	}
 }
