@@ -154,7 +154,7 @@ public class MessageTemplate extends Group implements FieldSet {
     }
     
     public int hashCode() {
-    	int hashCode = name.hashCode();
+    	int hashCode = (name != null) ? name.hashCode() : 0;
     	for (int i=0; i<fields.length; i++)
     		hashCode += fields[i].hashCode();
     	return hashCode;
