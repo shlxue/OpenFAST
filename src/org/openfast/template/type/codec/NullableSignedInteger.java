@@ -33,7 +33,9 @@ import java.io.InputStream;
 
 
 public final class NullableSignedInteger extends IntegerCodec {
-    NullableSignedInteger() { }
+    private static final long serialVersionUID = 1L;
+
+	NullableSignedInteger() { }
 
     /**
      * Takes a ScalarValue object, and converts it to a byte array

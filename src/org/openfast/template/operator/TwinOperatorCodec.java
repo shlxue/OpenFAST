@@ -32,7 +32,8 @@ import org.openfast.template.type.Type;
 
 
 public class TwinOperatorCodec extends OperatorCodec {
-    private static final TwinValue DEFAULT = new TwinValue(new IntegerValue(0), new IntegerValue(0));
+	private static final long serialVersionUID = 1L;
+	private static final TwinValue DEFAULT = new TwinValue(new IntegerValue(0), new IntegerValue(0));
 	private OperatorCodec exponentOperator;
     private OperatorCodec mantissaOperator;
 

@@ -12,6 +12,7 @@ import org.openfast.StringValue;
 import org.openfast.error.FastConstants;
 
 public class DateString extends TypeCodec {
+	private static final long serialVersionUID = 1L;
 	private final DateFormat formatter;
 
 	public DateString(String format) {

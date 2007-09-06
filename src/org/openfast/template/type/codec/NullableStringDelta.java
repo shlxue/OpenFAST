@@ -31,7 +31,9 @@ import java.io.InputStream;
 
 
 public class NullableStringDelta extends TypeCodec {
-    public NullableStringDelta() { }
+    private static final long serialVersionUID = 1L;
+
+	public NullableStringDelta() { }
 
     /**
      * Reads in a stream of data and stores it to a TwinValue object

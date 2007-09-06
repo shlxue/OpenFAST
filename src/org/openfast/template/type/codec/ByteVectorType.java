@@ -34,7 +34,9 @@ import org.openfast.ScalarValue;
 
 
 final class ByteVectorType extends TypeCodec {
-    ByteVectorType() { }
+    private static final long serialVersionUID = 1L;
+
+	ByteVectorType() { }
 
     /**
      * Takes a ScalarValue object, and converts it to a byte array

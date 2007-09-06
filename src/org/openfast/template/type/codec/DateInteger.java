@@ -10,6 +10,8 @@ import org.openfast.util.Util;
 
 public class DateInteger extends TypeCodec {
 
+	private static final long serialVersionUID = 1L;
+
 	public ScalarValue decode(InputStream in) {
 		long longValue = ((ScalarValue) TypeCodec.UINT.decode(in)).toLong();
 		int year = (int) (longValue / 10000);

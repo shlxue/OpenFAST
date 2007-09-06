@@ -33,7 +33,9 @@ import org.openfast.ScalarValue;
 
 
 public final class SignedInteger extends IntegerCodec {
-    SignedInteger() { }
+    private static final long serialVersionUID = 1L;
+
+	SignedInteger() { }
 
     /**
      * Takes a ScalarValue object, and converts it to a byte array

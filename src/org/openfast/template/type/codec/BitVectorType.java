@@ -35,7 +35,9 @@ import java.io.InputStream;
 
 
 public final class BitVectorType extends TypeCodec {
-    BitVectorType() { }
+    private static final long serialVersionUID = 1L;
+
+	BitVectorType() { }
 
     /**
      * Takes a ScalarValue object, and converts it to a byte array

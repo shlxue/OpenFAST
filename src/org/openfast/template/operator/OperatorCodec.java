@@ -22,6 +22,7 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast.template.operator;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,7 +36,7 @@ import org.openfast.template.type.Type;
 import org.openfast.util.Key;
 
 
-public abstract class OperatorCodec {
+public abstract class OperatorCodec implements Serializable {
     private static final Map OPERATOR_MAP = new HashMap();
     
     protected static final OperatorCodec NONE_ALL = new NoneOperatorCodec(Operator.NONE, Type.ALL_TYPES);

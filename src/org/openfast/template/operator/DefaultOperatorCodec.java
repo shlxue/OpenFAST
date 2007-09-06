@@ -8,6 +8,8 @@ import org.openfast.template.Scalar;
 import org.openfast.template.type.Type;
 
 final class DefaultOperatorCodec extends OperatorCodec {
+	private static final long serialVersionUID = 1L;
+
 	DefaultOperatorCodec(Operator operator, Type[] types) {
 		super(operator, types);
 	}

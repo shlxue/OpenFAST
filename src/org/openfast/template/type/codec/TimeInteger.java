@@ -9,6 +9,8 @@ import org.openfast.ScalarValue;
 import org.openfast.util.Util;
 
 public class TimeInteger extends TypeCodec {
+	private static final long serialVersionUID = 1L;
+
 	public ScalarValue decode(InputStream in) {
 		int intValue = ((IntegerValue) TypeCodec.UINT.decode(in)).value;
 		int hour = intValue / 10000000;

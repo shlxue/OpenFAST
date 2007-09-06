@@ -38,7 +38,9 @@ import java.io.InputStream;
 
 
 final class SingleFieldDecimal extends TypeCodec {
-    SingleFieldDecimal() { }
+    private static final long serialVersionUID = 1L;
+
+	SingleFieldDecimal() { }
 
     /**
      * Takes a ScalarValue object, and converts it to a byte array

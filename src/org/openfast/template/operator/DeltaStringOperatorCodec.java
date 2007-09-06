@@ -36,7 +36,9 @@ import org.openfast.util.Util;
 
 
 final class DeltaStringOperatorCodec extends AlwaysPresentOperatorCodec {
-    DeltaStringOperatorCodec() {
+	private static final long serialVersionUID = 1L;
+
+	DeltaStringOperatorCodec() {
         super(Operator.DELTA, new Type[] { Type.ASCII, Type.STRING });
     }
 

@@ -37,7 +37,9 @@ import java.io.InputStream;
 
 
 final class AsciiString extends TypeCodec {
-    AsciiString() { }
+    private static final long serialVersionUID = 1L;
+
+	AsciiString() { }
 
     /**
      * Takes a ScalarValue object, and converts it to a byte array

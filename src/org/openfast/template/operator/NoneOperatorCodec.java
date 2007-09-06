@@ -8,6 +8,9 @@ import org.openfast.template.Scalar;
 import org.openfast.template.type.Type;
 
 final class NoneOperatorCodec extends AlwaysPresentOperatorCodec {
+
+	private static final long serialVersionUID = 1L;
+
 	protected NoneOperatorCodec(Operator operator, Type[] types) {
 		super(operator, types);
 	}

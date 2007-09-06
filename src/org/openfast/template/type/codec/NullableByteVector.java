@@ -11,7 +11,9 @@ import org.openfast.error.FastConstants;
 
 public class NullableByteVector extends NotStopBitEncodedType {
 
-	 /**
+	 private static final long serialVersionUID = 1L;
+
+	/**
      * Reads in a stream of data and stores it to a ByteVectorValue object
      * @param in The InputStream to be decoded
      * @return Returns a new ByteVectorValue object with the data stream as an array

@@ -23,11 +23,12 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 package org.openfast.template.type.codec;
 
 import java.io.InputStream;
+import java.io.Serializable;
 
 import org.openfast.ScalarValue;
 
 
-public abstract class TypeCodec {
+public abstract class TypeCodec implements Serializable {
     protected static final byte STOP_BIT = (byte) 0x80;
     static final byte[] NULL_VALUE_ENCODING = new byte[] { STOP_BIT };
 

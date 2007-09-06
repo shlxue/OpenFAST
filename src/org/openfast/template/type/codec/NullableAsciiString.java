@@ -37,7 +37,8 @@ import java.io.InputStream;
 
 
 final class NullableAsciiString extends TypeCodec {
-    private static final byte[] NULLABLE_EMPTY_STRING = new byte[] { 0x00, 0x00 };
+    private static final long serialVersionUID = 1L;
+	private static final byte[] NULLABLE_EMPTY_STRING = new byte[] { 0x00, 0x00 };
 
     NullableAsciiString() { }
 

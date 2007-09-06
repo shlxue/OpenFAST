@@ -36,7 +36,9 @@ import org.openfast.error.FastException;
 
 
 final class NullableUnicodeString extends NotStopBitEncodedType {
-    NullableUnicodeString() { }
+    private static final long serialVersionUID = 1L;
+
+	NullableUnicodeString() { }
 
     /**
      * Takes a ScalarValue object, and converts it to a byte array

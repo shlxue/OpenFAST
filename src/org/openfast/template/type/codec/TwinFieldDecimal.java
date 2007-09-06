@@ -34,7 +34,9 @@ import org.openfast.template.TwinValue;
 
 
 final class TwinFieldDecimal extends TypeCodec {
-    TwinFieldDecimal() { }
+    private static final long serialVersionUID = 1L;
+
+	TwinFieldDecimal() { }
 
     /**
      * Takes a ScalarValue object, and converts it to a byte array

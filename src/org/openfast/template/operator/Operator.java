@@ -89,4 +89,8 @@ public class Operator implements Serializable {
 	private boolean equals(Operator other) {
 		return name.equals(other.name);
 	}
+	
+	public int hashCode() {
+		return name.hashCode();
+	}
 }

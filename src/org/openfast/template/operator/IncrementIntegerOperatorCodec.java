@@ -9,6 +9,8 @@ import org.openfast.template.Scalar;
 import org.openfast.template.type.Type;
 
 final class IncrementIntegerOperatorCodec extends OperatorCodec {
+	private static final long serialVersionUID = 1L;
+
 	IncrementIntegerOperatorCodec(Operator operator, Type[] types) {
 		super(operator, types);
 	}

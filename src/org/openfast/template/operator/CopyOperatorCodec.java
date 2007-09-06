@@ -30,7 +30,9 @@ import org.openfast.template.type.Type;
 
 
 public class CopyOperatorCodec extends OptionallyPresentOperatorCodec {
-    protected CopyOperatorCodec() {
+    private static final long serialVersionUID = 1L;
+
+	protected CopyOperatorCodec() {
         super(Operator.COPY, Type.ALL_TYPES);
     }
 

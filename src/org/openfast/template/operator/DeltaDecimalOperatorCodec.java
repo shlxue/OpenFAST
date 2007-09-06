@@ -34,7 +34,9 @@ import org.openfast.template.type.Type;
 
 
 final class DeltaDecimalOperatorCodec extends AlwaysPresentOperatorCodec {
-    DeltaDecimalOperatorCodec() {
+    private static final long serialVersionUID = 1L;
+
+	DeltaDecimalOperatorCodec() {
         super(Operator.DELTA, new Type[] { Type.DECIMAL });
     }
 

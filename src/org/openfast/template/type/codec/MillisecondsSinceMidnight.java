@@ -10,6 +10,8 @@ import org.openfast.ScalarValue;
 import org.openfast.util.Util;
 
 public class MillisecondsSinceMidnight extends TypeCodec {
+	private static final long serialVersionUID = 1L;
+
 	public ScalarValue decode(InputStream in) {
 		int millisecondsSinceMidnight = TypeCodec.INTEGER.decode(in).toInt();
 		Calendar cal = Calendar.getInstance();

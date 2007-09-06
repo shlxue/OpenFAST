@@ -9,6 +9,8 @@ import org.openfast.template.LongValue;
 
 public class EpochTimestamp extends TypeCodec {
 
+	private static final long serialVersionUID = 1L;
+
 	public ScalarValue decode(InputStream in) {
 		return new DateValue(new Date(TypeCodec.INTEGER.decode(in).toLong()));
 	}

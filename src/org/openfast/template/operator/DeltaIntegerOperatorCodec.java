@@ -11,6 +11,8 @@ import org.openfast.template.Scalar;
 import org.openfast.template.type.Type;
 
 final class DeltaIntegerOperatorCodec extends AlwaysPresentOperatorCodec {
+	private static final long serialVersionUID = 1L;
+
 	DeltaIntegerOperatorCodec(Operator operator, Type[] types) {
 		super(operator, types);
 	}
