@@ -26,8 +26,12 @@ import java.math.BigDecimal;
 
 
 public class ScalarValue implements FieldValue {
-    public static final ScalarValue UNDEFINED = new ScalarValue() {
-            public boolean isUndefined() {
+    private static final long serialVersionUID = 1L;
+
+	public static final ScalarValue UNDEFINED = new ScalarValue() {
+            private static final long serialVersionUID = 1L;
+
+			public boolean isUndefined() {
                 return true;
             }
 
@@ -37,7 +41,9 @@ public class ScalarValue implements FieldValue {
         };
 
     static public final ScalarValue NULL = new ScalarValue() {
-            public boolean isNull() {
+            private static final long serialVersionUID = 1L;
+
+			public boolean isNull() {
                 return true;
             }
 

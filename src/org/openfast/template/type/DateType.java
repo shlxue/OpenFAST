@@ -11,6 +11,7 @@ import org.openfast.template.operator.Operator;
 import org.openfast.template.type.codec.TypeCodec;
 
 public class DateType extends Type {
+	private static final long serialVersionUID = 1L;
 	private TypeCodec dateCodec;
 	private DateFormat dateFormatter;
 

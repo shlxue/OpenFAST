@@ -1,5 +1,6 @@
 package org.openfast.template.type;
 
+import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -11,7 +12,7 @@ import org.openfast.template.operator.Operator;
 import org.openfast.template.type.codec.TypeCodec;
 import org.openfast.util.Util;
 
-public abstract class Type {
+public abstract class Type implements Serializable {
 	private final static Map TYPE_NAME_MAP = new LinkedHashMap();
 	private final String name;
 	
@@ -59,6 +60,8 @@ public abstract class Type {
 	public final static Type U8 = new UnsignedIntegerType(8); 
 	public final static Type U16 = new UnsignedIntegerType(16); 
 	public final static Type U32 = new UnsignedIntegerType(32) {
+		private static final long serialVersionUID = 1L;
+
 		public void validateValue(ScalarValue value) {
 			if (value instanceof LongValue && (value.toLong() > Integer.MAX_VALUE || value.toLong() < Integer.MIN_VALUE))
 				Global.handleError(FastConstants.D2_INT_OUT_OF_RANGE, "The value " + value + " is out of range for the type " + this);
@@ -68,6 +71,8 @@ public abstract class Type {
 	public final static Type I8 = new SignedIntegerType(8); 
 	public final static Type I16 = new SignedIntegerType(16); 
 	public final static Type I32 = new SignedIntegerType(32) {
+		private static final long serialVersionUID = 1L;
+
 		public void validateValue(ScalarValue value) {
 			if (value instanceof LongValue && (value.toLong() > Integer.MAX_VALUE || value.toLong() < Integer.MIN_VALUE)) {
 					Global.handleError(FastConstants.D2_INT_OUT_OF_RANGE, "The value " + value + " is out of range for the type " + this);

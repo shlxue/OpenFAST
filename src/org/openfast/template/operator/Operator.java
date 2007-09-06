@@ -1,5 +1,6 @@
 package org.openfast.template.operator;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,30 +10,39 @@ import org.openfast.error.FastConstants;
 import org.openfast.template.Scalar;
 import org.openfast.template.type.Type;
 
-public class Operator {
+public class Operator implements Serializable {
+	private static final long serialVersionUID = 1L;
 	private static final Map OPERATOR_NAME_MAP = new HashMap();
 	private final String name;
 
 	public static final Operator NONE = new Operator("none");
 	public static final Operator CONSTANT = new Operator("constant") {
+		private static final long serialVersionUID = 1L;
+
 		public void validate(Scalar scalar) {
 	    	if (scalar.getDefaultValue().isUndefined())
 	    		Global.handleError(FastConstants.S4_NO_INITIAL_VALUE_FOR_CONST, "The field " + scalar + " must have a default value defined.");
 		}
 	};
 	public static final Operator DEFAULT = new Operator("default") {
+		private static final long serialVersionUID = 1L;
+
 		public void validate(Scalar scalar) {
 	    	if (!scalar.isOptional() && scalar.getDefaultValue().isUndefined())
 	    		Global.handleError(FastConstants.S5_NO_INITVAL_MNDTRY_DFALT, "The field " + scalar + " must have a default value defined.");
 		}
 	};
 	public static final Operator COPY = new Operator("copy") {
+		private static final long serialVersionUID = 1L;
+
 		public OperatorCodec getCodec(Type type) {
 			return OperatorCodec.COPY_ALL;
 		}
 	};
 	public static final Operator INCREMENT = new Operator("increment");
 	public static final Operator DELTA = new Operator("delta") {
+		private static final long serialVersionUID = 1L;
+
 		public boolean shouldStoreValue(ScalarValue value) {
 			return value != null;
 		}

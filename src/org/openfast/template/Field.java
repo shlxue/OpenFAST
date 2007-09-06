@@ -23,12 +23,13 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 package org.openfast.template;
 
 import java.io.InputStream;
+import java.io.Serializable;
 
 import org.openfast.BitVectorBuilder;
 import org.openfast.Context;
 import org.openfast.FieldValue;
 
-public abstract class Field {
+public abstract class Field implements Serializable {
     protected final String name;
     protected String key;
     protected final boolean optional;

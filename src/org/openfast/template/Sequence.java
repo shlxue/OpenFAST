@@ -41,7 +41,9 @@ import org.openfast.template.type.Type;
 
 
 public class Sequence extends Field implements FieldSet {
-    private final Group group;
+    private static final long serialVersionUID = 1L;
+    
+	private final Group group;
     private final Scalar length;
     private boolean implicitLength;
 	private String typeReference = FastConstants.ANY;

@@ -32,7 +32,8 @@ import java.util.Iterator;
 
 
 public class GroupValue implements FieldValue {
-    protected final FieldValue[] values;
+    private static final long serialVersionUID = 1L;
+	protected final FieldValue[] values;
     private final Group group;
 
     public GroupValue(Group group, FieldValue[] values) {
@@ -154,6 +155,7 @@ public class GroupValue implements FieldValue {
 	}
 
 	public void setString(Field field, String value) {
+		if (field == null) throw new IllegalArgumentException("Field must not be null [value=" + value + "]");
 		setFieldValue(field, field.createValue(value));
 	}
 

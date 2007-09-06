@@ -22,5 +22,7 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast;
 
-public interface FieldValue {
+import java.io.Serializable;
+
+public interface FieldValue extends Serializable {
 }

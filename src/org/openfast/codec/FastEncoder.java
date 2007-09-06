@@ -22,15 +22,21 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast.codec;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.openfast.Context;
 import org.openfast.Message;
 import org.openfast.template.MessageTemplate;
+import org.openfast.template.TemplateRegisteredListener;
 import org.openfast.template.TemplateRegistry;
 
 
 /* In 1.5 version use : static import java.lang.Math.*; */
 public class FastEncoder implements Coder, TemplateRegistry {
     private Context context;
+	private List listeners = Collections.EMPTY_LIST;
 
     public FastEncoder(Context context) {
         this.context = context;
@@ -85,5 +91,12 @@ public class FastEncoder implements Coder, TemplateRegistry {
 
 	public MessageTemplate[] getTemplates() {
 		return context.getTemplates();
+	}
+
+	public void addTemplateRegisteredListener(TemplateRegisteredListener templateRegisteredListener) {
+		if (listeners.isEmpty()) {
+			listeners = new ArrayList();
+		}
+		listeners.add(templateRegisteredListener);
 	}
 }

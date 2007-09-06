@@ -23,7 +23,8 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 package org.openfast;
 
 public class BitVectorValue extends ScalarValue {
-    public BitVector value;
+    private static final long serialVersionUID = 1L;
+	public BitVector value;
 
     public BitVectorValue(BitVector value) {
         this.value = value;

@@ -28,7 +28,8 @@ import org.openfast.error.FastConstants;
 
 
 public class DecimalValue extends NumericValue {
-    public final double value;
+    private static final long serialVersionUID = 1L;
+	public final double value;
     public final int exponent;
     public final int mantissa;
 

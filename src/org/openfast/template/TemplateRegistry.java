@@ -38,5 +38,7 @@ public interface TemplateRegistry {
 	boolean isRegistered(int templateId);
 	boolean isRegistered(MessageTemplate template);
 
+	void addTemplateRegisteredListener(TemplateRegisteredListener templateRegisteredListener);
+
 
 }

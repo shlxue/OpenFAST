@@ -42,7 +42,8 @@ import org.openfast.template.type.codec.TypeCodec;
 
 
 public class Group extends Field {
-
+	private static final long serialVersionUID = 1L;
+	
 	private String typeReference = null;
     protected final Field[] fields;
     protected final Map fieldIndexMap;

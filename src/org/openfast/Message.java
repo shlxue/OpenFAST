@@ -28,7 +28,8 @@ import org.openfast.template.operator.Operator;
 
 
 public class Message extends GroupValue {
-    private final MessageTemplate template;
+    private static final long serialVersionUID = 1L;
+	private final MessageTemplate template;
 
     public Message(MessageTemplate template, FieldValue[] fieldValues) {
         super(template, fieldValues);

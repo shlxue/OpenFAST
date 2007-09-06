@@ -65,7 +65,9 @@ public class Session implements ErrorHandler {
                 new Scalar("SenderName", Type.ASCII, Operator.NONE, ScalarValue.UNDEFINED, false)
             });
     public static final Message RESET = new Message(FAST_RESET_TEMPLATE) {
-            public void setFieldValue(int fieldIndex, FieldValue value) {
+            private static final long serialVersionUID = 1L;
+
+			public void setFieldValue(int fieldIndex, FieldValue value) {
                 throw new IllegalStateException(
                     "Cannot set values on a fast reserved message.");
             }

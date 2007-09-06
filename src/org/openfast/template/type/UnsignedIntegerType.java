@@ -5,6 +5,8 @@ import org.openfast.template.type.codec.TypeCodec;
 
 public class UnsignedIntegerType extends IntegerType {
 
+	private static final long serialVersionUID = 1L;
+
 	public UnsignedIntegerType(int numberBits) {
 		super("uInt" + numberBits, 0, getMax(numberBits), TypeCodec.UINT, TypeCodec.NULLABLE_UNSIGNED_INTEGER);
 	}

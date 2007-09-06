@@ -11,6 +11,8 @@ import org.openfast.template.operator.Operator;
 import org.openfast.template.type.codec.TypeCodec;
 
 final class DecimalType extends SimpleType {
+	private static final long serialVersionUID = 1L;
+
 	DecimalType() {
 		super("decimal", TypeCodec.SF_SCALED_NUMBER, TypeCodec.NULLABLE_SF_SCALED_NUMBER);
 	}

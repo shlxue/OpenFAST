@@ -31,7 +31,8 @@ import java.util.List;
 
 
 public class SequenceValue implements FieldValue {
-    private List elements = Collections.EMPTY_LIST;
+    private static final long serialVersionUID = 1L;
+	private List elements = Collections.EMPTY_LIST;
     private Sequence sequence;
 
     public SequenceValue(Sequence sequence) {

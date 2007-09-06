@@ -27,7 +27,8 @@ import java.math.BigDecimal;
 import org.openfast.error.FastConstants;
 
 public class StringValue extends ScalarValue {
-    public final String value;
+    private static final long serialVersionUID = 1L;
+	public final String value;
 
     public StringValue(String value) {
         this.value = value;

@@ -3,6 +3,7 @@ package org.openfast;
 import java.util.Date;
 
 public class DateValue extends ScalarValue {
+	private static final long serialVersionUID = 1L;
 	public final Date value;
 
 	public DateValue(Date date) {

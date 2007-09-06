@@ -9,6 +9,7 @@ import org.openfast.Message;
 import org.openfast.codec.FastDecoder;
 
 public class DynamicTemplateReference extends Field {
+	private static final long serialVersionUID = 1L;
 
 	public DynamicTemplateReference() {
 		super(null, false);

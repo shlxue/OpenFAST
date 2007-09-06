@@ -9,6 +9,8 @@ import org.openfast.template.operator.Operator;
 import org.openfast.template.type.codec.TypeCodec;
 
 public class StringType extends SimpleType {
+	private static final long serialVersionUID = 1L;
+
 	public StringType(String typeName, TypeCodec codec, TypeCodec nullableCodec) {
 		super(typeName, codec, nullableCodec);
 	}

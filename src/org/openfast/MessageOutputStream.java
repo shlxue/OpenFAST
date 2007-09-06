@@ -22,20 +22,18 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast;
 
-import org.openfast.codec.FastEncoder;
-import org.openfast.error.FastConstants;
-
-import org.openfast.session.Session;
-
-import org.openfast.template.MessageTemplate;
-import org.openfast.template.TemplateRegistry;
-
 import java.io.IOException;
 import java.io.OutputStream;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.openfast.codec.FastEncoder;
+import org.openfast.error.FastConstants;
+import org.openfast.session.Session;
+import org.openfast.template.MessageTemplate;
+import org.openfast.template.TemplateRegisteredListener;
+import org.openfast.template.TemplateRegistry;
 
 
 public class MessageOutputStream implements MessageStream {
@@ -142,5 +140,9 @@ public class MessageOutputStream implements MessageStream {
 
 	public MessageTemplate[] getTemplates() {
 		return context.getTemplates();
+	}
+
+	public void addTemplateRegisteredListener(TemplateRegisteredListener templateRegisteredListener) {
+		context.addTemplateRegisteredListener(templateRegisteredListener);
 	}
 }

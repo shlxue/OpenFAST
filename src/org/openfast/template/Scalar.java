@@ -38,7 +38,9 @@ import org.openfast.template.type.codec.TypeCodec;
 
 
 public class Scalar extends Field {
-    private final Operator operator;
+    private static final long serialVersionUID = 1L;
+    
+	private final Operator operator;
     private final OperatorCodec operatorCodec;
     private final Type type;
     private final TypeCodec typeCodec;

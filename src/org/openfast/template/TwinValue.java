@@ -25,7 +25,8 @@ package org.openfast.template;
 import org.openfast.ScalarValue;
 
 public class TwinValue extends ScalarValue {
-    public final ScalarValue first;
+    private static final long serialVersionUID = 1L;
+	public final ScalarValue first;
     public final ScalarValue second;
 
     /**

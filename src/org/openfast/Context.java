@@ -22,8 +22,11 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.openfast.error.ErrorHandler;
@@ -31,6 +34,7 @@ import org.openfast.error.FastConstants;
 import org.openfast.template.BasicTemplateRegistry;
 import org.openfast.template.Group;
 import org.openfast.template.MessageTemplate;
+import org.openfast.template.TemplateRegisteredListener;
 import org.openfast.template.TemplateRegistry;
 
 
@@ -40,6 +44,7 @@ public class Context implements TemplateRegistry {
     private Map dictionaries = new HashMap();
     private ErrorHandler errorHandler = ErrorHandler.DEFAULT;
 	private String currentApplicationType;
+	private List listeners = Collections.EMPTY_LIST;
 
     public Context() {
         dictionaries.put("global", new GlobalDictionary());
@@ -67,6 +72,10 @@ public class Context implements TemplateRegistry {
 
     public void registerTemplate(int templateId, MessageTemplate template) {
         templateRegistry.registerTemplate(templateId, template);
+        Iterator iter = listeners.iterator();
+        while (iter.hasNext()) {
+        	((TemplateRegisteredListener) iter.next()).templateRegistered(template, templateId);
+        }
     }
 
     public int getLastTemplateId() {
@@ -142,5 +151,12 @@ public class Context implements TemplateRegistry {
 
 	public MessageTemplate[] getTemplates() {
 		return templateRegistry.getTemplates();
+	}
+
+	public void addTemplateRegisteredListener(TemplateRegisteredListener templateRegisteredListener) {
+		if (listeners.isEmpty()) {
+			listeners = new ArrayList();
+		}
+		listeners.add(templateRegisteredListener);
 	}
 }

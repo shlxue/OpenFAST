@@ -26,7 +26,8 @@ import org.openfast.NumericValue;
 
 
 public class LongValue extends NumericValue {
-    public final long value;
+    private static final long serialVersionUID = 1L;
+	public final long value;
 
     /**
      * LongValue Constructor

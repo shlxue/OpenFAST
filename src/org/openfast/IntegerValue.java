@@ -29,7 +29,8 @@ import org.openfast.template.LongValue;
 
 
 public class IntegerValue extends NumericValue {
-    public final int value;
+    private static final long serialVersionUID = 1L;
+	public final int value;
 
     public IntegerValue(int value) {
         this.value = value;
