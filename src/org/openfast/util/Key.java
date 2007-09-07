@@ -22,6 +22,8 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast.util;
 
+import java.util.Arrays;
+
 
 public class Key {
     private final Object[] keys;
@@ -61,5 +63,9 @@ public class Key {
     	for (int i=0; i<keys.length; i++)
     		hashCode += keys[i].hashCode() * (37 ^ i);
         return hashCode; 
+    }
+    
+    public String toString() {
+    	return Arrays.toString(keys);
     }
 }

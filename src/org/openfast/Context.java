@@ -22,7 +22,6 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -154,9 +153,18 @@ public class Context implements TemplateRegistry {
 	}
 
 	public void addTemplateRegisteredListener(TemplateRegisteredListener templateRegisteredListener) {
-		if (listeners.isEmpty()) {
-			listeners = new ArrayList();
-		}
-		listeners.add(templateRegisteredListener);
+		templateRegistry.addTemplateRegisteredListener(templateRegisteredListener);
+	}
+
+	public void removeTemplate(String name) {
+		templateRegistry.removeTemplate(name);
+	}
+
+	public void removeTemplate(MessageTemplate template) {
+		templateRegistry.removeTemplate(template);
+	}
+
+	public void removeTemplate(int id) {
+		templateRegistry.removeTemplate(id);
 	}
 }

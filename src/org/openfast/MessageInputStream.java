@@ -135,4 +135,16 @@ public class MessageInputStream implements MessageStream {
 	public void addTemplateRegisteredListener(TemplateRegisteredListener templateRegisteredListener) {
 		context.addTemplateRegisteredListener(templateRegisteredListener);
 	}
+
+	public void removeTemplate(String name) {
+		context.removeTemplate(name);
+	}
+
+	public void removeTemplate(MessageTemplate template) {
+		context.removeTemplate(template);
+	}
+
+	public void removeTemplate(int id) {
+		context.removeTemplate(id);
+	}
 }

@@ -65,4 +65,22 @@ public class BasicTemplateRegistry implements TemplateRegistry {
 		}
 		listeners.add(templateRegisteredListener);
 	}
+
+	public void removeTemplate(String name) {
+		MessageTemplate template = (MessageTemplate) templateNameMap.remove(name);
+		Object id = templateMap.remove(template);
+		templateIdMap.remove(id);
+	}
+
+	public void removeTemplate(MessageTemplate template) {
+		Object id = templateMap.remove(template);
+		templateNameMap.remove(template.getName());
+		templateIdMap.remove(id);
+	}
+
+	public void removeTemplate(int id) {
+		MessageTemplate template = (MessageTemplate) templateIdMap.remove(new Integer(id));
+		templateMap.remove(template);
+		templateNameMap.remove(template.getName());
+	}
 }

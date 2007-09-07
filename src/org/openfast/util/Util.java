@@ -99,13 +99,17 @@ public class Util {
     }
 
 	public static String collectionToString(Collection set) {
+		return collectionToString(set, ",");
+	}
+
+	public static String collectionToString(Collection set, String sep) {
 		StringBuffer buffer = new StringBuffer();
 		Iterator iter = set.iterator();
 		buffer.append("{");
 		while (iter.hasNext()) {
-			buffer.append(iter.next()).append(",");
+			buffer.append(iter.next()).append(sep);
 		}
-		buffer.deleteCharAt(buffer.length()-1);
+		buffer.deleteCharAt(buffer.length()-sep.length());
 		buffer.append("}");
 		return buffer.toString();
 	}

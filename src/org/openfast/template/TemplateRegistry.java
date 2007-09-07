@@ -27,6 +27,10 @@ package org.openfast.template;
 public interface TemplateRegistry {
 	void registerTemplate(int templateId, MessageTemplate template);
 	
+	void removeTemplate(String name);
+	void removeTemplate(MessageTemplate template);
+	void removeTemplate(int id);
+	
 	MessageTemplate get(int templateId);
 	MessageTemplate get(String templateName);
 	MessageTemplate[] getTemplates();
@@ -39,6 +43,7 @@ public interface TemplateRegistry {
 	boolean isRegistered(MessageTemplate template);
 
 	void addTemplateRegisteredListener(TemplateRegisteredListener templateRegisteredListener);
+
 
 
 }

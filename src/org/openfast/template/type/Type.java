@@ -93,4 +93,12 @@ public abstract class Type implements Serializable {
 		return TYPE_NAME_MAP;
 	}
 
+	public boolean equals(Object obj) {
+		if (obj == null) return false;
+		return obj.getClass().equals(this.getClass());
+	}
+	
+	public int hashCode() {
+		return name.hashCode();
+	}
 }

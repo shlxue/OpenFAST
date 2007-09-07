@@ -78,7 +78,7 @@ public abstract class OperatorCodec implements Serializable {
 
         if (!OPERATOR_MAP.containsKey(key)) {
         	Global.handleError(FastConstants.S2_OPERATOR_TYPE_INCOMP, "The operator \"" + operator +
-                    "\" does not exist for the type " + type);
+                    "\" is not compatible with type \"" + type + "\"");
             throw new IllegalArgumentException();
         }
 
@@ -144,5 +144,9 @@ public abstract class OperatorCodec implements Serializable {
 
 	public boolean equals(Object obj) {
 		return obj != null && obj.getClass() == getClass();
+	}
+	
+	public String toString() {
+		return operator.toString();
 	}
 }

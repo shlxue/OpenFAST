@@ -50,10 +50,13 @@ import org.openfast.template.TwinValue;
 import org.openfast.template.operator.Operator;
 import org.openfast.template.operator.TwinOperatorCodec;
 import org.openfast.template.type.Type;
+import org.openfast.util.Util;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 
 public class XMLMessageTemplateLoader implements MessageTemplateLoader {
@@ -64,6 +67,7 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
             -1, "IOERROR", "IO Error", FastAlertSeverity.ERROR);
     private static final ErrorCode XML_PARSING_ERROR = new ErrorCode(FastConstants.STATIC,
             -1, "XMLPARSEERR", "XML Parsing Error", FastAlertSeverity.ERROR);
+	private static final ErrorCode INVALID_TYPE = new ErrorCode(FastConstants.STATIC, -1, "INVALIDTYPE", "Invalid Type", FastAlertSeverity.ERROR);
     
     private final DelegatingTemplateRepository templateRepository = new DelegatingTemplateRepository(TemplateRepository.NULL);
     private ErrorHandler errorHandler = ErrorHandler.DEFAULT;
@@ -302,6 +306,9 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
 	        if (operatorElement.hasAttribute("key"))
 	        	key = operatorElement.getAttribute("key");
         }
+        if (!typeMap.containsKey(typeName)) {
+        	errorHandler.error(INVALID_TYPE, "The type " + typeName + " is not defined.  Possible types: " + Util.collectionToString(typeMap.keySet(), ", "));
+        }
         Type type = (Type) typeMap.get(typeName);
 		Scalar scalar = new Scalar(name, type, operator, type.getValue(defaultValue), optional);
 		if (fieldNode.hasAttribute("id"))
@@ -411,15 +418,23 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
             dbf.setIgnoringElementContentWhitespace(true);
 
             DocumentBuilder builder = dbf.newDocumentBuilder();
+            builder.setErrorHandler(new org.xml.sax.ErrorHandler() {
+				public void error(SAXParseException exception) throws SAXException {
+					errorHandler.error(XML_PARSING_ERROR, "ERROR: " + exception.getMessage(), exception);
+				}
+				public void fatalError(SAXParseException exception) throws SAXException {
+					errorHandler.error(XML_PARSING_ERROR, "FATAL: " + exception.getMessage(), exception);
+				}
+				public void warning(SAXParseException exception) throws SAXException {
+					errorHandler.error(XML_PARSING_ERROR, "WARNING: " + exception.getMessage(), exception);
+				}});
 
             return builder.parse(templateStream);
         } catch (IOException e) {
             errorHandler.error(IO_ERROR,
-                "Error occurred while trying to read xml template.", e);
+                "Error occurred while trying to read xml template: " + e.getMessage(), e);
         } catch (Exception e) {
-
-            errorHandler.error(XML_PARSING_ERROR,
-                "Error occurred while parsing xml template.", e);
+            errorHandler.error(XML_PARSING_ERROR, "Error occurred while parsing xml template: " + e.getMessage(), e);
         }
 
         return null;

@@ -93,6 +93,18 @@ public class FastEncoder implements Coder, TemplateRegistry {
 		return context.getTemplates();
 	}
 
+	public void removeTemplate(String name) {
+		context.removeTemplate(name);
+	}
+
+	public void removeTemplate(MessageTemplate template) {
+		context.removeTemplate(template);
+	}
+
+	public void removeTemplate(int id) {
+		context.removeTemplate(id);
+	}
+
 	public void addTemplateRegisteredListener(TemplateRegisteredListener templateRegisteredListener) {
 		if (listeners.isEmpty()) {
 			listeners = new ArrayList();
