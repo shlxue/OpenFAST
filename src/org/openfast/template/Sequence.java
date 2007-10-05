@@ -278,28 +278,12 @@ public class Sequence extends Field implements FieldSet {
 	}
 
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
+		if (this == obj) return true;
+		if (obj == null || getClass() != obj.getClass()) return false;
 		final Sequence other = (Sequence) obj;
-		if (group == null) {
-			if (other.group != null)
-				return false;
-		} else if (!group.equals(other.group))
-			return false;
-		if (length == null) {
-			if (other.length != null)
-				return false;
-		} else if (!length.equals(other.length))
-			return false;
-		if (typeReference == null) {
-			if (other.typeReference != null)
-				return false;
-		} else if (!typeReference.equals(other.typeReference))
-			return false;
+		if (!group.equals(other.group)) return false;
+		if (isImplicitLength() != other.isImplicitLength()) return false;
+		if (!isImplicitLength() && !length.equals(other.length)) return false;
 		return true;
 	}
 }

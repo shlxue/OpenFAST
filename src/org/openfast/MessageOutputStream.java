@@ -30,7 +30,6 @@ import java.util.Map;
 
 import org.openfast.codec.FastEncoder;
 import org.openfast.error.FastConstants;
-import org.openfast.session.Session;
 import org.openfast.template.MessageTemplate;
 import org.openfast.template.TemplateRegisteredListener;
 import org.openfast.template.TemplateRegistry;
@@ -78,7 +77,6 @@ public class MessageOutputStream implements MessageStream {
     }
 
     public void reset() {
-        writeMessage(Session.RESET);
         encoder.reset();
     }
 

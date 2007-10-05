@@ -22,94 +22,54 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast.session;
 
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.openfast.Context;
-import org.openfast.FieldValue;
-import org.openfast.GroupValue;
 import org.openfast.Message;
-import org.openfast.MessageHandler;
 import org.openfast.MessageInputStream;
 import org.openfast.MessageOutputStream;
-import org.openfast.MessageStream;
-import org.openfast.ScalarValue;
-import org.openfast.codec.Coder;
 import org.openfast.error.ErrorCode;
 import org.openfast.error.ErrorHandler;
 import org.openfast.error.FastConstants;
-import org.openfast.template.Field;
 import org.openfast.template.MessageTemplate;
-import org.openfast.template.Scalar;
-import org.openfast.template.operator.Operator;
-import org.openfast.template.type.Type;
+import org.openfast.template.TemplateRegistry;
 
 
 public class Session implements ErrorHandler {
-    public static final int FAST_HELLO_TEMPLATE_ID = 16000;
-    public static final int FAST_ALERT_TEMPLATE_ID = 16001;
-    public static final int FAST_RESET_TEMPLATE_ID = 120;
-    public final static MessageTemplate FAST_ALERT_TEMPLATE = new MessageTemplate("",
-            new Field[] {
-                new Scalar("Severity", Type.U32, Operator.NONE,
-                    ScalarValue.UNDEFINED, false),
-                new Scalar("Code", Type.U32, Operator.NONE, ScalarValue.UNDEFINED, false),
-                new Scalar("Value", Type.U32, Operator.NONE,
-                    ScalarValue.UNDEFINED, true),
-                new Scalar("Description", Type.ASCII, Operator.NONE, ScalarValue.UNDEFINED, false),
-            });
-    public final static MessageTemplate FAST_RESET_TEMPLATE = new MessageTemplate("",
-            new Field[] {  });
-    public final static MessageTemplate FAST_HELLO_TEMPLATE = new MessageTemplate("",
-            new Field[] {
-                new Scalar("SenderName", Type.ASCII, Operator.NONE, ScalarValue.UNDEFINED, false)
-            });
-    public static final Message RESET = new Message(FAST_RESET_TEMPLATE) {
-            private static final long serialVersionUID = 1L;
-
-			public void setFieldValue(int fieldIndex, FieldValue value) {
-                throw new IllegalStateException(
-                    "Cannot set values on a fast reserved message.");
-            }
-        };
     private ErrorHandler errorHandler = ErrorHandler.NULL;
     public final MessageInputStream in;
     public final MessageOutputStream out;
+    
+    private final SessionProtocol protocol;
+    private final Connection connection;
+    
     private Client client;
+	private MessageListener messageListener;
+	private boolean listening;
+	private Thread listeningThread;
+	private Map templateDefinitions;
 
-    public Session(InputStream inputStream, OutputStream outputStream) {
+    public Session(Connection connection, SessionProtocol protocol) {
         Context inContext = new Context();
         Context outContext = new Context();
         inContext.setErrorHandler(this);
-
-        in = new MessageInputStream(inputStream, inContext);
-        registerReservedTemplates(in);
-
-        out = new MessageOutputStream(outputStream, outContext);
-        registerReservedTemplates(out);
-
-        MessageHandler resetHandler = new MessageHandler() {
-                public void handleMessage(GroupValue readMessage,
-                    Context context, Coder coder) {
-                    coder.reset();
-                }
-            };
-
-        in.addMessageHandler(FAST_RESET_TEMPLATE, resetHandler);
-        out.addMessageHandler(FAST_RESET_TEMPLATE, resetHandler);
-    }
-
-    private void registerReservedTemplates(MessageStream stream) {
-        stream.registerTemplate(FAST_HELLO_TEMPLATE_ID, FAST_HELLO_TEMPLATE);
-        stream.registerTemplate(FAST_ALERT_TEMPLATE_ID, FAST_ALERT_TEMPLATE);
-        stream.registerTemplate(FAST_RESET_TEMPLATE_ID, FAST_RESET_TEMPLATE);
+        
+        this.connection = connection;
+        this.protocol = protocol;
+        try {
+			this.in = new MessageInputStream(connection.getInputStream(), inContext);
+			this.out = new MessageOutputStream(connection.getOutputStream(), outContext);
+		} catch (IOException e) {
+			errorHandler.error(null, "Error occurred in connection.", e);
+			throw new IllegalStateException(e);
+		}
+        
+        protocol.configureSession(this);
     }
 
     public void close() throws FastConnectionException {
-        if (client != null) {
-            client.disconnect();
-        }
-
         in.close();
         out.close();
     }
@@ -122,33 +82,17 @@ public class Session implements ErrorHandler {
         return client;
     }
 
-    public static Message createHelloMessage(String name) {
-        Message message = new Message(FAST_HELLO_TEMPLATE);
-        message.setString(1, name);
-
-        return message;
-    }
-
-    public static Message createFastAlertMessage(ErrorCode code) {
-        Message alert = new Message(FAST_ALERT_TEMPLATE);
-        alert.setInteger(1, code.getSeverity().getCode());
-        alert.setInteger(2, code.getCode());
-        alert.setString(4, code.getDescription());
-
-        return alert;
-    }
-
     public void error(ErrorCode code, String message) {
 		if (code.equals(FastConstants.D9_TEMPLATE_NOT_REGISTERED)) {
 			code = SessionConstants.TEMPLATE_NOT_SUPPORTED;
 			message = "Template Not Supported";
 		}
-        out.writeMessage(createFastAlertMessage(code));
+		protocol.onError(this, code, message);
         errorHandler.error(code, message);
     }
 
     public void error(ErrorCode code, String message, Throwable t) {
-        out.writeMessage(createFastAlertMessage(code));
+    	protocol.onError(this, code, message);
         errorHandler.error(code, message, t);
     }
 
@@ -159,4 +103,81 @@ public class Session implements ErrorHandler {
 
         this.errorHandler = errorHandler;
     }
+
+	public void reset() {
+		out.reset();
+		in.reset();
+		out.writeMessage(protocol.getResetMessage());
+	}
+
+	public Connection getConnection() {
+		return connection;
+	}
+
+	public void setMessageHandler(MessageListener messageListener) {
+		this.messageListener = messageListener;
+		setListening(true);
+	}
+
+	private void listenForMessages() {
+		if (listeningThread == null) {
+			Runnable messageReader = new Runnable() {
+				public void run() {
+					while (listening) {
+						Message message = in.readMessage();
+						if (message == null) {
+							listening = false;
+							break;
+						}
+						if (protocol.isProtocolMessage(message)) {
+							protocol.handleMessage(Session.this, message);
+						} else if (messageListener != null) {
+							messageListener.onMessage(message);
+						} else {
+							throw new IllegalStateException("Received non-protocol message without a message listener.");
+						}
+					}
+				}};
+			listeningThread = new Thread(messageReader, "FAST Session Message Reader");
+		}
+		if (listeningThread.isAlive()) return;
+		listeningThread.start();
+	}
+
+	public void setListening(boolean listening) {
+		this.listening = listening;
+		if (listening)
+			listenForMessages();
+	}
+
+	public ErrorHandler getErrorHandler() {
+		return errorHandler;
+	}
+
+	public void sendTemplates(TemplateRegistry registry) {
+		if (!protocol.supportsTemplateExchange()) {
+			throw new UnsupportedOperationException("The procotol " + protocol + " does not support template exchange.");
+		}
+		MessageTemplate[] templates = registry.getTemplates();
+		for (int i=0; i<templates.length; i++) {
+			MessageTemplate template = templates[i];
+			out.writeMessage(protocol.createTemplateDefinitionMessage(template));
+			out.writeMessage(protocol.createTemplateDeclarationMessage(template, registry.getTemplateId(template)));
+			if (!out.isRegistered(template))
+				out.registerTemplate(registry.getTemplateId(template), template);
+		}
+	}
+
+	public void addDynamicTemplateDefinition(MessageTemplate template) {
+		if (templateDefinitions == null) {
+			templateDefinitions = new HashMap();
+		}
+		templateDefinitions.put(template.getName(), template);
+	}
+
+	public void registerDynamicTemplate(String templateName, int id) {
+		if (!templateDefinitions.containsKey(templateName))
+			throw new IllegalStateException("Template " + templateName + " has not been defined.");
+		in.registerTemplate(id, (MessageTemplate) templateDefinitions.remove(templateName));
+	}
 }

@@ -23,10 +23,15 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 package org.openfast;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import junit.framework.TestCase;
 
+import org.openfast.session.Connection;
 import org.openfast.session.Session;
+import org.openfast.session.SessionConstants;
 import org.openfast.template.Field;
 import org.openfast.template.MessageTemplate;
 import org.openfast.template.Scalar;
@@ -41,7 +46,23 @@ public class DictionaryTest extends TestCase {
 
     protected void setUp() throws Exception {
         out = new ByteArrayOutputStream();
-        session = new Session(null, out);
+        session = new Session(new Connection() {
+			public InputStream getInputStream() throws IOException {
+				return null;
+			}
+
+			public OutputStream getOutputStream() throws IOException {
+				return out;
+			}
+
+			public void close() {
+				try {
+					out.close();
+				} catch (IOException e) {
+				}
+			}
+
+			}, SessionConstants.SCP_1_0);
     }
 
     public void testMultipleDictionaryTypes() throws Exception {

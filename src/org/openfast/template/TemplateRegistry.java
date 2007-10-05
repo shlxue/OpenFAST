@@ -44,6 +44,51 @@ public interface TemplateRegistry {
 
 	void addTemplateRegisteredListener(TemplateRegisteredListener templateRegisteredListener);
 
+	TemplateRegistry NULL = new TemplateRegistry() {
+		public void addTemplateRegisteredListener(TemplateRegisteredListener templateRegisteredListener) {
+		}
 
+		public MessageTemplate get(int templateId) {
+			return null;
+		}
 
+		public MessageTemplate get(String templateName) {
+			return null;
+		}
+
+		public int getTemplateId(String templateName) {
+			return 0;
+		}
+
+		public int getTemplateId(MessageTemplate template) {
+			return 0;
+		}
+
+		public MessageTemplate[] getTemplates() {
+			return null;
+		}
+
+		public boolean isRegistered(String templateName) {
+			return false;
+		}
+
+		public boolean isRegistered(int templateId) {
+			return false;
+		}
+
+		public boolean isRegistered(MessageTemplate template) {
+			return false;
+		}
+
+		public void registerTemplate(int templateId, MessageTemplate template) {
+		}
+
+		public void removeTemplate(String name) {
+		}
+
+		public void removeTemplate(MessageTemplate template) {
+		}
+
+		public void removeTemplate(int id) {
+		}};
 }

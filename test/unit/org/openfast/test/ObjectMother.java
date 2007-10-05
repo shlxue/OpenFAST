@@ -84,16 +84,14 @@ public class ObjectMother {
     public static MessageTemplate allocationInstruction() {
         if (allocationInstruction == null) {
             allocationInstruction = new MessageTemplate("AllocInstrctn",
-                    new Field[] {
-                        allocations(), instrument(),
-                        new Scalar("ID", Type.ASCII, Operator.DELTA, ScalarValue.UNDEFINED, false),
-                        new Scalar("Side", Type.U32,
-                            Operator.COPY, ScalarValue.UNDEFINED, false),
-                        new Scalar("Quantity", Type.DECIMAL, Operator.DELTA,
-                            ScalarValue.UNDEFINED, false),
-                        new Scalar("Average Price", Type.DECIMAL,
-                            Operator.DELTA, ScalarValue.UNDEFINED, false)
-                    });
+                new Field[] {
+                    allocations(), 
+                    instrument(),
+                    new Scalar("ID",            Type.ASCII,   Operator.DELTA, ScalarValue.UNDEFINED, false),
+                    new Scalar("Side",          Type.U32,     Operator.COPY,  ScalarValue.UNDEFINED, false),
+                    new Scalar("Quantity",      Type.DECIMAL, Operator.DELTA, ScalarValue.UNDEFINED, false),
+                    new Scalar("Average Price", Type.DECIMAL, Operator.DELTA, ScalarValue.UNDEFINED, false)
+                });
         }
 
         return allocationInstruction;
@@ -101,15 +99,13 @@ public class ObjectMother {
 
     public static Sequence allocations() {
         if (allocations == null) {
-            allocations = new Sequence("Allocations",
-                    new Field[] {
-                        new Scalar("Account", Type.ASCII, Operator.COPY, ScalarValue.UNDEFINED, false),
-                        new Scalar("Price", Type.DECIMAL, Operator.DELTA, ScalarValue.UNDEFINED, false),
-                        new Scalar("Quantity", Type.DECIMAL, Operator.DELTA,
-                            ScalarValue.UNDEFINED, false),
-                        new Scalar("Average Price", Type.DECIMAL,
-                            Operator.DELTA, ScalarValue.UNDEFINED, false)
-                    }, false);
+        	allocations = new Sequence("Allocations",
+                new Field[] {
+                    new Scalar("Account",       Type.ASCII,   Operator.COPY,  ScalarValue.UNDEFINED, false),
+                    new Scalar("Price",         Type.DECIMAL, Operator.DELTA, ScalarValue.UNDEFINED, false),
+                    new Scalar("Quantity",      Type.DECIMAL, Operator.DELTA, ScalarValue.UNDEFINED, false),
+                    new Scalar("Average Price", Type.DECIMAL, Operator.DELTA, ScalarValue.UNDEFINED, false)
+                }, false);
         }
 
         return allocations;
@@ -118,10 +114,10 @@ public class ObjectMother {
     private static Group instrument() {
         if (instrument == null) {
             instrument = new Group("Instrmt",
-                    new Field[] {
-                        new Scalar("Symbol", Type.ASCII, Operator.COPY, ScalarValue.UNDEFINED, false),
-                        new Scalar("MMY", Type.ASCII, Operator.DELTA, ScalarValue.UNDEFINED, false),
-                    }, false);
+                new Field[] {
+                    new Scalar("Symbol",        Type.ASCII,   Operator.COPY,  ScalarValue.UNDEFINED, false),
+                    new Scalar("MMY",           Type.ASCII,   Operator.DELTA, ScalarValue.UNDEFINED, false),
+                }, false);
         }
 
         return instrument;

@@ -26,5 +26,5 @@ import org.openfast.codec.Coder;
 
 
 public interface MessageHandler {
-    void handleMessage(GroupValue readMessage, Context context, Coder coder);
+    void handleMessage(Message readMessage, Context context, Coder coder);
 }

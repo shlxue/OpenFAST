@@ -87,7 +87,8 @@ public class ByteUtil {
             builder.append(bits).append(' ');
         }
 
-        builder.deleteCharAt(builder.length() - 1);
+        if (builder.length() > 0)
+        	builder.deleteCharAt(builder.length() - 1);
 
         return builder.toString();
     }

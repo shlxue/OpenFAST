@@ -30,6 +30,7 @@ import org.openfast.FieldValue;
 import org.openfast.IntegerValue;
 import org.openfast.Message;
 import org.openfast.ScalarValue;
+import org.openfast.error.FastConstants;
 import org.openfast.error.FastException;
 import org.openfast.template.operator.Operator;
 import org.openfast.template.type.Type;
@@ -49,10 +50,8 @@ public class MessageTemplate extends Group implements FieldSet {
      */
     private static Field[] addTemplateIdField(Field[] fields) {
         Field[] newFields = new Field[fields.length + 1];
-        newFields[0] = new Scalar("templateId", Type.U32,
-                Operator.COPY, ScalarValue.UNDEFINED, false);
+        newFields[0] = new Scalar("templateId", Type.U32, Operator.COPY, ScalarValue.UNDEFINED, false);
         System.arraycopy(fields, 0, newFields, 1, fields.length);
-        
         return newFields;
     }
 
@@ -78,6 +77,8 @@ public class MessageTemplate extends Group implements FieldSet {
      * @return Returns a byte array of the encoded message
      */
     public byte[] encode(Message message, Context context) {
+    	if (!context.isRegistered(message.getTemplate()))
+    		throw new FastException("Cannot encode message: The template " + message.getTemplate() + " has not been registered.", FastConstants.D9_TEMPLATE_NOT_REGISTERED);
         message.setInteger(0, context.getTemplateId(message.getTemplate()));
         return super.encode(message, this, context);
     }
@@ -93,9 +94,7 @@ public class MessageTemplate extends Group implements FieldSet {
     public Message decode(InputStream in, int templateId, BitVector pmap,
         Context context) {
     	try {
-	        FieldValue[] fieldValues = super.decodeFieldValues(in, this, pmap,
-	                context, 1);
-	        System.out.println();
+	        FieldValue[] fieldValues = super.decodeFieldValues(in, this, pmap, context, 1);
 	        fieldValues[0] = new IntegerValue(templateId);
 	
 	        return new Message(this, fieldValues);

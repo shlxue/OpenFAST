@@ -63,8 +63,7 @@ public class MessageInputStream implements MessageStream {
 
         if (handlers.containsKey(message.getTemplate())) {
             MessageHandler handler = (MessageHandler) handlers.get(message.getTemplate());
-			handler.handleMessage(message, context,
-                decoder);
+			handler.handleMessage(message, context, decoder);
 
             return readMessage();
         }
@@ -146,5 +145,9 @@ public class MessageInputStream implements MessageStream {
 
 	public void removeTemplate(int id) {
 		context.removeTemplate(id);
+	}
+
+	public void reset() {
+		decoder.reset();
 	}
 }

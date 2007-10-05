@@ -53,16 +53,17 @@ public class GroupValue implements FieldValue {
         return new ArrayIterator(values);
     }
 
-    public void setInteger(int fieldIndex, int value) {
-        values[fieldIndex] = new IntegerValue(value);
-    }
-
     public int getInt(int fieldIndex) {
         return getScalar(fieldIndex).toInt();
     }
     
     public int getInt(String fieldName) {
 	    return getScalar(fieldName).toInt();
+	}
+
+	public boolean getBool(String fieldName) {
+		if (!isDefined(fieldName)) return false;
+		return getScalar(fieldName).toInt() != 0;
 	}
 
     public long getLong(int fieldIndex) {
@@ -187,6 +188,14 @@ public class GroupValue implements FieldValue {
 		setFieldValue(fieldName, new DecimalValue(value));
 	}
 
+    public void setInteger(String fieldName, int value) {
+        setFieldValue(fieldName, new IntegerValue(value));
+    }
+    
+    public void setInteger(int fieldIndex, int value) {
+    	values[fieldIndex] = new IntegerValue(value);
+    }
+
     public void setString(int fieldIndex, String value) {
         values[fieldIndex] = new StringValue(value);
     }
@@ -253,7 +262,7 @@ public class GroupValue implements FieldValue {
     }
 
     public boolean isDefined(int fieldIndex) {
-        return values[fieldIndex] != null;
+        return fieldIndex < values.length && values[fieldIndex] != null;
     }
 
     public boolean isDefined(String fieldName) {

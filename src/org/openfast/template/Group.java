@@ -25,8 +25,10 @@ package org.openfast.template;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.openfast.BitVector;
@@ -43,23 +45,36 @@ import org.openfast.template.type.codec.TypeCodec;
 
 public class Group extends Field {
 	private static final long serialVersionUID = 1L;
+
 	
 	private String typeReference = null;
     protected final Field[] fields;
     protected final Map fieldIndexMap;
+    protected final Map fieldIdMap;
     protected final Map fieldNameMap;
     protected final boolean usesPresenceMap;
 
     protected Group(String name, Field[] fields, boolean optional, boolean usesPresenceMap) {
         super(name, optional);
-        this.fields = fields;
-        this.fieldIndexMap = constructFieldIndexMap(fields);
-        this.fieldNameMap = constructFieldNameMap(fields);
+        List expandedFields = new ArrayList();
+        for (int i=0; i<fields.length; i++) {
+        	if (fields[i] instanceof StaticTemplateReference) {
+        		Field[] referenceFields = ((StaticTemplateReference) fields[i]).getTemplate().getFields();
+        		for (int j=1; j<referenceFields.length; j++) 
+        			expandedFields.add(referenceFields[j]);
+        	} else {
+        		expandedFields.add(fields[i]);
+        	}
+        }
+        this.fields = (Field[]) expandedFields.toArray(new Field[expandedFields.size()]);
+        this.fieldIndexMap = constructFieldIndexMap(this.fields);
+        this.fieldNameMap = constructFieldNameMap(this.fields);
+        this.fieldIdMap = constructFieldIdMap(this.fields);
         this.usesPresenceMap = usesPresenceMap;
     	
     }
-    
-    /**
+
+	/**
      * 
      * @param name The name of the Group
      * @param fields The Field object array to be created for the group
@@ -329,6 +344,15 @@ public class Group extends Field {
 
         return map;
     }
+    
+    private Map constructFieldIdMap(Field[] fields) {
+        Map map = new HashMap();
+
+        for (int i = 0; i < fields.length; i++)
+            map.put(fields[i].getId(), fields[i]);
+
+        return map;
+	}
 
     /**
      * Creates a map of the passed field array by the field index number, numbered 0 to n
@@ -441,20 +465,12 @@ public class Group extends Field {
 	}
 
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
+		if (this == obj) return true;
+		if (obj == null || getClass() != obj.getClass()) return false;
 		final Group other = (Group) obj;
-		if (!Arrays.equals(fields, other.fields))
-			return false;
-		if (typeReference == null) {
-			if (other.typeReference != null)
-				return false;
-		} else if (!typeReference.equals(other.typeReference))
-			return false;
+		if (other.fields.length != fields.length) return false;
+		for (int i=0; i<fields.length; i++)
+			if (!fields[i].equals(other.fields[i])) return false;
 		return true;
 	}
 	
@@ -467,5 +483,13 @@ public class Group extends Field {
 			result = prime * result + (array[index] == null ? 0 : array[index].hashCode());
 		}
 		return result;
+	}
+
+	public boolean hasFieldWithId(String id) {
+		return fieldIdMap.containsKey(id);
+	}
+
+	public Field getFieldById(String id) {
+		return (Field) fieldIdMap.get(id);
 	}
 }

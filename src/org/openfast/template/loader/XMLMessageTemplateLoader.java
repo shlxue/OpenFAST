@@ -45,6 +45,7 @@ import org.openfast.template.Group;
 import org.openfast.template.MessageTemplate;
 import org.openfast.template.Scalar;
 import org.openfast.template.Sequence;
+import org.openfast.template.StaticTemplateReference;
 import org.openfast.template.TemplateRepository;
 import org.openfast.template.TwinValue;
 import org.openfast.template.operator.Operator;
@@ -166,25 +167,25 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
             	if (isMessageFieldElement(item))
             		fields.add(parseField((Element) item, dictionary));
             	else if (item.getNodeName().equals("templateRef"))
-            		fields.addAll(parseTemplateRef((Element) item));
+            		fields.add(parseTemplateRef((Element) item));
             }
         }
 
         return (Field[]) fields.toArray(new Field[] {  });
     }
 
-    private List/*<Field>*/ parseTemplateRef(Element element) {
+    private Field parseTemplateRef(Element element) {
     	if (element.hasAttribute("name")) {
     		String templateName = element.getAttribute("name");
     		if (hasTemplate(templateName))
-    			return Arrays.asList(getTemplate(templateName).getTemplateFields());
+    			return new StaticTemplateReference(getTemplate(templateName));
     		else {
     			errorHandler.error(FastConstants.D8_TEMPLATE_NOT_EXIST, "The template \"" + templateName + "\" was not found.");
+    			return null;
     		}
     	} else {
-    		return Arrays.asList(new Field[] { new DynamicTemplateReference() });
+    		return new DynamicTemplateReference();
     	}
-		return new ArrayList();
 	}
 
 	/**

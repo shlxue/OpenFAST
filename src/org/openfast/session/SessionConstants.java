@@ -37,4 +37,9 @@ public interface SessionConstants {
     ErrorCode UNAUTHORIZED = new ErrorCode(SESSION, 13, "EAUTH", "Unauthorized", FastAlertSeverity.FATAL);
     ErrorCode PROTCOL_ERROR = new ErrorCode(SESSION, 14, "EPROTO", "Protocol Error", FastAlertSeverity.ERROR);
     ErrorCode UNDEFINED = new ErrorCode(SESSION, -1, "UNDEFINED", "Undefined Alert Code", FastAlertSeverity.ERROR);
+    
+    SessionProtocol SCP_1_0 = new SessionControlProtocol_1_0();
+    SessionProtocol SCP_1_1 = new SessionControlProtocol_1_1();
+
+	String VENDOR_ID = "http://openfast.org/OpenFAST/1.1";
 }

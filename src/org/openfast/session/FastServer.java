@@ -22,70 +22,56 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast.session;
 
-import org.openfast.Message;
-
 import org.openfast.error.ErrorHandler;
 
 
-public class FastServer {
-    private final SessionFactory sessionFactory;
-    private final String serverName;
+public class FastServer implements ConnectionListener {
     private ErrorHandler errorHandler = ErrorHandler.DEFAULT;
-    private ConnectionListener connectionListener = ConnectionListener.NULL;
+    private SessionHandler sessionHandler = SessionHandler.NULL;
 	private boolean listening;
+	
+	private final SessionProtocol sessionProtocol;
+	private final Endpoint endpoint;
+	private final String serverName;
+	private Thread serverThread;
 
-    public FastServer(String serverName, SessionFactory sessionFactory) {
-        if ((serverName == null) || serverName.trim().equals("") ||
-                (sessionFactory == null)) {
+    public FastServer(String serverName, SessionProtocol sessionProtocol, Endpoint endpoint) {
+        if (endpoint == null || sessionProtocol == null) {
             throw new NullPointerException();
         }
-
+        this.endpoint = endpoint;
+        this.sessionProtocol = sessionProtocol;
         this.serverName = serverName;
-        this.sessionFactory = sessionFactory;
+        endpoint.setConnectionListener(this);
     }
 
-    public void listen() throws FastConnectionException {
+    public void listen() {
     	listening = true;
-        while (listening) {
-            Session session = sessionFactory.getSession();
-            if (session == null) continue;
-            Message helloMessage = session.in.readMessage();
-
-            if (helloMessage.getTemplate() != Session.FAST_HELLO_TEMPLATE) {
-                throw new FastConnectionException(
-                    "Client tried to connect without sending a hello message.");
-            }
-
-            String name = helloMessage.getString(1);
-            Client client = sessionFactory.getClient(name);
-            session.setClient(client);
-
-            if (connectionListener.isValid(client)) {
-                session.out.writeMessage(Session.createHelloMessage(serverName));
-                connectionListener.onConnect(session);
-            } else {
-                session.out.writeMessage(Session.createFastAlertMessage(
-                        SessionConstants.UNAUTHORIZED));
-                errorHandler.error(SessionConstants.UNAUTHORIZED,
-                    "Client \"" + client.toString() +
-                    "\" tried to connect, but was not authorized.");
-            }
-        }
+    	if (serverThread == null) {
+	    	Runnable runnable = new Runnable() {
+				public void run() {
+			        while (listening) {
+			        	try {
+							endpoint.accept();
+						} catch (FastConnectionException e) {
+							errorHandler.error(null, null, e);
+						}
+						try {
+							Thread.sleep(20);
+						} catch (InterruptedException e) {
+						}
+			        }
+				}};
+			serverThread = new Thread(runnable, "FastServer");
+    	}
+		serverThread.start();
     }
 
     public void close() throws FastConnectionException {
     	listening = false;
-        sessionFactory.close();
     }
 
     // ************* OPTIONAL DEPENDENCY SETTERS **************
-    public void setConnectionListener(ConnectionListener listener) {
-        if (listener == null) {
-            throw new NullPointerException();
-        }
-
-        this.connectionListener = listener;
-    }
 
     public void setErrorHandler(ErrorHandler errorHandler) {
         if (errorHandler == null) {
@@ -94,4 +80,13 @@ public class FastServer {
 
         this.errorHandler = errorHandler;
     }
+
+	public void onConnect(Connection connection) {
+		Session session = sessionProtocol.onNewConnection(serverName, connection);
+		this.sessionHandler.newSession(session);
+	}
+
+	public void setSessionHandler(SessionHandler sessionHandler) {
+		this.sessionHandler = sessionHandler;
+	}
 }

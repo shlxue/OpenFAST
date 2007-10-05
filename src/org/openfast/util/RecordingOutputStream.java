@@ -45,4 +45,8 @@ public class RecordingOutputStream extends OutputStream {
     public String toString() {
         return ByteUtil.convertByteArrayToBitString(buffer, index);
     }
+
+	public void clear() {
+		index = 0;
+	}
 }

@@ -22,56 +22,57 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast.session.tcp;
 
-import org.openfast.session.Client;
-import org.openfast.session.FastConnectionException;
-import org.openfast.session.FastConnectionFactory;
-import org.openfast.session.Session;
-
 import java.io.IOException;
-
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-import java.util.HashMap;
-import java.util.Map;
+import org.openfast.session.Connection;
+import org.openfast.session.ConnectionListener;
+import org.openfast.session.Endpoint;
+import org.openfast.session.FastConnectionException;
 
 
-public class TcpFastConnectionFactory extends FastConnectionFactory {
+public class TcpEndpoint implements Endpoint {
     private final int port;
     private String host;
-    private Map sessionMap = new HashMap();
+	private ConnectionListener connectionListener = ConnectionListener.NULL;
 
-    public TcpFastConnectionFactory(int port) {
+    public TcpEndpoint(int port) {
         this.port = port;
     }
 
-    public TcpFastConnectionFactory(String host, int port) {
+    public TcpEndpoint(String host, int port) {
         this(port);
         this.host = host;
     }
 
-    protected Session connectInternal() throws FastConnectionException {
-        Socket socket;
+	public Connection connect() throws FastConnectionException {
 
         try {
-            socket = new Socket(host, port);
-
-            Session session = new Session(socket.getInputStream(),
-                    socket.getOutputStream());
-            sessionMap.put(session, socket);
-
-            return session;
+        	Socket socket = new Socket(host, port);
+            Connection connection = new TcpConnection(socket);
+            return connection;
         } catch (UnknownHostException e) {
             throw new FastConnectionException(e);
         } catch (IOException e) {
             throw new FastConnectionException(e);
         }
-    }
+	}
 
-    protected Client getClient(Session session, String clientName) {
-        Socket socket = (Socket) sessionMap.get(session);
-        TcpClient client = new TcpClient(clientName, socket);
+	public void accept() throws FastConnectionException {
+		try {
+			ServerSocket serverSocket = new ServerSocket(port);
+			while (true) {
+				Socket socket = serverSocket.accept();
+				connectionListener.onConnect(new TcpConnection(socket));
+			}
+		} catch (IOException e) {
+			throw new FastConnectionException(e);
+		}
+	}
 
-        return client;
-    }
+	public void setConnectionListener(ConnectionListener listener) {
+		this.connectionListener = listener;
+	}
 }
