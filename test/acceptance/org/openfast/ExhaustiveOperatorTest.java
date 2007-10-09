@@ -517,8 +517,7 @@ public class ExhaustiveOperatorTest extends TestCase {
     }
 
     private MessageTemplate registerTemplate(Scalar field) {
-        MessageTemplate messageTemplate = new MessageTemplate(null,
-                new Field[] { field });
+        MessageTemplate messageTemplate = new MessageTemplate("", new Field[] { field });
         encodingContext.registerTemplate(113, messageTemplate);
         decodingContext.registerTemplate(113, messageTemplate);
 

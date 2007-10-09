@@ -28,6 +28,7 @@ import org.openfast.BitVectorBuilder;
 import org.openfast.Context;
 import org.openfast.FieldValue;
 import org.openfast.Global;
+import org.openfast.QName;
 import org.openfast.ScalarValue;
 import org.openfast.error.FastConstants;
 import org.openfast.error.FastException;
@@ -57,6 +58,10 @@ public class Scalar extends Field {
      * @param optional Determines if the Scalar is required or not for the data
      */
     public Scalar(String name, Type type, Operator operator, ScalarValue defaultValue, boolean optional) {
+        this(new QName(name), type, operator, defaultValue, optional);
+    }
+    
+    public Scalar(QName name, Type type, Operator operator, ScalarValue defaultValue, boolean optional) {
         super(name, optional);
         this.operator = operator;
         this.operatorCodec = operator.getCodec(type);
@@ -78,7 +83,7 @@ public class Scalar extends Field {
      * @param defaultValue The default value of the ScalarValue
      * @param optional Determines if the Scalar is required or not for the data
      */
-    public Scalar(String name, Type type, OperatorCodec operatorCodec, ScalarValue defaultValue, boolean optional) {
+    public Scalar(QName name, Type type, OperatorCodec operatorCodec, ScalarValue defaultValue, boolean optional) {
         super(name, optional);
         this.operator = operatorCodec.getOperator();
         this.operatorCodec = operatorCodec;
@@ -275,7 +280,7 @@ public class Scalar extends Field {
      * @return Returns the string 'Scalar [name=X, operator=X, dictionary=X]'
      */
     public String toString() {
-        return "Scalar [name=" + name + ", operator=" + operator + ", type=" + type +
+        return "Scalar [name=" + name.getName() + ", operator=" + operator + ", type=" + type +
         ", dictionary=" + dictionary + "]";
     }
 

@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
 
+import org.openfast.QName;
 import org.openfast.BitVectorBuilder;
 import org.openfast.Context;
 import org.openfast.FieldValue;
@@ -55,9 +56,13 @@ public class Sequence extends Field implements FieldSet {
      * @param optional Determines if the Field is required or not for the data
      * 
      */
-    public Sequence(String name, Field[] fields, boolean optional) {
+    public Sequence(QName name, Field[] fields, boolean optional) {
         this(name, createLength(name, optional), fields, optional);
         implicitLength = true;
+    }
+    
+    public Sequence(String name, Field[] fields, boolean optional) {
+        this(new QName(name), fields, optional);
     }
 
     /**
@@ -68,7 +73,7 @@ public class Sequence extends Field implements FieldSet {
      * @param fields Field array
      * @param optional Determines if the Field is required or not for the data
      */
-    public Sequence(String name, Scalar length, Field[] fields, boolean optional) {
+    public Sequence(QName name, Scalar length, Field[] fields, boolean optional) {
         super(name, optional);
         this.group = new Group(name, fields, optional);
 
@@ -86,9 +91,8 @@ public class Sequence extends Field implements FieldSet {
      * @param optional Determines if the Field is required or not for the data
      * @return A Scalar value
      */
-    private static Scalar createLength(String name, boolean optional) {
-        return new Scalar(Global.createImplicitName(name), Type.U32,
-            Operator.NONE, ScalarValue.UNDEFINED, optional);
+    private static Scalar createLength(QName name, boolean optional) {
+        return new Scalar(Global.createImplicitName(name), Type.U32, Operator.NONE, ScalarValue.UNDEFINED, optional);
     }
 
     /**
@@ -265,7 +269,7 @@ public class Sequence extends Field implements FieldSet {
 	}
 	
 	public String toString() {
-		return name;
+		return name.getName();
 	}
 
 	public int hashCode() {

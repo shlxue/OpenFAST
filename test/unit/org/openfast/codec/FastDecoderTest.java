@@ -43,7 +43,7 @@ import org.openfast.template.type.Type;
 
 public class FastDecoderTest extends TestCase {
     public void testDecodeEmptyMessage() {
-        MessageTemplate messageTemplate = new MessageTemplate(null, new Field[] {  });
+        MessageTemplate messageTemplate = new MessageTemplate("", new Field[] {  });
         InputStream in = ByteUtil.createByteStream("11000000 11110001");
         Context context = new Context();
         context.registerTemplate(113, messageTemplate);
@@ -53,7 +53,7 @@ public class FastDecoderTest extends TestCase {
     }
 
     public void testDecodeSequentialEmptyMessages() {
-        MessageTemplate messageTemplate = new MessageTemplate(null, new Field[] {  });
+        MessageTemplate messageTemplate = new MessageTemplate("", new Field[] {  });
         InputStream in = ByteUtil.createByteStream("11000000 11110001 10000000");
         Context context = new Context();
         context.registerTemplate(113, messageTemplate);
@@ -66,7 +66,7 @@ public class FastDecoderTest extends TestCase {
     }
 
     public void testDecodeSimpleMessage() {
-        MessageTemplate template = new MessageTemplate(null,
+        MessageTemplate template = new MessageTemplate("",
                 new Field[] {
                     new Scalar("1", Type.U32, Operator.COPY, ScalarValue.UNDEFINED, false)
                 });
@@ -88,7 +88,7 @@ public class FastDecoderTest extends TestCase {
         String msgstr = "11111111 11110001 11001000 10000001 11111111 11111101 00001001 10110001 11111111 01100001 01100010 11100011 10000010";
         InputStream in = ByteUtil.createByteStream(msgstr);
 
-        MessageTemplate template = new MessageTemplate(null,
+        MessageTemplate template = new MessageTemplate("",
                 new Field[] {
                     new Scalar("1", Type.ASCII, Operator.COPY, ScalarValue.UNDEFINED, false),
                     new Scalar("2", Type.BYTE_VECTOR, Operator.COPY, ScalarValue.UNDEFINED, false),
@@ -111,7 +111,7 @@ public class FastDecoderTest extends TestCase {
     }
 
     public void testDecodeMessageWithSignedIntegerFieldTypesAndAllOperators() {
-        MessageTemplate template = new MessageTemplate(null,
+        MessageTemplate template = new MessageTemplate("",
                 new Field[] {
                     new Scalar("1", Type.I32, Operator.COPY, ScalarValue.UNDEFINED, false),
                     new Scalar("2", Type.I32, Operator.DELTA, ScalarValue.UNDEFINED, false),
@@ -170,7 +170,7 @@ public class FastDecoderTest extends TestCase {
     }
 
     public void testDecodeMessageWithUnsignedIntegerFieldTypesAndAllOperators() {
-        MessageTemplate template = new MessageTemplate(null,
+        MessageTemplate template = new MessageTemplate("",
                 new Field[] {
                     new Scalar("1", Type.U32, Operator.COPY, ScalarValue.UNDEFINED, false),
                     new Scalar("2", Type.U32, Operator.DELTA, ScalarValue.UNDEFINED, false),
@@ -229,7 +229,7 @@ public class FastDecoderTest extends TestCase {
     }
 
     public void testDecodeMessageWithStringFieldTypesAndAllOperators() {
-        MessageTemplate template = new MessageTemplate(null,
+        MessageTemplate template = new MessageTemplate("",
                 new Field[] {
                     new Scalar("1", Type.ASCII, Operator.COPY, ScalarValue.UNDEFINED, false),
                     new Scalar("2", Type.ASCII, Operator.DELTA, ScalarValue.UNDEFINED, false),

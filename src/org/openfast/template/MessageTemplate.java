@@ -24,6 +24,7 @@ package org.openfast.template;
 
 import java.io.InputStream;
 
+import org.openfast.QName;
 import org.openfast.BitVector;
 import org.openfast.Context;
 import org.openfast.FieldValue;
@@ -39,8 +40,12 @@ import org.openfast.template.type.Type;
 public class MessageTemplate extends Group implements FieldSet {
     private static final long serialVersionUID = 1L;
 
-	public MessageTemplate(String name, Field[] fields) {
+	public MessageTemplate(QName name, Field[] fields) {
         super(name, addTemplateIdField(fields), false, true);
+    }
+
+	public MessageTemplate(String name, Field[] fields) {
+        this(new QName(name), fields);
     }
 
     /**
@@ -111,7 +116,7 @@ public class MessageTemplate extends Group implements FieldSet {
     }
     
     public String toString() {
-        return name;
+        return name.getName();
     }
 
     /**

@@ -1,10 +1,14 @@
 package org.openfast.template;
 
+import org.openfast.QName;
+
 
 public interface TemplateRepository {
 	public MessageTemplate getTemplate(String name);
+	public MessageTemplate getTemplate(QName name);
 	public MessageTemplate getTemplate(int id);
 	public boolean hasTemplate(String name);
+	public boolean hasTemplate(QName name);
 	public boolean hasTemplate(int id);
 	public void add(MessageTemplate template);
 	public MessageTemplate[] toArray();
@@ -27,6 +31,12 @@ public interface TemplateRepository {
 		}
 		public MessageTemplate[] toArray() {
 			return new MessageTemplate[] {};
+		}
+		public MessageTemplate getTemplate(QName name) {
+			return null;
+		}
+		public boolean hasTemplate(QName name) {
+			return false;
 		}};
 		
 }

@@ -11,7 +11,7 @@ public class StaticTemplateReference extends Field {
 	private MessageTemplate template;
 
 	public StaticTemplateReference(MessageTemplate template) {
-		super(template.getName(), false);
+		super(template.getQName(), false);
 		this.template = template;
 	}
 

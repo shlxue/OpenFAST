@@ -178,12 +178,48 @@ public class SCP_1_1_Test extends TestCase {
 		session.close();
 		assertEquals(1, successfullThreadsCount);
 	}
-
-	private void sleep(int timeout) {
-		try {
-			Thread.sleep(timeout);
-		} catch (InterruptedException e) {
+	
+	public void testReceiveTemplateDefinitionWithTemplateId() throws Exception {
+		server.setSessionHandler(new SessionHandler() {
+			public void newSession(Session session) {
+				session.setListening(true);
+				Message templateDef = SessionConstants.SCP_1_1.createTemplateDefinitionMessage(ObjectMother.quoteTemplate());
+				templateDef.setInteger("TemplateId", 24);
+				session.out.registerTemplate(24, ObjectMother.quoteTemplate());
+				session.out.writeMessage(templateDef);
+				session.out.writeMessage(ObjectMother.quote(101.3, 102.4));
+				synchronized(SCP_1_1_Test.this) {
+					try {
+						SCP_1_1_Test.this.wait();
+					} catch (InterruptedException e) {
+					}
+				}
+				try {
+					session.close();
+				} catch (FastConnectionException e) {
+				}
+			}});
+		server.listen();
+		
+		Session session = client.connect();
+		session.setMessageHandler(new MessageListener() {
+			public void onMessage(Message message) {
+				if (message.getTemplate().equals(ObjectMother.quoteTemplate())) {
+					assertEquals(101.3, message.getDouble(1), .1);
+					assertEquals(102.4, message.getDouble(2), .1);
+					successfullThreadsCount++;
+					synchronized(SCP_1_1_Test.this) {
+						SCP_1_1_Test.this.notifyAll();
+					}
+				}
+			}});
+		session.out.registerTemplate(1, ObjectMother.quoteTemplate());
+		
+		synchronized(this) {
+			this.wait();
 		}
+		session.close();
+		assertEquals(1, successfullThreadsCount);
 	}
 	
 	private synchronized void wait0() {

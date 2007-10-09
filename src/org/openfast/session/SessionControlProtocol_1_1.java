@@ -30,7 +30,10 @@ public class SessionControlProtocol_1_1 extends AbstractSessionControlProtocol {
     	messageHandlers.put(FAST_ALERT_TEMPLATE, ALERT_HANDLER);
     	messageHandlers.put(TEMPLATE_DEFINITION, new SessionMessageHandler() {
     		public void handleMessage(Session session, Message message) {
-    			session.addDynamicTemplateDefinition(createTemplateFromMessage(message));
+    			MessageTemplate template = createTemplateFromMessage(message);
+				session.addDynamicTemplateDefinition(template);
+    			if (message.isDefined("TemplateId"))
+    				session.registerDynamicTemplate(template.getName(), message.getInt("TemplateId"));
     		}});
     	messageHandlers.put(TEMPLATE_DECLARATION, new SessionMessageHandler() {
     		public void handleMessage(Session session, Message message) {
@@ -137,9 +140,13 @@ public class SessionControlProtocol_1_1 extends AbstractSessionControlProtocol {
 
 	public Message createTemplateDeclarationMessage(MessageTemplate messageTemplate, int templateId) {
 		Message declaration = new Message(TEMPLATE_DECLARATION);
-		declaration.setString("Name", messageTemplate.getName());
+		setName(messageTemplate, declaration);
 		declaration.setInteger("TemplateId", templateId);
 		return declaration;
+	}
+	private void setName(Field field, GroupValue declaration) {
+		declaration.setString("Name", field.getName());
+		declaration.setString("Ns", "");
 	}
 
 	public MessageTemplate createTemplateFromMessage(Message templateDef) {
@@ -197,7 +204,7 @@ public class SessionControlProtocol_1_1 extends AbstractSessionControlProtocol {
 	}
 	
 	private Message createGroup(Group group, Message groupMsg) {
-		groupMsg.setString("Name", group.getName());
+		setName(group, groupMsg);
 		SequenceValue instructions = new SequenceValue(TEMPLATE_DEFINITION.getSequence("Instructions"));
 		int i = group instanceof MessageTemplate ? 1 : 0;
 		for (; i<group.getFieldCount(); i++) {
@@ -223,6 +230,7 @@ public class SessionControlProtocol_1_1 extends AbstractSessionControlProtocol {
 			Scalar length = sequence.getLength();
 			GroupValue lengthName = new GroupValue(SEQUENCE_INSTR.getGroup("Length").getGroup("Name"));
 			lengthName.setString("Name", length.getName());
+			setName(length, lengthName);
 			seqLenDef.setFieldValue("Name", lengthName);
 			seqDef.setFieldValue("Length", seqLenDef);
 		}
@@ -232,7 +240,7 @@ public class SessionControlProtocol_1_1 extends AbstractSessionControlProtocol {
 	private GroupValue createScalar(Scalar scalar) {
 		MessageTemplate scalarTemplate = (MessageTemplate) TYPE_TEMPLATE_MAP.get(scalar.getType());
 		Message scalarMsg = new Message(scalarTemplate);
-		scalarMsg.setString("Name", scalar.getName());
+		setName(scalar, scalarMsg);
 		scalarMsg.setInteger("Optional", scalar.isOptional() ? 1 : 0);
 		scalarMsg.setFieldValue("Operator", new GroupValue(scalarTemplate.getGroup("Operator"), new FieldValue[] { createOperator(scalar) }));
 		return scalarMsg;
@@ -338,12 +346,12 @@ public class SessionControlProtocol_1_1 extends AbstractSessionControlProtocol {
     });
     
     private static final MessageTemplate TEMPLATE_NAME = new MessageTemplate("TemplateName", new Field[] {
-    		new Scalar("Ns", Type.UNICODE, Operator.COPY, null, true),
+    		new Scalar("Ns", Type.UNICODE, Operator.COPY, null, false),
     		new Scalar("Name", Type.UNICODE, Operator.NONE, null, false)
     });
     
     private static final MessageTemplate NS_NAME = new MessageTemplate("NsName", new Field[] {
-    		dict("Ns", Type.UNICODE, true, "template"),
+    		dict("Ns", Type.UNICODE, false, "template"),
     		new Scalar("Name", Type.UNICODE, Operator.NONE, null, false)
     });
 	

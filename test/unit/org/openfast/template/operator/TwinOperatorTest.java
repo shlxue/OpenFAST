@@ -25,6 +25,7 @@ package org.openfast.template.operator;
 import org.openfast.BitVectorBuilder;
 import org.openfast.Context;
 import org.openfast.IntegerValue;
+import org.openfast.QName;
 import org.openfast.ScalarValue;
 import org.openfast.error.FastConstants;
 import org.openfast.error.FastException;
@@ -42,7 +43,7 @@ public class TwinOperatorTest extends OpenFastTestCase {
 
     protected void setUp() throws Exception {
         operator = new TwinOperatorCodec(Operator.COPY, Operator.COPY);
-        field = new Scalar("", Type.DECIMAL, operator, ScalarValue.UNDEFINED, true);
+        field = new Scalar(new QName(""), Type.DECIMAL, operator, ScalarValue.UNDEFINED, true);
     }
 
     public void testGetValueToEncode() {
@@ -69,7 +70,7 @@ public class TwinOperatorTest extends OpenFastTestCase {
     }
     
     public void testAttemptToEncodeUnencodeableValue() {
-    	Scalar scalar = new Scalar("price", Type.DECIMAL, new TwinOperatorCodec(Operator.CONSTANT, Operator.COPY), twin(i(-2), ScalarValue.UNDEFINED), false);
+    	Scalar scalar = new Scalar(new QName("price"), Type.DECIMAL, new TwinOperatorCodec(Operator.CONSTANT, Operator.COPY), twin(i(-2), ScalarValue.UNDEFINED), false);
     	MessageTemplate template = new MessageTemplate("quote", new Field[] { scalar });
     	try {
 			scalar.encode(d(100.535), template, new Context(), new BitVectorBuilder(5));

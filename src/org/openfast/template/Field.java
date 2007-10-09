@@ -28,9 +28,10 @@ import java.io.Serializable;
 import org.openfast.BitVectorBuilder;
 import org.openfast.Context;
 import org.openfast.FieldValue;
+import org.openfast.QName;
 
 public abstract class Field implements Serializable {
-    protected final String name;
+    protected final QName name;
     protected String key;
     protected final boolean optional;
     protected String id;
@@ -40,9 +41,9 @@ public abstract class Field implements Serializable {
      * @param name The name of the Field, a string
      * @param optional Determines if the Field is required or not for the data
      */
-    public Field(String name, boolean optional) {
+    public Field(QName name, boolean optional) {
         this.name = name;
-        this.key = name;
+        this.key = name.getName();
         this.optional = optional;
     }
 
@@ -52,7 +53,7 @@ public abstract class Field implements Serializable {
      * @param key The key of the Field, a string
      * @param optional Determines if the Field is required or not for the data
      */
-    public Field(String name, String key, boolean optional) {
+    public Field(QName name, String key, boolean optional) {
         this.name = name;
         this.key = key;
         this.optional = optional;
@@ -66,7 +67,7 @@ public abstract class Field implements Serializable {
      * @param id The id string
      */
     public Field(String name, String key, boolean optional, String id) {
-    	this.name = name;
+    	this.name = new QName(name);
     	this.key = key;
     	this.optional = optional;
     	this.id = id;
@@ -77,7 +78,11 @@ public abstract class Field implements Serializable {
      * @return Returns the name of the Field as a string
      */
     public String getName() {
-        return name;
+        return name.getName();
+    }
+    
+    public QName getQName() {
+    	return name;
     }
 
     /**

@@ -26,7 +26,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +37,7 @@ import org.openfast.Context;
 import org.openfast.FieldValue;
 import org.openfast.Global;
 import org.openfast.GroupValue;
+import org.openfast.QName;
 import org.openfast.error.FastConstants;
 import org.openfast.error.FastException;
 import org.openfast.template.type.codec.TypeCodec;
@@ -48,20 +48,28 @@ public class Group extends Field {
 
 	
 	private String typeReference = null;
+	protected String childNamespace = "";
     protected final Field[] fields;
     protected final Map fieldIndexMap;
     protected final Map fieldIdMap;
     protected final Map fieldNameMap;
     protected final boolean usesPresenceMap;
+	protected final StaticTemplateReference[] staticTemplateReferences;
 
-    protected Group(String name, Field[] fields, boolean optional, boolean usesPresenceMap) {
+    public Group(String name, Field[] fields, boolean optional) {
+    	this(new QName(name), fields, optional);
+    }
+
+    protected Group(QName name, Field[] fields, boolean optional, boolean usesPresenceMap) {
         super(name, optional);
         List expandedFields = new ArrayList();
+        List staticTemplateReferences = new ArrayList();
         for (int i=0; i<fields.length; i++) {
         	if (fields[i] instanceof StaticTemplateReference) {
         		Field[] referenceFields = ((StaticTemplateReference) fields[i]).getTemplate().getFields();
         		for (int j=1; j<referenceFields.length; j++) 
         			expandedFields.add(referenceFields[j]);
+        		staticTemplateReferences.add(fields[i]);
         	} else {
         		expandedFields.add(fields[i]);
         	}
@@ -71,7 +79,7 @@ public class Group extends Field {
         this.fieldNameMap = constructFieldNameMap(this.fields);
         this.fieldIdMap = constructFieldIdMap(this.fields);
         this.usesPresenceMap = usesPresenceMap;
-    	
+        this.staticTemplateReferences = (StaticTemplateReference[]) staticTemplateReferences.toArray(new StaticTemplateReference[staticTemplateReferences.size()]);
     }
 
 	/**
@@ -80,7 +88,7 @@ public class Group extends Field {
      * @param fields The Field object array to be created for the group
      * @param optional Determines if the Field is required or not for the data
      */
-    public Group(String name, Field[] fields, boolean optional) {
+    public Group(QName name, Field[] fields, boolean optional) {
     	this (name, fields, optional, determinePresenceMapUsage(fields));
     }
 
@@ -328,8 +336,12 @@ public class Group extends Field {
      * @return Returns the field object of the passed field name
      */
     public Field getField(String fieldName) {
-        return (Field) fieldNameMap.get(fieldName);
+        return (Field) fieldNameMap.get(new QName(fieldName, childNamespace));
     }
+    
+	public Field getField(QName name) {
+		return (Field) fieldNameMap.get(name);
+	}
 
     /**
      * Creates a map of the passed field array by the field name and the field index number
@@ -340,7 +352,7 @@ public class Group extends Field {
         Map map = new HashMap();
 
         for (int i = 0; i < fields.length; i++)
-            map.put(fields[i].getName(), fields[i]);
+            map.put(fields[i].getQName(), fields[i]);
 
         return map;
     }
@@ -418,7 +430,11 @@ public class Group extends Field {
      * @return Returns true if there is the field name that was passed in the Map, false otherwise
      */
     public boolean hasField(String fieldName) {
-        return fieldNameMap.containsKey(fieldName);
+        return fieldNameMap.containsKey(new QName(fieldName, childNamespace));
+    }
+    
+    public boolean hasField(QName fieldName) {
+    	return fieldNameMap.containsKey(fieldName);
     }
 
     /**
@@ -453,7 +469,7 @@ public class Group extends Field {
     }
     
     public String toString() {
-    	return name;
+    	return name.getName();
     }
 
 	public int hashCode() {
@@ -491,5 +507,29 @@ public class Group extends Field {
 
 	public Field getFieldById(String id) {
 		return (Field) fieldIdMap.get(id);
+	}
+
+	public String getChildNamespace() {
+		return childNamespace;
+	}
+
+	public void setChildNamespace(String childNamespace) {
+		this.childNamespace = childNamespace;
+	}
+
+	public StaticTemplateReference[] getStaticTemplateReferences() {
+		return staticTemplateReferences;
+	}
+	
+	public StaticTemplateReference getStaticTemplateReference(String name) {
+		return getStaticTemplateReference(new QName(name, this.name.getNamespace()));
+	}
+	
+	public StaticTemplateReference getStaticTemplateReference(QName name) {
+		for (int i=0; i<staticTemplateReferences.length; i++) {
+			if (staticTemplateReferences[i].getQName().equals(name))
+				return staticTemplateReferences[i];
+		}
+		return null;
 	}
 }

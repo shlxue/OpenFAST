@@ -33,6 +33,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.openfast.Global;
+import org.openfast.QName;
 import org.openfast.ScalarValue;
 import org.openfast.error.ErrorCode;
 import org.openfast.error.ErrorHandler;
@@ -87,18 +88,33 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
 
         Element root = document.getDocumentElement();
 		if (root.getNodeName().equals("template")) {
-			return new MessageTemplate[] { parseTemplate(root) };
-        } else {
+			return new MessageTemplate[] { parseTemplate(root, ParsingContext.NULL) };
+        } else if (root.getNodeName().equals("templates")) {
+			ParsingContext context = createContext(root, ParsingContext.NULL);
+			
 	        NodeList templateTags = root.getElementsByTagName("template");
 	        MessageTemplate[] templates = new MessageTemplate[templateTags.getLength()];
 	        for (int i = 0; i < templateTags.getLength(); i++) {
 	            Element templateTag = (Element) templateTags.item(i);
-	            templates[i] = parseTemplate(templateTag);
+	            templates[i] = parseTemplate(templateTag, context);
 	        }
 	        return templates;
+        } else {
+        	errorHandler.error(FastConstants.S1_INVALID_XML, "Invalid root node " + root.getNodeName() + ", \"template\" or \"templates\" expected.");
+        	return new MessageTemplate[] {};
         }
-
     }
+
+	private ParsingContext createContext(Element node, ParsingContext parent) {
+		ParsingContext context = new ParsingContext(parent);
+		if (node.hasAttribute("templateNs"))
+			context.setTemplateNamespace(node.getAttribute("templateNs"));
+		if (node.hasAttribute("ns"))
+			context.setNamespace(node.getAttribute("ns"));
+		if (node.hasAttribute("dictionary"))
+			context.setDictionary(node.getAttribute("dictionary"));
+		return context;
+	}
 
     /**
      * Creates a Group object from the dom group element
@@ -106,29 +122,36 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
      * @param isOptional Determines if the Field is required or not for the data
      * @return Returns a newly created Group object
      */
-    private Group parseGroup(Element groupElement, boolean isOptional, String dictionary) {
-    	if (groupElement.hasAttribute("dictionary"))
-    		dictionary = groupElement.getAttribute("dictionary");
-        Group group = new Group(getName(groupElement), parseFields(groupElement, dictionary), isOptional);
+    private Group parseGroup(Element groupElement, boolean isOptional, ParsingContext parent) {
+    	ParsingContext context = createContext(groupElement, parent);
+    	
+        Group group = new Group(getQName(context, groupElement), parseFields(groupElement, context), isOptional);
+        group.setChildNamespace(context.getNamespace());
         if (groupElement.hasAttribute("id"))
     		group.setId(groupElement.getAttribute("id"));
         group.setTypeReference(getTypeReference(groupElement));
 		return group;
     }
     
-    /**
+    private QName getQName(ParsingContext context, Element element) {
+		return new QName(element.getAttribute("name"), context.getNamespace());
+	}
+
+	/**
      * Creates a MessageTemplate object from the dom template element
      * @param templateElement The dom element object
+     * @param context 
      * @return Returns a newly created MessageTemplate object
      */
-	private MessageTemplate parseTemplate(Element templateElement) {
-		String dictionary = "global";
-		if (templateElement.hasAttribute("dictionary"))
-			dictionary = templateElement.getAttribute("dictionary");
-		MessageTemplate messageTemplate = new MessageTemplate(templateElement.getAttribute("name"), parseFields(templateElement, dictionary));
+	private MessageTemplate parseTemplate(Element templateElement, ParsingContext parent) {
+		ParsingContext context = createContext(templateElement, parent);
+		
+		QName templateName = new QName(templateElement.getAttribute("name"), context.getTemplateNamespace());
+		MessageTemplate messageTemplate = new MessageTemplate(templateName, parseFields(templateElement, context));
 		if (templateElement.hasAttribute("id"))
     		messageTemplate.setId(templateElement.getAttribute("id"));
 		messageTemplate.setTypeReference(getTypeReference(templateElement));
+		messageTemplate.setChildNamespace(context.getNamespace());
 		add(messageTemplate);
 		return messageTemplate;
 	}
@@ -156,7 +179,7 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
      * @param template The dom element object
      * @return Returns a Field array of the parsed nodes of the dom element 
      */
-    private Field[] parseFields(Element template, String dictionary) {
+    private Field[] parseFields(Element template, ParsingContext context) {
         NodeList childNodes = template.getChildNodes();
         List fields = new ArrayList();
 
@@ -165,7 +188,7 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
 
             if (isElement(item)) {
             	if (isMessageFieldElement(item))
-            		fields.add(parseField((Element) item, dictionary));
+            		fields.add(parseField((Element) item, context));
             	else if (item.getNodeName().equals("templateRef"))
             		fields.add(parseTemplateRef((Element) item));
             }
@@ -176,7 +199,12 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
 
     private Field parseTemplateRef(Element element) {
     	if (element.hasAttribute("name")) {
-    		String templateName = element.getAttribute("name");
+    		QName templateName;
+    		if (element.hasAttribute("templateNs"))
+    			templateName = new QName(element.getAttribute("name"), element.getAttribute("templateNs"));
+    		else
+    			templateName = new QName(element.getAttribute("name"), "");
+    			
     		if (hasTemplate(templateName))
     			return new StaticTemplateReference(getTemplate(templateName));
     		else {
@@ -195,7 +223,9 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
      * @param fieldNode The dom element object
      * @return Returns a new Scalar object of the parsed data. 
      */
-    private Field parseField(Element fieldNode, String dictionary) {
+    private Field parseField(Element fieldNode, ParsingContext parent) {
+    	ParsingContext context = createContext(fieldNode, parent);
+    	
         String name = fieldNode.getAttribute("name");
         String type = fieldNode.getNodeName();
         boolean optional = false;
@@ -203,9 +233,9 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
         optional = "optional".equals(fieldNode.getAttribute("presence"));
 
         if ("sequence".equals(type)) {
-            return parseSequence(fieldNode, optional, dictionary);
+            return parseSequence(fieldNode, optional, context);
         } else if ("group".equals(type)) {
-            return parseGroup(fieldNode, optional, dictionary);
+            return parseGroup(fieldNode, optional, context);
         } else if ("string".equals(type)) {
         	if (fieldNode.hasAttribute("charset"))
         		type = fieldNode.getAttribute("charset");
@@ -226,12 +256,11 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
             }
 
             if ((mantissaNode != null) || (exponentNode != null)) {
-                return createTwinFieldDecimal(fieldNode, name, optional,
-                    mantissaNode, exponentNode, dictionary);
+                return createTwinFieldDecimal(fieldNode, name, optional, mantissaNode, exponentNode, context);
             }
         }
 
-        return createScalar(fieldNode, name, optional, type, dictionary);
+        return createScalar(fieldNode, name, optional, type, context);
     }
 
     /**
@@ -244,15 +273,12 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
      * @param exponentNode The passed exponentNode
      * @return Returns a new Scalar object with the newly create TwinValue object and TwinOperator object.
      */
-    private Field createTwinFieldDecimal(Element fieldNode, String name,
-        boolean optional, Node mantissaNode, Node exponentNode, String dictionary) {
+    private Field createTwinFieldDecimal(Element fieldNode, String name, boolean optional, Node mantissaNode, Node exponentNode, ParsingContext parent) {
+    	ParsingContext context = new ParsingContext(parent);
         String mantissaOperator = "none";
         String exponentOperator = "none";
         ScalarValue mantissaDefaultValue = ScalarValue.UNDEFINED;
         ScalarValue exponentDefaultValue = ScalarValue.UNDEFINED;
-        
-        if (fieldNode.hasAttribute("dictionary"))
-        	dictionary = fieldNode.getAttribute("dictionary");
         
         if ((mantissaNode != null) && mantissaNode.hasChildNodes()) {
             Node operatorNode = mantissaNode.getChildNodes().item(0);
@@ -276,12 +302,12 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
             }
         }
 
-        Scalar scalar = new Scalar(name, Type.DECIMAL,
+        Scalar scalar = new Scalar(new QName(name), Type.DECIMAL,
 		            new TwinOperatorCodec(Operator.getOperator(exponentOperator), Operator.getOperator(mantissaOperator)),
 		            new TwinValue(exponentDefaultValue, mantissaDefaultValue), optional);
         if (fieldNode.hasAttribute("id"))
     		scalar.setId(fieldNode.getAttribute("id"));
-        scalar.setDictionary(dictionary);
+        scalar.setDictionary(context.getDictionary());
 		return scalar;
     }
 
@@ -293,12 +319,11 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
      * @param typeName The typeName of the new Scalar
      * @return Returns a new scalar with the passed information
      */
-    private Scalar createScalar(Element fieldNode, String name, boolean optional, String typeName, String dictionary) {
+    private Scalar createScalar(Element fieldNode, String name, boolean optional, String typeName, ParsingContext parent) {
+    	ParsingContext context = createContext(fieldNode, parent);
     	Operator operator = Operator.NONE;
     	String defaultValue = null;
     	String key = null;
-    	if (fieldNode.hasAttribute("dictionary"))
-    		dictionary = fieldNode.getAttribute("dictionary");
         Element operatorElement = getOperatorElement(fieldNode);
         if (operatorElement != null) {
 	        if (operatorElement.hasAttribute("value"))
@@ -306,17 +331,20 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
 	        operator = Operator.getOperator(operatorElement.getNodeName());
 	        if (operatorElement.hasAttribute("key"))
 	        	key = operatorElement.getAttribute("key");
+	        if (operatorElement.hasAttribute("dictionary"))
+	        	context.setDictionary(operatorElement.getAttribute("dictionary"));
         }
         if (!typeMap.containsKey(typeName)) {
         	errorHandler.error(INVALID_TYPE, "The type " + typeName + " is not defined.  Possible types: " + Util.collectionToString(typeMap.keySet(), ", "));
         }
         Type type = (Type) typeMap.get(typeName);
-		Scalar scalar = new Scalar(name, type, operator, type.getValue(defaultValue), optional);
+		QName qname = new QName(name, context.getNamespace());
+		Scalar scalar = new Scalar(qname, type, operator, type.getValue(defaultValue), optional);
 		if (fieldNode.hasAttribute("id"))
     		scalar.setId(fieldNode.getAttribute("id"));
         if (key != null)
         	scalar.setKey(key);
-        scalar.setDictionary(dictionary);
+        scalar.setDictionary(context.getDictionary());
 		return scalar;
     }
 
@@ -345,13 +373,12 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
      * @param optional Determines if the Sequence is required or not for the data
      * @return Returns a new Sequence object created out of the sequence dom element
      */
-    private Sequence parseSequence(Element sequenceElement, boolean optional, String dictionary) {
-    	if (sequenceElement.hasAttribute("dictionary"))
-    		dictionary = sequenceElement.getAttribute("dictionary");
+    private Sequence parseSequence(Element sequenceElement, boolean optional, ParsingContext parent) {
+    	ParsingContext context = createContext(sequenceElement, parent);
         String name = getName(sequenceElement);
-		Sequence sequence = new Sequence(name,
-		            parseSequenceLengthField(sequenceElement, name, optional, dictionary),
-		            parseFields(sequenceElement, dictionary), optional);
+		Sequence sequence = new Sequence(new QName(name),
+		            parseSequenceLengthField(sequenceElement, name, optional, context),
+		            parseFields(sequenceElement, context), optional);
         sequence.setTypeReference(getTypeReference(sequenceElement));
         if (sequenceElement.hasAttribute("id"))
     		sequence.setId(sequenceElement.getAttribute("id"));
@@ -365,7 +392,7 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
      * @param optional Determines if the Scalar is required or not for the data
      * @return Returns null if there are no elements by the tag length, otherwise 
      */
-    private Scalar parseSequenceLengthField(Element sequence, String sequenceName, boolean optional, String dictionary) {
+    private Scalar parseSequenceLengthField(Element sequence, String sequenceName, boolean optional, ParsingContext parent) {
         NodeList lengthElements = sequence.getElementsByTagName("length");
 
         if (lengthElements.getLength() == 0) {
@@ -373,12 +400,11 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
         }
 
         Element length = (Element) lengthElements.item(0);
-        if (length.hasAttribute("dictionary"))
-        	dictionary = length.getAttribute("dictionary");
+        ParsingContext context = createContext(sequence, parent);
         String name = length.hasAttribute("name") ? length.getAttribute("name")
-                                                  : Global.createImplicitName(sequenceName);
+                                                  : Global.createImplicitName(new QName(sequenceName));
 
-        return createScalar(length, name, optional, Type.U32.getName(), dictionary);
+        return createScalar(length, name, optional, Type.U32.getName(), context);
     }
 
     /**
@@ -479,5 +505,13 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
 
 	public void setTypeMap(Map typeMap) {
 		this.typeMap = typeMap;
+	}
+
+	public MessageTemplate getTemplate(QName name) {
+		return templateRepository.getTemplate(name);
+	}
+
+	public boolean hasTemplate(QName name) {
+		return templateRepository.hasTemplate(name);
 	}
 }

@@ -6,13 +6,14 @@ import org.openfast.BitVectorBuilder;
 import org.openfast.Context;
 import org.openfast.FieldValue;
 import org.openfast.Message;
+import org.openfast.QName;
 import org.openfast.codec.FastDecoder;
 
 public class DynamicTemplateReference extends Field {
 	private static final long serialVersionUID = 1L;
 
 	public DynamicTemplateReference() {
-		super(null, false);
+		super(QName.NULL, false);
 	}
 
 	/**

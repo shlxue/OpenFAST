@@ -36,7 +36,7 @@ public class MessageTest extends TestCase {
      * Test method for 'org.openfast.Message.equals(Object)'
      */
     public void testEquals() {
-        MessageTemplate template = new MessageTemplate(null,
+        MessageTemplate template = new MessageTemplate("",
                 new Field[] {
                     new Scalar("1", Type.U32, Operator.COPY, ScalarValue.UNDEFINED, false)
                 });
@@ -50,7 +50,7 @@ public class MessageTest extends TestCase {
     }
 
     public void testNotEquals() {
-        MessageTemplate template = new MessageTemplate(null,
+        MessageTemplate template = new MessageTemplate("",
                 new Field[] {
                     new Scalar("1", Type.U32, Operator.COPY, ScalarValue.UNDEFINED, false)
                 });

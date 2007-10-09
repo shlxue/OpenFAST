@@ -37,7 +37,7 @@ public class DeltaStringOperatorTest extends OpenFastTestCase {
     private Scalar field;
 
     public void testDecodeSubtractionLengthError() {
-    	field = new Scalar(null, Type.ASCII, Operator.DELTA, ScalarValue.UNDEFINED, false);
+    	field = new Scalar("", Type.ASCII, Operator.DELTA, ScalarValue.UNDEFINED, false);
     	
     	try {
     		decode(twin(i(5), string("abc")), string("def"));
@@ -49,7 +49,7 @@ public class DeltaStringOperatorTest extends OpenFastTestCase {
     }
     
     public void testGetValueToEncodeMandatory() {
-        field = new Scalar(null, Type.ASCII, Operator.DELTA, ScalarValue.UNDEFINED, false);
+        field = new Scalar("", Type.ASCII, Operator.DELTA, ScalarValue.UNDEFINED, false);
 
         assertEquals(tv(0, "ABCD"), encode("ABCD", ScalarValue.UNDEFINED));
         assertEquals(tv(1, "E"), encode("ABCE", string("ABCD")));
@@ -59,7 +59,7 @@ public class DeltaStringOperatorTest extends OpenFastTestCase {
     }
 
     public void testDecodeValueMandatory() {
-        field = new Scalar(null, Type.ASCII, Operator.DELTA, ScalarValue.UNDEFINED, false);
+        field = new Scalar("", Type.ASCII, Operator.DELTA, ScalarValue.UNDEFINED, false);
 
         assertEquals(new StringValue("ABCD"),
             decode(tv(0, "ABCD"), ScalarValue.UNDEFINED));
@@ -70,8 +70,7 @@ public class DeltaStringOperatorTest extends OpenFastTestCase {
     }
 
     public void testGetValueToEncodeOptional() {
-        field = new Scalar(null, Type.ASCII, Operator.DELTA,
-                ScalarValue.UNDEFINED, true);
+        field = new Scalar("", Type.ASCII, Operator.DELTA, ScalarValue.UNDEFINED, true);
 
         assertEquals(tv(0, "ABCD"), encode("ABCD", ScalarValue.UNDEFINED));
         assertEquals(tv(1, "E"), encode("ABCE", string("ABCD")));
@@ -82,8 +81,7 @@ public class DeltaStringOperatorTest extends OpenFastTestCase {
     }
 
     public void testDecodeValueOptional() {
-        field = new Scalar(null, Type.ASCII, Operator.DELTA,
-                ScalarValue.UNDEFINED, true);
+        field = new Scalar("", Type.ASCII, Operator.DELTA, ScalarValue.UNDEFINED, true);
 
         assertEquals(new StringValue("ABCD"),
             decode(tv(0, "ABCD"), ScalarValue.UNDEFINED));

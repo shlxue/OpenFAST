@@ -167,7 +167,7 @@ public class Session implements ErrorHandler {
 				out.registerTemplate(registry.getTemplateId(template), template);
 		}
 	}
-
+	
 	public void addDynamicTemplateDefinition(MessageTemplate template) {
 		if (templateDefinitions == null) {
 			templateDefinitions = new HashMap();
@@ -178,6 +178,6 @@ public class Session implements ErrorHandler {
 	public void registerDynamicTemplate(String templateName, int id) {
 		if (!templateDefinitions.containsKey(templateName))
 			throw new IllegalStateException("Template " + templateName + " has not been defined.");
-		in.registerTemplate(id, (MessageTemplate) templateDefinitions.remove(templateName));
+		in.registerTemplate(id, (MessageTemplate) templateDefinitions.get(templateName));
 	}
 }

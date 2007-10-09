@@ -5,7 +5,7 @@ import org.openfast.error.ErrorHandler;
 
 public final class Global {
 	private static ErrorHandler errorHandler = ErrorHandler.DEFAULT;
-	private static int currentImplicitId = (int) (System.currentTimeMillis() % 10000);  // why? because I felt like it
+	private static int currentImplicitId = (int) (System.currentTimeMillis() % 10000);
 	
 	public static void setErrorHandler(ErrorHandler handler) {
 	    if (handler == null) {
@@ -23,8 +23,8 @@ public final class Global {
 		errorHandler.error(error, message, source);
 	}
 
-	public static String createImplicitName(String prefix) {
-		return prefix + "@" + currentImplicitId++;  // that should be unique enough
+	public static String createImplicitName(QName name) {
+		return name + "@" + currentImplicitId++;
 	}
 
 	private Global() {}
