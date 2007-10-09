@@ -76,6 +76,7 @@
 		</javac>
 		<copy todir="${build.test.classes.dir}">
 			<fileset dir="${test.unit.dir}" includes="**/*.xml" />
+			<fileset dir="${test.acceptance.dir}" includes="**/*.xml" />
 		</copy>
 	</target>
 
