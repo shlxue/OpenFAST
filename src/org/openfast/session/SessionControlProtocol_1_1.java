@@ -8,6 +8,7 @@ import org.openfast.FieldValue;
 import org.openfast.GroupValue;
 import org.openfast.Message;
 import org.openfast.MessageHandler;
+import org.openfast.QName;
 import org.openfast.ScalarValue;
 import org.openfast.SequenceValue;
 import org.openfast.codec.Coder;
@@ -24,13 +25,16 @@ import org.openfast.template.operator.Operator;
 import org.openfast.template.type.Type;
 
 public class SessionControlProtocol_1_1 extends AbstractSessionControlProtocol {
+	public static final String NAMESPACE = "http://www.fixprotocol.org/ns/fast/scp/1.1";
+
+	private static final QName RESET_PROPERTY = new QName("reset", NAMESPACE);
 		
     private static final Map/*<MessageTemplate, SessionMessageHandler>*/ messageHandlers = new HashMap();
 	public SessionControlProtocol_1_1() {
     	messageHandlers.put(FAST_ALERT_TEMPLATE, ALERT_HANDLER);
     	messageHandlers.put(TEMPLATE_DEFINITION, new SessionMessageHandler() {
     		public void handleMessage(Session session, Message message) {
-    			MessageTemplate template = createTemplateFromMessage(message);
+    			MessageTemplate template = createTemplateFromMessage(message, session.in.getTemplateRegistry());
 				session.addDynamicTemplateDefinition(template);
     			if (message.isDefined("TemplateId"))
     				session.registerDynamicTemplate(template.getName(), message.getInt("TemplateId"));
@@ -41,8 +45,8 @@ public class SessionControlProtocol_1_1 extends AbstractSessionControlProtocol {
     		}});
 	}
 	public void configureSession(Session session) {
-		registerSessionTemplates(session.in);
-		registerSessionTemplates(session.out);
+		registerSessionTemplates(session.in.getTemplateRegistry());
+		registerSessionTemplates(session.out.getTemplateRegistry());
 		
 		session.in.addMessageHandler(FAST_RESET_TEMPLATE, RESET_HANDLER);
 		session.out.addMessageHandler(FAST_RESET_TEMPLATE, RESET_HANDLER);
@@ -149,27 +153,27 @@ public class SessionControlProtocol_1_1 extends AbstractSessionControlProtocol {
 		declaration.setString("Ns", "");
 	}
 
-	public MessageTemplate createTemplateFromMessage(Message templateDef) {
+	public MessageTemplate createTemplateFromMessage(Message templateDef, TemplateRegistry registry) {
 		String name = templateDef.getString("Name");
-		Field[] fields = parseFieldInstructions(templateDef);
+		Field[] fields = parseFieldInstructions(templateDef, registry);
 		return new MessageTemplate(name, fields);
 	}
 	
-	private Field createGroup(GroupValue fieldDef) {
+	private Field createGroup(GroupValue fieldDef, TemplateRegistry registry) {
 		String name = fieldDef.getString("Name");
-		Field[] fields = parseFieldInstructions(fieldDef);
+		Field[] fields = parseFieldInstructions(fieldDef, registry);
 		boolean optional = fieldDef.getBool("Optional");
 		return new Group(name, fields, optional);
 	}
 
-	private Field createSequence(GroupValue fieldDef) {
+	private Field createSequence(GroupValue fieldDef, TemplateRegistry registry) {
 		String name = fieldDef.getString("Name");
-		Field[] fields = parseFieldInstructions(fieldDef);
+		Field[] fields = parseFieldInstructions(fieldDef, registry);
 		boolean optional = fieldDef.getBool("Optional");
 		return new Sequence(name, fields, optional);
 	}
 
-	private Field[] parseFieldInstructions(GroupValue templateDef) {
+	private Field[] parseFieldInstructions(GroupValue templateDef, TemplateRegistry registry) {
 		SequenceValue instructions = templateDef.getSequence("Instructions");
 		Field[] fields = new Field[instructions.getLength()];
 		for (int i=0; i<fields.length; i++) {
@@ -177,15 +181,25 @@ public class SessionControlProtocol_1_1 extends AbstractSessionControlProtocol {
 			if (isScalar(fieldDef.getGroup()))
 				fields[i] = createScalar(fieldDef);
 			else if (fieldDef.getGroup().equals(GROUP_INSTR))
-				fields[i] = createGroup(fieldDef);
+				fields[i] = createGroup(fieldDef, registry);
 			else if (fieldDef.getGroup().equals(SEQUENCE_INSTR))
-				fields[i] = createSequence(fieldDef);
+				fields[i] = createSequence(fieldDef, registry);
+			else if (fieldDef.getGroup().equals(STAT_TEMP_REF_INSTR))
+				fields[i] = createStaticTemplateReference(fieldDef, registry);
+			else if (fieldDef.getGroup().equals(DYN_TEMP_REF_INSTR))
+				fields[i] = new DynamicTemplateReference();
 			else
 				throw new IllegalStateException("Encountered unknown group " + fieldDef.getGroup() + "while processing field instructions " + templateDef.getGroup());
 		}
 		return fields;
 	}
 
+	private Field createStaticTemplateReference(GroupValue fieldDef, TemplateRegistry registry) {
+		QName name = new QName(fieldDef.getString("Name"), fieldDef.getString("Ns"));
+		if (!registry.isDefined(name))
+			throw new IllegalStateException("Referenced template " + name + " not defined.");
+		return new StaticTemplateReference(registry.get(name));
+	}
 	private boolean isScalar(Group group) {
 		return TYPE_TEMPLATE_MAP.values().contains(group);
 	}
@@ -207,15 +221,20 @@ public class SessionControlProtocol_1_1 extends AbstractSessionControlProtocol {
 		setName(group, groupMsg);
 		SequenceValue instructions = new SequenceValue(TEMPLATE_DEFINITION.getSequence("Instructions"));
 		int i = group instanceof MessageTemplate ? 1 : 0;
-		for (; i<group.getFieldCount(); i++) {
-			Field field = group.getField(i);
-			FieldValue value = null; 
+		Field[] fields = group.getFieldDefinitions();
+		for (; i<fields.length; i++) {
+			Field field = fields[i];
+			FieldValue value = null;
 			if (field instanceof Scalar) {
 				value = createScalar((Scalar) field);
 			} else if (field instanceof Group) {
 				value = createGroup((Group) field, new Message(GROUP_INSTR));
 			} else if (field instanceof Sequence) {
 				value = createSequence((Sequence) field);
+			} else if (field instanceof StaticTemplateReference) {
+				value = createStaticTemplateReference((StaticTemplateReference) field);
+			} else if (field instanceof DynamicTemplateReference) {
+				value = DYN_TEMP_REF_MESSAGE;
 			}
 			instructions.add(new FieldValue[] { value });
 		}
@@ -223,6 +242,11 @@ public class SessionControlProtocol_1_1 extends AbstractSessionControlProtocol {
 		return groupMsg;
 	}
 
+	private Message createStaticTemplateReference(StaticTemplateReference field) {
+		Message strDef = new Message(STAT_TEMP_REF_INSTR);
+		setName(field, strDef);
+		return strDef;
+	}
 	private Message createSequence(Sequence sequence) {
 		Message seqDef = createGroup(sequence.getGroup(), new Message(SEQUENCE_INSTR));
 		if (!sequence.isImplicitLength()) {
@@ -303,11 +327,16 @@ public class SessionControlProtocol_1_1 extends AbstractSessionControlProtocol {
                     "Cannot set values on a fast reserved message.");
             }
         };
+        
+    static {
+    	FAST_RESET_TEMPLATE.addAttribute(RESET_PROPERTY, "yes");
+    }
     
     /************************** MESSAGE HANDLERS **********************************************/
     private static final MessageHandler RESET_HANDLER = new MessageHandler() {
             public void handleMessage(Message readMessage, Context context, Coder coder) {
-                coder.reset();
+                if (readMessage.getTemplate().hasAttribute(RESET_PROPERTY))
+                	coder.reset();
             }
         };
         
@@ -506,6 +535,17 @@ public class SessionControlProtocol_1_1 extends AbstractSessionControlProtocol {
 			new DynamicTemplateReference()
 		}, false)
 	});
+	
+	private static final MessageTemplate STAT_TEMP_REF_INSTR = new MessageTemplate("StaticTemplateRefInstr", new Field[]{
+		new StaticTemplateReference(TEMPLATE_NAME),
+		new StaticTemplateReference(OTHER)
+	});
+	
+	private static final MessageTemplate DYN_TEMP_REF_INSTR = new MessageTemplate("DynamicTemplateRefInstr", new Field[]{
+		new StaticTemplateReference(OTHER)
+	});
+	
+	static final Message DYN_TEMP_REF_MESSAGE = new Message(DYN_TEMP_REF_INSTR);
     
 	private static Field u32(String name) {
 		return new Scalar(name, Type.U32, Operator.NONE, null, false);

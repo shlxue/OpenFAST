@@ -11,9 +11,9 @@ public class QName {
 	}
 	
 	public QName(String name, String namespace) {
-		if (name == null || namespace == null) throw new NullPointerException();
+		if (name == null) throw new NullPointerException();
 		this.name = name;
-		this.namespace = namespace;
+		this.namespace = namespace == null ? "" : namespace;
 	}
 
 	public String getNamespace() {
@@ -36,6 +36,8 @@ public class QName {
 	}
 	
 	public String toString() {
+		if (namespace.equals(""))
+			return name;
 		return name + "[" + namespace + "]";
 	}
 }

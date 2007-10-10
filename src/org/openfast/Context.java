@@ -37,7 +37,7 @@ import org.openfast.template.TemplateRegisteredListener;
 import org.openfast.template.TemplateRegistry;
 
 
-public class Context implements TemplateRegistry {
+public class Context {
 	private TemplateRegistry templateRegistry = new BasicTemplateRegistry();
     private int lastTemplateId;
     private Map dictionaries = new HashMap();
@@ -57,7 +57,7 @@ public class Context implements TemplateRegistry {
             return 0;
         }
 
-		return templateRegistry.getTemplateId(template);
+		return templateRegistry.getId(template);
 	}
 
 	public MessageTemplate getTemplate(int templateId) {
@@ -120,51 +120,11 @@ public class Context implements TemplateRegistry {
 		currentApplicationType = typeReference;
 	}
 
+	public TemplateRegistry getTemplateRegistry() {
+		return templateRegistry;
+	}
+
 	public void setTemplateRegistry(TemplateRegistry registry) {
 		this.templateRegistry = registry;
-	}
-
-	public MessageTemplate get(int templateId) {
-		return templateRegistry.get(templateId);
-	}
-
-	public MessageTemplate get(String templateName) {
-		return templateRegistry.get(templateName);
-	}
-
-	public int getTemplateId(String templateName) {
-		return templateRegistry.getTemplateId(templateName);
-	}
-
-	public boolean isRegistered(String templateName) {
-		return templateRegistry.isRegistered(templateName);
-	}
-
-	public boolean isRegistered(int templateId) {
-		return templateRegistry.isRegistered(templateId);
-	}
-
-	public boolean isRegistered(MessageTemplate template) {
-		return templateRegistry.isRegistered(template);
-	}
-
-	public MessageTemplate[] getTemplates() {
-		return templateRegistry.getTemplates();
-	}
-
-	public void addTemplateRegisteredListener(TemplateRegisteredListener templateRegisteredListener) {
-		templateRegistry.addTemplateRegisteredListener(templateRegisteredListener);
-	}
-
-	public void removeTemplate(String name) {
-		templateRegistry.removeTemplate(name);
-	}
-
-	public void removeTemplate(MessageTemplate template) {
-		templateRegistry.removeTemplate(template);
-	}
-
-	public void removeTemplate(int id) {
-		templateRegistry.removeTemplate(id);
 	}
 }

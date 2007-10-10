@@ -5,7 +5,6 @@ import java.util.List;
 
 public class LocalEndpoint implements Endpoint {
 	
-	private static final long TIMEOUT = 20;
 	private LocalEndpoint server;
 	private ConnectionListener listener;
 	private List connections;

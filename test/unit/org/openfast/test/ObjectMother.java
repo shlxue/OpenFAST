@@ -30,11 +30,13 @@ import org.openfast.Message;
 import org.openfast.ScalarValue;
 import org.openfast.SequenceValue;
 import org.openfast.StringValue;
+import org.openfast.template.DynamicTemplateReference;
 import org.openfast.template.Field;
 import org.openfast.template.Group;
 import org.openfast.template.MessageTemplate;
 import org.openfast.template.Scalar;
 import org.openfast.template.Sequence;
+import org.openfast.template.StaticTemplateReference;
 import org.openfast.template.operator.Operator;
 import org.openfast.template.type.Type;
 
@@ -44,6 +46,8 @@ public class ObjectMother {
     private static MessageTemplate allocationInstruction;
     private static Group instrument;
     private static Sequence allocations;
+	private static MessageTemplate batchTemplate;
+	private static MessageTemplate headerTemplate;
     public static final int QUOTE_TEMPLATE_ID = 10;
     public static final int ALLOC_INSTRCTN_TEMPLATE_ID = 25;
 
@@ -59,7 +63,32 @@ public class ObjectMother {
         return quoteTemplate;
     }
 
-    public static Message quote(double bid, double ask) {
+	public static MessageTemplate batchTemplate() {
+        if (batchTemplate == null) {
+        	batchTemplate = new MessageTemplate("Batch",
+                    new Field[] {
+        				new StaticTemplateReference(headerTemplate()),
+        				new Sequence("Batch", new Field[] {
+        					new DynamicTemplateReference()
+        				}, false)
+                    });
+        }
+
+        return batchTemplate;
+	}
+
+    public static MessageTemplate headerTemplate() {
+        if (headerTemplate == null) {
+        	headerTemplate = new MessageTemplate("Header",
+                new Field[] {
+        			new Scalar("Sent", Type.U32, Operator.DELTA, ScalarValue.UNDEFINED, false)
+                });
+        }
+
+        return headerTemplate;
+	}
+
+	public static Message quote(double bid, double ask) {
         Message quote = new Message(quoteTemplate());
         quote.setDecimal(1, bid);
         quote.setDecimal(2, ask);

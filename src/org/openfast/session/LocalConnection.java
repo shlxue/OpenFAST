@@ -8,14 +8,10 @@ import java.io.PipedOutputStream;
 
 public class LocalConnection implements Connection {
 
-	private LocalEndpoint remote;
-	private LocalEndpoint local;
 	private PipedInputStream in;
 	private PipedOutputStream out;
 
 	public LocalConnection(LocalEndpoint remote, LocalEndpoint local) {
-		this.remote = remote;
-		this.local = local;
 		this.in = new PipedInputStream();
 		this.out = new PipedOutputStream();
 	}

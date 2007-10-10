@@ -24,6 +24,8 @@ package org.openfast.template;
 
 import java.io.InputStream;
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.openfast.BitVectorBuilder;
 import org.openfast.Context;
@@ -35,6 +37,7 @@ public abstract class Field implements Serializable {
     protected String key;
     protected final boolean optional;
     protected String id;
+	private Map attributes;
 
     /**
      * Field Constructor
@@ -123,6 +126,15 @@ public abstract class Field implements Serializable {
      */
 	public void setId(String id) {
 		this.id = id;
+	}
+	
+	public boolean hasAttribute(QName attributeName) {
+		return attributes != null && attributes.containsKey(attributeName);
+	}
+
+	public void addAttribute(QName name, String value) {
+		if (attributes == null) attributes = new HashMap(4);
+		attributes.put(name, value);
 	}
 
     /**

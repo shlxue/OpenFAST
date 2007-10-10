@@ -262,7 +262,7 @@ public class XMLMessageTemplateLoaderTest extends OpenFastTestCase {
 
     	MessageTemplateLoader loader1 = new XMLMessageTemplateLoader();
     	MessageTemplateLoader loader2 = new XMLMessageTemplateLoader();
-    	loader2.setTemplateRepository(loader1);
+    	loader2.setTemplateRegistry(loader1.getTemplateRegistry());
     	
 		loader1.load(stream(template1Xml));
 		MessageTemplate[] templates = loader2.load(stream(template2Xml));

@@ -55,6 +55,7 @@ public class Group extends Field {
     protected final Map fieldNameMap;
     protected final boolean usesPresenceMap;
 	protected final StaticTemplateReference[] staticTemplateReferences;
+	protected final Field[] fieldDefinitions;
 
     public Group(String name, Field[] fields, boolean optional) {
     	this(new QName(name), fields, optional);
@@ -75,6 +76,7 @@ public class Group extends Field {
         	}
         }
         this.fields = (Field[]) expandedFields.toArray(new Field[expandedFields.size()]);
+        this.fieldDefinitions = fields;
         this.fieldIndexMap = constructFieldIndexMap(this.fields);
         this.fieldNameMap = constructFieldNameMap(this.fields);
         this.fieldIdMap = constructFieldIdMap(this.fields);
@@ -531,5 +533,9 @@ public class Group extends Field {
 				return staticTemplateReferences[i];
 		}
 		return null;
+	}
+
+	public Field[] getFieldDefinitions() {
+		return fieldDefinitions;
 	}
 }

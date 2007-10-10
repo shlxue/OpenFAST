@@ -1,86 +1,91 @@
 package org.openfast.template;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
-public class BasicTemplateRegistry implements TemplateRegistry {
-	private Map templateNameMap = new HashMap();
-	private Map templateIdMap = new HashMap();
-	private Map templateMap = new HashMap();
-	private List listeners = Collections.EMPTY_LIST;
+import org.openfast.QName;
 
-	public void registerTemplate(int templateId, MessageTemplate template) {
-		templateNameMap.put(template.getName(), template);
-		Integer tid = new Integer(templateId);
-		templateIdMap.put(tid, template);
+public class BasicTemplateRegistry extends AbstractTemplateRegistry {
+	private Map nameMap = new HashMap();
+	private Map idMap = new HashMap();
+	private Map templateMap = new HashMap();
+
+	public void registerTemplate(int id, MessageTemplate template) {
+		nameMap.put(template.getQName(), template);
+		Integer tid = new Integer(id);
+		idMap.put(tid, template);
 		templateMap.put(template, tid);
-        Iterator iter = listeners.iterator();
-        while (iter.hasNext()) {
-        	((TemplateRegisteredListener) iter.next()).templateRegistered(template, templateId);
-        }
+		notifyTemplateRegistered(template, id);
+	}
+	
+	public void registerTemplate(int id, QName name) {
+		if (!nameMap.containsKey(name))
+			throw new IllegalArgumentException("The template named " + name + " is not defined.");
+		Integer tid = new Integer(id);
+		MessageTemplate template = (MessageTemplate) nameMap.get(name);
+		templateMap.put(template, tid);
+		idMap.put(tid, template);
+		notifyTemplateRegistered(template, id);
+	}
+	
+	public void defineTemplate(MessageTemplate template) {
+		nameMap.put(template.getQName(), template);
 	}
 
-	public int getTemplateId(String templateName) {
-		Object template = templateNameMap.get(templateName);
+	public int getId(QName name) {
+		Object template = nameMap.get(name);
 		if (template == null || !templateMap.containsKey(template)) return -1;
 		return ((Integer)templateMap.get(template)).intValue();
 	}
 
-	public boolean isRegistered(String templateName) {
-		return templateNameMap.containsKey(templateName);
-	}
-
 	public MessageTemplate get(int templateId) {
-		return (MessageTemplate) templateIdMap.get(new Integer(templateId));
+		return (MessageTemplate) idMap.get(new Integer(templateId));
 	}
 
-	public MessageTemplate get(String templateName) {
-		return (MessageTemplate) templateNameMap.get(templateName);
+	public MessageTemplate get(QName name) {
+		return (MessageTemplate) nameMap.get(name);
 	}
 
-	public int getTemplateId(MessageTemplate template) {
+	public int getId(MessageTemplate template) {
 		if (!isRegistered(template)) return -1;
 		return ((Integer)templateMap.get(template)).intValue();
 	}
 
+	public boolean isRegistered(QName name) {
+		return nameMap.containsKey(name);
+	}
+
 	public boolean isRegistered(int templateId) {
-		return templateIdMap.containsKey(new Integer(templateId));
+		return idMap.containsKey(new Integer(templateId));
 	}
 
 	public boolean isRegistered(MessageTemplate template) {
 		return templateMap.containsKey(template);
 	}
-
+	
+	public boolean isDefined(QName name) {
+		return nameMap.containsKey(name);
+	}
+	
 	public MessageTemplate[] getTemplates() {
 		return (MessageTemplate[]) templateMap.keySet().toArray(new MessageTemplate[templateMap.size()]);
 	}
 
-	public void addTemplateRegisteredListener(TemplateRegisteredListener templateRegisteredListener) {
-		if (listeners.isEmpty()) {
-			listeners = new ArrayList();
-		}
-		listeners.add(templateRegisteredListener);
-	}
-
-	public void removeTemplate(String name) {
-		MessageTemplate template = (MessageTemplate) templateNameMap.remove(name);
+	public void removeTemplate(QName name) {
+		MessageTemplate template = (MessageTemplate) nameMap.remove(name);
 		Object id = templateMap.remove(template);
-		templateIdMap.remove(id);
+		idMap.remove(id);
 	}
 
 	public void removeTemplate(MessageTemplate template) {
 		Object id = templateMap.remove(template);
-		templateNameMap.remove(template.getName());
-		templateIdMap.remove(id);
+		nameMap.remove(template.getName());
+		idMap.remove(id);
 	}
 
 	public void removeTemplate(int id) {
-		MessageTemplate template = (MessageTemplate) templateIdMap.remove(new Integer(id));
+		MessageTemplate template = (MessageTemplate) idMap.remove(new Integer(id));
 		templateMap.remove(template);
-		templateNameMap.remove(template.getName());
+		nameMap.remove(template.getName());
 	}
 }

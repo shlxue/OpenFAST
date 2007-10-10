@@ -3,4 +3,9 @@
 		<ascii name="Symbol" id="55"><copy dictionary="named" /></ascii>
 		<ascii name="SecurityID" id="48"><copy dictionary="named" /></ascii>
 	</template>
+	<template name="Batch">
+		<sequence name="Messages">
+			<templateRef/>
+		</sequence>
+	</template>
 </templates>

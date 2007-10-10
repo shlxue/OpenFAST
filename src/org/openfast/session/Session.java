@@ -162,9 +162,9 @@ public class Session implements ErrorHandler {
 		for (int i=0; i<templates.length; i++) {
 			MessageTemplate template = templates[i];
 			out.writeMessage(protocol.createTemplateDefinitionMessage(template));
-			out.writeMessage(protocol.createTemplateDeclarationMessage(template, registry.getTemplateId(template)));
-			if (!out.isRegistered(template))
-				out.registerTemplate(registry.getTemplateId(template), template);
+			out.writeMessage(protocol.createTemplateDeclarationMessage(template, registry.getId(template)));
+			if (!out.getTemplateRegistry().isRegistered(template))
+				out.registerTemplate(registry.getId(template), template);
 		}
 	}
 	

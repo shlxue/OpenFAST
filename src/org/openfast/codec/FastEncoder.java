@@ -30,11 +30,10 @@ import org.openfast.Context;
 import org.openfast.Message;
 import org.openfast.template.MessageTemplate;
 import org.openfast.template.TemplateRegisteredListener;
-import org.openfast.template.TemplateRegistry;
 
 
 /* In 1.5 version use : static import java.lang.Math.*; */
-public class FastEncoder implements Coder, TemplateRegistry {
+public class FastEncoder implements Coder {
     private Context context;
 	private List listeners = Collections.EMPTY_LIST;
 
@@ -60,50 +59,6 @@ public class FastEncoder implements Coder, TemplateRegistry {
     public void registerTemplate(int templateId, MessageTemplate template) {
         context.registerTemplate(templateId, template);
     }
-
-	public MessageTemplate get(int templateId) {
-		return context.get(templateId);
-	}
-
-	public MessageTemplate get(String templateName) {
-		return context.get(templateName);
-	}
-
-	public int getTemplateId(String templateName) {
-		return context.getTemplateId(templateName);
-	}
-
-	public boolean isRegistered(String templateName) {
-		return context.isRegistered(templateName);
-	}
-
-	public boolean isRegistered(int templateId) {
-		return context.isRegistered(templateId);
-	}
-
-	public boolean isRegistered(MessageTemplate template) {
-		return context.isRegistered(template);
-	}
-
-	public int getTemplateId(MessageTemplate template) {
-		return context.getTemplateId(template);
-	}
-
-	public MessageTemplate[] getTemplates() {
-		return context.getTemplates();
-	}
-
-	public void removeTemplate(String name) {
-		context.removeTemplate(name);
-	}
-
-	public void removeTemplate(MessageTemplate template) {
-		context.removeTemplate(template);
-	}
-
-	public void removeTemplate(int id) {
-		context.removeTemplate(id);
-	}
 
 	public void addTemplateRegisteredListener(TemplateRegisteredListener templateRegisteredListener) {
 		if (listeners.isEmpty()) {

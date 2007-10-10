@@ -82,7 +82,7 @@ public class MessageTemplate extends Group implements FieldSet {
      * @return Returns a byte array of the encoded message
      */
     public byte[] encode(Message message, Context context) {
-    	if (!context.isRegistered(message.getTemplate()))
+    	if (!context.getTemplateRegistry().isRegistered(message.getTemplate()))
     		throw new FastException("Cannot encode message: The template " + message.getTemplate() + " has not been registered.", FastConstants.D9_TEMPLATE_NOT_REGISTERED);
         message.setInteger(0, context.getTemplateId(message.getTemplate()));
         return super.encode(message, this, context);

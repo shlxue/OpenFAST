@@ -46,8 +46,8 @@ class SessionControlProtocol_1_0 extends AbstractSessionControlProtocol {
 	}
 
 	public void configureSession(Session session) {
-		registerSessionTemplates(session.in);
-		registerSessionTemplates(session.out);
+		registerSessionTemplates(session.in.getTemplateRegistry());
+		registerSessionTemplates(session.out.getTemplateRegistry());
 		
 		session.in.addMessageHandler(FAST_RESET_TEMPLATE, RESET_HANDLER);
 		session.out.addMessageHandler(FAST_RESET_TEMPLATE, RESET_HANDLER);

@@ -24,14 +24,15 @@ package org.openfast;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.openfast.codec.FastEncoder;
 import org.openfast.error.FastConstants;
 import org.openfast.template.MessageTemplate;
-import org.openfast.template.TemplateRegisteredListener;
 import org.openfast.template.TemplateRegistry;
 
 
@@ -39,7 +40,8 @@ public class MessageOutputStream implements MessageStream {
     private final OutputStream out;
     private final FastEncoder encoder;
     private final Context context;
-    private Map handlers = Collections.EMPTY_MAP;
+    private List handlers = Collections.EMPTY_LIST;
+    private Map templateHandlers = Collections.EMPTY_MAP;
 
     public MessageOutputStream(OutputStream outputStream) {
         this(outputStream, new Context());
@@ -57,8 +59,13 @@ public class MessageOutputStream implements MessageStream {
 
     public void writeMessage(Message message, boolean flush) {
         try {
-            if (handlers.containsKey(message.getTemplate())) {
-                ((MessageHandler) handlers.get(message.getTemplate())).handleMessage(message,
+        	if (!handlers.isEmpty()) {
+        		for (int i=0; i<handlers.size(); i++) {
+        			((MessageHandler) handlers.get(i)).handleMessage(message, context, encoder);
+        		}
+        	}
+            if (templateHandlers.containsKey(message.getTemplate())) {
+                ((MessageHandler) templateHandlers.get(message.getTemplate())).handleMessage(message,
                     context, encoder);
             }
 
@@ -97,62 +104,25 @@ public class MessageOutputStream implements MessageStream {
     }
 
     public void addMessageHandler(MessageTemplate template, MessageHandler handler) {
-        if (handlers == Collections.EMPTY_MAP) {
-            handlers = new HashMap();
+        if (templateHandlers == Collections.EMPTY_MAP) {
+            templateHandlers = new HashMap();
         }
 
-        handlers.put(template, handler);
+        templateHandlers.put(template, handler);
     }
+
+	public void addMessageHandler(MessageHandler handler) {
+		if (handlers == Collections.EMPTY_LIST) {
+			handlers = new ArrayList(4);
+		}
+		handlers.add(handler);
+	}
 
 	public void setTemplateRegistry(TemplateRegistry registry) {
 		context.setTemplateRegistry(registry);
 	}
 
-	public MessageTemplate get(int templateId) {
-		return context.get(templateId);
-	}
-
-	public MessageTemplate get(String templateName) {
-		return context.get(templateName);
-	}
-
-	public int getTemplateId(String templateName) {
-		return context.getTemplateId(templateName);
-	}
-
-	public int getTemplateId(MessageTemplate template) {
-		return context.getTemplateId(template);
-	}
-
-	public boolean isRegistered(String templateName) {
-		return context.isRegistered(templateName);
-	}
-
-	public boolean isRegistered(int templateId) {
-		return context.isRegistered(templateId);
-	}
-
-	public boolean isRegistered(MessageTemplate template) {
-		return context.isRegistered(template);
-	}
-
-	public MessageTemplate[] getTemplates() {
-		return context.getTemplates();
-	}
-
-	public void addTemplateRegisteredListener(TemplateRegisteredListener templateRegisteredListener) {
-		context.addTemplateRegisteredListener(templateRegisteredListener);
-	}
-
-	public void removeTemplate(String name) {
-		context.removeTemplate(name);
-	}
-
-	public void removeTemplate(MessageTemplate template) {
-		context.removeTemplate(template);
-	}
-
-	public void removeTemplate(int id) {
-		context.removeTemplate(id);
+	public TemplateRegistry getTemplateRegistry() {
+		return context.getTemplateRegistry();
 	}
 }

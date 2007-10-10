@@ -46,5 +46,11 @@ public class StaticTemplateReference extends Field {
 	public MessageTemplate getTemplate() {
 		return template;
 	}
-
+	
+	public boolean equals(Object obj) {
+		if (obj == this) return true;
+		if (obj == null || obj.getClass() != this.getClass()) return false;
+		StaticTemplateReference other = (StaticTemplateReference) obj;
+		return template.equals(other.template);
+	}
 }

@@ -25,7 +25,9 @@ package org.openfast;
 import org.openfast.template.MessageTemplate;
 import org.openfast.template.TemplateRegistry;
 
-public interface MessageStream extends TemplateRegistry {
+public interface MessageStream {
     void addMessageHandler(MessageTemplate template, MessageHandler handler);
+    void addMessageHandler(MessageHandler handler);
     void close();
+    TemplateRegistry getTemplateRegistry();
 }

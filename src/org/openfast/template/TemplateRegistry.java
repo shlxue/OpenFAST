@@ -22,73 +22,41 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast.template;
 
+import org.openfast.QName;
+
 
 
 public interface TemplateRegistry {
-	void registerTemplate(int templateId, MessageTemplate template);
+	TemplateRegistry NULL = new NullTemplateRegistry();
+	
+	void registerTemplate(int id, MessageTemplate template);
+	void registerTemplate(int id, String name);
+	void registerTemplate(int id, QName name);
+	
+	void defineTemplate(MessageTemplate template);
 	
 	void removeTemplate(String name);
+	void removeTemplate(QName name);
 	void removeTemplate(MessageTemplate template);
 	void removeTemplate(int id);
 	
-	MessageTemplate get(int templateId);
-	MessageTemplate get(String templateName);
+	MessageTemplate get(int id);
+	MessageTemplate get(String name);
+	MessageTemplate get(QName name);
+	
 	MessageTemplate[] getTemplates();
 	
-	int getTemplateId(String templateName);
-	int getTemplateId(MessageTemplate template);
+	int getId(String name);
+	int getId(QName name);
+	int getId(MessageTemplate template);
 	
-	boolean isRegistered(String templateName);
-	boolean isRegistered(int templateId);
+	boolean isRegistered(String name);
+	boolean isRegistered(QName name);
+	boolean isRegistered(int id);
 	boolean isRegistered(MessageTemplate template);
-
+	boolean isDefined(String name);
+	boolean isDefined(QName name);
+	
 	void addTemplateRegisteredListener(TemplateRegisteredListener templateRegisteredListener);
-
-	TemplateRegistry NULL = new TemplateRegistry() {
-		public void addTemplateRegisteredListener(TemplateRegisteredListener templateRegisteredListener) {
-		}
-
-		public MessageTemplate get(int templateId) {
-			return null;
-		}
-
-		public MessageTemplate get(String templateName) {
-			return null;
-		}
-
-		public int getTemplateId(String templateName) {
-			return 0;
-		}
-
-		public int getTemplateId(MessageTemplate template) {
-			return 0;
-		}
-
-		public MessageTemplate[] getTemplates() {
-			return null;
-		}
-
-		public boolean isRegistered(String templateName) {
-			return false;
-		}
-
-		public boolean isRegistered(int templateId) {
-			return false;
-		}
-
-		public boolean isRegistered(MessageTemplate template) {
-			return false;
-		}
-
-		public void registerTemplate(int templateId, MessageTemplate template) {
-		}
-
-		public void removeTemplate(String name) {
-		}
-
-		public void removeTemplate(MessageTemplate template) {
-		}
-
-		public void removeTemplate(int id) {
-		}};
+	void removeTemplateRegisteredListener(TemplateRegisteredListener templateRegisteredListener);
 }

@@ -39,7 +39,7 @@ import org.openfast.error.ErrorCode;
 import org.openfast.error.ErrorHandler;
 import org.openfast.error.FastAlertSeverity;
 import org.openfast.error.FastConstants;
-import org.openfast.template.DelegatingTemplateRepository;
+import org.openfast.template.BasicTemplateRegistry;
 import org.openfast.template.DynamicTemplateReference;
 import org.openfast.template.Field;
 import org.openfast.template.Group;
@@ -47,14 +47,16 @@ import org.openfast.template.MessageTemplate;
 import org.openfast.template.Scalar;
 import org.openfast.template.Sequence;
 import org.openfast.template.StaticTemplateReference;
-import org.openfast.template.TemplateRepository;
+import org.openfast.template.TemplateRegistry;
 import org.openfast.template.TwinValue;
 import org.openfast.template.operator.Operator;
 import org.openfast.template.operator.TwinOperatorCodec;
 import org.openfast.template.type.Type;
 import org.openfast.util.Util;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -62,7 +64,8 @@ import org.xml.sax.SAXParseException;
 
 
 public class XMLMessageTemplateLoader implements MessageTemplateLoader {
-    private static final List NON_FIELD_ELEMENTS = Arrays.asList(new String[] {
+    private static final String TEMPLATE_DEFINITION_NS = "http://www.fixprotocol.org/ns/fast/td/1.1";
+	private static final List NON_FIELD_ELEMENTS = Arrays.asList(new String[] {
                 "typeRef", "length", "templateRef"
             });
     private static final ErrorCode IO_ERROR = new ErrorCode(FastConstants.STATIC,
@@ -71,11 +74,21 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
             -1, "XMLPARSEERR", "XML Parsing Error", FastAlertSeverity.ERROR);
 	private static final ErrorCode INVALID_TYPE = new ErrorCode(FastConstants.STATIC, -1, "INVALIDTYPE", "Invalid Type", FastAlertSeverity.ERROR);
     
-    private final DelegatingTemplateRepository templateRepository = new DelegatingTemplateRepository(TemplateRepository.NULL);
+    private TemplateRegistry templateRegistry = new BasicTemplateRegistry();
     private ErrorHandler errorHandler = ErrorHandler.DEFAULT;
     private Map typeMap = Type.getRegisteredTypeMap();
+	private boolean namespaceAwareness;
 
-    /**
+	
+	public XMLMessageTemplateLoader() {
+		this(false);
+	}
+	
+    public XMLMessageTemplateLoader(boolean namespaceAwareness) {
+    	this.namespaceAwareness = namespaceAwareness;
+    }
+
+	/**
      * Parses the XML stream and creates an array of the elements
      * @param source The inputStream object to load
      */
@@ -152,8 +165,19 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
     		messageTemplate.setId(templateElement.getAttribute("id"));
 		messageTemplate.setTypeReference(getTypeReference(templateElement));
 		messageTemplate.setChildNamespace(context.getNamespace());
-		add(messageTemplate);
+		templateRegistry.defineTemplate(messageTemplate);
+		parseExternalAttributes(templateElement, messageTemplate);
 		return messageTemplate;
+	}
+
+	private void parseExternalAttributes(Element element, Field field) {
+		NamedNodeMap attributes = element.getAttributes();
+		for (int i=0; i<attributes.getLength(); i++) {
+			Attr attribute = (Attr) attributes.item(i);
+			if (attribute.getNamespaceURI() == null || attribute.getNamespaceURI().equals("") || attribute.getNamespaceURI().equals(TEMPLATE_DEFINITION_NS))
+				continue;
+			field.addAttribute(new QName(attribute.getLocalName(), attribute.getNamespaceURI()), attribute.getValue());
+		}
 	}
 
 	/**
@@ -205,8 +229,8 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
     		else
     			templateName = new QName(element.getAttribute("name"), "");
     			
-    		if (hasTemplate(templateName))
-    			return new StaticTemplateReference(getTemplate(templateName));
+    		if (templateRegistry.isDefined(templateName))
+    			return new StaticTemplateReference(templateRegistry.get(templateName));
     		else {
     			errorHandler.error(FastConstants.D8_TEMPLATE_NOT_EXIST, "The template \"" + templateName + "\" was not found.");
     			return null;
@@ -443,6 +467,7 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
         try {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             dbf.setIgnoringElementContentWhitespace(true);
+            dbf.setNamespaceAware(namespaceAwareness);
 
             DocumentBuilder builder = dbf.newDocumentBuilder();
             builder.setErrorHandler(new org.xml.sax.ErrorHandler() {
@@ -475,43 +500,15 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
         this.errorHandler = errorHandler;
     }
 
-	public void setTemplateRepository(TemplateRepository templateRepository) {
-		this.templateRepository.setRepository(templateRepository);
+	public void setTemplateRegistry(TemplateRegistry templateRegistry) {
+		this.templateRegistry = templateRegistry;
 	}
 
-	public void add(MessageTemplate template) {
-		templateRepository.add(template);
+	public TemplateRegistry getTemplateRegistry() {
+		return templateRegistry;
 	}
-
-	public MessageTemplate getTemplate(String name) {
-		return templateRepository.getTemplate(name);
-	}
-
-	public MessageTemplate getTemplate(int id) {
-		return templateRepository.getTemplate(id);
-	}
-
-	public boolean hasTemplate(String name) {
-		return templateRepository.hasTemplate(name);
-	}
-
-	public boolean hasTemplate(int id) {
-		return templateRepository.hasTemplate(id);
-	}
-
-	public MessageTemplate[] toArray() {
-		return templateRepository.toArray();
-	}
-
+	
 	public void setTypeMap(Map typeMap) {
 		this.typeMap = typeMap;
-	}
-
-	public MessageTemplate getTemplate(QName name) {
-		return templateRepository.getTemplate(name);
-	}
-
-	public boolean hasTemplate(QName name) {
-		return templateRepository.hasTemplate(name);
 	}
 }
