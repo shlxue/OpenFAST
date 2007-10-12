@@ -3,6 +3,7 @@ package org.openfast.template;
 import java.io.InputStream;
 
 import org.openfast.BitVectorBuilder;
+import org.openfast.BitVectorReader;
 import org.openfast.Context;
 import org.openfast.FieldValue;
 import org.openfast.Message;
@@ -30,7 +31,7 @@ public class DynamicTemplateReference extends Field {
 	 * @param present
 	 * @return the next message in the decoder
 	 */
-	public FieldValue decode(InputStream in, Group template, Context context, boolean present) {
+	public FieldValue decode(InputStream in, Group template, Context context, BitVectorReader pmapReader) {
 		return new FastDecoder(context, in).readMessage();
 	}
 

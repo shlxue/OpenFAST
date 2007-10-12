@@ -22,7 +22,9 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast.template.type;
 
-import org.openfast.Context;
+import org.openfast.BitVectorReader;
+import org.openfast.Message;
+import org.openfast.codec.FastDecoder;
 import org.openfast.error.FastConstants;
 import org.openfast.error.FastException;
 import org.openfast.template.MessageTemplate;
@@ -48,9 +50,9 @@ public class IntegerTypeTest extends OpenFastTestCase {
     			"  <uInt32 name=\"price\"/>" +
     			"</template>");
     	
-    	Context encodingContext = new Context();
+    	FastDecoder decoder = decoder("11000000 10000001 00111111 01111111 01111111 01111111 11111111", template);
     	try {
-    		template.decode(bitStream("11000000 10000001 00111111 01111111 01111111 01111111 11111111"), template, encodingContext, true);
+    		decoder.readMessage();
     		fail();
     	} catch (FastException e) {
     		assertEquals(FastConstants.D2_INT_OUT_OF_RANGE, e.getCode());

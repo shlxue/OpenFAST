@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.openfast.Context;
+import org.openfast.Dictionary;
 import org.openfast.FieldValue;
 import org.openfast.GroupValue;
 import org.openfast.Message;
@@ -13,6 +14,7 @@ import org.openfast.ScalarValue;
 import org.openfast.SequenceValue;
 import org.openfast.codec.Coder;
 import org.openfast.error.ErrorCode;
+import org.openfast.template.BasicTemplateRegistry;
 import org.openfast.template.DynamicTemplateReference;
 import org.openfast.template.Field;
 import org.openfast.template.Group;
@@ -37,13 +39,20 @@ public class SessionControlProtocol_1_1 extends AbstractSessionControlProtocol {
     			MessageTemplate template = createTemplateFromMessage(message, session.in.getTemplateRegistry());
 				session.addDynamicTemplateDefinition(template);
     			if (message.isDefined("TemplateId"))
-    				session.registerDynamicTemplate(template.getName(), message.getInt("TemplateId"));
+    				session.registerDynamicTemplate(template.getQName(), message.getInt("TemplateId"));
     		}});
     	messageHandlers.put(TEMPLATE_DECLARATION, new SessionMessageHandler() {
     		public void handleMessage(Session session, Message message) {
-    			session.registerDynamicTemplate(message.getString("Name"), message.getInt("TemplateId"));
+    			session.registerDynamicTemplate(getQName(message), message.getInt("TemplateId"));
     		}});
 	}
+	
+	protected QName getQName(Message message) {
+		String name = message.getString("Name");
+		String ns = message.getString("Ns");
+		return new QName(name, ns);
+	}
+	
 	public void configureSession(Session session) {
 		registerSessionTemplates(session.in.getTemplateRegistry());
 		registerSessionTemplates(session.out.getTemplateRegistry());
@@ -53,33 +62,7 @@ public class SessionControlProtocol_1_1 extends AbstractSessionControlProtocol {
 	}
 
 	public void registerSessionTemplates(TemplateRegistry registry) {
-        registry.registerTemplate(FAST_HELLO_TEMPLATE_ID, FAST_HELLO_TEMPLATE);
-        registry.registerTemplate(FAST_ALERT_TEMPLATE_ID, FAST_ALERT_TEMPLATE);
-        registry.registerTemplate(FAST_RESET_TEMPLATE_ID, FAST_RESET_TEMPLATE);
-        registry.registerTemplate(TEMPLATE_DECL_ID, TEMPLATE_DECLARATION);
-        registry.registerTemplate(TEMPLATE_DEF_ID, TEMPLATE_DEFINITION);
-        registry.registerTemplate(INT32_INSTR_ID, INT32_INSTR);
-        registry.registerTemplate(UINT32_INSTR_ID, UINT32_INSTR);
-        registry.registerTemplate(INT64_INSTR_ID, INT64_INSTR);
-        registry.registerTemplate(UINT64_INSTR_ID, UINT64_INSTR);
-        registry.registerTemplate(DECIMAL_INSTR_ID, DECIMAL_INSTR);
-//        registry.registerTemplate(COMP_DECIMAL_INSTR_ID, COMP_DECIMAL_INSTR);
-        registry.registerTemplate(ASCII_INSTR_ID, ASCII_INSTR);
-        registry.registerTemplate(UNICODE_INSTR_ID, UNICODE_INSTR);
-        registry.registerTemplate(BYTE_VECTOR_INSTR_ID, BYTE_VECTOR_INSTR);
-//        registry.registerTemplate(STAT_TEMP_REF_INSTR_ID, STAT_TEMP_REF_INSTR);
-//        registry.registerTemplate(DYN_TEMP_REF_INSTR_ID, DYN_TEMP_REF_INSTR);
-        registry.registerTemplate(SEQUENCE_INSTR_ID, SEQUENCE_INSTR);
-        registry.registerTemplate(GROUP_INSTR_ID, GROUP_INSTR);
-        registry.registerTemplate(CONSTANT_OP_ID, CONSTANT_OP);
-        registry.registerTemplate(DEFAULT_OP_ID, DEFAULT_OP);
-        registry.registerTemplate(COPY_OP_ID, COPY_OP);
-        registry.registerTemplate(INCREMENT_OP_ID, INCREMENT_OP);
-        registry.registerTemplate(DELTA_OP_ID, DELTA_OP);
-        registry.registerTemplate(TAIL_OP_ID, TAIL_OP);
-//        registry.registerTemplate(FOREIGN_INSTR_ID, FOREIGN_INSTR);
-        registry.registerTemplate(ELEMENT_ID, ELEMENT);
-//        registry.registerTemplate(TEXT_ID, TEXT);
+		registry.registerAll(TEMPLATE_REGISTRY);
 	}
 
 	public Session connect(String senderName, Connection connection) {
@@ -150,7 +133,7 @@ public class SessionControlProtocol_1_1 extends AbstractSessionControlProtocol {
 	}
 	private void setName(Field field, GroupValue declaration) {
 		declaration.setString("Name", field.getName());
-		declaration.setString("Ns", "");
+		declaration.setString("Ns", field.getQName().getNamespace());
 	}
 
 	public MessageTemplate createTemplateFromMessage(Message templateDef, TemplateRegistry registry) {
@@ -206,9 +189,18 @@ public class SessionControlProtocol_1_1 extends AbstractSessionControlProtocol {
 
 	private Field createScalar(GroupValue field) {
 		Type type = (Type) TEMPLATE_TYPE_MAP.get(field.getGroup());
-		Operator operator = (Operator) TEMPLATE_OPERATOR_MAP.get(field.getGroup("Operator").getGroup(0).getGroup());
+		GroupValue operatorGroup = field.getGroup("Operator").getGroup(0);
 		boolean optional = field.getBool("Optional");
-		return new Scalar(field.getString("Name"), type, operator, null, optional);
+		Operator operator = (Operator) TEMPLATE_OPERATOR_MAP.get(operatorGroup.getGroup());
+		Scalar scalar = new Scalar(field.getString("Name"), type, operator, null, optional);
+		if (operatorGroup.isDefined("Dictionary"))
+			scalar.setDictionary(operatorGroup.getString("Dictionary"));
+		if (operatorGroup.isDefined("Key")) {
+			String name = operatorGroup.getGroup("Key").getString("Name");
+			String ns = operatorGroup.getGroup("Key").getString("Ns");
+			scalar.setKey(new QName(name, ns));
+		}
+		return scalar;
 	}
 
 	public Message createTemplateDefinitionMessage(MessageTemplate messageTemplate) {
@@ -273,7 +265,17 @@ public class SessionControlProtocol_1_1 extends AbstractSessionControlProtocol {
 	private GroupValue createOperator(Scalar scalar) {
 		if (!OPERATOR_TEMPLATE_MAP.containsKey(scalar.getOperator()))
 			return null;
-		GroupValue operatorMessage = new Message((MessageTemplate) OPERATOR_TEMPLATE_MAP.get(scalar.getOperator()));
+		MessageTemplate operatorTemplate = (MessageTemplate) OPERATOR_TEMPLATE_MAP.get(scalar.getOperator());
+		GroupValue operatorMessage = new Message(operatorTemplate);
+		if (!scalar.getDictionary().equals(Dictionary.GLOBAL))
+			operatorMessage.setString("Dictionary", scalar.getDictionary());
+		if (!scalar.getKey().equals(scalar.getName())) {
+			Group key = operatorTemplate.getGroup("Key");
+			GroupValue keyValue = new GroupValue(key);
+			keyValue.setString("Name", scalar.getKey().getName());
+			keyValue.setString("Ns", scalar.getKey().getNamespace());
+			operatorMessage.setFieldValue(key, keyValue);
+		}
 		return operatorMessage;
 	}
 
@@ -348,231 +350,263 @@ public class SessionControlProtocol_1_1 extends AbstractSessionControlProtocol {
 
 
     /*************************** MESSAGE TEMPLATES *******************************************/
-    private static final MessageTemplate ATTRIBUTE = new MessageTemplate("Attribute", new Field[] {
+    private static final MessageTemplate ATTRIBUTE = new MessageTemplate(new QName("Attribute", NAMESPACE), new Field[] {
     		dict("Ns", Type.UNICODE, true, "template"),
     		unicode("Name"),
     		unicode("Value")
     });
     
-    private static final MessageTemplate ELEMENT = new MessageTemplate("Element", new Field[] {
+    private static final MessageTemplate ELEMENT = new MessageTemplate(new QName("Element", NAMESPACE), new Field[] {
     		dict("Ns", Type.UNICODE, true, "template"),
     		unicode("Name"),
-    		new Sequence("Attributes", new Field[] {
+    		new Sequence(qualify("Attributes"), new Field[] {
     				new StaticTemplateReference(ATTRIBUTE)
     		}, false),
-    		new Sequence("Content", new Field[] {
+    		new Sequence(qualify("Content"), new Field[] {
     				new DynamicTemplateReference()
     		}, false)
     });
     
-    private static final MessageTemplate OTHER = new MessageTemplate("Other", new Field[] {
-    		new Sequence("ForeignAttributes", new Field[]{
+    private static final MessageTemplate OTHER = new MessageTemplate(new QName("Other", NAMESPACE), new Field[] {
+    		new Sequence(qualify("ForeignAttributes"), new Field[]{
     				new StaticTemplateReference(ATTRIBUTE)
     		}, true),
-    		new Sequence("ForeignElements", new Field[]{
+    		new Sequence(qualify("ForeignElements"), new Field[]{
     				new StaticTemplateReference(ELEMENT)
     		}, true)
     });
     
-    private static final MessageTemplate TEMPLATE_NAME = new MessageTemplate("TemplateName", new Field[] {
-    		new Scalar("Ns", Type.UNICODE, Operator.COPY, null, false),
-    		new Scalar("Name", Type.UNICODE, Operator.NONE, null, false)
+    private static final MessageTemplate TEMPLATE_NAME = new MessageTemplate(new QName("TemplateName", NAMESPACE), new Field[] {
+    		new Scalar(qualify("Ns"), Type.UNICODE, Operator.COPY, null, false),
+    		new Scalar(qualify("Name"), Type.UNICODE, Operator.NONE, null, false)
     });
     
-    private static final MessageTemplate NS_NAME = new MessageTemplate("NsName", new Field[] {
+    private static final MessageTemplate NS_NAME = new MessageTemplate(new QName("NsName", NAMESPACE), new Field[] {
     		dict("Ns", Type.UNICODE, false, "template"),
-    		new Scalar("Name", Type.UNICODE, Operator.NONE, null, false)
+    		new Scalar(qualify("Name"), Type.UNICODE, Operator.NONE, null, false)
     });
 	
-	private static final MessageTemplate NS_NAME_WITH_AUX_ID = new MessageTemplate("NsNameWithAuxId", new Field[] {
+	private static final MessageTemplate NS_NAME_WITH_AUX_ID = new MessageTemplate(new QName("NsNameWithAuxId", NAMESPACE), new Field[] {
 		new StaticTemplateReference(NS_NAME),
-		new Scalar("AuxId", Type.UNICODE, Operator.NONE, null, true)
+		new Scalar(qualify("AuxId"), Type.UNICODE, Operator.NONE, null, true)
 	});
 	
-	private static final MessageTemplate FIELD_BASE = new MessageTemplate("PrimFieldBase", new Field[] {
+	private static final MessageTemplate FIELD_BASE = new MessageTemplate(new QName("PrimFieldBase", NAMESPACE), new Field[] {
 		new StaticTemplateReference(NS_NAME_WITH_AUX_ID),
-		new Scalar("Optional", Type.U32, Operator.NONE, null, false),
+		new Scalar(qualify("Optional"), Type.U32, Operator.NONE, null, false),
 		new StaticTemplateReference(OTHER)
 	});
 	
-	private static final MessageTemplate PRIM_FIELD_BASE = new MessageTemplate("PrimFieldBase", new Field[] {
+	private static final MessageTemplate PRIM_FIELD_BASE = new MessageTemplate(new QName("PrimFieldBase", NAMESPACE), new Field[] {
 		new StaticTemplateReference(FIELD_BASE),
-		new Group("Operator", new Field[] {
+		new Group(qualify("Operator"), new Field[] {
 			new DynamicTemplateReference()
 		}, true)
 	});
 	
-	private static final MessageTemplate LENGTH_PREAMBLE = new MessageTemplate("LengthPreamble", new Field[] {
+	private static final MessageTemplate LENGTH_PREAMBLE = new MessageTemplate(new QName("LengthPreamble", NAMESPACE), new Field[] {
 		new StaticTemplateReference(NS_NAME_WITH_AUX_ID),
 		new StaticTemplateReference(OTHER)
 	});
 	
-	private static final MessageTemplate PRIM_FIELD_BASE_WITH_LENGTH = new MessageTemplate("PrimFieldBaseWithLength", new Field[] {
+	private static final MessageTemplate PRIM_FIELD_BASE_WITH_LENGTH = new MessageTemplate(new QName("PrimFieldBaseWithLength", NAMESPACE), new Field[] {
 		new StaticTemplateReference(PRIM_FIELD_BASE),
-		new Group("Length", new Field[] {
+		new Group(qualify("Length"), new Field[] {
 			new StaticTemplateReference(LENGTH_PREAMBLE)
 		}, true)
 	});
 	
-	private static final MessageTemplate INT32_INSTR = new MessageTemplate("Int32Instr", new Field[] {
+	private static final MessageTemplate INT32_INSTR = new MessageTemplate(new QName("Int32Instr", NAMESPACE), new Field[] {
 		new StaticTemplateReference(PRIM_FIELD_BASE),
-		new Scalar("InitialValue", Type.I32, Operator.NONE, null, true)
+		new Scalar(qualify("InitialValue"), Type.I32, Operator.NONE, null, true)
 	});
 	
-	private static final MessageTemplate UINT32_INSTR = new MessageTemplate("UInt32Instr", new Field[] {
+	private static final MessageTemplate UINT32_INSTR = new MessageTemplate(new QName("UInt32Instr", NAMESPACE), new Field[] {
 		new StaticTemplateReference(PRIM_FIELD_BASE),
-		new Scalar("InitialValue", Type.U32, Operator.NONE, null, true)
+		new Scalar(qualify("InitialValue"), Type.U32, Operator.NONE, null, true)
 	});
 	
-	private static final MessageTemplate INT64_INSTR = new MessageTemplate("Int64Instr", new Field[] {
+	private static final MessageTemplate INT64_INSTR = new MessageTemplate(new QName("Int64Instr", NAMESPACE), new Field[] {
 		new StaticTemplateReference(PRIM_FIELD_BASE),
-		new Scalar("InitialValue", Type.I64, Operator.NONE, null, true)
+		new Scalar(qualify("InitialValue"), Type.I64, Operator.NONE, null, true)
 	});
 	
-	private static final MessageTemplate UINT64_INSTR = new MessageTemplate("UInt64Instr", new Field[] {
+	private static final MessageTemplate UINT64_INSTR = new MessageTemplate(new QName("UInt64Instr", NAMESPACE), new Field[] {
 		new StaticTemplateReference(PRIM_FIELD_BASE),
-		new Scalar("InitialValue", Type.U64, Operator.NONE, null, true)
+		new Scalar(qualify("InitialValue"), Type.U64, Operator.NONE, null, true)
 	});
 	
-	private static final MessageTemplate DECIMAL_INSTR = new MessageTemplate("DecimalInstr", new Field[] {
+	private static final MessageTemplate DECIMAL_INSTR = new MessageTemplate(new QName("DecimalInstr", NAMESPACE), new Field[] {
 		new StaticTemplateReference(PRIM_FIELD_BASE),
-		new Scalar("InitialValue", Type.DECIMAL, Operator.NONE, null, true)
+		new Scalar(qualify("InitialValue"), Type.DECIMAL, Operator.NONE, null, true)
 	});
 	
-	private static final MessageTemplate UNICODE_INSTR = new MessageTemplate("UnicodeInstr", new Field[] {
+	private static final MessageTemplate UNICODE_INSTR = new MessageTemplate(new QName("UnicodeInstr", NAMESPACE), new Field[] {
 		new StaticTemplateReference(PRIM_FIELD_BASE_WITH_LENGTH),
-		new Scalar("InitialValue", Type.UNICODE, Operator.NONE, null, true)
+		new Scalar(qualify("InitialValue"), Type.UNICODE, Operator.NONE, null, true)
 	});
 	
-	private static final MessageTemplate ASCII_INSTR = new MessageTemplate("AsciiInstr", new Field[] {
+	private static final MessageTemplate ASCII_INSTR = new MessageTemplate(new QName("AsciiInstr", NAMESPACE), new Field[] {
 		new StaticTemplateReference(PRIM_FIELD_BASE),
-		new Scalar("InitialValue", Type.ASCII, Operator.NONE, null, true)
+		new Scalar(qualify("InitialValue"), Type.ASCII, Operator.NONE, null, true)
 	});
 	
-	private static final MessageTemplate BYTE_VECTOR_INSTR = new MessageTemplate("ByteVectorInstr", new Field[] {
+	private static final MessageTemplate BYTE_VECTOR_INSTR = new MessageTemplate(new QName("ByteVectorInstr", NAMESPACE), new Field[] {
 		new StaticTemplateReference(PRIM_FIELD_BASE),
-		new Scalar("InitialValue", Type.BYTE_VECTOR, Operator.NONE, null, true)
+		new Scalar(qualify("InitialValue"), Type.BYTE_VECTOR, Operator.NONE, null, true)
 	});
     
-    private static final MessageTemplate TYPE_REF = new MessageTemplate("TypeRef", new Field[] {
-    		new Group("TypeRef", new Field[] {
+    private static final MessageTemplate TYPE_REF = new MessageTemplate(new QName("TypeRef", NAMESPACE), new Field[] {
+    		new Group(qualify("TypeRef"), new Field[] {
     				new StaticTemplateReference(NS_NAME),
     				new StaticTemplateReference(OTHER)
     		}, true)
     });
     
-    private static final MessageTemplate TEMPLATE_DECLARATION = new MessageTemplate("TemplateDecl", new Field[] {
+    private static final MessageTemplate TEMPLATE_DECLARATION = new MessageTemplate(new QName("TemplateDecl", NAMESPACE), new Field[] {
     		new StaticTemplateReference(TEMPLATE_NAME),
     		u32("TemplateId")
     });
     
-	private static final MessageTemplate TEMPLATE_DEFINITION = new MessageTemplate("TemplateDef", new Field[] {
+	private static final MessageTemplate TEMPLATE_DEFINITION = new MessageTemplate(new QName("TemplateDef", NAMESPACE), new Field[] {
 			new StaticTemplateReference(TEMPLATE_NAME),
 			unicodeopt("AuxId"),
 			u32opt("TemplateId"),
 			new StaticTemplateReference(TYPE_REF),
 			u32("Reset"),
 			new StaticTemplateReference(OTHER),
-			new Sequence("Instructions", new Field[] {
+			new Sequence(qualify("Instructions"), new Field[] {
 					new DynamicTemplateReference()
 			}, false)
 	});
 	
-	private static final MessageTemplate OP_BASE = new MessageTemplate("OpBase", new Field[] {
+	private static final MessageTemplate OP_BASE = new MessageTemplate(new QName("OpBase", NAMESPACE), new Field[] {
 			unicodeopt("Dictionary"),
-			new Group("Key", new Field[] {
+			new Group(qualify("Key"), new Field[] {
 				new StaticTemplateReference(NS_NAME)
 			}, true),
 			new StaticTemplateReference(OTHER)
 	});
 	
-	private static final MessageTemplate CONSTANT_OP = new MessageTemplate("ConstantOp", new Field[] {
+	private static final MessageTemplate CONSTANT_OP = new MessageTemplate(new QName("ConstantOp", NAMESPACE), new Field[] {
 		new StaticTemplateReference(OP_BASE)
 	});
 	
-	private static final MessageTemplate DEFAULT_OP = new MessageTemplate("DefaultOp", new Field[] {
+	private static final MessageTemplate DEFAULT_OP = new MessageTemplate(new QName("DefaultOp", NAMESPACE), new Field[] {
 		new StaticTemplateReference(OP_BASE)
 	});
 	
-	private static final MessageTemplate COPY_OP = new MessageTemplate("CopyOp", new Field[] {
+	private static final MessageTemplate COPY_OP = new MessageTemplate(new QName("CopyOp", NAMESPACE), new Field[] {
 		new StaticTemplateReference(OP_BASE)
 	});
 	
-	private static final MessageTemplate INCREMENT_OP = new MessageTemplate("IncrementOp", new Field[] {
+	private static final MessageTemplate INCREMENT_OP = new MessageTemplate(new QName("IncrementOp", NAMESPACE), new Field[] {
 		new StaticTemplateReference(OP_BASE)
 	});
 	
-	private static final MessageTemplate DELTA_OP = new MessageTemplate("DeltaOp", new Field[] {
+	private static final MessageTemplate DELTA_OP = new MessageTemplate(new QName("DeltaOp", NAMESPACE), new Field[] {
 		new StaticTemplateReference(OP_BASE)
 	});
 	
-	private static final MessageTemplate TAIL_OP = new MessageTemplate("TailOp", new Field[] {
+	private static final MessageTemplate TAIL_OP = new MessageTemplate(new QName("TailOp", NAMESPACE), new Field[] {
 		new StaticTemplateReference(OP_BASE)
 	});
 	
-	private static final MessageTemplate GROUP_INSTR = new MessageTemplate("GroupInstr", new Field[]{
+	private static final MessageTemplate GROUP_INSTR = new MessageTemplate(new QName("GroupInstr", NAMESPACE), new Field[]{
 		new StaticTemplateReference(FIELD_BASE),
 		new StaticTemplateReference(TYPE_REF),
-		new Sequence("Instructions", new Field[] {
+		new Sequence(qualify("Instructions"), new Field[] {
 			new DynamicTemplateReference()
 		}, false)
 	});
 	
-	private static final MessageTemplate SEQUENCE_INSTR = new MessageTemplate("SequenceInstr", new Field[]{
+	private static final MessageTemplate SEQUENCE_INSTR = new MessageTemplate(new QName("SequenceInstr", NAMESPACE), new Field[]{
 		new StaticTemplateReference(FIELD_BASE),
 		new StaticTemplateReference(TYPE_REF),
-		new Group("Length", new Field[] {
-			new Group("Name", new Field[] {
+		new Group(qualify("Length"), new Field[] {
+			new Group(qualify("Name"), new Field[] {
 				new StaticTemplateReference(NS_NAME_WITH_AUX_ID)
 			}, true),
-			new Group("Operator", new Field[] {
+			new Group(qualify("Operator"), new Field[] {
 				new DynamicTemplateReference()
 			}, true),
-			new Scalar("InitialValue", Type.U32, Operator.NONE, null, true),
+			new Scalar(qualify("InitialValue"), Type.U32, Operator.NONE, null, true),
 			new StaticTemplateReference(OTHER),
 		}, true),
-		new Sequence("Instructions", new Field[] {
+		new Sequence(qualify("Instructions"), new Field[] {
 			new DynamicTemplateReference()
 		}, false)
 	});
 	
-	private static final MessageTemplate STAT_TEMP_REF_INSTR = new MessageTemplate("StaticTemplateRefInstr", new Field[]{
+	private static final MessageTemplate STAT_TEMP_REF_INSTR = new MessageTemplate(new QName("StaticTemplateRefInstr", NAMESPACE), new Field[]{
 		new StaticTemplateReference(TEMPLATE_NAME),
 		new StaticTemplateReference(OTHER)
 	});
 	
-	private static final MessageTemplate DYN_TEMP_REF_INSTR = new MessageTemplate("DynamicTemplateRefInstr", new Field[]{
+	private static final MessageTemplate DYN_TEMP_REF_INSTR = new MessageTemplate(new QName("DynamicTemplateRefInstr", NAMESPACE), new Field[]{
 		new StaticTemplateReference(OTHER)
+	});
+
+	private static final MessageTemplate FOREIGN_INSTR = new MessageTemplate(qualify("ForeignInstr"), new Field[] {
+		new StaticTemplateReference(ELEMENT)
+	});
+
+	private static final MessageTemplate TEXT = new MessageTemplate(qualify("Text"), new Field[] {
+		new Scalar(qualify("Value"), Type.UNICODE, Operator.NONE, ScalarValue.UNDEFINED, false)
+	});
+
+	private static final MessageTemplate COMP_DECIMAL_INSTR = new MessageTemplate(qualify("CompositeDecimalInstr"), new Field[] {
+		new StaticTemplateReference(FIELD_BASE),
+		new Group(qualify("Exponent"), new Field[] {
+			new Group(qualify("Operator"), new Field[] {
+				new DynamicTemplateReference()
+			}, false),
+			new Scalar("InitialValue", Type.I32, Operator.NONE, ScalarValue.UNDEFINED, true),
+			new StaticTemplateReference(OTHER)
+		}, true),
+		new Group(qualify("Mantissa"), new Field[] {
+			new Group(qualify("Operator"), new Field[] {
+				new DynamicTemplateReference()
+			}, false),
+			new Scalar("InitialValue", Type.I32, Operator.NONE, ScalarValue.UNDEFINED, true),
+			new StaticTemplateReference(OTHER)
+		}, true)
 	});
 	
 	static final Message DYN_TEMP_REF_MESSAGE = new Message(DYN_TEMP_REF_INSTR);
     
 	private static Field u32(String name) {
-		return new Scalar(name, Type.U32, Operator.NONE, null, false);
+		return new Scalar(qualify(name), Type.U32, Operator.NONE, null, false);
 	}
 	
 	private static Field dict(String name, Type type, boolean optional, String dictionary) {
-		Scalar scalar = new Scalar(name, Type.UNICODE, Operator.COPY, null, optional);
+		Scalar scalar = new Scalar(qualify(name), Type.UNICODE, Operator.COPY, null, optional);
 		scalar.setDictionary(dictionary);
 		return scalar;
 	}
 
+	private static QName qualify(String name) {
+		return new QName(name, NAMESPACE);
+	}
+
 	private static Field unicodeopt(String name) {
-		return new Scalar(name, Type.UNICODE, Operator.NONE, null, true);
+		return new Scalar(qualify(name), Type.UNICODE, Operator.NONE, null, true);
 	}
 	
 	private static Field unicode(String name) {
-		return new Scalar(name, Type.UNICODE, Operator.NONE, null, false);
+		return new Scalar(qualify(name), Type.UNICODE, Operator.NONE, null, false);
 	}
 
 	private static Field u32opt(String name) {
-		return new Scalar(name, Type.U32, Operator.NONE, null, true);
+		return new Scalar(qualify(name), Type.U32, Operator.NONE, null, true);
 	}
 	
 	private static final Map/*<Type, MessageTemplate>*/ TYPE_TEMPLATE_MAP = new HashMap();
 	private static final Map/*<Type, MessageTemplate>*/ TEMPLATE_TYPE_MAP = new HashMap();
 	private static final Map/*<Operator, MessageTemplate>*/ OPERATOR_TEMPLATE_MAP = new HashMap();
 	private static final Map/*<Operator, MessageTemplate>*/ TEMPLATE_OPERATOR_MAP = new HashMap();
+
+	private static final TemplateRegistry TEMPLATE_REGISTRY = new BasicTemplateRegistry();
 	
 	static {
 		TYPE_TEMPLATE_MAP.put(Type.I32,         INT32_INSTR);
@@ -607,5 +641,48 @@ public class SessionControlProtocol_1_1 extends AbstractSessionControlProtocol {
 		TEMPLATE_OPERATOR_MAP.put(INCREMENT_OP, Operator.INCREMENT);
 		TEMPLATE_OPERATOR_MAP.put(DELTA_OP,     Operator.DELTA);
 		TEMPLATE_OPERATOR_MAP.put(TAIL_OP,      Operator.TAIL);
+
+        TEMPLATE_REGISTRY.register(FAST_HELLO_TEMPLATE_ID, FAST_HELLO_TEMPLATE);
+        TEMPLATE_REGISTRY.register(FAST_ALERT_TEMPLATE_ID, FAST_ALERT_TEMPLATE);
+        TEMPLATE_REGISTRY.register(FAST_RESET_TEMPLATE_ID, FAST_RESET_TEMPLATE);
+        TEMPLATE_REGISTRY.register(TEMPLATE_DECL_ID, TEMPLATE_DECLARATION);
+        TEMPLATE_REGISTRY.register(TEMPLATE_DEF_ID, TEMPLATE_DEFINITION);
+        TEMPLATE_REGISTRY.register(INT32_INSTR_ID, INT32_INSTR);
+        TEMPLATE_REGISTRY.register(UINT32_INSTR_ID, UINT32_INSTR);
+        TEMPLATE_REGISTRY.register(INT64_INSTR_ID, INT64_INSTR);
+        TEMPLATE_REGISTRY.register(UINT64_INSTR_ID, UINT64_INSTR);
+        TEMPLATE_REGISTRY.register(DECIMAL_INSTR_ID, DECIMAL_INSTR);
+        TEMPLATE_REGISTRY.register(COMP_DECIMAL_INSTR_ID, COMP_DECIMAL_INSTR);
+        TEMPLATE_REGISTRY.register(ASCII_INSTR_ID, ASCII_INSTR);
+        TEMPLATE_REGISTRY.register(UNICODE_INSTR_ID, UNICODE_INSTR);
+        TEMPLATE_REGISTRY.register(BYTE_VECTOR_INSTR_ID, BYTE_VECTOR_INSTR);
+        TEMPLATE_REGISTRY.register(STAT_TEMP_REF_INSTR_ID, STAT_TEMP_REF_INSTR);
+        TEMPLATE_REGISTRY.register(DYN_TEMP_REF_INSTR_ID, DYN_TEMP_REF_INSTR);
+        TEMPLATE_REGISTRY.register(SEQUENCE_INSTR_ID, SEQUENCE_INSTR);
+        TEMPLATE_REGISTRY.register(GROUP_INSTR_ID, GROUP_INSTR);
+        TEMPLATE_REGISTRY.register(CONSTANT_OP_ID, CONSTANT_OP);
+        TEMPLATE_REGISTRY.register(DEFAULT_OP_ID, DEFAULT_OP);
+        TEMPLATE_REGISTRY.register(COPY_OP_ID, COPY_OP);
+        TEMPLATE_REGISTRY.register(INCREMENT_OP_ID, INCREMENT_OP);
+        TEMPLATE_REGISTRY.register(DELTA_OP_ID, DELTA_OP);
+        TEMPLATE_REGISTRY.register(TAIL_OP_ID, TAIL_OP);
+        TEMPLATE_REGISTRY.register(FOREIGN_INSTR_ID, FOREIGN_INSTR);
+        TEMPLATE_REGISTRY.register(ELEMENT_ID, ELEMENT);
+        TEMPLATE_REGISTRY.register(TEXT_ID, TEXT);
+        
+        MessageTemplate[] templates = TEMPLATE_REGISTRY.getTemplates();
+		for (int i=0; i<templates.length; i++) {
+			setNamespace(templates[i]);
+        }
     }
+
+	private static void setNamespace(Group group) {
+		group.setChildNamespace(NAMESPACE);
+		Field[] fields = group.getFields();
+		for (int i=0; i<fields.length; i++) {
+			if (fields[i] instanceof Group) {
+				setNamespace((Group) fields[i]);
+			}
+		}
+	}
 }

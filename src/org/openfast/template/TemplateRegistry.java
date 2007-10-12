@@ -29,16 +29,17 @@ import org.openfast.QName;
 public interface TemplateRegistry {
 	TemplateRegistry NULL = new NullTemplateRegistry();
 	
-	void registerTemplate(int id, MessageTemplate template);
-	void registerTemplate(int id, String name);
-	void registerTemplate(int id, QName name);
+	void registerAll(TemplateRegistry registry);
+	void register(int id, MessageTemplate template);
+	void register(int id, String name);
+	void register(int id, QName name);
 	
-	void defineTemplate(MessageTemplate template);
+	void define(MessageTemplate template);
 	
-	void removeTemplate(String name);
-	void removeTemplate(QName name);
-	void removeTemplate(MessageTemplate template);
-	void removeTemplate(int id);
+	void remove(String name);
+	void remove(QName name);
+	void remove(MessageTemplate template);
+	void remove(int id);
 	
 	MessageTemplate get(int id);
 	MessageTemplate get(String name);

@@ -34,6 +34,7 @@ import org.openfast.StringValue;
 
 import org.openfast.codec.FastDecoder;
 import org.openfast.codec.FastEncoder;
+import org.openfast.template.ComposedScalar;
 import org.openfast.template.FieldSet;
 import org.openfast.template.Group;
 import org.openfast.template.LongValue;
@@ -152,6 +153,18 @@ public abstract class OpenFastTestCase extends TestCase {
 	    assertScalarField(field, type, name);
 	    assertEquals(operator, field.getOperatorCodec());
 	    assertEquals(defaultValue, field.getDefaultValue());
+	}
+
+	protected void assertComposedScalarField(FieldSet fieldSet, int fieldIndex, Type type, String name, Operator exponentOp, ScalarValue exponentValue, Operator mantissaOp, ScalarValue mantissaValue) {
+	    ComposedScalar field = (ComposedScalar) fieldSet.getField(fieldIndex);
+	    assertEquals(type, field.getType());
+	    assertEquals(name, field.getName());
+	    Scalar[] fields = field.getFields();
+	    assertEquals(exponentOp, fields[0].getOperator());
+	    assertEquals(exponentValue, fields[0].getDefaultValue());
+
+	    assertEquals(mantissaOp, fields[1].getOperator());
+	    assertEquals(mantissaValue, fields[1].getDefaultValue());
 	}
 
 	protected void assertScalarField(FieldSet fieldSet, int fieldIndex, Type type, String name, Operator operator) {

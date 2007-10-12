@@ -41,22 +41,22 @@ final class NullTemplateRegistry implements TemplateRegistry {
 		return false;
 	}
 
-	public void registerTemplate(int templateId, MessageTemplate template) {
+	public void register(int templateId, MessageTemplate template) {
 	}
 
-	public void removeTemplate(String name) {
+	public void remove(String name) {
 	}
 
-	public void removeTemplate(MessageTemplate template) {
+	public void remove(MessageTemplate template) {
 	}
 
-	public void removeTemplate(int id) {
+	public void remove(int id) {
 	}
 
 	public void add(MessageTemplate template) {
 	}
 
-	public void defineTemplate(MessageTemplate template) {
+	public void define(MessageTemplate template) {
 	}
 
 	public MessageTemplate getTemplate(String name) {
@@ -111,10 +111,10 @@ final class NullTemplateRegistry implements TemplateRegistry {
 		return false;
 	}
 
-	public void registerTemplate(int templateId, QName name) {
+	public void register(int templateId, QName name) {
 	}
 
-	public void registerTemplate(int templateId, String name) {
+	public void register(int templateId, String name) {
 	}
 
 	public void removeTemplateRegisteredListener(TemplateRegisteredListener templateRegisteredListener) {
@@ -128,6 +128,9 @@ final class NullTemplateRegistry implements TemplateRegistry {
 		return false;
 	}
 
-	public void removeTemplate(QName name) {
+	public void remove(QName name) {
+	}
+
+	public void registerAll(TemplateRegistry registry) {
 	}
 }

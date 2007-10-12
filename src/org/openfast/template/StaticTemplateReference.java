@@ -3,6 +3,7 @@ package org.openfast.template;
 import java.io.InputStream;
 
 import org.openfast.BitVectorBuilder;
+import org.openfast.BitVectorReader;
 import org.openfast.Context;
 import org.openfast.FieldValue;
 
@@ -19,7 +20,7 @@ public class StaticTemplateReference extends Field {
 		return null;
 	}
 
-	public FieldValue decode(InputStream in, Group template, Context context, boolean present) {
+	public FieldValue decode(InputStream in, Group template, Context context, BitVectorReader pmapReader) {
 		return null;
 	}
 

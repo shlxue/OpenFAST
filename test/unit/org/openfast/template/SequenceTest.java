@@ -27,6 +27,7 @@ import java.io.InputStream;
 import junit.framework.TestCase;
 
 import org.openfast.BitVectorBuilder;
+import org.openfast.BitVectorReader;
 import org.openfast.ByteUtil;
 import org.openfast.Context;
 import org.openfast.FieldValue;
@@ -87,7 +88,7 @@ public class SequenceTest extends TestCase {
                 new IntegerValue(3), new IntegerValue(4)
             });
 
-        FieldValue result = sequence1.decode(stream, template, context, true);
+        FieldValue result = sequence1.decode(stream, template, context, BitVectorReader.INFINITE_TRUE);
         assertEquals(sequenceValue, result);
     }
 }

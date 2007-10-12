@@ -40,6 +40,7 @@ import org.openfast.error.ErrorHandler;
 import org.openfast.error.FastAlertSeverity;
 import org.openfast.error.FastConstants;
 import org.openfast.template.BasicTemplateRegistry;
+import org.openfast.template.ComposedScalar;
 import org.openfast.template.DynamicTemplateReference;
 import org.openfast.template.Field;
 import org.openfast.template.Group;
@@ -48,9 +49,7 @@ import org.openfast.template.Scalar;
 import org.openfast.template.Sequence;
 import org.openfast.template.StaticTemplateReference;
 import org.openfast.template.TemplateRegistry;
-import org.openfast.template.TwinValue;
 import org.openfast.template.operator.Operator;
-import org.openfast.template.operator.TwinOperatorCodec;
 import org.openfast.template.type.Type;
 import org.openfast.util.Util;
 import org.w3c.dom.Attr;
@@ -165,7 +164,7 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
     		messageTemplate.setId(templateElement.getAttribute("id"));
 		messageTemplate.setTypeReference(getTypeReference(templateElement));
 		messageTemplate.setChildNamespace(context.getNamespace());
-		templateRegistry.defineTemplate(messageTemplate);
+		templateRegistry.define(messageTemplate);
 		parseExternalAttributes(templateElement, messageTemplate);
 		return messageTemplate;
 	}
@@ -250,7 +249,8 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
     private Field parseField(Element fieldNode, ParsingContext parent) {
     	ParsingContext context = createContext(fieldNode, parent);
     	
-        String name = fieldNode.getAttribute("name");
+        QName name = new QName(fieldNode.getAttribute("name"), context.getNamespace());
+        
         String type = fieldNode.getNodeName();
         boolean optional = false;
 
@@ -280,7 +280,7 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
             }
 
             if ((mantissaNode != null) || (exponentNode != null)) {
-                return createTwinFieldDecimal(fieldNode, name, optional, mantissaNode, exponentNode, context);
+                return createComposedDecimal(fieldNode, name, optional, mantissaNode, exponentNode, context);
             }
         }
 
@@ -297,8 +297,7 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
      * @param exponentNode The passed exponentNode
      * @return Returns a new Scalar object with the newly create TwinValue object and TwinOperator object.
      */
-    private Field createTwinFieldDecimal(Element fieldNode, String name, boolean optional, Node mantissaNode, Node exponentNode, ParsingContext parent) {
-    	ParsingContext context = new ParsingContext(parent);
+    private Field createComposedDecimal(Element fieldNode, QName name, boolean optional, Node mantissaNode, Node exponentNode, ParsingContext context) {
         String mantissaOperator = "none";
         String exponentOperator = "none";
         ScalarValue mantissaDefaultValue = ScalarValue.UNDEFINED;
@@ -326,12 +325,10 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
             }
         }
 
-        Scalar scalar = new Scalar(new QName(name), Type.DECIMAL,
-		            new TwinOperatorCodec(Operator.getOperator(exponentOperator), Operator.getOperator(mantissaOperator)),
-		            new TwinValue(exponentDefaultValue, mantissaDefaultValue), optional);
+        ComposedScalar scalar = Util.composedDecimal(name, Operator.getOperator(exponentOperator), exponentDefaultValue, Operator.getOperator(mantissaOperator), mantissaDefaultValue, optional);
+        		
         if (fieldNode.hasAttribute("id"))
     		scalar.setId(fieldNode.getAttribute("id"));
-        scalar.setDictionary(context.getDictionary());
 		return scalar;
     }
 
@@ -343,11 +340,12 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
      * @param typeName The typeName of the new Scalar
      * @return Returns a new scalar with the passed information
      */
-    private Scalar createScalar(Element fieldNode, String name, boolean optional, String typeName, ParsingContext parent) {
+    private Scalar createScalar(Element fieldNode, QName name, boolean optional, String typeName, ParsingContext parent) {
     	ParsingContext context = createContext(fieldNode, parent);
     	Operator operator = Operator.NONE;
     	String defaultValue = null;
     	String key = null;
+    	String ns = "";
         Element operatorElement = getOperatorElement(fieldNode);
         if (operatorElement != null) {
 	        if (operatorElement.hasAttribute("value"))
@@ -355,6 +353,8 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
 	        operator = Operator.getOperator(operatorElement.getNodeName());
 	        if (operatorElement.hasAttribute("key"))
 	        	key = operatorElement.getAttribute("key");
+	        if (operatorElement.hasAttribute("ns"))
+	        	ns = operatorElement.getAttribute("ns");
 	        if (operatorElement.hasAttribute("dictionary"))
 	        	context.setDictionary(operatorElement.getAttribute("dictionary"));
         }
@@ -362,12 +362,11 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
         	errorHandler.error(INVALID_TYPE, "The type " + typeName + " is not defined.  Possible types: " + Util.collectionToString(typeMap.keySet(), ", "));
         }
         Type type = (Type) typeMap.get(typeName);
-		QName qname = new QName(name, context.getNamespace());
-		Scalar scalar = new Scalar(qname, type, operator, type.getValue(defaultValue), optional);
+		Scalar scalar = new Scalar(name, type, operator, type.getValue(defaultValue), optional);
 		if (fieldNode.hasAttribute("id"))
     		scalar.setId(fieldNode.getAttribute("id"));
         if (key != null)
-        	scalar.setKey(key);
+        	scalar.setKey(new QName(key, ns));
         scalar.setDictionary(context.getDictionary());
 		return scalar;
     }
@@ -425,7 +424,7 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
 
         Element length = (Element) lengthElements.item(0);
         ParsingContext context = createContext(sequence, parent);
-        String name = length.hasAttribute("name") ? length.getAttribute("name")
+        QName name = length.hasAttribute("name") ? new QName(length.getAttribute("name"), parent.getNamespace())
                                                   : Global.createImplicitName(new QName(sequenceName));
 
         return createScalar(length, name, optional, Type.U32.getName(), context);

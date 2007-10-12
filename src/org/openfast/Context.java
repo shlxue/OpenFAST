@@ -70,7 +70,7 @@ public class Context {
     }
 
     public void registerTemplate(int templateId, MessageTemplate template) {
-        templateRegistry.registerTemplate(templateId, template);
+        templateRegistry.register(templateId, template);
         Iterator iter = listeners.iterator();
         while (iter.hasNext()) {
         	((TemplateRegisteredListener) iter.next()).templateRegistered(template, templateId);
@@ -85,7 +85,7 @@ public class Context {
         lastTemplateId = templateId;
     }
 
-    public ScalarValue lookup(String dictionary, Group group, String key) {
+    public ScalarValue lookup(String dictionary, Group group, QName key) {
     	if (group.hasTypeReference())
     		currentApplicationType = group.getTypeReference();
         return getDictionary(dictionary).lookup(group, key, currentApplicationType);
@@ -95,7 +95,7 @@ public class Context {
         return (Dictionary) dictionaries.get(dictionary);
     }
 
-    public void store(String dictionary, Group group, String key, ScalarValue valueToEncode) {
+    public void store(String dictionary, Group group, QName key, ScalarValue valueToEncode) {
     	if (group.hasTypeReference())
     		currentApplicationType = group.getTypeReference();
         getDictionary(dictionary).store(group, currentApplicationType, key, valueToEncode);

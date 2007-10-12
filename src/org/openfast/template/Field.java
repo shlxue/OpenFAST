@@ -28,13 +28,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.openfast.BitVectorBuilder;
+import org.openfast.BitVectorReader;
 import org.openfast.Context;
 import org.openfast.FieldValue;
 import org.openfast.QName;
 
 public abstract class Field implements Serializable {
     protected final QName name;
-    protected String key;
+    protected QName key;
     protected final boolean optional;
     protected String id;
 	private Map attributes;
@@ -46,7 +47,7 @@ public abstract class Field implements Serializable {
      */
     public Field(QName name, boolean optional) {
         this.name = name;
-        this.key = name.getName();
+        this.key = name;
         this.optional = optional;
     }
 
@@ -56,7 +57,7 @@ public abstract class Field implements Serializable {
      * @param key The key of the Field, a string
      * @param optional Determines if the Field is required or not for the data
      */
-    public Field(QName name, String key, boolean optional) {
+    public Field(QName name, QName key, boolean optional) {
         this.name = name;
         this.key = key;
         this.optional = optional;
@@ -71,7 +72,7 @@ public abstract class Field implements Serializable {
      */
     public Field(String name, String key, boolean optional, String id) {
     	this.name = new QName(name);
-    	this.key = key;
+    	this.key = new QName(key);
     	this.optional = optional;
     	this.id = id;
     }
@@ -100,7 +101,7 @@ public abstract class Field implements Serializable {
      * Find the key
      * @return Returns the Key as a string
      */
-    public String getKey() {
+    public QName getKey() {
         return key;
     }
 
@@ -108,7 +109,7 @@ public abstract class Field implements Serializable {
      * Sets the passed key to the current field key
      * @param key The key to be set
      */
-	public void setKey(String key) {
+	public void setKey(QName key) {
 		this.key = key;
 	}
 	
@@ -137,6 +138,10 @@ public abstract class Field implements Serializable {
 		attributes.put(name, value);
 	}
 
+    protected boolean isPresent(BitVectorReader presenceMapReader) {
+		return (!usesPresenceMapBit()) || presenceMapReader.read();
+	}
+
     /**
      * byte[] encode method declaration
      * @param value The FieldValue object to be encoded
@@ -144,8 +149,7 @@ public abstract class Field implements Serializable {
      * @param context The previous object to keep the data in sync
      * @param presenceMapBuilder The BitVectorBuilder object to be encoded
      */
-    public abstract byte[] encode(FieldValue value, Group template,
-        Context context, BitVectorBuilder presenceMapBuilder);
+    public abstract byte[] encode(FieldValue value, Group template, Context context, BitVectorBuilder presenceMapBuilder);
 
     /**
      * FieldValue decode method declaration
@@ -155,8 +159,7 @@ public abstract class Field implements Serializable {
      * @param present
      *
      */
-    public abstract FieldValue decode(InputStream in, Group template,
-        Context context, boolean present);
+    public abstract FieldValue decode(InputStream in, Group template, Context context, BitVectorReader presenceMapReader);
 
     /**
      * 
@@ -170,8 +173,7 @@ public abstract class Field implements Serializable {
      * @param encoding The byte array to check if it is present
      * @param fieldValue The fieldValue object
      */
-    public abstract boolean isPresenceMapBitSet(byte[] encoding,
-        FieldValue fieldValue);
+    public abstract boolean isPresenceMapBitSet(byte[] encoding, FieldValue fieldValue);
 
     /**
      * getValueType method declaration

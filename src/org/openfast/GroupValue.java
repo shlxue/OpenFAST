@@ -160,7 +160,7 @@ public class GroupValue implements FieldValue {
 		setFieldValue(field, field.createValue(value));
 	}
 
-	private void setFieldValue(Field field, FieldValue value) {
+	public void setFieldValue(Field field, FieldValue value) {
 		setFieldValue(group.getFieldIndex(field), value);
 	}
 	

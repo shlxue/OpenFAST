@@ -25,6 +25,7 @@ package org.openfast.template.loader;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
+import org.openfast.QName;
 import org.openfast.ScalarValue;
 import org.openfast.error.ErrorHandler;
 import org.openfast.error.FastConstants;
@@ -34,7 +35,6 @@ import org.openfast.template.MessageTemplate;
 import org.openfast.template.Scalar;
 import org.openfast.template.Sequence;
 import org.openfast.template.operator.Operator;
-import org.openfast.template.operator.TwinOperatorCodec;
 import org.openfast.template.type.Type;
 import org.openfast.template.type.codec.TypeCodec;
 import org.openfast.test.OpenFastTestCase;
@@ -58,16 +58,10 @@ public class XMLMessageTemplateLoaderTest extends OpenFastTestCase {
         MessageTemplate messageTemplate = templates[0];
         assertEquals("SampleTemplate", messageTemplate.getName());
         assertEquals(7, messageTemplate.getFieldCount());
-        assertScalarField(messageTemplate, 1, Type.DECIMAL, "bid",  new TwinOperatorCodec(Operator.COPY, Operator.DELTA), twin(i(-2), ScalarValue.UNDEFINED));
-        assertScalarField(messageTemplate, 2, Type.DECIMAL, "ask",
-            new TwinOperatorCodec(Operator.NONE, Operator.DELTA),
-            twin(ScalarValue.UNDEFINED, ScalarValue.UNDEFINED));
-        assertScalarField(messageTemplate, 3, Type.DECIMAL, "high",
-            new TwinOperatorCodec(Operator.COPY, Operator.NONE),
-            twin(ScalarValue.UNDEFINED, ScalarValue.UNDEFINED));
-        assertScalarField(messageTemplate, 4, Type.DECIMAL, "low",
-            new TwinOperatorCodec(Operator.COPY, Operator.DELTA),
-            twin(i(-2), i(10)));
+        assertComposedScalarField(messageTemplate, 1, Type.DECIMAL, "bid", Operator.COPY, i(-2), Operator.DELTA, ScalarValue.UNDEFINED);
+        assertComposedScalarField(messageTemplate, 2, Type.DECIMAL, "ask", Operator.NONE, ScalarValue.UNDEFINED, Operator.DELTA, ScalarValue.UNDEFINED);
+        assertComposedScalarField(messageTemplate, 3, Type.DECIMAL, "high", Operator.COPY, ScalarValue.UNDEFINED, Operator.NONE, ScalarValue.UNDEFINED);
+        assertComposedScalarField(messageTemplate, 4, Type.DECIMAL, "low", Operator.COPY, i(-2), Operator.DELTA, i(10));
         assertScalarField(messageTemplate, 5, Type.DECIMAL, "open", Operator.COPY);
         assertScalarField(messageTemplate, 6, Type.DECIMAL, "close", Operator.COPY);
     }
@@ -103,7 +97,7 @@ public class XMLMessageTemplateLoaderTest extends OpenFastTestCase {
         MessageTemplate messageTemplate = templates[0];
 
         Scalar scalar = messageTemplate.getScalar("value");
-        assertEquals("integer", scalar.getKey());
+        assertEquals(new QName("integer"), scalar.getKey());
     }
 
     public void testLoadTemplateWithUnicodeString() {

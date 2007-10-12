@@ -27,10 +27,11 @@ import org.openfast.template.Group;
 
 public interface Dictionary {
     public static final String TEMPLATE = "template";
+	public static final String GLOBAL = "global";
 
-    ScalarValue lookup(Group template, String key, String applicationType);
+    ScalarValue lookup(Group template, QName key, String applicationType);
 
-    void store(Group group, String applicationType, String key, ScalarValue valueToEncode);
+    void store(Group group, String applicationType, QName key, ScalarValue valueToEncode);
 
     void reset();
 }

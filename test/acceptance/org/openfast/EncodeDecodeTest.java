@@ -41,24 +41,20 @@ import java.io.ByteArrayOutputStream;
 public class EncodeDecodeTest extends TestCase {
     public void testComplexMessage() throws Exception {
         MessageTemplate template = new MessageTemplate("Company",
-                new Field[] {
-                    new Scalar("Name", Type.STRING, Operator.NONE, ScalarValue.UNDEFINED, false),
-                    new Scalar("Id", Type.U32, Operator.INCREMENT,
-                        ScalarValue.UNDEFINED, false),
-                    new Sequence("Employees",
-                        new Field[] {
-                            new Scalar("First Name", Type.STRING,
-                                Operator.COPY, ScalarValue.UNDEFINED, false),
-                            new Scalar("Last Name", Type.STRING, Operator.COPY,
-                                ScalarValue.UNDEFINED, false),
-                            new Scalar("Age", Type.U32,
-                                Operator.DELTA, ScalarValue.UNDEFINED, false)
-                        }, false),
-                    new Group("Tax Information",
-                        new Field[] {
-                            new Scalar("EIN", Type.STRING, Operator.NONE, ScalarValue.UNDEFINED, false)
-                        }, false)
-                });
+            new Field[] {
+                new Scalar("Name", Type.STRING, Operator.NONE, ScalarValue.UNDEFINED, false),
+                new Scalar("Id", Type.U32, Operator.INCREMENT, ScalarValue.UNDEFINED, false),
+                new Sequence("Employees",
+                    new Field[] {
+                        new Scalar("First Name", Type.STRING, Operator.COPY, ScalarValue.UNDEFINED, false),
+                        new Scalar("Last Name", Type.STRING, Operator.COPY, ScalarValue.UNDEFINED, false),
+                        new Scalar("Age", Type.U32, Operator.DELTA, ScalarValue.UNDEFINED, false)
+                    }, false),
+                new Group("Tax Information",
+                    new Field[] {
+                        new Scalar("EIN", Type.STRING, Operator.NONE, ScalarValue.UNDEFINED, false)
+                    }, false)
+            });
         Message aaaInsurance = new Message(template);
         aaaInsurance.setFieldValue(1, new StringValue("AAA Insurance"));
         aaaInsurance.setFieldValue(2, new IntegerValue(5));

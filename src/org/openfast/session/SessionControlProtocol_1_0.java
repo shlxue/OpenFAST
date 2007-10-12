@@ -40,9 +40,9 @@ class SessionControlProtocol_1_0 extends AbstractSessionControlProtocol {
 	}
 
 	public void registerSessionTemplates(TemplateRegistry registry) {
-        registry.registerTemplate(FAST_HELLO_TEMPLATE_ID, FAST_HELLO_TEMPLATE);
-        registry.registerTemplate(FAST_ALERT_TEMPLATE_ID, FAST_ALERT_TEMPLATE);
-        registry.registerTemplate(FAST_RESET_TEMPLATE_ID, FAST_RESET_TEMPLATE);
+        registry.register(FAST_HELLO_TEMPLATE_ID, FAST_HELLO_TEMPLATE);
+        registry.register(FAST_ALERT_TEMPLATE_ID, FAST_ALERT_TEMPLATE);
+        registry.register(FAST_RESET_TEMPLATE_ID, FAST_RESET_TEMPLATE);
 	}
 
 	public void configureSession(Session session) {

@@ -11,10 +11,10 @@ public class ApplicationTypeDictionaryTest extends OpenFastTestCase {
 		
 		Context context = new Context();
 		
-		context.store("type", ObjectMother.allocationInstruction(), "ID", string("1234"));
+		context.store("type", ObjectMother.allocationInstruction(), new QName("ID"), string("1234"));
 		
-		assertEquals(string("1234"), context.lookup("type", ObjectMother.allocationInstruction(), "ID"));
-		assertEquals(ScalarValue.UNDEFINED, context.lookup("type", ObjectMother.allocations().getGroup(), "ID"));
+		assertEquals(string("1234"), context.lookup("type", ObjectMother.allocationInstruction(), new QName("ID")));
+		assertEquals(ScalarValue.UNDEFINED, context.lookup("type", ObjectMother.allocations().getGroup(), new QName("ID")));
 	}
 
 }

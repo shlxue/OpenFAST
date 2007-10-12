@@ -32,6 +32,7 @@ import java.util.Map;
 
 import org.openfast.BitVector;
 import org.openfast.BitVectorBuilder;
+import org.openfast.BitVectorReader;
 import org.openfast.BitVectorValue;
 import org.openfast.Context;
 import org.openfast.FieldValue;
@@ -61,7 +62,7 @@ public class Group extends Field {
     	this(new QName(name), fields, optional);
     }
 
-    protected Group(QName name, Field[] fields, boolean optional, boolean usesPresenceMap) {
+    public Group(QName name, Field[] fields, boolean optional) {
         super(name, optional);
         List expandedFields = new ArrayList();
         List staticTemplateReferences = new ArrayList();
@@ -80,20 +81,10 @@ public class Group extends Field {
         this.fieldIndexMap = constructFieldIndexMap(this.fields);
         this.fieldNameMap = constructFieldNameMap(this.fields);
         this.fieldIdMap = constructFieldIdMap(this.fields);
-        this.usesPresenceMap = usesPresenceMap;
+        this.usesPresenceMap = determinePresenceMapUsage(this.fields);
         this.staticTemplateReferences = (StaticTemplateReference[]) staticTemplateReferences.toArray(new StaticTemplateReference[staticTemplateReferences.size()]);
     }
-
-	/**
-     * 
-     * @param name The name of the Group
-     * @param fields The Field object array to be created for the group
-     * @param optional Determines if the Field is required or not for the data
-     */
-    public Group(QName name, Field[] fields, boolean optional) {
-    	this (name, fields, optional, determinePresenceMapUsage(fields));
-    }
-
+    
     /**
      * Check to see if the passed field array has a Field that has a MapBit present
      * @param fields The Field object array to be checked
@@ -155,7 +146,7 @@ public class Group extends Field {
             }
             ByteArrayOutputStream buffer = new ByteArrayOutputStream();
             
-            if (usesPresenceMap)
+            if (usesPresenceMap())
             	buffer.write(presenceMapBuilder.getBitVector().getTruncatedBytes());
             for (int i = 0; i < fieldEncodings.length; i++) {
                 if (fieldEncodings[i] != null) {
@@ -176,10 +167,12 @@ public class Group extends Field {
      * @param present
      * @return Returns a new GroupValue
      */
-    public FieldValue decode(InputStream in, Group group, Context context, boolean present) {
+    public FieldValue decode(InputStream in, Group group, Context context, BitVectorReader pmapReader) {
     	try {
-    		if (!present) return null;
-    		return new GroupValue(this, decodeFieldValues(in, group, context));
+    		if (!usesPresenceMapBit() || pmapReader.read())
+    			return new GroupValue(this, decodeFieldValues(in, group, context));
+    		else
+    			return null;
     	} catch (FastException e) {
     		throw new FastException("Error occurred while decoding " + this, e.getCode(), e);
     	}
@@ -194,13 +187,12 @@ public class Group extends Field {
      * @return Returns the FieldValue array of the decoded field values passed to it
      * 
      */
-    protected FieldValue[] decodeFieldValues(InputStream in, Group template,
-        Context context) {
-    	if (usesPresenceMap) {
+    protected FieldValue[] decodeFieldValues(InputStream in, Group template, Context context) {
+    	if (usesPresenceMap()) {
     		BitVector pmap = ((BitVectorValue) TypeCodec.BIT_VECTOR.decode(in)).value;
     		if (pmap.isOverlong())
     			Global.handleError(FastConstants.R7_PMAP_OVERLONG, "The presence map " + pmap + " for the group " + this + " is overlong.");
-    		return decodeFieldValues(in, template, pmap, context, 0);
+    		return decodeFieldValues(in, template, new BitVectorReader(pmap), context);
     	} else {
     		return decodeFieldValues(in, template, context, 0);
     	}
@@ -220,7 +212,7 @@ public class Group extends Field {
         FieldValue[] values = new FieldValue[fields.length];
 
         for (int fieldIndex = start; fieldIndex < fields.length; fieldIndex++) {
-            values[fieldIndex] = getField(fieldIndex).decode(in, template, context, true);
+            values[fieldIndex] = getField(fieldIndex).decode(in, template, context, BitVectorReader.NULL);
         }
         return values;
 	}
@@ -238,41 +230,16 @@ public class Group extends Field {
      * @throws Throws RuntimeException if there is an problem in the decoding
      *
      */
-    public FieldValue[] decodeFieldValues(InputStream in, Group template,
-        BitVector pmap, Context context, int start) {
+    public FieldValue[] decodeFieldValues(InputStream in, Group template, BitVectorReader pmapReader, Context context) {
         FieldValue[] values = new FieldValue[fields.length];
-        int presenceMapIndex = start;
-        
-
+        int start = this instanceof MessageTemplate ? 1 : 0;
         for (int fieldIndex = start; fieldIndex < fields.length; fieldIndex++) {
-            Field field = getField(fieldIndex);
-
-            boolean present = isPresent(pmap, presenceMapIndex, field);
-            values[fieldIndex] = fields[fieldIndex].decode(in, template, context, present);
-
-            if (field.usesPresenceMapBit()) {
-                presenceMapIndex++;
-            }
+            values[fieldIndex] = getField(fieldIndex).decode(in, template, context, pmapReader);
         }
-        if (pmap.indexOfLastSet() > presenceMapIndex)
-        	Global.handleError(FastConstants.R8_PMAP_TOO_MANY_BITS, "The presence map " + pmap + " has too many bits for the group " + this);
+        if (pmapReader.hasMoreBitsSet())
+        	Global.handleError(FastConstants.R8_PMAP_TOO_MANY_BITS, "The presence map " + pmapReader + " has too many bits for the group " + this);
         	
         return values;
-    }
-
-    /**
-     * 
-     * @param pmap The vector map that is to be tested
-     * @param i The index of the vector map to be checked 
-     * @param field The field object that is being tested to see if one is present
-     * @return Returns true 
-     */
-    private boolean isPresent(BitVector pmap, int i, Field field) {
-        if (!field.usesPresenceMapBit()) {
-            return true;
-        }
-
-        return pmap.isSet(i);
     }
 
     /**
@@ -291,6 +258,10 @@ public class Group extends Field {
      */
     public boolean usesPresenceMapBit() {
         return optional;
+    }
+    
+    public boolean usesPresenceMap() {
+    	return usesPresenceMap;
     }
     
     /**

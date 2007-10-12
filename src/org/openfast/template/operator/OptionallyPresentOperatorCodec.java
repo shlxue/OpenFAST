@@ -72,8 +72,7 @@ public abstract class OptionallyPresentOperatorCodec extends OperatorCodec {
         return null;
     }
 
-    protected abstract ScalarValue getValueToEncode(ScalarValue value,
-        ScalarValue priorValue, ScalarValue defaultValue);
+    protected abstract ScalarValue getValueToEncode(ScalarValue value, ScalarValue priorValue, ScalarValue defaultValue);
 
     protected abstract ScalarValue getInitialValue(Scalar field);
 

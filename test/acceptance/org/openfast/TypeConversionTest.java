@@ -1,5 +1,6 @@
 package org.openfast;
 
+import org.openfast.codec.FastDecoder;
 import org.openfast.codec.FastEncoder;
 import org.openfast.template.MessageTemplate;
 import org.openfast.test.OpenFastTestCase;
@@ -29,7 +30,9 @@ public class TypeConversionTest extends OpenFastTestCase {
 		FastEncoder encoder = encoder(template);
 		
 		byte[] encoding = encoder.encode(message);
-		GroupValue decodedMessage = (GroupValue) template.decode(byteStream(encoding), template, new Context(), true);
+
+		FastDecoder decoder = decoder(template, encoding);
+		Message decodedMessage = decoder.readMessage();
 		
 		assertEquals("7f001a", decodedMessage.getString("string"));
 		assertEquals(150, decodedMessage.getInt("uint"));

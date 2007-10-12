@@ -24,8 +24,6 @@ final class DecimalType extends SimpleType {
 	 * @return Returns the codec if the field is required
 	 */
 	public TypeCodec getCodec(Operator operator, boolean optional) {
-		if (operator == Operator.TWIN)
-			return TypeCodec.TF_SCALED_NUMBER;
 		return super.getCodec(operator, optional);
 	}
 

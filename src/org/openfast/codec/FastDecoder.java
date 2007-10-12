@@ -23,6 +23,7 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 package org.openfast.codec;
 
 import org.openfast.BitVector;
+import org.openfast.BitVectorReader;
 import org.openfast.BitVectorValue;
 import org.openfast.Context;
 import org.openfast.IntegerValue;
@@ -51,9 +52,10 @@ public class FastDecoder implements Coder {
         }
 
         BitVector pmap = (bitVectorValue).value;
-
+		BitVectorReader presenceMapReader = new BitVectorReader(pmap);
+		
         // if template id is not present, use previous, else decode template id
-        int templateId = (pmap.isSet(0)) ? ((IntegerValue) TypeCodec.UINT.decode(in)).value : context.getLastTemplateId();
+        int templateId = (presenceMapReader.read()) ? ((IntegerValue) TypeCodec.UINT.decode(in)).value : context.getLastTemplateId();
         MessageTemplate template = context.getTemplate(templateId);
 
         if (template == null) {
@@ -63,7 +65,7 @@ public class FastDecoder implements Coder {
 
         context.setLastTemplateId(templateId);
 
-        return template.decode(in, templateId, pmap, context);
+        return template.decode(in, templateId, presenceMapReader, context);
     }
 
     public void reset() {

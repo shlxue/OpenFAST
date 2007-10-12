@@ -25,7 +25,9 @@ package org.openfast.template;
 import java.io.InputStream;
 
 import org.openfast.BitVectorBuilder;
+import org.openfast.BitVectorReader;
 import org.openfast.Context;
+import org.openfast.Dictionary;
 import org.openfast.FieldValue;
 import org.openfast.Global;
 import org.openfast.QName;
@@ -65,7 +67,7 @@ public class Scalar extends Field {
         super(name, optional);
         this.operator = operator;
         this.operatorCodec = operator.getCodec(type);
-        this.dictionary = "global";
+        this.dictionary = Dictionary.GLOBAL;
         this.defaultValue = (defaultValue == null) ? ScalarValue.UNDEFINED : defaultValue;
         this.type = type;
         this.typeCodec = type.getCodec(operator, optional);
@@ -162,8 +164,7 @@ public class Scalar extends Field {
      * @param previousValue the previous value that was decoded
      * @return the actual value given the previous value and newly decoded value
      */
-    public ScalarValue decodeValue(ScalarValue newValue,
-        ScalarValue previousValue) {
+    public ScalarValue decodeValue(ScalarValue newValue, ScalarValue previousValue) {
         return operatorCodec.decodeValue(newValue, previousValue, this);
     }
 
@@ -217,18 +218,17 @@ public class Scalar extends Field {
      * @param in The InputStream to be decoded
      * @param template The Group object
      * @param context The previous object to keep the data in sync
-     * @param present 
+     * @param presenceMapReader 
      * @return Returns the null if the Operator is constant and the optional boolean is true and the present boolean is true,
      * otherwise decodes the previousValue and returns the FieldValue object after decoding
      */
-    public FieldValue decode(InputStream in, Group template, Context context,
-        boolean present) {
+    public FieldValue decode(InputStream in, Group template, Context context, BitVectorReader presenceMapReader) {
     	try {
 	        ScalarValue previousValue = context.lookup( getDictionary(), template, getKey());
 	        validateDictionaryTypeAgainstFieldType(previousValue, this.type);
 	        ScalarValue value;
 	
-	        if (present) {
+	        if (isPresent(presenceMapReader)) {
 	            value = decode(in, previousValue);
 	        } else {
 	            value = decode(previousValue);
@@ -246,7 +246,7 @@ public class Scalar extends Field {
     	}
     }
 
-    /**
+	/**
      * Validate the passed ScalarValue and the Type objects
      * @param value The value to be validated
      * @param type The type to be validated
@@ -273,6 +273,7 @@ public class Scalar extends Field {
      * @param dictionary The string to be stored as the dictionary
      */
     public void setDictionary(String dictionary) {
+    	if (dictionary == null) throw new NullPointerException();
         this.dictionary = dictionary;
     }
 

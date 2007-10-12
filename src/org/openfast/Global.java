@@ -23,8 +23,8 @@ public final class Global {
 		errorHandler.error(error, message, source);
 	}
 
-	public static String createImplicitName(QName name) {
-		return name + "@" + currentImplicitId++;
+	public static QName createImplicitName(QName name) {
+		return new QName(name + "@" + currentImplicitId++, name.getNamespace());
 	}
 
 	private Global() {}

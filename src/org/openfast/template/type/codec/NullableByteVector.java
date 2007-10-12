@@ -22,7 +22,7 @@ public class NullableByteVector extends NotStopBitEncodedType {
         ScalarValue decode = TypeCodec.NULLABLE_UNSIGNED_INTEGER.decode(in);
         if (decode == null)
         	return null;
-		int length = ((IntegerValue) decode).value;
+		int length = ((ScalarValue) decode).toInt();
         byte[] encoding = new byte[length];
 
         for (int i = 0; i < length; i++)

@@ -10,7 +10,7 @@ public class BasicTemplateRegistry extends AbstractTemplateRegistry {
 	private Map idMap = new HashMap();
 	private Map templateMap = new HashMap();
 
-	public void registerTemplate(int id, MessageTemplate template) {
+	public void register(int id, MessageTemplate template) {
 		nameMap.put(template.getQName(), template);
 		Integer tid = new Integer(id);
 		idMap.put(tid, template);
@@ -18,7 +18,7 @@ public class BasicTemplateRegistry extends AbstractTemplateRegistry {
 		notifyTemplateRegistered(template, id);
 	}
 	
-	public void registerTemplate(int id, QName name) {
+	public void register(int id, QName name) {
 		if (!nameMap.containsKey(name))
 			throw new IllegalArgumentException("The template named " + name + " is not defined.");
 		Integer tid = new Integer(id);
@@ -28,7 +28,7 @@ public class BasicTemplateRegistry extends AbstractTemplateRegistry {
 		notifyTemplateRegistered(template, id);
 	}
 	
-	public void defineTemplate(MessageTemplate template) {
+	public void define(MessageTemplate template) {
 		nameMap.put(template.getQName(), template);
 	}
 
@@ -71,21 +71,28 @@ public class BasicTemplateRegistry extends AbstractTemplateRegistry {
 		return (MessageTemplate[]) templateMap.keySet().toArray(new MessageTemplate[templateMap.size()]);
 	}
 
-	public void removeTemplate(QName name) {
+	public void remove(QName name) {
 		MessageTemplate template = (MessageTemplate) nameMap.remove(name);
 		Object id = templateMap.remove(template);
 		idMap.remove(id);
 	}
 
-	public void removeTemplate(MessageTemplate template) {
+	public void remove(MessageTemplate template) {
 		Object id = templateMap.remove(template);
 		nameMap.remove(template.getName());
 		idMap.remove(id);
 	}
 
-	public void removeTemplate(int id) {
+	public void remove(int id) {
 		MessageTemplate template = (MessageTemplate) idMap.remove(new Integer(id));
 		templateMap.remove(template);
 		nameMap.remove(template.getName());
+	}
+
+	public void registerAll(TemplateRegistry registry) {
+		MessageTemplate[] templates = registry.getTemplates();
+		for (int i=0; i<templates.length; i++) {
+			register(registry.getId(templates[i]), templates[i]);
+		}
 	}
 }

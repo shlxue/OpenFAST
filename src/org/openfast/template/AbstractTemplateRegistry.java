@@ -25,12 +25,12 @@ public abstract class AbstractTemplateRegistry implements TemplateRegistry {
 		return isRegistered(new QName(name, ""));
 	}
 
-	public void registerTemplate(int templateId, String name) {
-		registerTemplate(templateId, new QName(name, ""));
+	public void register(int templateId, String name) {
+		register(templateId, new QName(name, ""));
 	}
 
-	public void removeTemplate(String name) {
-		removeTemplate(new QName(name, ""));
+	public void remove(String name) {
+		remove(new QName(name, ""));
 	}
 	
 	protected void notifyTemplateRegistered(MessageTemplate template, int id) {

@@ -53,7 +53,7 @@ public class SessionControlProtocol_1_1Test extends OpenFastTestCase {
 		assertEquals(SessionControlProtocol_1_1.DYN_TEMP_REF_MESSAGE, templateDef.getSequence("Instructions").get(1).getGroup(0).getSequence("Instructions").get(0).getGroup(0));
 		
 		BasicTemplateRegistry registry = new BasicTemplateRegistry();
-		registry.registerTemplate(24, ObjectMother.headerTemplate());
+		registry.register(24, ObjectMother.headerTemplate());
 		assertEquals(ObjectMother.batchTemplate(), SCP_1_1.createTemplateFromMessage(templateDef, registry));
 	}
 }

@@ -40,7 +40,6 @@ public abstract class TypeCodec implements Serializable {
     public static final TypeCodec BIT_VECTOR = new BitVectorType();
     public static final TypeCodec BYTE_VECTOR = new ByteVectorType();
     public static final TypeCodec SF_SCALED_NUMBER = new SingleFieldDecimal();
-    public static final TypeCodec TF_SCALED_NUMBER = new TwinFieldDecimal();
     public static final TypeCodec STRING_DELTA = new StringDelta();
     
     public static final TypeCodec NULLABLE_UNSIGNED_INTEGER = new NullableUnsignedInteger();

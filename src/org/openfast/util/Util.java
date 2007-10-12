@@ -27,10 +27,17 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 
+import org.openfast.Global;
 import org.openfast.IntegerValue;
+import org.openfast.QName;
 import org.openfast.ScalarValue;
 import org.openfast.StringValue;
+import org.openfast.template.ComposedScalar;
+import org.openfast.template.Scalar;
 import org.openfast.template.TwinValue;
+import org.openfast.template.operator.Operator;
+import org.openfast.template.type.DecimalConverter;
+import org.openfast.template.type.Type;
 
 
 public class Util {
@@ -171,5 +178,11 @@ public class Util {
 		cal.set(year, month-1, day, hour, min, sec);
 		cal.set(Calendar.MILLISECOND, ms);
 		return cal.getTime();
+	}
+
+	public static ComposedScalar composedDecimal(QName name, Operator exponentOp, ScalarValue exponentVal, Operator mantissaOp, ScalarValue mantissaVal, boolean optional) {
+		Scalar exponentScalar = new Scalar(Global.createImplicitName(name), Type.I32, exponentOp, exponentVal, optional);
+		Scalar mantissaScalar = new Scalar(Global.createImplicitName(name), Type.I64, mantissaOp, mantissaVal, false);
+		return new ComposedScalar(name, Type.DECIMAL, new Scalar[] { exponentScalar, mantissaScalar }, optional, new DecimalConverter());
 	}
 }

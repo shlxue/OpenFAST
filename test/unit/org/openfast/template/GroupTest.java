@@ -25,6 +25,7 @@ package org.openfast.template;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
+import org.openfast.BitVectorReader;
 import org.openfast.ByteUtil;
 import org.openfast.Context;
 import org.openfast.FieldValue;
@@ -82,8 +83,7 @@ public class GroupTest extends OpenFastTestCase {
         //		MessageInputStream in = new MessageInputStream(new ByteArrayInputStream(message.getBytes()));
         Group group = new Group("person", new Field[] { firstname, lastName },
                 false);
-        GroupValue groupValue = (GroupValue) group.decode(in, template,
-                context, true);
+        GroupValue groupValue = (GroupValue) group.decode(in, template, context, BitVectorReader.INFINITE_TRUE);
         assertEquals(1, ((IntegerValue) groupValue.getValue(0)).value);
         assertEquals(2, ((IntegerValue) groupValue.getValue(1)).value);
     }
@@ -112,7 +112,7 @@ public class GroupTest extends OpenFastTestCase {
     
     public void testDecodeGroupWithOverlongPresenceMap() {
     	try {
-    		ObjectMother.quoteTemplate().decode(bitStream("00000000 10000000"), ObjectMother.quoteTemplate(), new Context(), true);
+    		ObjectMother.quoteTemplate().decode(bitStream("00000000 10000000"), ObjectMother.quoteTemplate(), new Context(), BitVectorReader.INFINITE_TRUE);
     		fail();
     	} catch (FastException e) {
     		assertEquals(FastConstants.R7_PMAP_OVERLONG, e.getCode());
@@ -124,7 +124,7 @@ public class GroupTest extends OpenFastTestCase {
     	Context c = new Context();
     	c.registerTemplate(1, g);
     	try {
-    		g.decode(bitStream("11111000 10000001 10000000 10000110 10000000 10000110"), g, c, true);
+    		g.decode(bitStream("11111000 10000001 10000000 10000110 10000000 10000110"), g, c, BitVectorReader.INFINITE_TRUE);
     	} catch (FastException e) {
     		assertEquals(FastConstants.R8_PMAP_TOO_MANY_BITS, e.getCode());
     	}

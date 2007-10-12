@@ -24,12 +24,12 @@ package org.openfast.template;
 
 import java.io.InputStream;
 
-import org.openfast.QName;
-import org.openfast.BitVector;
+import org.openfast.BitVectorReader;
 import org.openfast.Context;
 import org.openfast.FieldValue;
 import org.openfast.IntegerValue;
 import org.openfast.Message;
+import org.openfast.QName;
 import org.openfast.ScalarValue;
 import org.openfast.error.FastConstants;
 import org.openfast.error.FastException;
@@ -41,8 +41,12 @@ public class MessageTemplate extends Group implements FieldSet {
     private static final long serialVersionUID = 1L;
 
 	public MessageTemplate(QName name, Field[] fields) {
-        super(name, addTemplateIdField(fields), false, true);
+        super(name, addTemplateIdField(fields), false);
     }
+	
+	public boolean usesPresenceMap() {
+		return true;
+	}
 
 	public MessageTemplate(String name, Field[] fields) {
         this(new QName(name), fields);
@@ -92,14 +96,13 @@ public class MessageTemplate extends Group implements FieldSet {
      * Decodes the inputStream and creates a new message that contains this information
      * @param in The inputStream to be decoded
      * @param templateId The templateID of the message
-     * @param pmap The BitVector map of the Message
+     * @param presenceMapReader The BitVector map of the Message
      * @param context The previous object to keep the data in sync
      * @return Returns a new message object with the newly decoded fieldValue
      */
-    public Message decode(InputStream in, int templateId, BitVector pmap,
-        Context context) {
+    public Message decode(InputStream in, int templateId, BitVectorReader presenceMapReader, Context context) {
     	try {
-	        FieldValue[] fieldValues = super.decodeFieldValues(in, this, pmap, context, 1);
+	        FieldValue[] fieldValues = super.decodeFieldValues(in, this, presenceMapReader, context);
 	        fieldValues[0] = new IntegerValue(templateId);
 	
 	        return new Message(this, fieldValues);

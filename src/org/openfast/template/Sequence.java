@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
 
+import org.openfast.BitVectorReader;
 import org.openfast.QName;
 import org.openfast.BitVectorBuilder;
 import org.openfast.Context;
@@ -180,9 +181,9 @@ public class Sequence extends Field implements FieldSet {
      * @return If there is nothing to decode - returns null, otherwise 
      * returns a sequenceValue object that has the decoded information stored.
      */
-    public FieldValue decode(InputStream in, Group template, Context context, boolean present) {
+    public FieldValue decode(InputStream in, Group template, Context context, BitVectorReader pmapReader) {
         SequenceValue sequenceValue = new SequenceValue(this);
-        FieldValue lengthValue = length.decode(in, template, context, present);
+        FieldValue lengthValue = length.decode(in, template, context, pmapReader);
 
         if ((lengthValue == ScalarValue.NULL) || (lengthValue == null)) {
             return null;
@@ -191,12 +192,12 @@ public class Sequence extends Field implements FieldSet {
         int len = ((IntegerValue) lengthValue).value;
 
         for (int i = 0; i < len; i++)
-            sequenceValue.add((GroupValue) group.decode(in, template, context, present));
+            sequenceValue.add((GroupValue) group.decode(in, template, context, BitVectorReader.INFINITE_TRUE));
 
         return sequenceValue;
     }
-
-    /**
+    
+	/**
      * @return Returns the class of the current SequenceValue
      */
     public Class getValueType() {

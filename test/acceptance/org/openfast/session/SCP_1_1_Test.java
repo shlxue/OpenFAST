@@ -55,7 +55,7 @@ public class SCP_1_1_Test extends TestCase {
 			public void newSession(Session session) {
 				session.in.registerTemplate(1, ObjectMother.quoteTemplate());
 				
-				wait0();
+				wait0(MAX_TIMEOUT);
 				Message quote = session.in.readMessage();
 				assertEquals(1.0, quote.getDouble(1), .001);
 				assertEquals(2.0, quote.getDouble(2), .001);
@@ -97,7 +97,7 @@ public class SCP_1_1_Test extends TestCase {
 		String lastDupe = recordOut.toString();
 		
 		notify0();
-		wait0();
+		wait0(MAX_TIMEOUT);
 		assertFalse(firstDupe.equals(lastDupe));
 		assertEquals(1, successfullThreadsCount);
 	}
@@ -105,11 +105,11 @@ public class SCP_1_1_Test extends TestCase {
 	public void testAlert() throws FastConnectionException, IOException {
 		server.setSessionHandler(new SessionHandler() {
 			public void newSession(Session session) {
-				wait0();
+				wait0(MAX_TIMEOUT);
 				session.setListening(true);
 				notify0();
 				if (successfullThreadsCount == 0)
-					wait0();
+					wait0(MAX_TIMEOUT);
 			}});
 		server.listen();
 		
@@ -127,7 +127,7 @@ public class SCP_1_1_Test extends TestCase {
 		
 		session.out.writeMessage(ObjectMother.quote(1.0, 2.0));
 		notify0();
-		wait0();
+		wait0(MAX_TIMEOUT);
 		session.setListening(true);
 		
 		if (successfullThreadsCount < 1)
@@ -140,17 +140,12 @@ public class SCP_1_1_Test extends TestCase {
 			public void newSession(Session session) {
 				session.setListening(true);
 				TemplateRegistry registry = new BasicTemplateRegistry();
-				registry.registerTemplate(24, ObjectMother.quoteTemplate());
+				registry.register(24, ObjectMother.quoteTemplate());
 				
 				// Exchange quote template and send a quote with the newly exchanged template.
 				session.sendTemplates(registry);
 				session.out.writeMessage(ObjectMother.quote(101.3, 102.4));
-				synchronized(SCP_1_1_Test.this) {
-					try {
-						SCP_1_1_Test.this.wait();
-					} catch (InterruptedException e) {
-					}
-				}
+				wait0(MAX_TIMEOUT);
 				try {
 					session.close();
 				} catch (FastConnectionException e) {
@@ -165,16 +160,13 @@ public class SCP_1_1_Test extends TestCase {
 					assertEquals(101.3, message.getDouble(1), .1);
 					assertEquals(102.4, message.getDouble(2), .1);
 					successfullThreadsCount++;
-					synchronized(SCP_1_1_Test.this) {
-						SCP_1_1_Test.this.notifyAll();
-					}
+					notifyAll0();
 				}
 			}});
 		session.out.registerTemplate(1, ObjectMother.quoteTemplate());
-		
-		synchronized(this) {
-			this.wait();
-		}
+
+		if (successfullThreadsCount < 1)
+			wait0(MAX_TIMEOUT);
 		session.close();
 		assertEquals(1, successfullThreadsCount);
 	}
@@ -188,12 +180,7 @@ public class SCP_1_1_Test extends TestCase {
 				session.out.registerTemplate(24, ObjectMother.quoteTemplate());
 				session.out.writeMessage(templateDef);
 				session.out.writeMessage(ObjectMother.quote(101.3, 102.4));
-				synchronized(SCP_1_1_Test.this) {
-					try {
-						SCP_1_1_Test.this.wait();
-					} catch (InterruptedException e) {
-					}
-				}
+				wait0(MAX_TIMEOUT);
 				try {
 					session.close();
 				} catch (FastConnectionException e) {
@@ -209,24 +196,16 @@ public class SCP_1_1_Test extends TestCase {
 					assertEquals(102.4, message.getDouble(2), .1);
 					successfullThreadsCount++;
 					synchronized(SCP_1_1_Test.this) {
-						SCP_1_1_Test.this.notifyAll();
+						notifyAll0();
 					}
 				}
 			}});
 		session.out.registerTemplate(1, ObjectMother.quoteTemplate());
-		
-		synchronized(this) {
-			this.wait();
-		}
+
+		if (successfullThreadsCount < 1)
+			wait0(MAX_TIMEOUT);
 		session.close();
 		assertEquals(1, successfullThreadsCount);
-	}
-	
-	private synchronized void wait0() {
-		try {
-			this.wait();
-		} catch (InterruptedException e) {
-		}
 	}
 	
 	private synchronized void wait0(int timeout) {

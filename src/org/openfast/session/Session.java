@@ -23,13 +23,12 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 package org.openfast.session;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.openfast.Context;
 import org.openfast.Message;
 import org.openfast.MessageInputStream;
 import org.openfast.MessageOutputStream;
+import org.openfast.QName;
 import org.openfast.error.ErrorCode;
 import org.openfast.error.ErrorHandler;
 import org.openfast.error.FastConstants;
@@ -49,7 +48,6 @@ public class Session implements ErrorHandler {
 	private MessageListener messageListener;
 	private boolean listening;
 	private Thread listeningThread;
-	private Map templateDefinitions;
 
     public Session(Connection connection, SessionProtocol protocol) {
         Context inContext = new Context();
@@ -169,15 +167,12 @@ public class Session implements ErrorHandler {
 	}
 	
 	public void addDynamicTemplateDefinition(MessageTemplate template) {
-		if (templateDefinitions == null) {
-			templateDefinitions = new HashMap();
-		}
-		templateDefinitions.put(template.getName(), template);
+		in.getTemplateRegistry().define(template);
 	}
 
-	public void registerDynamicTemplate(String templateName, int id) {
-		if (!templateDefinitions.containsKey(templateName))
+	public void registerDynamicTemplate(QName templateName, int id) {
+		if (!in.getTemplateRegistry().isDefined(templateName))
 			throw new IllegalStateException("Template " + templateName + " has not been defined.");
-		in.registerTemplate(id, (MessageTemplate) templateDefinitions.get(templateName));
+		in.getTemplateRegistry().register(id, templateName);
 	}
 }
