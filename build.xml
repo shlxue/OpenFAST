@@ -75,8 +75,8 @@
 			<compilerarg line="-Xlint:deprecation -Xlint:unchecked"/>
 		</javac>
 		<copy todir="${build.test.classes.dir}">
-			<fileset dir="${test.unit.dir}" includes="**/*.xml" />
-			<fileset dir="${test.acceptance.dir}" includes="**/*.xml" />
+			<fileset dir="${test.unit.dir}" excludes="**/*.java" includes="**/*" />
+			<fileset dir="${test.acceptance.dir}" excludes="**/*.java" includes="**/*" />
 		</copy>
 	</target>
 

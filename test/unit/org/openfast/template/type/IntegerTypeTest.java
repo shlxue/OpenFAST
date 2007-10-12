@@ -22,8 +22,6 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast.template.type;
 
-import org.openfast.BitVectorReader;
-import org.openfast.Message;
 import org.openfast.codec.FastDecoder;
 import org.openfast.error.FastConstants;
 import org.openfast.error.FastException;
