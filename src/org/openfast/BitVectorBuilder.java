@@ -29,4 +29,8 @@ public class BitVectorBuilder {
 			set();
 	}
 
+	public int getIndex() {
+		return index;
+	}
+
 }

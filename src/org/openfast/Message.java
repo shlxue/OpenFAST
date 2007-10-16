@@ -55,10 +55,6 @@ public class Message extends GroupValue {
         return fields;
     }
 
-    public String toString() {
-        return "Message";
-    }
-
     public boolean equals(Object obj) {
         if ((obj == null) || !(obj instanceof Message)) {
             return false;

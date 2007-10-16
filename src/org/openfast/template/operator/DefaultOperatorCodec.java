@@ -16,6 +16,8 @@ final class DefaultOperatorCodec extends OperatorCodec {
 
 	public ScalarValue getValueToEncode(ScalarValue value, ScalarValue priorValue, Scalar field) {
 	    if (value == null) {
+	    	if (field.getDefaultValue().isUndefined())
+	    		return null;
 	        return ScalarValue.NULL;
 	    }
 	

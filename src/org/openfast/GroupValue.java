@@ -236,6 +236,7 @@ public class GroupValue implements FieldValue {
     public String toString() {
         StringBuilder builder = new StringBuilder();
 
+        builder.append(group).append(" -> {");
         for (int i = 0; i < values.length; i++) {
             builder.append(values[i]).append(", ");
         }
@@ -244,6 +245,7 @@ public class GroupValue implements FieldValue {
             builder.delete(builder.length() - 2, builder.length());
         }
 
+        builder.append("}");
         return builder.toString();
     }
 

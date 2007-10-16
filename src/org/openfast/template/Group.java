@@ -34,6 +34,7 @@ import org.openfast.BitVector;
 import org.openfast.BitVectorBuilder;
 import org.openfast.BitVectorReader;
 import org.openfast.BitVectorValue;
+import org.openfast.ByteUtil;
 import org.openfast.Context;
 import org.openfast.FieldValue;
 import org.openfast.Global;
@@ -133,26 +134,43 @@ public class Group extends Field {
         }
 
         GroupValue groupValue = (GroupValue) value;
+    	if (Global.isTraceEnabled()) {
+    		Global.traceDown();
+    		Global.trace(groupValue.toString());
+    	}
         BitVectorBuilder presenceMapBuilder = new BitVectorBuilder(fields.length);
         try {
             byte[][] fieldEncodings = new byte[fields.length][];
 
-            for (int fieldIndex = 0; fieldIndex < fields.length;
-                    fieldIndex++) {
+            for (int fieldIndex = 0; fieldIndex < fields.length; fieldIndex++) {
                 FieldValue fieldValue = groupValue.getValue(fieldIndex);
                 Field field = getField(fieldIndex);
                 byte[] encoding = field.encode(fieldValue, template, context, presenceMapBuilder);
+                if (Global.isTraceEnabled() && encoding.length > 0) {
+					StringBuilder message = new StringBuilder();
+					message.append(field.getName()).append("[fieldIndex:").append(fieldIndex);
+					if (field.usesPresenceMapBit())
+						message.append(", pmapIndex:").append(presenceMapBuilder.getIndex());
+					message.append("] = ").append(ByteUtil.convertByteArrayToBitString(encoding));
+					Global.trace(message);
+				}
                 fieldEncodings[fieldIndex] = encoding;
             }
             ByteArrayOutputStream buffer = new ByteArrayOutputStream();
             
-            if (usesPresenceMap())
-            	buffer.write(presenceMapBuilder.getBitVector().getTruncatedBytes());
+            if (usesPresenceMap()) {
+				byte[] pmap = presenceMapBuilder.getBitVector().getTruncatedBytes();
+				if (Global.isTraceEnabled())
+					Global.trace("PMAP: " + ByteUtil.convertByteArrayToBitString(pmap));
+				buffer.write(pmap);
+			}
             for (int i = 0; i < fieldEncodings.length; i++) {
                 if (fieldEncodings[i] != null) {
                     buffer.write(fieldEncodings[i]);
                 }
             }
+            if (Global.isTraceEnabled())
+            	Global.traceUp();
             return buffer.toByteArray();
         } catch (IOException e) {
             throw new RuntimeException(e);
