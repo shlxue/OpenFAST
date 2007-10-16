@@ -248,6 +248,7 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
      */
     private Field parseField(Element fieldNode, ParsingContext parent) {
     	ParsingContext context = createContext(fieldNode, parent);
+    	Field field = null;
     	
         QName name = new QName(fieldNode.getAttribute("name"), context.getNamespace());
         
@@ -257,34 +258,40 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
         optional = "optional".equals(fieldNode.getAttribute("presence"));
 
         if ("sequence".equals(type)) {
-            return parseSequence(fieldNode, optional, context);
+            field = parseSequence(fieldNode, optional, context);
         } else if ("group".equals(type)) {
-            return parseGroup(fieldNode, optional, context);
-        } else if ("string".equals(type)) {
-        	if (fieldNode.hasAttribute("charset"))
-        		type = fieldNode.getAttribute("charset");
-        	else
-        		type = "ascii";
-        } else if ("decimal".equals(type)) {
-            // Check for "decimal" special case where there are two separate operators for the mantissa and exponent
-            NodeList fieldChildren = fieldNode.getChildNodes();
-            Node mantissaNode = null;
-            Node exponentNode = null;
-
-            for (int i = 0; i < fieldChildren.getLength(); i++) {
-                if ("mantissa".equals(fieldChildren.item(i).getNodeName())) {
-                    mantissaNode = fieldChildren.item(i);
-                } else if ("exponent".equals(fieldChildren.item(i).getNodeName())) {
-                    exponentNode = fieldChildren.item(i);
-                }
-            }
-
-            if ((mantissaNode != null) || (exponentNode != null)) {
-                return createComposedDecimal(fieldNode, name, optional, mantissaNode, exponentNode, context);
-            }
+            field =  parseGroup(fieldNode, optional, context);
+        } else { 
+        	if ("string".equals(type)) {
+	        	if (fieldNode.hasAttribute("charset"))
+	        		type = fieldNode.getAttribute("charset");
+	        	else
+	        		type = "ascii";
+	        } else if ("decimal".equals(type)) {
+	            // Check for "decimal" special case where there are two separate operators for the mantissa and exponent
+	            NodeList fieldChildren = fieldNode.getChildNodes();
+	            Node mantissaNode = null;
+	            Node exponentNode = null;
+	
+	            for (int i = 0; i < fieldChildren.getLength(); i++) {
+	                if ("mantissa".equals(fieldChildren.item(i).getNodeName())) {
+	                    mantissaNode = fieldChildren.item(i);
+	                } else if ("exponent".equals(fieldChildren.item(i).getNodeName())) {
+	                    exponentNode = fieldChildren.item(i);
+	                }
+	            }
+	
+	            if ((mantissaNode != null) || (exponentNode != null)) {
+	                field = createComposedDecimal(fieldNode, name, optional, mantissaNode, exponentNode, context);
+	            }
+	        } 
+	        if (field == null) {
+	            field = createScalar(fieldNode, name, optional, type, context);
+	        }
         }
 
-        return createScalar(fieldNode, name, optional, type, context);
+		parseExternalAttributes(fieldNode, field);
+		return field;
     }
 
     /**

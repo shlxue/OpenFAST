@@ -144,8 +144,7 @@ public class GroupValue implements FieldValue {
 
 	public FieldValue getValue(String fieldName) {
 	    if (!group.hasField(fieldName)) {
-	        throw new IllegalArgumentException("The field \"" + fieldName +
-	            "\" does not exist.");
+	        throw new IllegalArgumentException("The field \"" + fieldName + "\" does not exist.");
 	    }
 	
 	    return values[group.getFieldIndex(fieldName)];
@@ -258,7 +257,7 @@ public class GroupValue implements FieldValue {
     }
 
     public void setFieldValue(String fieldName, String value) {
-        setFieldValue(fieldName, group.getScalar(fieldName).createValue(value));
+        setFieldValue(fieldName, group.getField(fieldName).createValue(value));
     }
 
     public boolean isDefined(int fieldIndex) {

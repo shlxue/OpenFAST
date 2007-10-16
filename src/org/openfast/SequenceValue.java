@@ -119,4 +119,8 @@ public class SequenceValue implements FieldValue {
     public Sequence getSequence() {
         return sequence;
     }
+
+	public GroupValue[] getValues() {
+		return (GroupValue[]) this.elements.toArray(new GroupValue[elements.size()]);
+	}
 }

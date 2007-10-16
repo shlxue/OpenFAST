@@ -137,6 +137,10 @@ public abstract class Field implements Serializable {
 		if (attributes == null) attributes = new HashMap(4);
 		attributes.put(name, value);
 	}
+	
+	public String getAttribute(QName name) {
+		return (String) attributes.get(name);
+	}
 
     protected boolean isPresent(BitVectorReader presenceMapReader) {
 		return (!usesPresenceMapBit()) || presenceMapReader.read();

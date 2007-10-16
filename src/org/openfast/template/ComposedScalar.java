@@ -30,7 +30,7 @@ public class ComposedScalar extends Field {
 	}
 	
 	public FieldValue createValue(String value) {
-		throw new UnsupportedOperationException();
+		return type.getValue(value);
 	}
 
 	public FieldValue decode(InputStream in, Group template, Context context, BitVectorReader presenceMapReader) {

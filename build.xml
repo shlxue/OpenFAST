@@ -57,8 +57,6 @@
 		<pathelement location="${build.classes.dir}" />
 	</path>
 
-	<target name="all" depends="clean, jdepend, complexity, coverage-report, javadoc, post-clean" description="builds and tests everything" />
-
 	<target name="compile">
 		<mkdir dir="${build.classes.dir}" />
 		<javac srcdir="${src.dir}" destdir="${build.classes.dir}" debug="yes" debuglevel="lines,source,vars" target="1.4" source="1.4">
@@ -164,6 +162,31 @@
 			</packageset>
 		</javadoc>
 	</target>
+	
+	<target name="dist" depends="jar,javadoc,post-clean">
+		<mkdir dir="${work.dir}/dist"/>
+		<copy todir="${work.dir}/dist/src">
+			<fileset dir="${src.dir}"/>
+		</copy>
+		<copy todir="${work.dir}/dist/doc">
+			<fileset dir="${docs.dir}"/>
+		</copy>
+		<copy todir="${work.dir}/dist/test">
+			<fileset dir="${test.dir}"/>
+		</copy>
+		<copy todir="${work.dir}/dist/lib">
+			<fileset dir="${lib}"/>
+		</copy>
+		<mkdir dir="${work.dir}/dist/dist"/>
+		<copy todir="${work.dir}/dist/dist" file="${dist.dir}/${ant.project.name}.jar"/>
+		<copy todir="${work.dir}/dist" file="license.txt"/>
+		<copy todir="${work.dir}/dist" file="build.xml"/>
+		<zip destfile="${dist.dir}/${ant.project.name}.zip" basedir="${work.dir}/dist"/>
+		<zip destfile="${dist.dir}/${ant.project.name}.zip" basedir="${work.dir}/dist"/>
+		<tar destfile="${dist.dir}/${ant.project.name}.tar.gz" basedir="${work.dir}/dist" compression="gzip"/>
+	</target>
+
+	<target name="all" depends="clean, jdepend, complexity, coverage-report, javadoc, dist, post-clean" description="builds and tests everything" />
 
 	<target name="clean">
 		<delete dir="${build.dir}" />

@@ -15,8 +15,7 @@ final class IncrementIntegerOperatorCodec extends OperatorCodec {
 		super(operator, types);
 	}
 
-	public ScalarValue getValueToEncode(ScalarValue value,
-	    ScalarValue priorValue, Scalar field) {
+	public ScalarValue getValueToEncode(ScalarValue value, ScalarValue priorValue, Scalar field) {
 	    if (priorValue == null) {
 	        return value;
 	    }
@@ -48,20 +47,18 @@ final class IncrementIntegerOperatorCodec extends OperatorCodec {
 	    return null;
 	}
 
-	public ScalarValue decodeValue(ScalarValue newValue,
-	    ScalarValue previousValue, Scalar field) {
+	public ScalarValue decodeValue(ScalarValue newValue, ScalarValue previousValue, Scalar field) {
 	    return newValue;
 	}
 
-	public ScalarValue decodeEmptyValue(ScalarValue previousValue,
-	    Scalar field) {
-	    if ((previousValue == null) || previousValue.isUndefined()) {
+	public ScalarValue decodeEmptyValue(ScalarValue previousValue, Scalar field) {
+		if (previousValue == null) return null;
+	    if (previousValue.isUndefined()) {
 	        if (field.getDefaultValue().isUndefined()) {
 	            if (field.isOptional()) {
 	                return null;
 	            } else {
-	                throw new IllegalStateException(
-	                    "Field with operator increment must send a value if no previous value existed.");
+	                throw new IllegalStateException("Field with operator increment must send a value if no previous value existed.");
 	            }
 	        } else {
 	            return field.getDefaultValue();

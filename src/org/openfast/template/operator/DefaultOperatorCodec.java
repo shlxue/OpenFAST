@@ -14,8 +14,7 @@ final class DefaultOperatorCodec extends OperatorCodec {
 		super(operator, types);
 	}
 
-	public ScalarValue getValueToEncode(ScalarValue value,
-	    ScalarValue priorValue, Scalar field) {
+	public ScalarValue getValueToEncode(ScalarValue value, ScalarValue priorValue, Scalar field) {
 	    if (value == null) {
 	        return ScalarValue.NULL;
 	    }
@@ -23,13 +22,12 @@ final class DefaultOperatorCodec extends OperatorCodec {
 	    return value.equals(field.getDefaultValue()) ? null : value;
 	}
 
-	public ScalarValue decodeValue(ScalarValue newValue,
-	    ScalarValue previousValue, Scalar field) {
+	public ScalarValue decodeValue(ScalarValue newValue, ScalarValue previousValue, Scalar field) {
 	    return newValue;
 	}
 
-	public ScalarValue decodeEmptyValue(ScalarValue previousValue,
-	    Scalar field) {
+	public ScalarValue decodeEmptyValue(ScalarValue previousValue, Scalar field) {
+		if (field.getDefaultValue().isUndefined()) return null;
 	    return field.getDefaultValue();
 	}
 
