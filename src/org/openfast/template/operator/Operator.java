@@ -48,7 +48,6 @@ public class Operator implements Serializable {
 		}
 	};
 	public static final Operator TAIL = new Operator("tail");
-	public static final Operator TWIN = new Operator("twin");
 
 	public Operator(String name) {
 		this.name = name;

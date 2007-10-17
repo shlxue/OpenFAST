@@ -34,7 +34,6 @@ import org.openfast.BitVector;
 import org.openfast.BitVectorBuilder;
 import org.openfast.BitVectorReader;
 import org.openfast.BitVectorValue;
-import org.openfast.ByteUtil;
 import org.openfast.Context;
 import org.openfast.FieldValue;
 import org.openfast.Global;
@@ -134,9 +133,8 @@ public class Group extends Field {
         }
 
         GroupValue groupValue = (GroupValue) value;
-    	if (Global.isTraceEnabled()) {
-    		Global.traceDown();
-    		Global.trace(groupValue.toString());
+    	if (context.isTraceEnabled()) {
+    		context.encodeTrace.groupStart(groupValue);
     	}
         BitVectorBuilder presenceMapBuilder = new BitVectorBuilder(fields.length);
         try {
@@ -146,13 +144,8 @@ public class Group extends Field {
                 FieldValue fieldValue = groupValue.getValue(fieldIndex);
                 Field field = getField(fieldIndex);
                 byte[] encoding = field.encode(fieldValue, template, context, presenceMapBuilder);
-                if (Global.isTraceEnabled() && encoding.length > 0) {
-					StringBuilder message = new StringBuilder();
-					message.append(field.getName()).append("[fieldIndex:").append(fieldIndex);
-					if (field.usesPresenceMapBit())
-						message.append(", pmapIndex:").append(presenceMapBuilder.getIndex());
-					message.append("] = ").append(ByteUtil.convertByteArrayToBitString(encoding));
-					Global.trace(message);
+                if (context.isTraceEnabled() && encoding.length > 0) {
+					context.encodeTrace.field(field, fieldIndex, presenceMapBuilder.getIndex(), encoding);
 				}
                 fieldEncodings[fieldIndex] = encoding;
             }
@@ -160,8 +153,8 @@ public class Group extends Field {
             
             if (usesPresenceMap()) {
 				byte[] pmap = presenceMapBuilder.getBitVector().getTruncatedBytes();
-				if (Global.isTraceEnabled())
-					Global.trace("PMAP: " + ByteUtil.convertByteArrayToBitString(pmap));
+				if (context.isTraceEnabled())
+					context.encodeTrace.pmap(pmap);
 				buffer.write(pmap);
 			}
             for (int i = 0; i < fieldEncodings.length; i++) {
@@ -169,8 +162,8 @@ public class Group extends Field {
                     buffer.write(fieldEncodings[i]);
                 }
             }
-            if (Global.isTraceEnabled())
-            	Global.traceUp();
+            if (context.isTraceEnabled())
+            	context.encodeTrace.groupEnd();
             return buffer.toByteArray();
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -187,9 +180,14 @@ public class Group extends Field {
      */
     public FieldValue decode(InputStream in, Group group, Context context, BitVectorReader pmapReader) {
     	try {
-    		if (!usesPresenceMapBit() || pmapReader.read())
-    			return new GroupValue(this, decodeFieldValues(in, group, context));
-    		else
+    		if (!usesPresenceMapBit() || pmapReader.read()) {
+    			if (context.isTraceEnabled())
+    				context.decodeTrace.groupStarted(group);
+				GroupValue groupValue = new GroupValue(this, decodeFieldValues(in, group, context));
+				if (context.isTraceEnabled())
+					context.decodeTrace.groupEnded(groupValue);
+				return groupValue;
+			} else
     			return null;
     	} catch (FastException e) {
     		throw new FastException("Error occurred while decoding " + this, e.getCode(), e);
@@ -212,28 +210,9 @@ public class Group extends Field {
     			Global.handleError(FastConstants.R7_PMAP_OVERLONG, "The presence map " + pmap + " for the group " + this + " is overlong.");
     		return decodeFieldValues(in, template, new BitVectorReader(pmap), context);
     	} else {
-    		return decodeFieldValues(in, template, context, 0);
+    		return decodeFieldValues(in, template, BitVectorReader.NULL, context);
     	}
     }
-
-    /**
-     * If there is not a vector map created for the inputStream, a vector map will be created to pass to the public
-     * decodeFieldValues method.  
-     * @param in The InputStream to be decoded
-     * @param template The Group object to be decoded
-     * @param context The previous object to keep the data in sync
-     * @param start The starting point of where to decode
-     * @return Returns the FieldValue array of the decoded field values passed to it
-     * 
-     */
-    private FieldValue[] decodeFieldValues(InputStream in, Group template, Context context, int start) {
-        FieldValue[] values = new FieldValue[fields.length];
-
-        for (int fieldIndex = start; fieldIndex < fields.length; fieldIndex++) {
-            values[fieldIndex] = getField(fieldIndex).decode(in, template, context, BitVectorReader.NULL);
-        }
-        return values;
-	}
 
 	/**
      * Goes through the all the field value array, starting with the index passed, checks to see if a map actually created for the field to pass
@@ -252,7 +231,8 @@ public class Group extends Field {
         FieldValue[] values = new FieldValue[fields.length];
         int start = this instanceof MessageTemplate ? 1 : 0;
         for (int fieldIndex = start; fieldIndex < fields.length; fieldIndex++) {
-            values[fieldIndex] = getField(fieldIndex).decode(in, template, context, pmapReader);
+            Field field = getField(fieldIndex);
+			values[fieldIndex] = field.decode(in, template, context, pmapReader);
         }
         if (pmapReader.hasMoreBitsSet())
         	Global.handleError(FastConstants.R8_PMAP_TOO_MANY_BITS, "The presence map " + pmapReader + " has too many bits for the group " + this);

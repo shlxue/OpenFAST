@@ -37,17 +37,14 @@ public class DeltaDecimalOperatorTest extends OpenFastTestCase {
         Scalar field = new Scalar("", Type.DECIMAL, Operator.DELTA, ScalarValue.UNDEFINED, false);
         OperatorCodec operator = field.getOperatorCodec();
 
-        DecimalValue value = (DecimalValue) operator.getValueToEncode(d(9427.55),
-                ScalarValue.UNDEFINED, field);
+        DecimalValue value = (DecimalValue) operator.getValueToEncode(d(9427.55),ScalarValue.UNDEFINED, field);
         assertEquals(9427.55, value.value, 0.1);
 
-        value = (DecimalValue) operator.getValueToEncode(d(9427.51),
-                d(9427.55), field);
+        value = (DecimalValue) operator.getValueToEncode(d(9427.51), d(9427.55), field);
         assertEquals(-4, value.mantissa);
         assertEquals(0, value.exponent);
 
-        value = (DecimalValue) operator.getValueToEncode(d(9427.46),
-                d(9427.51), field);
+        value = (DecimalValue) operator.getValueToEncode(d(9427.46), d(9427.51), field);
         assertEquals(-5, value.mantissa);
         assertEquals(0, value.exponent);
 

@@ -6,6 +6,10 @@ public class BitVectorReader {
 		public boolean read() {
 			throw new IllegalStateException();
 		}
+		
+		public boolean hasMoreBitsSet() {
+			return false;
+		}
 	};
 
 	public static final BitVectorReader INFINITE_TRUE = new BitVectorReader(null) {
@@ -39,5 +43,9 @@ public class BitVectorReader {
 
 	public boolean peek() {
 		return vector.isSet(index);
+	}
+
+	public int getIndex() {
+		return index;
 	}
 }

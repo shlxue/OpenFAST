@@ -39,9 +39,9 @@ public class FastDecoder implements Coder {
     private final InputStream in;
     private final Context context;
 
-    public FastDecoder(Context session, InputStream in) {
+    public FastDecoder(Context context, InputStream in) {
         this.in = in;
-        this.context = session;
+        this.context = context;
     }
 
     public Message readMessage() {
@@ -64,7 +64,12 @@ public class FastDecoder implements Coder {
         context.newMessage(template);
 
         context.setLastTemplateId(templateId);
-
+        
+        if (context.isTraceEnabled()) {
+	        context.encodeTrace.groupStarted(template);
+	        context.encodeTrace.pmap(pmap.getBytes());
+        }
+        
         return template.decode(in, templateId, presenceMapReader, context);
     }
 

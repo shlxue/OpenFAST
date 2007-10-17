@@ -38,6 +38,7 @@ import org.openfast.template.operator.Operator;
 import org.openfast.template.operator.OperatorCodec;
 import org.openfast.template.type.Type;
 import org.openfast.template.type.codec.TypeCodec;
+import org.openfast.util.RecordingInputStream;
 
 
 public class Scalar extends Field {
@@ -178,20 +179,6 @@ public class Scalar extends Field {
 
     /**
      * 
-     * @param in The InputStream to be decoded
-     * @param previousValue 
-     * @return the decoded value
-     */
-    public ScalarValue decode(InputStream in, ScalarValue previousValue) {
-    	if (!operatorCodec.shouldDecodeType()) {
-            return operatorCodec.decodeValue(null, null, this);
-        }
-
-        return decodeValue(typeCodec.decode(in), previousValue);
-    }
-
-    /**
-     * 
      * @param previousValue The previousValue of the ScalarValue
      * @return Depending on the operator, various ScalarValues could be returned
      */
@@ -227,9 +214,19 @@ public class Scalar extends Field {
 	        ScalarValue previousValue = context.lookup( getDictionary(), template, getKey());
 	        validateDictionaryTypeAgainstFieldType(previousValue, this.type);
 	        ScalarValue value;
-	
+	        
 	        if (isPresent(presenceMapReader)) {
-	            value = decode(in, previousValue);
+		        if (context.isTraceEnabled()) 
+		        	in = new RecordingInputStream(in);
+		        
+		    	if (!operatorCodec.shouldDecodeType()) {
+		            return operatorCodec.decodeValue(null, null, this);
+		        }
+		        ScalarValue decodedValue = typeCodec.decode(in);
+				value = decodeValue(decodedValue, previousValue);
+				
+		        if (context.isTraceEnabled())
+		        	context.decodeTrace.field(this, value, previousValue, decodedValue, ((RecordingInputStream) in).getBuffer());
 	        } else {
 	            value = decode(previousValue);
 	        }
@@ -239,7 +236,7 @@ public class Scalar extends Field {
 	        if (!((getOperator() == Operator.DELTA) && (value == null))) {
 	            context.store(getDictionary(), template, getKey(), value);
 	        }
-	
+	        
 	        return value;
     	} catch (FastException e) {
     		throw new FastException("Error occurred while decoding " + this, e.getCode(), e);

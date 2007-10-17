@@ -35,6 +35,7 @@ import org.openfast.StringValue;
 import org.openfast.codec.FastDecoder;
 import org.openfast.codec.FastEncoder;
 import org.openfast.template.ComposedScalar;
+import org.openfast.template.Field;
 import org.openfast.template.FieldSet;
 import org.openfast.template.Group;
 import org.openfast.template.LongValue;
@@ -146,6 +147,10 @@ public abstract class OpenFastTestCase extends TestCase {
 	protected MessageTemplate template(String templateXml) {
 		MessageTemplate[] templates = new XMLMessageTemplateLoader().load(new ByteArrayInputStream(templateXml.getBytes()));
 		return templates[0];
+	}
+	
+	protected MessageTemplate template(Field field) {
+		return new MessageTemplate("Doesn't matter", new Field[] { field });
 	}
 
 	protected void assertScalarField(FieldSet fieldSet, int fieldIndex, Type type, String name, OperatorCodec operator, ScalarValue defaultValue) {

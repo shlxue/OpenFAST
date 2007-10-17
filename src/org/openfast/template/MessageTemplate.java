@@ -27,7 +27,6 @@ import java.io.InputStream;
 import org.openfast.BitVectorReader;
 import org.openfast.Context;
 import org.openfast.FieldValue;
-import org.openfast.Global;
 import org.openfast.IntegerValue;
 import org.openfast.Message;
 import org.openfast.QName;
@@ -90,8 +89,6 @@ public class MessageTemplate extends Group implements FieldSet {
     	if (!context.getTemplateRegistry().isRegistered(message.getTemplate()))
     		throw new FastException("Cannot encode message: The template " + message.getTemplate() + " has not been registered.", FastConstants.D9_TEMPLATE_NOT_REGISTERED);
         message.setInteger(0, context.getTemplateId(message.getTemplate()));
-        if (Global.isTraceEnabled())
-        Global.trace("Encoding " + toString() + ":");
         return super.encode(message, this, context);
     }
 
@@ -105,10 +102,15 @@ public class MessageTemplate extends Group implements FieldSet {
      */
     public Message decode(InputStream in, int templateId, BitVectorReader presenceMapReader, Context context) {
     	try {
+    		if (context.isTraceEnabled())
+    			context.decodeTrace.groupStarted(this);
 	        FieldValue[] fieldValues = super.decodeFieldValues(in, this, presenceMapReader, context);
 	        fieldValues[0] = new IntegerValue(templateId);
 	
-	        return new Message(this, fieldValues);
+	        Message message = new Message(this, fieldValues);
+	        if (context.isTraceEnabled())
+	        	context.decodeTrace.groupEnded(message);
+			return message;
     	} catch (FastException e) {
     		throw new FastException("An error occurred while decoding " + this, e.getCode(), e);
     	}

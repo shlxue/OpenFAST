@@ -59,6 +59,9 @@ public class MessageOutputStream implements MessageStream {
 
     public void writeMessage(Message message, boolean flush) {
         try {
+            if (context.isTraceEnabled())
+            	context.startTrace();
+            
         	if (!handlers.isEmpty()) {
         		for (int i=0; i<handlers.size(); i++) {
         			((MessageHandler) handlers.get(i)).handleMessage(message, context, encoder);
@@ -124,5 +127,9 @@ public class MessageOutputStream implements MessageStream {
 
 	public TemplateRegistry getTemplateRegistry() {
 		return context.getTemplateRegistry();
+	}
+
+	public Context getContext() {
+		return context;
 	}
 }

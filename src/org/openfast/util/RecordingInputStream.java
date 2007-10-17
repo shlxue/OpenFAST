@@ -36,6 +36,7 @@ public class RecordingInputStream extends InputStream {
     public RecordingInputStream(InputStream inputStream) {
         this.in = inputStream;
     }
+    
 
     public int read() throws IOException {
         int read = in.read();

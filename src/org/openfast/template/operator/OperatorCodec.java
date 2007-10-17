@@ -88,8 +88,7 @@ public abstract class OperatorCodec implements Serializable {
     public abstract ScalarValue getValueToEncode(ScalarValue value,
         ScalarValue priorValue, Scalar field);
 
-    public abstract ScalarValue decodeValue(ScalarValue newValue,
-        ScalarValue priorValue, Scalar field);
+    public abstract ScalarValue decodeValue(ScalarValue newValue, ScalarValue priorValue, Scalar field);
 
     /**
      * 

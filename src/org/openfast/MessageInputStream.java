@@ -58,6 +58,9 @@ public class MessageInputStream implements MessageStream {
      * @return the next message in the stream
      */
     public Message readMessage() {
+        if (context.isTraceEnabled())
+        	context.startTrace();
+        
         Message message = decoder.readMessage();
 
         if (message == null) {
@@ -122,5 +125,9 @@ public class MessageInputStream implements MessageStream {
 
 	public void reset() {
 		decoder.reset();
+	}
+
+	public Context getContext() {
+		return context;
 	}
 }
