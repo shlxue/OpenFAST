@@ -12,8 +12,9 @@ import org.openfast.codec.FastDecoder;
 
 public class DynamicTemplateReference extends Field {
 	private static final long serialVersionUID = 1L;
+	public static final DynamicTemplateReference INSTANCE = new DynamicTemplateReference();
 
-	public DynamicTemplateReference() {
+	private DynamicTemplateReference() {
 		super(QName.NULL, false);
 	}
 

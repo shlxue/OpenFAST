@@ -465,6 +465,7 @@ public class Group extends Field {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + Group.hashCode(fields);
+		result = prime * result + name.hashCode();
 		result = prime * result + ((typeReference == null) ? 0 : typeReference.hashCode());
 		return result;
 	}
@@ -474,6 +475,7 @@ public class Group extends Field {
 		if (obj == null || getClass() != obj.getClass()) return false;
 		final Group other = (Group) obj;
 		if (other.fields.length != fields.length) return false;
+		if (!other.name.equals(name)) return false;
 		for (int i=0; i<fields.length; i++)
 			if (!fields[i].equals(other.fields[i])) return false;
 		return true;

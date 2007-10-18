@@ -24,6 +24,7 @@ package org.openfast;
 
 import org.openfast.template.Field;
 import org.openfast.template.Group;
+import org.openfast.template.LongValue;
 import org.openfast.template.Scalar;
 import org.openfast.template.type.Type;
 
@@ -167,7 +168,7 @@ public class GroupValue implements FieldValue {
 
 	public FieldValue getValue(String fieldName) {
 	    if (!group.hasField(fieldName)) {
-	        throw new IllegalArgumentException("The field \"" + fieldName + "\" does not exist.");
+	        throw new IllegalArgumentException("The field \"" + fieldName + "\" does not exist in group " + group);
 	    }
 	
 	    return values[group.getFieldIndex(fieldName)];
@@ -217,6 +218,14 @@ public class GroupValue implements FieldValue {
     public void setInteger(int fieldIndex, int value) {
     	values[fieldIndex] = new IntegerValue(value);
     }
+
+	public void setLong(String fieldName, long value) {
+		setFieldValue(fieldName, new LongValue(value));
+	}
+
+	public void setLong(int fieldIndex, long value) {
+		values[fieldIndex] = new LongValue(value);
+	}
 
     public void setString(int fieldIndex, String value) {
         values[fieldIndex] = new StringValue(value);
@@ -273,6 +282,8 @@ public class GroupValue implements FieldValue {
     }
 
     public void setFieldValue(String fieldName, FieldValue value) {
+    	if (!group.hasField(fieldName))
+    		throw new IllegalArgumentException("The field " + fieldName + " does not exist in group " + group);
         int index = group.getFieldIndex(fieldName);
         setFieldValue(index, value);
     }

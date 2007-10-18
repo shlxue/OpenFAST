@@ -82,5 +82,35 @@ public class ComposedScalar extends Field {
 	public Scalar[] getFields() {
 		return fields;
 	}
+	
+	public boolean equals(Object obj) {
+		if (obj == this) return true;
+		if (obj == null || !obj.getClass().equals(ComposedScalar.class)) return false;
+		ComposedScalar other = (ComposedScalar) obj;
+		if (other.fields.length != fields.length) return false;
+		if (!other.getName().equals(getName())) return false;
+		for (int i=0; i<fields.length; i++) {
+			if (!other.fields[i].getType().equals(fields[i].getType())) return false;
+			if (!other.fields[i].getTypeCodec().equals(fields[i].getTypeCodec())) return false;
+			if (!other.fields[i].getOperator().equals(fields[i].getOperator())) return false;
+			if (!other.fields[i].getOperatorCodec().equals(fields[i].getOperatorCodec())) return false;
+			if (!other.fields[i].getInitialValue().equals(fields[i].getInitialValue())) return false;
+			if (!other.fields[i].getDictionary().equals(fields[i].getDictionary())) return false;
+		}
+		return true;
+	}
+	
+	public int hashCode() {
+		return name.hashCode();
+	}
+	
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("Composed {");
+		for (int i=0; i< fields.length; i++)
+			builder.append(fields[i].toString()).append(", ");
+		builder.delete(builder.length()-2, builder.length());
+		return builder.append("}").toString();
+	}
 
 }

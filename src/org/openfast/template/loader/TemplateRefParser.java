@@ -23,7 +23,7 @@ public class TemplateRefParser implements FieldParser {
     			return null;
     		}
     	} else {
-    		return new DynamicTemplateReference();
+    		return DynamicTemplateReference.INSTANCE;
     	}
 	}
 

@@ -69,7 +69,7 @@ public class ObjectMother {
                     new Field[] {
         				new StaticTemplateReference(headerTemplate()),
         				new Sequence("Batch", new Field[] {
-        					new DynamicTemplateReference()
+        						DynamicTemplateReference.INSTANCE
         				}, false)
                     });
         }
