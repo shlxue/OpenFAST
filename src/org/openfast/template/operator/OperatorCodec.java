@@ -47,7 +47,7 @@ public abstract class OperatorCodec implements Serializable {
     protected static final OperatorCodec DELTA_INTEGER = new DeltaIntegerOperatorCodec(Operator.DELTA, Type.INTEGER_TYPES);
     protected static final OperatorCodec DELTA_STRING = new DeltaStringOperatorCodec();
     protected static final OperatorCodec DELTA_DECIMAL = new DeltaDecimalOperatorCodec();
-    protected static final OperatorCodec TAIL_STRING = new TailOperatorCodec(Operator.TAIL, new Type[] { Type.ASCII, Type.STRING });
+    protected static final OperatorCodec TAIL = new TailOperatorCodec(Operator.TAIL, new Type[] { Type.ASCII, Type.STRING, Type.UNICODE, Type.BYTE_VECTOR });
 
 	private final Operator operator;
 

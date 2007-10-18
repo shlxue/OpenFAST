@@ -15,7 +15,7 @@ public class TypeConversionTest extends OpenFastTestCase {
 				"  <int8 name=\"byte\"/>" +
 				"  <int16 name=\"short\"/>" +
 				"  <int64 name=\"long\"/>" +
-				"  <byte name=\"bytevector\"/>" +
+				"  <byteVector name=\"bytevector\"/>" +
 				"  <decimal name=\"decimal\"/>" +
 				"</template>");
 		

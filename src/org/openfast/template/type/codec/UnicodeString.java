@@ -35,7 +35,7 @@ import org.openfast.error.FastConstants;
 import org.openfast.error.FastException;
 
 
-final class UnicodeString extends NotStopBitEncodedType {
+final class UnicodeString extends NotStopBitEncodedTypeCodec {
     private static final long serialVersionUID = 1L;
 
 	UnicodeString() { }

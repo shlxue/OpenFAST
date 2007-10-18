@@ -1,6 +1,7 @@
 package org.openfast.template;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.openfast.QName;
@@ -94,5 +95,9 @@ public class BasicTemplateRegistry extends AbstractTemplateRegistry {
 		for (int i=0; i<templates.length; i++) {
 			register(registry.getId(templates[i]), templates[i]);
 		}
+	}
+
+	public Iterator nameIterator() {
+		return nameMap.keySet().iterator();
 	}
 }

@@ -22,6 +22,8 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast.template;
 
+import java.util.Iterator;
+
 import org.openfast.QName;
 
 
@@ -60,4 +62,5 @@ public interface TemplateRegistry {
 	
 	void addTemplateRegisteredListener(TemplateRegisteredListener templateRegisteredListener);
 	void removeTemplateRegisteredListener(TemplateRegisteredListener templateRegisteredListener);
+	Iterator nameIterator();
 }

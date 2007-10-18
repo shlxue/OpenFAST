@@ -48,7 +48,6 @@ public class Sequence extends Field implements FieldSet {
 	private final Group group;
     private final Scalar length;
     private boolean implicitLength;
-	private String typeReference = FastConstants.ANY;
 
     /**
      * Sequence Constructor - Sets the implicitLength to true
@@ -249,7 +248,6 @@ public class Sequence extends Field implements FieldSet {
      * @param typeReference The type reference name as a string
      */
 	public void setTypeReference(String typeReference) {
-		this.typeReference = typeReference;
 		this.group.setTypeReference(typeReference);
 	}
 
@@ -258,7 +256,7 @@ public class Sequence extends Field implements FieldSet {
 	 * @return Returns the typeReference as a string
 	 */
 	public String getTypeReference() {
-		return typeReference;
+		return group.getTypeReference();
 	}
 	
 	/**
@@ -266,7 +264,7 @@ public class Sequence extends Field implements FieldSet {
 	 * @return Returns true if there is a type reference
 	 */
 	public boolean hasTypeReference() {
-		return typeReference != null;
+		return group.hasTypeReference();
 	}
 	
 	public String toString() {
@@ -278,7 +276,6 @@ public class Sequence extends Field implements FieldSet {
 		int result = 1;
 		result = prime * result + ((group == null) ? 0 : group.hashCode());
 		result = prime * result + ((length == null) ? 0 : length.hashCode());
-		result = prime * result + ((typeReference == null) ? 0 : typeReference.hashCode());
 		return result;
 	}
 
@@ -290,5 +287,13 @@ public class Sequence extends Field implements FieldSet {
 		if (isImplicitLength() != other.isImplicitLength()) return false;
 		if (!isImplicitLength() && !length.equals(other.length)) return false;
 		return true;
+	}
+	
+	public boolean hasAttribute(QName attributeName) {
+		return group.hasAttribute(attributeName);
+	}
+	
+	public String getAttribute(QName name) {
+		return group.getAttribute(name);
 	}
 }

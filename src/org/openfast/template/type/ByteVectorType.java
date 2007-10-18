@@ -11,7 +11,7 @@ final class ByteVectorType extends SimpleType {
 	private static final long serialVersionUID = 1L;
 
 	ByteVectorType() {
-		super("byte", TypeCodec.BYTE_VECTOR, TypeCodec.NULLABLE_BYTE_VECTOR_TYPE);
+		super("byteVector", TypeCodec.BYTE_VECTOR, TypeCodec.NULLABLE_BYTE_VECTOR_TYPE);
 	}
 
 	/**

@@ -2,10 +2,8 @@ package org.openfast.debug;
 
 import org.openfast.ByteUtil;
 import org.openfast.GroupValue;
-import org.openfast.ScalarValue;
 import org.openfast.template.Field;
 import org.openfast.template.Group;
-import org.openfast.template.Scalar;
 
 public class EncodeTrace extends BasicTrace {
 

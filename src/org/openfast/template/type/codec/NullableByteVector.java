@@ -9,7 +9,7 @@ import org.openfast.IntegerValue;
 import org.openfast.ScalarValue;
 import org.openfast.error.FastConstants;
 
-public class NullableByteVector extends NotStopBitEncodedType {
+public class NullableByteVector extends NotStopBitEncodedTypeCodec {
 
 	 private static final long serialVersionUID = 1L;
 

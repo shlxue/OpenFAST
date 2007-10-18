@@ -17,8 +17,7 @@ final class TailOperatorCodec extends OperatorCodec {
 		super(operator, types);
 	}
 
-	public ScalarValue getValueToEncode(ScalarValue value,
-	    ScalarValue priorValue, Scalar field) {
+	public ScalarValue getValueToEncode(ScalarValue value, ScalarValue priorValue, Scalar field) {
 	    if (value == null) {
 	        return ScalarValue.NULL;
 	    }
@@ -37,13 +36,13 @@ final class TailOperatorCodec extends OperatorCodec {
 	
 	    int index = 0;
 	
-	    for (;
-	            ((StringValue) value).value.charAt(index) == ((StringValue) priorValue).value.charAt(
-	                index); index++)
-	        ;
+	    byte[] val = value.getBytes();
+		byte[] prior = priorValue.getBytes();
+		
+		while (val[index] == prior[index])
+			index++;
 	
-	    return new StringValue(((StringValue) value).value.substring(
-	            index));
+	    return (ScalarValue) field.createValue(new String(val, index, val.length-index));
 	}
 
 	public ScalarValue decodeValue(ScalarValue newValue,

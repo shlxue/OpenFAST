@@ -93,7 +93,7 @@
 
 	<target name="unit-test" depends="instr">
 		<mkdir dir="${reports.unit}" />
-		<junit showoutput="yes" printsummary="yes" haltonerror="yes" haltonfailure="yes" fork="false">
+		<junit showoutput="yes" printsummary="yes" haltonerror="yes" haltonfailure="yes" fork="true">
 			<classpath refid="emma.test.path" />
 			<sysproperty key="emma.coverage.out.file" value="${work.dir}/coverage.emma" />
 			<sysproperty key="emma.coverage.out.merge" value="true" />
@@ -163,7 +163,7 @@
 		</javadoc>
 	</target>
 	
-	<target name="dist" depends="jar,javadoc,post-clean">
+	<target name="dist" depends="jar,javadoc">
 		<mkdir dir="${work.dir}/dist"/>
 		<copy todir="${work.dir}/dist/src">
 			<fileset dir="${src.dir}"/>

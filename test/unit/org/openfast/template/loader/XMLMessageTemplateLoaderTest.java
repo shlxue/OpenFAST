@@ -137,37 +137,27 @@ public class XMLMessageTemplateLoaderTest extends OpenFastTestCase {
         MessageTemplateLoader loader = new XMLMessageTemplateLoader();
         MessageTemplate messageTemplate = loader.load(templateStream)[0];
 
-        assertEquals("MDIncrementalRefresh",
-            messageTemplate.getTypeReference());
+        assertEquals("MDIncrementalRefresh", messageTemplate.getTypeReference());
         assertEquals("MDRefreshSample", messageTemplate.getName());
         assertEquals(10, messageTemplate.getFieldCount());
 
         /********************************** TEMPLATE FIELDS **********************************/
         int index = 0;
-        assertScalarField(messageTemplate, index++, Type.U32,
-            "templateId", Operator.COPY);
-        assertScalarField(messageTemplate, index++, Type.ASCII, "8",
-            Operator.CONSTANT);
-        assertScalarField(messageTemplate, index++, Type.U32, "9",
-            Operator.CONSTANT);
-        assertScalarField(messageTemplate, index++, Type.ASCII, "35",
-            Operator.CONSTANT);
-        assertScalarField(messageTemplate, index++, Type.ASCII, "49",
-            Operator.CONSTANT);
-        assertScalarField(messageTemplate, index++, Type.U32,
-            "34", Operator.INCREMENT);
-        assertScalarField(messageTemplate, index++, Type.ASCII, "52",
-            Operator.DELTA);
-        assertScalarField(messageTemplate, index++, Type.U32,
-            "75", Operator.COPY);
+        assertScalarField(messageTemplate, index++, Type.U32, "templateId", Operator.COPY);
+        assertScalarField(messageTemplate, index++, Type.ASCII, "8", Operator.CONSTANT);
+        assertScalarField(messageTemplate, index++, Type.U32, "9", Operator.CONSTANT);
+        assertScalarField(messageTemplate, index++, Type.ASCII, "35", Operator.CONSTANT);
+        assertScalarField(messageTemplate, index++, Type.ASCII, "49", Operator.CONSTANT);
+        assertScalarField(messageTemplate, index++, Type.U32, "34", Operator.INCREMENT);
+        assertScalarField(messageTemplate, index++, Type.ASCII, "52", Operator.DELTA);
+        assertScalarField(messageTemplate, index++, Type.U32, "75", Operator.COPY);
 
         /************************************* SEQUENCE **************************************/
         assertSequence(messageTemplate, index, 17);
 
         Sequence sequence = (Sequence) messageTemplate.getField(index++);
         assertEquals("MDEntries", sequence.getTypeReference());
-        assertSequenceLengthField(sequence, "268", Type.U32,
-            Operator.NONE);
+        assertSequenceLengthField(sequence, "268", Type.U32, Operator.NONE);
 
         /********************************** SEQUENCE FIELDS **********************************/
         int seqIndex = 0;
@@ -308,6 +298,20 @@ public class XMLMessageTemplateLoaderTest extends OpenFastTestCase {
     	assertScalarField(templates[0], 1, Type.U32, "quantity", Operator.NONE);
     	assertScalarField(templates[0], 3, Type.DECIMAL, "price", Operator.NONE);
     	assertTrue(templates[0].getField(2) instanceof DynamicTemplateReference);
+    }
+    
+    public void testByteVector() {
+    	String templateXml = 
+    		"<template name=\"bvt\">" +
+    		"  <byteVector name=\"data\">" +
+    		"    <length name=\"dataLength\"/>" +
+    		"    <tail/>" +
+    		"  </byteVector>" +
+    		"</template>";
+    	MessageTemplateLoader loader = new XMLMessageTemplateLoader();
+    	MessageTemplate bvt = loader.load(stream(templateXml))[0];
+    	
+    	assertScalarField(bvt, 1, Type.BYTE_VECTOR, "data", Operator.TAIL);
     }
     
     public void testNullDocument() {

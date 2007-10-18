@@ -3,6 +3,9 @@
  */
 package org.openfast.template;
 
+import java.util.Collections;
+import java.util.Iterator;
+
 import org.openfast.QName;
 
 final class NullTemplateRegistry implements TemplateRegistry {
@@ -132,5 +135,9 @@ final class NullTemplateRegistry implements TemplateRegistry {
 	}
 
 	public void registerAll(TemplateRegistry registry) {
+	}
+
+	public Iterator nameIterator() {
+		return Collections.EMPTY_LIST.iterator();
 	}
 }

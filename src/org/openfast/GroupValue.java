@@ -24,6 +24,8 @@ package org.openfast;
 
 import org.openfast.template.Field;
 import org.openfast.template.Group;
+import org.openfast.template.Scalar;
+import org.openfast.template.type.Type;
 
 import org.openfast.util.ArrayIterator;
 
@@ -58,6 +60,19 @@ public class GroupValue implements FieldValue {
     }
     
     public int getInt(String fieldName) {
+    	// BAD ABSTRACTION
+    	if (!group.hasField(fieldName)) {
+    		if (group.hasIntrospectiveField(fieldName)) {
+    			Scalar scalar = group.getIntrospectiveField(fieldName);
+    			if (scalar.getType().equals(Type.UNICODE) || 
+    				scalar.getType().equals(Type.STRING) ||
+    				scalar.getType().equals(Type.ASCII))
+    				return getString(scalar.getName()).length(); 
+    			if (scalar.getType().equals(Type.BYTE_VECTOR))
+    				return getBytes(scalar.getName()).length;
+    		}
+    			
+    	}
 	    return getScalar(fieldName).toInt();
 	}
 
@@ -112,6 +127,14 @@ public class GroupValue implements FieldValue {
 
     public BigDecimal getBigDecimal(String fieldName) {
 	    return getScalar(fieldName).toBigDecimal();
+	}
+
+	public byte[] getBytes(int fieldIndex) {
+		return getScalar(fieldIndex).getBytes();
+	}
+    
+	public byte[] getBytes(String fieldName) {
+		return getScalar(fieldName).getBytes();
 	}
 
 	public SequenceValue getSequence(int fieldIndex) {

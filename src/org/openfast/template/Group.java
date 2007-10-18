@@ -26,6 +26,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,6 +58,7 @@ public class Group extends Field {
     protected final boolean usesPresenceMap;
 	protected final StaticTemplateReference[] staticTemplateReferences;
 	protected final Field[] fieldDefinitions;
+	protected final Map introspectiveFieldMap;
 
     public Group(String name, Field[] fields, boolean optional) {
     	this(new QName(name), fields, optional);
@@ -81,11 +83,27 @@ public class Group extends Field {
         this.fieldIndexMap = constructFieldIndexMap(this.fields);
         this.fieldNameMap = constructFieldNameMap(this.fields);
         this.fieldIdMap = constructFieldIdMap(this.fields);
+        this.introspectiveFieldMap = constructInstrospectiveFields(this.fields);
         this.usesPresenceMap = determinePresenceMapUsage(this.fields);
         this.staticTemplateReferences = (StaticTemplateReference[]) staticTemplateReferences.toArray(new StaticTemplateReference[staticTemplateReferences.size()]);
     }
     
-    /**
+    // BAD ABSTRACTION
+    private static Map constructInstrospectiveFields(Field[] fields) {
+    	Map map = new HashMap();
+    	for (int i=0; i<fields.length; i++) {
+    		if (fields[i] instanceof Scalar) {
+    			if (fields[i].hasAttribute(FastConstants.LENGTH_FIELD)) {
+    				map.put(fields[i].getAttribute(FastConstants.LENGTH_FIELD), fields[i]);
+    			}
+    		}
+    	}
+    	if (map.size() == 0)
+    		return Collections.EMPTY_MAP;
+		return map;
+	}
+
+	/**
      * Check to see if the passed field array has a Field that has a MapBit present
      * @param fields The Field object array to be checked
      * @return Returns true if a Field object has a MapBit present, false otherwise
@@ -328,7 +346,7 @@ public class Group extends Field {
         return map;
     }
     
-    private Map constructFieldIdMap(Field[] fields) {
+    private static Map constructFieldIdMap(Field[] fields) {
         Map map = new HashMap();
 
         for (int i = 0; i < fields.length; i++)
@@ -506,5 +524,13 @@ public class Group extends Field {
 
 	public Field[] getFieldDefinitions() {
 		return fieldDefinitions;
+	}
+
+	public boolean hasIntrospectiveField(String fieldName) {
+		return introspectiveFieldMap.containsKey(fieldName);
+	}
+
+	public Scalar getIntrospectiveField(String fieldName) {
+		return (Scalar) introspectiveFieldMap.get(fieldName);
 	}
 }
