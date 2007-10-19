@@ -6,7 +6,7 @@ import org.openfast.template.Group;
 import org.openfast.template.TemplateRegistry;
 
 public interface FieldInstructionConverter {
-	Class getFieldClass();
+	boolean shouldConvert(Field field);
 	Group[] getTemplateExchangeTemplates();
 	Field convert(GroupValue fieldDef, TemplateRegistry templateRegistry, ConversionContext context);
 	GroupValue convert(Field field, ConversionContext context);

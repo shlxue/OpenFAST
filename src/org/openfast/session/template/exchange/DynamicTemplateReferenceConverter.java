@@ -17,8 +17,8 @@ public class DynamicTemplateReferenceConverter implements FieldInstructionConver
 		return SessionControlProtocol_1_1.DYN_TEMP_REF_MESSAGE;
 	}
 
-	public Class getFieldClass() {
-		return DynamicTemplateReference.class;
+	public boolean shouldConvert(Field field) {
+		return field.getClass().equals(DynamicTemplateReference.class);
 	}
 
 	public Group[] getTemplateExchangeTemplates() {

@@ -24,8 +24,8 @@ public class StaticTemplateReferenceConverter extends AbstractFieldInstructionCo
 		return strDef;
 	}
 
-	public Class getFieldClass() {
-		return StaticTemplateReference.class;
+	public boolean shouldConvert(Field field) {
+		return field.getClass().equals(StaticTemplateReference.class);
 	}
 
 	public Group[] getTemplateExchangeTemplates() {

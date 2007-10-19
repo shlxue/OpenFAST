@@ -65,8 +65,8 @@ public class ComposedDecimalConverter extends AbstractFieldInstructionConverter 
 		return componentDef;
 	}
 
-	public Class getFieldClass() {
-		return ComposedScalar.class;
+	public boolean shouldConvert(Field field) {
+		return field.getClass().equals(ComposedScalar.class);
 	}
 
 	public Group[] getTemplateExchangeTemplates() {

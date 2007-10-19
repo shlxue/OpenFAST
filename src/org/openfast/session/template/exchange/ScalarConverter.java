@@ -7,6 +7,7 @@ import org.openfast.FieldValue;
 import org.openfast.GroupValue;
 import org.openfast.Message;
 import org.openfast.QName;
+import org.openfast.ScalarValue;
 import org.openfast.session.SessionControlProtocol_1_1;
 import org.openfast.template.Field;
 import org.openfast.template.Group;
@@ -20,18 +21,26 @@ public class ScalarConverter extends AbstractFieldInstructionConverter {
 
 	public Field convert(GroupValue fieldDef, TemplateRegistry templateRegistry, ConversionContext context) {
 		Type type = (Type) TEMPLATE_TYPE_MAP.get(fieldDef.getGroup());
-		GroupValue operatorGroup = fieldDef.getGroup("Operator").getGroup(0);
 		boolean optional = fieldDef.getBool("Optional");
-		Operator operator = getOperator(operatorGroup.getGroup());
-		Scalar scalar = new Scalar(fieldDef.getString("Name"), type, operator, null, optional);
-		if (operatorGroup.isDefined("Dictionary"))
-			scalar.setDictionary(operatorGroup.getString("Dictionary"));
-		if (operatorGroup.isDefined("Key")) {
-			String name = operatorGroup.getGroup("Key").getString("Name");
-			String ns = operatorGroup.getGroup("Key").getString("Ns");
-			scalar.setKey(new QName(name, ns));
+		ScalarValue initialValue = ScalarValue.UNDEFINED; 
+		if (fieldDef.isDefined("InitialValue"))
+			initialValue = (ScalarValue) fieldDef.getValue("InitialValue");
+		
+		if (fieldDef.isDefined("Operator")) {
+			GroupValue operatorGroup = fieldDef.getGroup("Operator").getGroup(0);
+			Operator operator = getOperator(operatorGroup.getGroup());
+			Scalar scalar = new Scalar(fieldDef.getString("Name"), type, operator, initialValue, optional);
+			if (operatorGroup.isDefined("Dictionary"))
+				scalar.setDictionary(operatorGroup.getString("Dictionary"));
+			if (operatorGroup.isDefined("Key")) {
+				String name = operatorGroup.getGroup("Key").getString("Name");
+				String ns = operatorGroup.getGroup("Key").getString("Ns");
+				scalar.setKey(new QName(name, ns));
+			}
+			return scalar;
+		} else {
+			return new Scalar(fieldDef.getString("Name"), type, Operator.NONE, initialValue, optional);
 		}
-		return scalar;
 	}
 
 	public GroupValue convert(Field field, ConversionContext context) {
@@ -40,7 +49,10 @@ public class ScalarConverter extends AbstractFieldInstructionConverter {
 		Message scalarMsg = new Message(scalarTemplate);
 		setNameAndId(scalar, scalarMsg);
 		scalarMsg.setInteger("Optional", scalar.isOptional() ? 1 : 0);
-		scalarMsg.setFieldValue("Operator", new GroupValue(scalarTemplate.getGroup("Operator"), new FieldValue[] { createOperator(scalar) }));
+		if (!scalar.getOperator().equals(Operator.NONE))
+			scalarMsg.setFieldValue("Operator", new GroupValue(scalarTemplate.getGroup("Operator"), new FieldValue[] { createOperator(scalar) }));
+		if (!scalar.getInitialValue().isUndefined())
+			scalarMsg.setFieldValue("InitialValue", scalar.getInitialValue());
 		return scalarMsg;
 	}
 
@@ -48,8 +60,8 @@ public class ScalarConverter extends AbstractFieldInstructionConverter {
 		return (Group[]) TEMPLATE_TYPE_MAP.keySet().toArray(new Group[TEMPLATE_TYPE_MAP.size()]);
 	}
 	
-	public Class getFieldClass() {
-		return Scalar.class;
+	public boolean shouldConvert(Field field) {
+		return field.getClass().equals(Scalar.class);
 	}
 
 	private static final Map/*<Type, MessageTemplate>*/ TYPE_TEMPLATE_MAP = new HashMap();

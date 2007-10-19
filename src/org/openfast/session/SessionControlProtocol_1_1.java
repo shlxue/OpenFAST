@@ -19,6 +19,7 @@ import org.openfast.session.template.exchange.GroupConverter;
 import org.openfast.session.template.exchange.ScalarConverter;
 import org.openfast.session.template.exchange.SequenceConverter;
 import org.openfast.session.template.exchange.StaticTemplateReferenceConverter;
+import org.openfast.session.template.exchange.VariableLengthInstructionConverter;
 import org.openfast.template.BasicTemplateRegistry;
 import org.openfast.template.DynamicTemplateReference;
 import org.openfast.template.Field;
@@ -62,6 +63,7 @@ public class SessionControlProtocol_1_1 extends AbstractSessionControlProtocol {
     	context.addFieldInstructionConverter(new DynamicTemplateReferenceConverter());
     	context.addFieldInstructionConverter(new StaticTemplateReferenceConverter());
     	context.addFieldInstructionConverter(new ComposedDecimalConverter());
+    	context.addFieldInstructionConverter(new VariableLengthInstructionConverter());
     	return context;
 	}
 
@@ -336,7 +338,7 @@ public class SessionControlProtocol_1_1 extends AbstractSessionControlProtocol {
 	});
 	
 	public static final MessageTemplate BYTE_VECTOR_INSTR = new MessageTemplate(new QName("ByteVectorInstr", NAMESPACE), new Field[] {
-		new StaticTemplateReference(PRIM_FIELD_BASE),
+		new StaticTemplateReference(PRIM_FIELD_BASE_WITH_LENGTH),
 		new Scalar(qualify("InitialValue"), Type.BYTE_VECTOR, Operator.NONE, null, true)
 	});
     

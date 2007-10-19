@@ -23,8 +23,8 @@ public class GroupConverter extends AbstractFieldInstructionConverter {
 		return convert((Group) field, new Message(SessionControlProtocol_1_1.GROUP_INSTR), context);
 	}
 
-	public Class getFieldClass() {
-		return Group.class;
+	public boolean shouldConvert(Field field) {
+		return field.getClass().equals(Group.class);
 	}
 
 	public Group[] getTemplateExchangeTemplates() {
@@ -38,7 +38,7 @@ public class GroupConverter extends AbstractFieldInstructionConverter {
 		Field[] fields = group.getFieldDefinitions();
 		for (; i<fields.length; i++) {
 			Field field = fields[i];
-			FieldInstructionConverter converter = context.getConverter(field.getClass());
+			FieldInstructionConverter converter = context.getConverter(field);
 			if (converter == null)
 				throw new IllegalStateException("No converter found for type " + field.getClass());
 			FieldValue value = converter.convert(field, context);
