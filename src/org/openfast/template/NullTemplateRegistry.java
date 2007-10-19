@@ -140,4 +140,8 @@ final class NullTemplateRegistry implements TemplateRegistry {
 	public Iterator nameIterator() {
 		return Collections.EMPTY_LIST.iterator();
 	}
+
+	public Iterator iterator() {
+		return null;
+	}
 }

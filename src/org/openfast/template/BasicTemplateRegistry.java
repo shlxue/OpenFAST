@@ -1,7 +1,9 @@
 package org.openfast.template;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.openfast.QName;
@@ -10,9 +12,10 @@ public class BasicTemplateRegistry extends AbstractTemplateRegistry {
 	private Map nameMap = new HashMap();
 	private Map idMap = new HashMap();
 	private Map templateMap = new HashMap();
+	private List templates = new ArrayList();
 
 	public void register(int id, MessageTemplate template) {
-		nameMap.put(template.getQName(), template);
+		define(template);
 		Integer tid = new Integer(id);
 		idMap.put(tid, template);
 		templateMap.put(template, tid);
@@ -31,6 +34,7 @@ public class BasicTemplateRegistry extends AbstractTemplateRegistry {
 	
 	public void define(MessageTemplate template) {
 		nameMap.put(template.getQName(), template);
+		templates.add(template);
 	}
 
 	public int getId(QName name) {
@@ -76,6 +80,7 @@ public class BasicTemplateRegistry extends AbstractTemplateRegistry {
 		MessageTemplate template = (MessageTemplate) nameMap.remove(name);
 		Object id = templateMap.remove(template);
 		idMap.remove(id);
+		templates.remove(template);
 	}
 
 	public void remove(MessageTemplate template) {
@@ -99,5 +104,9 @@ public class BasicTemplateRegistry extends AbstractTemplateRegistry {
 
 	public Iterator nameIterator() {
 		return nameMap.keySet().iterator();
+	}
+
+	public Iterator iterator() {
+		return templates.iterator();
 	}
 }

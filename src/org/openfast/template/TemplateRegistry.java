@@ -62,5 +62,6 @@ public interface TemplateRegistry {
 	
 	void addTemplateRegisteredListener(TemplateRegisteredListener templateRegisteredListener);
 	void removeTemplateRegisteredListener(TemplateRegisteredListener templateRegisteredListener);
-	Iterator nameIterator();
+	Iterator/*<QName>*/ nameIterator();
+	Iterator/*<MessageTemplate>*/ iterator();
 }
