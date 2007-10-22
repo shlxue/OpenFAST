@@ -48,11 +48,19 @@ import org.openfast.template.operator.Operator;
 import org.openfast.template.operator.OperatorCodec;
 import org.openfast.template.type.Type;
 import org.openfast.template.type.codec.TypeCodec;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Date;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 
 public abstract class OpenFastTestCase extends TestCase {
@@ -204,5 +212,10 @@ public abstract class OpenFastTestCase extends TestCase {
 	private void assertScalarField(Scalar field, Type type, String name) {
 	    assertEquals(name, field.getName());
 	    assertEquals(type, field.getType());
+	}
+	
+	protected Document document(String string) throws Exception {
+		Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new InputSource(new ByteArrayInputStream(string.getBytes())));
+		return doc;
 	}
 }

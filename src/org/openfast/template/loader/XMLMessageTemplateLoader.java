@@ -63,19 +63,24 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
 	
     public XMLMessageTemplateLoader(boolean namespaceAwareness) {
     	this.namespaceAwareness = namespaceAwareness;
-    	this.initialContext = new ParsingContext();
+    	this.initialContext = createInitialContext();
+    }
+
+	public static ParsingContext createInitialContext() {
+		ParsingContext initialContext = new ParsingContext();
     	initialContext.setErrorHandler(ErrorHandler.DEFAULT);
     	initialContext.setTemplateRegistry(new BasicTemplateRegistry());
     	initialContext.setTypeMap(Type.getRegisteredTypeMap());
     	initialContext.setFieldParsers(new ArrayList());
-    	addFieldParser(new ScalarParser());
-    	addFieldParser(new GroupParser());
-    	addFieldParser(new SequenceParser());
-    	addFieldParser(new ComposedDecimalParser());
-    	addFieldParser(new StringParser());
-    	addFieldParser(new ByteVectorParser());
-    	addFieldParser(new TemplateRefParser());
-    }
+    	initialContext.addFieldParser(new ScalarParser());
+    	initialContext.addFieldParser(new GroupParser());
+    	initialContext.addFieldParser(new SequenceParser());
+    	initialContext.addFieldParser(new ComposedDecimalParser());
+    	initialContext.addFieldParser(new StringParser());
+    	initialContext.addFieldParser(new ByteVectorParser());
+    	initialContext.addFieldParser(new TemplateRefParser());
+    	return initialContext;
+	}
 
 	public void addFieldParser(FieldParser fieldParser) {
 		initialContext.getFieldParsers().add(fieldParser);

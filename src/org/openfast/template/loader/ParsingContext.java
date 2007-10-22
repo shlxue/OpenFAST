@@ -141,4 +141,8 @@ class ParsingContext {
 	public QName getName() {
 		return name;
 	}
+
+	public void addFieldParser(FieldParser parser) {
+		getFieldParsers().add(parser);
+	}
 }
