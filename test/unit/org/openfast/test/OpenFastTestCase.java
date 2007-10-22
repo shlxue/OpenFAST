@@ -22,6 +22,13 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast.test;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.util.Calendar;
+import java.util.Date;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+
 import junit.framework.TestCase;
 
 import org.openfast.ByteUtil;
@@ -29,9 +36,9 @@ import org.openfast.ByteVectorValue;
 import org.openfast.Context;
 import org.openfast.DecimalValue;
 import org.openfast.IntegerValue;
+import org.openfast.QName;
 import org.openfast.ScalarValue;
 import org.openfast.StringValue;
-
 import org.openfast.codec.FastDecoder;
 import org.openfast.codec.FastEncoder;
 import org.openfast.template.ComposedScalar;
@@ -49,18 +56,7 @@ import org.openfast.template.operator.OperatorCodec;
 import org.openfast.template.type.Type;
 import org.openfast.template.type.codec.TypeCodec;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Calendar;
-import java.util.Date;
-
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 
 public abstract class OpenFastTestCase extends TestCase {
@@ -180,6 +176,17 @@ public abstract class OpenFastTestCase extends TestCase {
 	    assertEquals(mantissaValue, fields[1].getDefaultValue());
 	}
 
+	protected void assertComposedScalarField(ComposedScalar field, Type type, String name, Operator exponentOp, ScalarValue exponentValue, Operator mantissaOp, ScalarValue mantissaValue) {
+	    assertEquals(type, field.getType());
+	    assertEquals(name, field.getName());
+	    Scalar[] fields = field.getFields();
+	    assertEquals(exponentOp, fields[0].getOperator());
+	    assertEquals(exponentValue, fields[0].getDefaultValue());
+
+	    assertEquals(mantissaOp, fields[1].getOperator());
+	    assertEquals(mantissaValue, fields[1].getDefaultValue());
+	}
+
 	protected void assertScalarField(FieldSet fieldSet, int fieldIndex, Type type, String name, Operator operator) {
 	    Scalar field = (Scalar) fieldSet.getField(fieldIndex);
 	    assertScalarField(field, type, name);
@@ -217,5 +224,18 @@ public abstract class OpenFastTestCase extends TestCase {
 	protected Document document(String string) throws Exception {
 		Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new InputSource(new ByteArrayInputStream(string.getBytes())));
 		return doc;
+	}
+
+	protected void assertScalarField(Scalar scalar, Type type, String name, String id, String namespace, String dictionary, String key, Operator op, ScalarValue defaultVal, boolean optional) {
+		QName qname = new QName(name, namespace);
+		assertEquals(type, scalar.getType());
+		assertEquals(op, scalar.getOperator());
+		assertEquals(qname, scalar.getQName());
+		QName keyName = new QName(key, namespace);
+		assertEquals(keyName, scalar.getKey());
+		assertEquals(id, scalar.getId());
+		assertEquals(dictionary, scalar.getDictionary());
+		assertEquals(defaultVal, scalar.getDefaultValue());
+		assertEquals(optional, scalar.isOptional());
 	}
 }
