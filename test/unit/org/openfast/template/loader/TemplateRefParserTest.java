@@ -1,5 +1,7 @@
 package org.openfast.template.loader;
 
+import org.openfast.error.FastConstants;
+import org.openfast.error.FastException;
 import org.openfast.template.DynamicTemplateReference;
 import org.openfast.template.Field;
 import org.openfast.template.MessageTemplate;
@@ -28,5 +30,15 @@ public class TemplateRefParserTest extends OpenFastTestCase {
 		context.getTemplateRegistry().define(base);
 		StaticTemplateReference statTempRef = (StaticTemplateReference) parser.parse(statTempRefDef, context);
 		assertEquals(base, statTempRef.getTemplate());
+	}
+	
+	public void testParseStaticWithUndefinedTemplate() throws Exception {
+		Element statTempRefDef = document("<templateRef name=\"base\"/>").getDocumentElement();
+		try {
+			parser.parse(statTempRefDef, context);
+		} catch (FastException e) {
+			assertEquals(FastConstants.D8_TEMPLATE_NOT_EXIST, e.getCode());
+			assertEquals("The template \"base\" was not found.", e.getMessage());
+		}
 	}
 }

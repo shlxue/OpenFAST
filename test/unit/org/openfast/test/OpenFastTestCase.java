@@ -227,11 +227,15 @@ public abstract class OpenFastTestCase extends TestCase {
 	}
 
 	protected void assertScalarField(Scalar scalar, Type type, String name, String id, String namespace, String dictionary, String key, Operator op, ScalarValue defaultVal, boolean optional) {
+		assertScalarField(scalar, type, name, id, namespace, dictionary, key, namespace, op, defaultVal, optional);
+	}
+	
+	protected void assertScalarField(Scalar scalar, Type type, String name, String id, String namespace, String dictionary, String key, String keyNamespace, Operator op, ScalarValue defaultVal, boolean optional) {
 		QName qname = new QName(name, namespace);
 		assertEquals(type, scalar.getType());
 		assertEquals(op, scalar.getOperator());
 		assertEquals(qname, scalar.getQName());
-		QName keyName = new QName(key, namespace);
+		QName keyName = new QName(key, keyNamespace);
 		assertEquals(keyName, scalar.getKey());
 		assertEquals(id, scalar.getId());
 		assertEquals(dictionary, scalar.getDictionary());

@@ -31,6 +31,7 @@ import org.openfast.error.ErrorHandler;
 import org.openfast.error.FastConstants;
 import org.openfast.error.FastException;
 import org.openfast.template.DynamicTemplateReference;
+import org.openfast.template.Field;
 import org.openfast.template.MessageTemplate;
 import org.openfast.template.Scalar;
 import org.openfast.template.Sequence;
@@ -38,6 +39,7 @@ import org.openfast.template.operator.Operator;
 import org.openfast.template.type.Type;
 import org.openfast.template.type.codec.TypeCodec;
 import org.openfast.test.OpenFastTestCase;
+import org.w3c.dom.Element;
 
 
 public class XMLMessageTemplateLoaderTest extends OpenFastTestCase {
@@ -53,8 +55,7 @@ public class XMLMessageTemplateLoaderTest extends OpenFastTestCase {
             "		<decimal name=\"close\"><copy /></decimal>" + "	</template>" +
             "</templates>";
         MessageTemplateLoader loader = new XMLMessageTemplateLoader();
-        MessageTemplate[] templates = loader.load(new ByteArrayInputStream(
-                    templateXml.getBytes()));
+        MessageTemplate[] templates = loader.load(new ByteArrayInputStream(templateXml.getBytes()));
         MessageTemplate messageTemplate = templates[0];
         assertEquals("SampleTemplate", messageTemplate.getName());
         assertEquals(7, messageTemplate.getFieldCount());
@@ -318,5 +319,31 @@ public class XMLMessageTemplateLoaderTest extends OpenFastTestCase {
     	XMLMessageTemplateLoader loader = new XMLMessageTemplateLoader();
     	loader.setErrorHandler(ErrorHandler.NULL);
 		assertEquals(0, loader.load(null).length);
+    }
+    
+    public void testCustomFieldParser() {
+    	String templateXml = 
+    		"<template name=\"custom\">" +
+    		"  <array name=\"intArr\" type=\"int\"></array>" +
+    		"</template>";
+    	XMLMessageTemplateLoader loader = new XMLMessageTemplateLoader();
+    	try {
+    		loader.load(stream(templateXml));
+    	} catch (FastException e) {
+    		assertEquals("No parser registered for array", e.getMessage());
+    		assertEquals(FastConstants.PARSE_ERROR, e.getCode());
+    	}
+    	loader.addFieldParser(new FieldParser() {
+
+			public boolean canParse(Element element, ParsingContext context) {
+				return element.getNodeName().equals("array");
+			}
+
+			public Field parse(Element fieldNode, ParsingContext context) {
+				return new Array(new QName(fieldNode.getAttribute("name"), ""), false);
+			}});
+    	
+    	MessageTemplate template = loader.load(stream(templateXml))[0];
+    	assertEquals(new Array(new QName("intArr", ""), false), template.getField(1));
     }
 }
