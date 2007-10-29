@@ -60,8 +60,8 @@ public class ComposedDecimalConverter extends AbstractFieldInstructionConverter 
 		GroupValue componentOperatorGroup = new GroupValue(componentGroup.getGroup("Operator"));
 		componentDef.setFieldValue("Operator", componentOperatorGroup);
 		componentOperatorGroup.setFieldValue(0, componentOperatorDef);
-		if (!component.getInitialValue().isUndefined())
-			componentDef.setInteger("InitialValue", component.getInitialValue().toInt());
+		if (!component.getDefaultValue().isUndefined())
+			componentDef.setInteger("InitialValue", component.getDefaultValue().toInt());
 		return componentDef;
 	}
 

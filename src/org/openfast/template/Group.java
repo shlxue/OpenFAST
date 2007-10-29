@@ -152,7 +152,7 @@ public class Group extends Field {
 
         GroupValue groupValue = (GroupValue) value;
     	if (context.isTraceEnabled()) {
-    		context.encodeTrace.groupStart(groupValue);
+    		context.getEncodeTrace().groupStart(this);
     	}
         BitVectorBuilder presenceMapBuilder = new BitVectorBuilder(fields.length);
         try {
@@ -161,10 +161,9 @@ public class Group extends Field {
             for (int fieldIndex = 0; fieldIndex < fields.length; fieldIndex++) {
                 FieldValue fieldValue = groupValue.getValue(fieldIndex);
                 Field field = getField(fieldIndex);
+                if (!field.isOptional() && fieldValue == null)
+                	Global.handleError(FastConstants.GENERAL_ERROR, "Mandatory field " + field + " is null");
                 byte[] encoding = field.encode(fieldValue, template, context, presenceMapBuilder);
-                if (context.isTraceEnabled() && encoding.length > 0) {
-					context.encodeTrace.field(field, fieldIndex, presenceMapBuilder.getIndex(), encoding);
-				}
                 fieldEncodings[fieldIndex] = encoding;
             }
             ByteArrayOutputStream buffer = new ByteArrayOutputStream();
@@ -172,7 +171,7 @@ public class Group extends Field {
             if (usesPresenceMap()) {
 				byte[] pmap = presenceMapBuilder.getBitVector().getTruncatedBytes();
 				if (context.isTraceEnabled())
-					context.encodeTrace.pmap(pmap);
+					context.getEncodeTrace().pmap(pmap);
 				buffer.write(pmap);
 			}
             for (int i = 0; i < fieldEncodings.length; i++) {
@@ -181,7 +180,7 @@ public class Group extends Field {
                 }
             }
             if (context.isTraceEnabled())
-            	context.encodeTrace.groupEnd();
+            	context.getEncodeTrace().groupEnd();
             return buffer.toByteArray();
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -199,11 +198,12 @@ public class Group extends Field {
     public FieldValue decode(InputStream in, Group group, Context context, BitVectorReader pmapReader) {
     	try {
     		if (!usesPresenceMapBit() || pmapReader.read()) {
-    			if (context.isTraceEnabled())
-    				context.decodeTrace.groupStarted(group);
+    	    	if (context.isTraceEnabled()) {
+    				context.getDecodeTrace().groupStart(this);
+    	    	}
 				GroupValue groupValue = new GroupValue(this, decodeFieldValues(in, group, context));
 				if (context.isTraceEnabled())
-					context.decodeTrace.groupEnded(groupValue);
+					context.getDecodeTrace().groupEnd();
 				return groupValue;
 			} else
     			return null;
@@ -224,6 +224,8 @@ public class Group extends Field {
     protected FieldValue[] decodeFieldValues(InputStream in, Group template, Context context) {
     	if (usesPresenceMap()) {
     		BitVector pmap = ((BitVectorValue) TypeCodec.BIT_VECTOR.decode(in)).value;
+    		if (context.isTraceEnabled())
+    			context.getDecodeTrace().pmap(pmap.getBytes());
     		if (pmap.isOverlong())
     			Global.handleError(FastConstants.R7_PMAP_OVERLONG, "The presence map " + pmap + " for the group " + this + " is overlong.");
     		return decodeFieldValues(in, template, new BitVectorReader(pmap), context);

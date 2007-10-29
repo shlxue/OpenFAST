@@ -24,9 +24,12 @@ package org.openfast.template;
 
 import org.openfast.BitVectorBuilder;
 import org.openfast.Context;
+import org.openfast.FieldValue;
+import org.openfast.GroupValue;
 import org.openfast.IntegerValue;
 import org.openfast.Message;
 import org.openfast.ScalarValue;
+import org.openfast.StringValue;
 import org.openfast.codec.FastDecoder;
 import org.openfast.codec.FastEncoder;
 import org.openfast.error.FastConstants;
@@ -106,5 +109,26 @@ public class ScalarTest extends OpenFastTestCase {
 		} catch (FastException e) {
 			assertEquals(FastConstants.D4_INVALID_TYPE, e.getCode());
 		}
+	}
+	
+	public void testUsesPresenceMapBit() throws Exception {
+		assertFalse(new Scalar("InitialValue", Type.U32, Operator.NONE, null, true).usesPresenceMapBit());
+	}
+	
+	public void testNoneOperatorDoesNotModifyDictionary() {
+		MessageTemplate template = new MessageTemplate("tmpl", new Field[] {
+			new Scalar("Name", Type.STRING, Operator.NONE, ScalarValue.UNDEFINED, false),
+			new Group("Group", new Field[]{
+				new Scalar("Name", Type.STRING, Operator.DELTA, ScalarValue.UNDEFINED, false)
+			}, false)
+		});
+		Message message = new Message(template);
+		message.setString("Name", "A");
+		message.setFieldValue("Group", new GroupValue(template.getGroup("Group"), new FieldValue[] {
+			new StringValue("AB")
+		}));
+		FastEncoder encoder = encoder(template);
+		assertEquals("11000000 10000001 11000001 10000000 01000001 11000010", encoder.encode(message));
+		assertEquals("10000000 11000001 10000000 10000000", encoder.encode(message));
 	}
 }

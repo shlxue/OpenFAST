@@ -91,4 +91,12 @@ public class Message extends GroupValue {
     public MessageTemplate getTemplate() {
         return template;
     }
+    
+    public FieldValue copy() {
+		FieldValue[] copies = new FieldValue[values.length];
+		for (int i=0; i<copies.length; i++) {
+			copies[i] = values[i].copy();
+		}
+		return new Message(template, this.values);
+	}
 }

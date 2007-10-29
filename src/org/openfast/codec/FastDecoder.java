@@ -65,11 +65,6 @@ public class FastDecoder implements Coder {
 
         context.setLastTemplateId(templateId);
         
-        if (context.isTraceEnabled()) {
-	        context.encodeTrace.groupStarted(template);
-	        context.encodeTrace.pmap(pmap.getBytes());
-        }
-        
         return template.decode(in, templateId, presenceMapReader, context);
     }
 

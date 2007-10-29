@@ -32,7 +32,7 @@ public abstract class AbstractFieldInstructionConverter implements FieldInstruct
 		GroupValue operatorMessage = new Message(operatorTemplate);
 		if (!scalar.getDictionary().equals(Dictionary.GLOBAL))
 			operatorMessage.setString("Dictionary", scalar.getDictionary());
-		if (!scalar.getKey().equals(scalar.getName())) {
+		if (!scalar.getKey().equals(scalar.getQName())) {
 			Group key = operatorTemplate.getGroup("Key");
 			GroupValue keyValue = new GroupValue(key);
 			keyValue.setString("Name", scalar.getKey().getName());

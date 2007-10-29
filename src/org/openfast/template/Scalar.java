@@ -148,7 +148,12 @@ public class Scalar extends Field {
             return new byte[0];
         }
 
-        return typeCodec.encode(valueToEncode);
+        byte[] encoding = typeCodec.encode(valueToEncode);
+
+        if (context.isTraceEnabled() && encoding.length > 0) {
+			context.getEncodeTrace().field(this, fieldValue, valueToEncode, encoding, presenceMapBuilder.getIndex());
+		}
+		return encoding;
     }
 
     /**
@@ -211,10 +216,14 @@ public class Scalar extends Field {
      */
     public FieldValue decode(InputStream in, Group template, Context context, BitVectorReader presenceMapReader) {
     	try {
-	        ScalarValue previousValue = context.lookup( getDictionary(), template, getKey());
-	        validateDictionaryTypeAgainstFieldType(previousValue, this.type);
+    		ScalarValue previousValue = null;
+    		if (operator.usesDictionary()) {
+    			previousValue = context.lookup( getDictionary(), template, getKey());
+    			validateDictionaryTypeAgainstFieldType(previousValue, this.type);
+    		}
 	        ScalarValue value;
 	        
+	        int pmapIndex = presenceMapReader.getIndex();
 	        if (isPresent(presenceMapReader)) {
 		        if (context.isTraceEnabled()) 
 		        	in = new RecordingInputStream(in);
@@ -226,7 +235,7 @@ public class Scalar extends Field {
 				value = decodeValue(decodedValue, previousValue);
 				
 		        if (context.isTraceEnabled())
-		        	context.decodeTrace.field(this, value, previousValue, decodedValue, ((RecordingInputStream) in).getBuffer());
+					context.getDecodeTrace().field(this, value, decodedValue, ((RecordingInputStream) in).getBuffer(), pmapIndex);
 	        } else {
 	            value = decode(previousValue);
 	        }
@@ -308,7 +317,7 @@ public class Scalar extends Field {
      * 
      * @return Returns the initialValue of the current ScalarValue object
      */
-    public ScalarValue getInitialValue() {
+    public ScalarValue getBaseValue() {
         return initialValue;
     }
     

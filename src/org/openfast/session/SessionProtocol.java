@@ -18,4 +18,5 @@ public interface SessionProtocol {
 	public boolean supportsTemplateExchange();
 	public Message createTemplateDefinitionMessage(MessageTemplate messageTemplate);
 	public Message createTemplateDeclarationMessage(MessageTemplate messageTemplate, int templateId);
+	public Message getCloseMessage();
 }

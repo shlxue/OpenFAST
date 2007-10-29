@@ -36,6 +36,7 @@ public interface SessionConstants {
     ErrorCode TEMPLATE_UNKNOWN = new ErrorCode(SESSION, 12, "TUNKNOWN", "Template unknown", FastAlertSeverity.ERROR);
     ErrorCode UNAUTHORIZED = new ErrorCode(SESSION, 13, "EAUTH", "Unauthorized", FastAlertSeverity.FATAL);
     ErrorCode PROTCOL_ERROR = new ErrorCode(SESSION, 14, "EPROTO", "Protocol Error", FastAlertSeverity.ERROR);
+    ErrorCode CLOSE = new ErrorCode(SESSION, 15, "CLOSE", "Session Closed", FastAlertSeverity.INFO);
     ErrorCode UNDEFINED = new ErrorCode(SESSION, -1, "UNDEFINED", "Undefined Alert Code", FastAlertSeverity.ERROR);
     
     SessionProtocol SCP_1_0 = new SessionControlProtocol_1_0();

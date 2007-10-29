@@ -195,11 +195,9 @@ public class SessionControlProtocol_1_1 extends AbstractSessionControlProtocol {
     
     public final static MessageTemplate FAST_ALERT_TEMPLATE = new MessageTemplate("",
             new Field[] {
-                new Scalar("Severity", Type.U32, Operator.NONE,
-                    ScalarValue.UNDEFINED, false),
+                new Scalar("Severity", Type.U32, Operator.NONE, ScalarValue.UNDEFINED, false),
                 new Scalar("Code", Type.U32, Operator.NONE, ScalarValue.UNDEFINED, false),
-                new Scalar("Value", Type.U32, Operator.NONE,
-                    ScalarValue.UNDEFINED, true),
+                new Scalar("Value", Type.U32, Operator.NONE, ScalarValue.UNDEFINED, true),
                 new Scalar("Description", Type.ASCII, Operator.NONE, ScalarValue.UNDEFINED, false),
             });
     public final static MessageTemplate FAST_HELLO_TEMPLATE = new MessageTemplate("",
@@ -230,7 +228,12 @@ public class SessionControlProtocol_1_1 extends AbstractSessionControlProtocol {
         
     private static final SessionMessageHandler ALERT_HANDLER = new SessionMessageHandler() {
 		public void handleMessage(Session session, Message message) {
-			session.getErrorHandler().error(ErrorCode.getAlertCode(message), message.getString(4));
+			ErrorCode alertCode = ErrorCode.getAlertCode(message);
+			if (alertCode.equals(SessionConstants.CLOSE)) {
+				session.close(alertCode);
+			} else {
+				session.getErrorHandler().error(alertCode, message.getString(4));
+			}
 		}
     };
 
@@ -254,12 +257,13 @@ public class SessionControlProtocol_1_1 extends AbstractSessionControlProtocol {
     });
     
     private static final MessageTemplate OTHER = new MessageTemplate(new QName("Other", NAMESPACE), new Field[] {
+    	new Group(qualify("Other"), new Field[] {
     		new Sequence(qualify("ForeignAttributes"), new Field[]{
     				new StaticTemplateReference(ATTRIBUTE)
     		}, true),
     		new Sequence(qualify("ForeignElements"), new Field[]{
     				new StaticTemplateReference(ELEMENT)
-    		}, true)
+    		}, true) }, true)
     });
     
     private static final MessageTemplate TEMPLATE_NAME = new MessageTemplate(new QName("TemplateName", NAMESPACE), new Field[] {
@@ -488,7 +492,7 @@ public class SessionControlProtocol_1_1 extends AbstractSessionControlProtocol {
 	}
 	
 	private static final TemplateRegistry TEMPLATE_REGISTRY = new BasicTemplateRegistry();
-	
+
 	static {
         TEMPLATE_REGISTRY.register(FAST_HELLO_TEMPLATE_ID, FAST_HELLO_TEMPLATE);
         TEMPLATE_REGISTRY.register(FAST_ALERT_TEMPLATE_ID, FAST_ALERT_TEMPLATE);
@@ -533,4 +537,10 @@ public class SessionControlProtocol_1_1 extends AbstractSessionControlProtocol {
 			}
 		}
 	}
+
+	public Message getCloseMessage() {
+		return CLOSE;
+	}
+	
+	private static final Message CLOSE = createFastAlertMessage(SessionConstants.CLOSE);
 }

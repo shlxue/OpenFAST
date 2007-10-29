@@ -20,7 +20,10 @@ public class GroupConverter extends AbstractFieldInstructionConverter {
 	}
 
 	public GroupValue convert(Field field, ConversionContext context) {
-		return convert((Group) field, new Message(SessionControlProtocol_1_1.GROUP_INSTR), context);
+		Group group = (Group) field;
+		Message groupMsg = convert(group, new Message(SessionControlProtocol_1_1.GROUP_INSTR), context);
+		groupMsg.setBool("Optional", field.isOptional());
+		return groupMsg;
 	}
 
 	public boolean shouldConvert(Field field) {

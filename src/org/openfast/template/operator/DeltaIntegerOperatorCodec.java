@@ -34,7 +34,7 @@ final class DeltaIntegerOperatorCodec extends AlwaysPresentOperatorCodec {
 	    }
 	
 	    if (priorValue.isUndefined()) {
-	        priorValue = field.getInitialValue();
+	        priorValue = field.getBaseValue();
 	    }
 	
 	    return ((NumericValue) value).subtract((NumericValue) priorValue);
@@ -53,7 +53,7 @@ final class DeltaIntegerOperatorCodec extends AlwaysPresentOperatorCodec {
 	
 	    if (previousValue.isUndefined()) {
 	        if (field.getDefaultValue().isUndefined()) {
-	            previousValue = field.getInitialValue();
+	            previousValue = field.getBaseValue();
 	        } else {
 	            previousValue = field.getDefaultValue();
 	        }

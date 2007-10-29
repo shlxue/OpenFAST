@@ -19,6 +19,30 @@ import org.openfast.template.type.Type;
 
 public class ScalarConverter extends AbstractFieldInstructionConverter {
 
+	private final Map/*<Type, MessageTemplate>*/ TYPE_TEMPLATE_MAP = new HashMap();
+	private final Map/*<Type, MessageTemplate>*/ TEMPLATE_TYPE_MAP = new HashMap();
+	
+	public ScalarConverter() {
+		TYPE_TEMPLATE_MAP.put(Type.I32,         SessionControlProtocol_1_1.INT32_INSTR);
+		TYPE_TEMPLATE_MAP.put(Type.U32,         SessionControlProtocol_1_1.UINT32_INSTR);
+		TYPE_TEMPLATE_MAP.put(Type.I64,         SessionControlProtocol_1_1.INT64_INSTR);
+		TYPE_TEMPLATE_MAP.put(Type.U64,         SessionControlProtocol_1_1.UINT64_INSTR);
+		TYPE_TEMPLATE_MAP.put(Type.DECIMAL,     SessionControlProtocol_1_1.DECIMAL_INSTR);
+		TYPE_TEMPLATE_MAP.put(Type.UNICODE,     SessionControlProtocol_1_1.UNICODE_INSTR);
+		TYPE_TEMPLATE_MAP.put(Type.ASCII,       SessionControlProtocol_1_1.ASCII_INSTR);
+		TYPE_TEMPLATE_MAP.put(Type.STRING,      SessionControlProtocol_1_1.ASCII_INSTR);
+		TYPE_TEMPLATE_MAP.put(Type.BYTE_VECTOR, SessionControlProtocol_1_1.BYTE_VECTOR_INSTR);
+		
+		TEMPLATE_TYPE_MAP.put(SessionControlProtocol_1_1.INT32_INSTR,       Type.I32);
+		TEMPLATE_TYPE_MAP.put(SessionControlProtocol_1_1.UINT32_INSTR,      Type.U32);
+		TEMPLATE_TYPE_MAP.put(SessionControlProtocol_1_1.INT64_INSTR,       Type.I64);
+		TEMPLATE_TYPE_MAP.put(SessionControlProtocol_1_1.UINT64_INSTR,      Type.U64);
+		TEMPLATE_TYPE_MAP.put(SessionControlProtocol_1_1.DECIMAL_INSTR,     Type.DECIMAL);
+		TEMPLATE_TYPE_MAP.put(SessionControlProtocol_1_1.UNICODE_INSTR,     Type.UNICODE);
+		TEMPLATE_TYPE_MAP.put(SessionControlProtocol_1_1.ASCII_INSTR,		Type.ASCII);
+		TEMPLATE_TYPE_MAP.put(SessionControlProtocol_1_1.BYTE_VECTOR_INSTR, Type.BYTE_VECTOR);
+	}
+
 	public Field convert(GroupValue fieldDef, TemplateRegistry templateRegistry, ConversionContext context) {
 		Type type = (Type) TEMPLATE_TYPE_MAP.get(fieldDef.getGroup());
 		boolean optional = fieldDef.getBool("Optional");
@@ -51,8 +75,8 @@ public class ScalarConverter extends AbstractFieldInstructionConverter {
 		scalarMsg.setInteger("Optional", scalar.isOptional() ? 1 : 0);
 		if (!scalar.getOperator().equals(Operator.NONE))
 			scalarMsg.setFieldValue("Operator", new GroupValue(scalarTemplate.getGroup("Operator"), new FieldValue[] { createOperator(scalar) }));
-		if (!scalar.getInitialValue().isUndefined())
-			scalarMsg.setFieldValue("InitialValue", scalar.getInitialValue());
+		if (!scalar.getDefaultValue().isUndefined())
+			scalarMsg.setFieldValue("InitialValue", scalar.getDefaultValue());
 		return scalarMsg;
 	}
 
@@ -62,29 +86,5 @@ public class ScalarConverter extends AbstractFieldInstructionConverter {
 	
 	public boolean shouldConvert(Field field) {
 		return field.getClass().equals(Scalar.class);
-	}
-
-	private static final Map/*<Type, MessageTemplate>*/ TYPE_TEMPLATE_MAP = new HashMap();
-	private static final Map/*<Type, MessageTemplate>*/ TEMPLATE_TYPE_MAP = new HashMap();
-	
-	static {
-		TYPE_TEMPLATE_MAP.put(Type.I32,         SessionControlProtocol_1_1.INT32_INSTR);
-		TYPE_TEMPLATE_MAP.put(Type.U32,         SessionControlProtocol_1_1.UINT32_INSTR);
-		TYPE_TEMPLATE_MAP.put(Type.I64,         SessionControlProtocol_1_1.INT64_INSTR);
-		TYPE_TEMPLATE_MAP.put(Type.U64,         SessionControlProtocol_1_1.UINT64_INSTR);
-		TYPE_TEMPLATE_MAP.put(Type.DECIMAL,     SessionControlProtocol_1_1.DECIMAL_INSTR);
-		TYPE_TEMPLATE_MAP.put(Type.UNICODE,     SessionControlProtocol_1_1.UNICODE_INSTR);
-		TYPE_TEMPLATE_MAP.put(Type.ASCII,       SessionControlProtocol_1_1.ASCII_INSTR);
-		TYPE_TEMPLATE_MAP.put(Type.STRING,      SessionControlProtocol_1_1.ASCII_INSTR);
-		TYPE_TEMPLATE_MAP.put(Type.BYTE_VECTOR, SessionControlProtocol_1_1.BYTE_VECTOR_INSTR);
-		
-		TEMPLATE_TYPE_MAP.put(SessionControlProtocol_1_1.INT32_INSTR,       Type.I32);
-		TEMPLATE_TYPE_MAP.put(SessionControlProtocol_1_1.UINT32_INSTR,      Type.U32);
-		TEMPLATE_TYPE_MAP.put(SessionControlProtocol_1_1.INT64_INSTR,       Type.I64);
-		TEMPLATE_TYPE_MAP.put(SessionControlProtocol_1_1.UINT64_INSTR,      Type.U64);
-		TEMPLATE_TYPE_MAP.put(SessionControlProtocol_1_1.DECIMAL_INSTR,     Type.DECIMAL);
-		TEMPLATE_TYPE_MAP.put(SessionControlProtocol_1_1.UNICODE_INSTR,     Type.UNICODE);
-		TEMPLATE_TYPE_MAP.put(SessionControlProtocol_1_1.ASCII_INSTR,		 Type.ASCII);
-		TEMPLATE_TYPE_MAP.put(SessionControlProtocol_1_1.BYTE_VECTOR_INSTR, Type.BYTE_VECTOR);
 	}
 }

@@ -25,4 +25,5 @@ package org.openfast;
 import java.io.Serializable;
 
 public interface FieldValue extends Serializable {
+	FieldValue copy();
 }

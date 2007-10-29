@@ -56,7 +56,7 @@ final class TailOperatorCodec extends OperatorCodec {
 	        return null;
 	    } else if ((previousValue == null) ||
 	            previousValue.isUndefined()) {
-	        base = (StringValue) field.getInitialValue();
+	        base = (StringValue) field.getBaseValue();
 	    } else {
 	        base = (StringValue) previousValue;
 	    }
@@ -79,7 +79,7 @@ final class TailOperatorCodec extends OperatorCodec {
 	public ScalarValue decodeEmptyValue(ScalarValue previousValue,
 	    Scalar field) {
 	    if (previousValue.isUndefined()) {
-	        return field.getInitialValue();
+	        return field.getBaseValue();
 	    }
 	
 	    return previousValue;

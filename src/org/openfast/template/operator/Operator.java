@@ -15,7 +15,15 @@ public class Operator implements Serializable {
 	private static final Map OPERATOR_NAME_MAP = new HashMap();
 	private final String name;
 
-	public static final Operator NONE = new Operator("none");
+	public static final Operator NONE = new Operator("none") {
+		private static final long serialVersionUID = 2L;
+		public boolean usesDictionary() {
+			return false;
+		}
+		public boolean shouldStoreValue(ScalarValue value) {
+			return false;
+		}
+	};
 	public static final Operator CONSTANT = new Operator("constant") {
 		private static final long serialVersionUID = 1L;
 
@@ -91,5 +99,9 @@ public class Operator implements Serializable {
 	
 	public int hashCode() {
 		return name.hashCode();
+	}
+
+	public boolean usesDictionary() {
+		return true;
 	}
 }

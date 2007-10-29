@@ -28,8 +28,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.openfast.debug.DecodeTrace;
-import org.openfast.debug.EncodeTrace;
+import org.openfast.debug.BasicDecodeTrace;
+import org.openfast.debug.BasicEncodeTrace;
+import org.openfast.debug.Trace;
 import org.openfast.error.ErrorHandler;
 import org.openfast.error.FastConstants;
 import org.openfast.template.BasicTemplateRegistry;
@@ -47,8 +48,8 @@ public class Context {
 	private String currentApplicationType;
 	private List listeners = Collections.EMPTY_LIST;
 	private boolean traceEnabled;
-	public EncodeTrace encodeTrace;
-	public DecodeTrace decodeTrace;
+	private Trace encodeTrace;
+	private Trace decodeTrace;
 
     public Context() {
         dictionaries.put("global", new GlobalDictionary());
@@ -138,11 +139,27 @@ public class Context {
 	}
 
 	public void startTrace() {
-		encodeTrace = new EncodeTrace();
-		decodeTrace = new DecodeTrace();
+		setEncodeTrace(new BasicEncodeTrace());
+		setDecodeTrace(new BasicDecodeTrace());
 	}
 
 	public void setTraceEnabled(boolean enabled) {
 		this.traceEnabled = enabled;
+	}
+
+	public void setEncodeTrace(BasicEncodeTrace encodeTrace) {
+		this.encodeTrace = encodeTrace;
+	}
+
+	public Trace getEncodeTrace() {
+		return encodeTrace;
+	}
+
+	public void setDecodeTrace(Trace decodeTrace) {
+		this.decodeTrace = decodeTrace;
+	}
+
+	public Trace getDecodeTrace() {
+		return decodeTrace;
 	}
 }

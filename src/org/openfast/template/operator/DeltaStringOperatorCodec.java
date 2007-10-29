@@ -59,8 +59,7 @@ final class DeltaStringOperatorCodec extends AlwaysPresentOperatorCodec {
         	return null;
         }
 
-        ScalarValue base = (priorValue.isUndefined()) ? field.getInitialValue()
-                                                      : priorValue;
+        ScalarValue base = (priorValue.isUndefined()) ? field.getBaseValue() : priorValue;
 
         return Util.getDifference((StringValue) value, (StringValue) base);
     }
@@ -79,8 +78,7 @@ final class DeltaStringOperatorCodec extends AlwaysPresentOperatorCodec {
         }
 
         TwinValue diffValue = (TwinValue) newValue;
-        ScalarValue base = (previousValue.isUndefined())
-            ? field.getInitialValue() : previousValue;
+        ScalarValue base = (previousValue.isUndefined()) ? field.getBaseValue() : previousValue;
 
         if (diffValue.first.toInt() > base.toString().length()) {
         	Global.handleError(FastConstants.D7_SUBTRCTN_LEN_LONG, "The string diff <" + diffValue + "> cannot be applied to the base value \"" + base + "\" because the subtraction length is too long.");

@@ -23,6 +23,7 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 package org.openfast.session;
 
 import java.io.IOException;
+import java.net.SocketException;
 
 import org.openfast.Context;
 import org.openfast.Message;
@@ -32,12 +33,13 @@ import org.openfast.QName;
 import org.openfast.error.ErrorCode;
 import org.openfast.error.ErrorHandler;
 import org.openfast.error.FastConstants;
+import org.openfast.error.FastException;
 import org.openfast.template.MessageTemplate;
 import org.openfast.template.TemplateRegistry;
 
 
 public class Session implements ErrorHandler {
-    private ErrorHandler errorHandler = ErrorHandler.NULL;
+    private ErrorHandler errorHandler = ErrorHandler.DEFAULT;
     public final MessageInputStream in;
     public final MessageOutputStream out;
     
@@ -48,6 +50,7 @@ public class Session implements ErrorHandler {
 	private MessageListener messageListener;
 	private boolean listening;
 	private Thread listeningThread;
+	private SessionListener sessionListener = SessionListener.NULL;
 
     public Session(Connection connection, SessionProtocol protocol) {
         Context inContext = new Context();
@@ -67,10 +70,21 @@ public class Session implements ErrorHandler {
         protocol.configureSession(this);
     }
 
+    // INITIATOR
     public void close() throws FastConnectionException {
+    	listening = false;
+    	out.writeMessage(protocol.getCloseMessage());
         in.close();
         out.close();
     }
+
+    // RESPONDER
+	public void close(ErrorCode alertCode) {
+		listening = false;
+		in.close();
+		out.close();
+		sessionListener.onClose();
+	}
 
     public void setClient(Client client) {
         this.client = client;
@@ -122,17 +136,32 @@ public class Session implements ErrorHandler {
 			Runnable messageReader = new Runnable() {
 				public void run() {
 					while (listening) {
-						Message message = in.readMessage();
-						if (message == null) {
-							listening = false;
-							break;
-						}
-						if (protocol.isProtocolMessage(message)) {
-							protocol.handleMessage(Session.this, message);
-						} else if (messageListener != null) {
-							messageListener.onMessage(message);
-						} else {
-							throw new IllegalStateException("Received non-protocol message without a message listener.");
+						try {
+							Message message = in.readMessage();
+						
+							if (message == null) {
+								listening = false;
+								break;
+							}
+							if (protocol.isProtocolMessage(message)) {
+								protocol.handleMessage(Session.this, message);
+							} else if (messageListener != null) {
+								messageListener.onMessage(message);
+							} else {
+								throw new IllegalStateException("Received non-protocol message without a message listener.");
+							}
+						} catch (Exception e) {
+							Throwable cause = e.getCause();
+							
+							if (cause != null && cause.getClass().equals(SocketException.class) &&
+									cause.getMessage().equals("Socket closed")) {
+								listening = false;
+							} else if (e instanceof FastException) {
+								FastException fastException = ((FastException) e);
+								errorHandler.error(fastException.getCode(), fastException.getMessage());
+							} else {
+								errorHandler.error(FastConstants.GENERAL_ERROR, e.getMessage(), e);
+							}
 						}
 					}
 				}};
@@ -168,11 +197,19 @@ public class Session implements ErrorHandler {
 	
 	public void addDynamicTemplateDefinition(MessageTemplate template) {
 		in.getTemplateRegistry().define(template);
+		out.getTemplateRegistry().define(template);
 	}
 
 	public void registerDynamicTemplate(QName templateName, int id) {
 		if (!in.getTemplateRegistry().isDefined(templateName))
 			throw new IllegalStateException("Template " + templateName + " has not been defined.");
 		in.getTemplateRegistry().register(id, templateName);
+		if (!out.getTemplateRegistry().isDefined(templateName))
+			throw new IllegalStateException("Template " + templateName + " has not been defined.");
+		out.getTemplateRegistry().register(id, templateName);
+	}
+
+	public void setSessionListener(SessionListener sessionListener) {
+		this.sessionListener = sessionListener;
 	}
 }

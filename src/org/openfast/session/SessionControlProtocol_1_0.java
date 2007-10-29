@@ -113,4 +113,8 @@ class SessionControlProtocol_1_0 extends AbstractSessionControlProtocol {
 	public Message createTemplateDefinitionMessage(MessageTemplate messageTemplate) {
 		return null;
 	}
+
+	public Message getCloseMessage() {
+		return createFastAlertMessage(SessionConstants.CLOSE);
+	}
 }

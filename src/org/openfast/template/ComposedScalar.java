@@ -94,7 +94,7 @@ public class ComposedScalar extends Field {
 			if (!other.fields[i].getTypeCodec().equals(fields[i].getTypeCodec())) return false;
 			if (!other.fields[i].getOperator().equals(fields[i].getOperator())) return false;
 			if (!other.fields[i].getOperatorCodec().equals(fields[i].getOperatorCodec())) return false;
-			if (!other.fields[i].getInitialValue().equals(fields[i].getInitialValue())) return false;
+			if (!other.fields[i].getDefaultValue().equals(fields[i].getDefaultValue())) return false;
 			if (!other.fields[i].getDictionary().equals(fields[i].getDictionary())) return false;
 		}
 		return true;

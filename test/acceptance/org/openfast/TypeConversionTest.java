@@ -26,6 +26,7 @@ public class TypeConversionTest extends OpenFastTestCase {
 		message.setString("short", "-5");
 		message.setString("long", "1000000000000000000");
 		message.setString("bytevector", "abcd");
+		message.setString("decimal", "2.3");
 		
 		FastEncoder encoder = encoder(template);
 		

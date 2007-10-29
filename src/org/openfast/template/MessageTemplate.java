@@ -103,13 +103,13 @@ public class MessageTemplate extends Group implements FieldSet {
     public Message decode(InputStream in, int templateId, BitVectorReader presenceMapReader, Context context) {
     	try {
     		if (context.isTraceEnabled())
-    			context.decodeTrace.groupStarted(this);
+    			context.getDecodeTrace().groupStart(this);
 	        FieldValue[] fieldValues = super.decodeFieldValues(in, this, presenceMapReader, context);
 	        fieldValues[0] = new IntegerValue(templateId);
 	
 	        Message message = new Message(this, fieldValues);
 	        if (context.isTraceEnabled())
-	        	context.decodeTrace.groupEnded(message);
+	        	context.getDecodeTrace().groupEnd();
 			return message;
     	} catch (FastException e) {
     		throw new FastException("An error occurred while decoding " + this, e.getCode(), e);

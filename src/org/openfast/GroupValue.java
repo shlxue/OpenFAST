@@ -187,8 +187,8 @@ public class GroupValue implements FieldValue {
 		setFieldValue(group.getFieldIndex(field), value);
 	}
 	
-	public void setFieldValue(int IndexfieldIndex, FieldValue value) {
-        values[IndexfieldIndex] = value;
+	public void setFieldValue(int fieldIndex, FieldValue value) {
+        values[fieldIndex] = value;
     }
 
     public void setBitVector(int fieldIndex, BitVector vector) {
@@ -218,6 +218,10 @@ public class GroupValue implements FieldValue {
     public void setInteger(int fieldIndex, int value) {
     	values[fieldIndex] = new IntegerValue(value);
     }
+
+	public void setBool(String fieldName, boolean value) {
+        setFieldValue(fieldName, new IntegerValue(value ? 1 : 0));
+	}
 
 	public void setLong(String fieldName, long value) {
 		setFieldValue(fieldName, new LongValue(value));
@@ -303,4 +307,12 @@ public class GroupValue implements FieldValue {
     public boolean isDefined(String fieldName) {
         return getValue(fieldName) != null;
     }
+    
+    public FieldValue copy() {
+		FieldValue[] copies = new FieldValue[values.length];
+		for (int i=0; i<copies.length; i++) {
+			copies[i] = values[i].copy();
+		}
+		return new GroupValue(group, this.values);
+	}
 }

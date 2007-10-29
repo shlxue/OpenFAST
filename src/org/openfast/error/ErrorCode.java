@@ -77,4 +77,11 @@ public class ErrorCode {
     public String toString() {
     	return shortName + ": " + description;
     }
+    
+    public boolean equals(Object obj) {
+    	if (obj == this) return true;
+    	if (obj == null || !(obj instanceof ErrorCode)) return false;
+    	ErrorCode other = (ErrorCode) obj;
+    	return other.code == this.code && other.getType().equals(this.getType());
+    }
 }

@@ -50,6 +50,7 @@ public class SequenceConverter extends AbstractFieldInstructionConverter {
 	public GroupValue convert(Field field, ConversionContext context) {
 		Sequence sequence = (Sequence) field;
 		Message seqDef = GroupConverter.convert(sequence.getGroup(), new Message(SessionControlProtocol_1_1.SEQUENCE_INSTR), context);
+		seqDef.setBool("Optional", sequence.isOptional());
 		if (!sequence.isImplicitLength()) {
 			Group lengthGroup = SessionControlProtocol_1_1.SEQUENCE_INSTR.getGroup("Length");
 			GroupValue lengthDef = new GroupValue(lengthGroup);
@@ -65,8 +66,8 @@ public class SequenceConverter extends AbstractFieldInstructionConverter {
 				lengthDef.setFieldValue("Operator", operatorDef);
 			}
 			
-			if (!length.getInitialValue().isUndefined()) {
-				lengthDef.setFieldValue("InitialValue", length.getInitialValue());
+			if (!length.getDefaultValue().isUndefined()) {
+				lengthDef.setFieldValue("InitialValue", length.getDefaultValue());
 			}
 		}
 		return seqDef;

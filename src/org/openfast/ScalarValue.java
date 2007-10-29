@@ -59,6 +59,10 @@ public class ScalarValue implements FieldValue {
     public boolean equalsValue(String defaultValue) {
         return false;
     }
+    
+    public FieldValue copy() {
+    	return this; // immutable objects don't need actual copies.
+    }
 
     /**
      * 

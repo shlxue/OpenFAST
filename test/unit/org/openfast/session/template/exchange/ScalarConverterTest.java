@@ -21,11 +21,18 @@ public class ScalarConverterTest extends TestCase {
 		context = SessionControlProtocol_1_1.createInitialContext();
 	}
 	
-	public void testConvertDefaultWithInitialValue() {
+	public void testConvertDefaultWithDefaultValue() {
 		Field scalar = new Scalar("default10", Type.U32, Operator.DEFAULT, new IntegerValue(10), false);
 		GroupValue fieldDef = converter.convert(scalar, context);
 		Field decodedScalar = converter.convert(fieldDef, TemplateRegistry.NULL, context);
 		
+		assertEquals(scalar, decodedScalar);
+	}
+	
+	public void testConvertDeltaWithDefaultValue() {
+		Field scalar = new Scalar("value", Type.U32, Operator.DELTA, new IntegerValue(1), false);
+		GroupValue fieldDef = converter.convert(scalar, context);
+		Field decodedScalar = converter.convert(fieldDef, TemplateRegistry.NULL, context);
 		assertEquals(scalar, decodedScalar);
 	}
 

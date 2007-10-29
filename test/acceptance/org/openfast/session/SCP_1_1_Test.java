@@ -13,7 +13,7 @@ import org.openfast.test.ObjectMother;
 import org.openfast.util.RecordingOutputStream;
 
 public class SCP_1_1_Test extends TestCase {
-	private static final int MAX_TIMEOUT = 2000;
+	private static final int MAX_TIMEOUT = 15000;
 	private LocalEndpoint serverEndpoint;
 	private RecordingEndpoint clientEndpoint;
 	private FastServer server;
@@ -107,8 +107,9 @@ public class SCP_1_1_Test extends TestCase {
 			public void newSession(Session session) {
 				wait0(MAX_TIMEOUT);
 				session.setListening(true);
+				session.setErrorHandler(ErrorHandler.NULL);
 				notify0();
-				if (successfullThreadsCount == 0)
+				if (successfullThreadsCount < 0)
 					wait0(MAX_TIMEOUT);
 			}});
 		server.listen();
@@ -134,7 +135,7 @@ public class SCP_1_1_Test extends TestCase {
 			wait0(MAX_TIMEOUT);
 		assertEquals(1, successfullThreadsCount);
 	}
-	
+
 	public void testTemplateExchange() throws Exception {
 		server.setSessionHandler(new SessionHandler() {
 			public void newSession(Session session) {
@@ -167,7 +168,6 @@ public class SCP_1_1_Test extends TestCase {
 
 		if (successfullThreadsCount < 1)
 			wait0(MAX_TIMEOUT);
-		session.close();
 		assertEquals(1, successfullThreadsCount);
 	}
 	
@@ -204,7 +204,6 @@ public class SCP_1_1_Test extends TestCase {
 
 		if (successfullThreadsCount < 1)
 			wait0(MAX_TIMEOUT);
-		session.close();
 		assertEquals(1, successfullThreadsCount);
 	}
 	

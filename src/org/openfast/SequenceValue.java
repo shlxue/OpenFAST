@@ -123,4 +123,12 @@ public class SequenceValue implements FieldValue {
 	public GroupValue[] getValues() {
 		return (GroupValue[]) this.elements.toArray(new GroupValue[elements.size()]);
 	}
+	
+	public FieldValue copy() {
+		SequenceValue value = new SequenceValue(this.sequence);
+		for (int i=0; i<elements.size(); i++) {
+			value.add((GroupValue) ((GroupValue)elements.get(i)).copy());
+		}
+		return value;
+	}
 }
