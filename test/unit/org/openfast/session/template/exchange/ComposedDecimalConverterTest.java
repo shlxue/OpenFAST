@@ -30,9 +30,4 @@ public class ComposedDecimalConverterTest extends TestCase {
 		Field composedDecimal = converter.convert(fieldDef, TemplateRegistry.NULL, context);
 		assertEquals(composedDecimal, decimal);
 	}
-
-	public void testConvertFieldConversionContext() {
-//		GroupValue fieldDef = converter.convert(decimal, context);
-	}
-
 }

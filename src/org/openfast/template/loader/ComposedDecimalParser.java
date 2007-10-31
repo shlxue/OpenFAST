@@ -81,6 +81,8 @@ public class ComposedDecimalParser extends AbstractFieldParser {
         }
 
         ComposedScalar scalar = Util.composedDecimal(name, Operator.getOperator(exponentOperator), exponentDefaultValue, Operator.getOperator(mantissaOperator), mantissaDefaultValue, optional);
+        scalar.getFields()[0].setDictionary(context.getDictionary());
+        scalar.getFields()[1].setDictionary(context.getDictionary());
         		
         if (fieldNode.hasAttribute("id"))
     		scalar.setId(fieldNode.getAttribute("id"));

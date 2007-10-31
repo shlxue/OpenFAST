@@ -31,6 +31,14 @@ public class Operator implements Serializable {
 	    	if (scalar.getDefaultValue().isUndefined())
 	    		Global.handleError(FastConstants.S4_NO_INITIAL_VALUE_FOR_CONST, "The field " + scalar + " must have a default value defined.");
 		}
+		
+		public boolean shouldStoreValue(ScalarValue value) {
+			return false;
+		}
+		
+		public boolean usesDictionary() {
+			return false;
+		}
 	};
 	public static final Operator DEFAULT = new Operator("default") {
 		private static final long serialVersionUID = 1L;

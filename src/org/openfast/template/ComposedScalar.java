@@ -37,6 +37,8 @@ public class ComposedScalar extends Field {
 		FieldValue[] values = new FieldValue[fields.length];
 		for (int i=0; i<fields.length; i++) {
 			values[i] = fields[i].decode(in, template, context, presenceMapReader);
+			if (i == 0 && values[0] == null)
+				return null;
 		}
 		return valueConverter.compose(values);
 	}

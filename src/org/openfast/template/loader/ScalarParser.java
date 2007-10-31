@@ -50,6 +50,7 @@ public class ScalarParser extends AbstractFieldParser {
         if (key != null)
         	scalar.setKey(new QName(key, ns));
         scalar.setDictionary(context.getDictionary());
+		parseExternalAttributes(fieldNode, scalar);
 		return scalar;
 	}
 

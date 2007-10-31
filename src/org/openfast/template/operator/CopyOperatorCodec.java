@@ -68,7 +68,7 @@ public class CopyOperatorCodec extends OptionallyPresentOperatorCodec {
             return null;
         }
 
-        Global.handleError(FastConstants.D5_NO_DEFAULT_VALUE, "");
+        Global.handleError(FastConstants.D5_NO_DEFAULT_VALUE, "No default value for " + field);
 
         return null;
     }

@@ -185,4 +185,12 @@ public class Util {
 		Scalar mantissaScalar = new Scalar(Global.createImplicitName(name), Type.I64, mantissaOp, mantissaVal, false);
 		return new ComposedScalar(name, Type.DECIMAL, new Scalar[] { exponentScalar, mantissaScalar }, optional, new DecimalConverter());
 	}
+
+	public static int toInt(String attribute) {
+		try {
+			return Integer.parseInt(attribute);
+		} catch (NumberFormatException e) {
+			return 0;
+		}
+	}
 }

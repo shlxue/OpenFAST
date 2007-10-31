@@ -25,4 +25,14 @@ public class ComposedDecimalParserTest extends OpenFastTestCase {
 		assertComposedScalarField(decimal, Type.DECIMAL, "composed", Operator.CONSTANT, new IntegerValue(-2), Operator.DELTA, ScalarValue.UNDEFINED);
 	}
 
+	public void testInheritDictionary() throws Exception {
+		Element decimalDef = document("<decimal name=\"composed\"><mantissa><delta/></mantissa><exponent><constant value=\"-2\"/></exponent></decimal>").getDocumentElement();
+		context.setDictionary("template");
+		assertTrue(parser.canParse(decimalDef, context));
+		ComposedScalar decimal = (ComposedScalar) parser.parse(decimalDef, context);
+		assertComposedScalarField(decimal, Type.DECIMAL, "composed", Operator.CONSTANT, new IntegerValue(-2), Operator.DELTA, ScalarValue.UNDEFINED);
+		assertEquals("template", decimal.getFields()[0].getDictionary());
+		assertEquals("template", decimal.getFields()[1].getDictionary());
+		
+	}
 }

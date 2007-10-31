@@ -5,6 +5,7 @@ import org.openfast.BitVectorBuilder;
 import org.openfast.BitVectorReader;
 import org.openfast.ByteUtil;
 import org.openfast.Context;
+import org.openfast.IntegerValue;
 import org.openfast.QName;
 import org.openfast.ScalarValue;
 import org.openfast.template.ComposedScalar;
@@ -58,5 +59,76 @@ public class ComposedDecimalTest extends OpenFastTestCase {
 		assertEquals(d(94225, -3), scalar.decode(bitStream("11100111"), template, context, pmapReader("10100000")));
 		assertEquals(d(94350, -3), scalar.decode(bitStream("00000000 11111101"), template, context, pmapReader("10100000")));
 	}
+	
+	public void testCopyExponentDeltaMantissa() {
+		ComposedScalar decimal = Util.composedDecimal(name, Operator.COPY, ScalarValue.UNDEFINED, Operator.DELTA, new IntegerValue(1), false);
+		Context context = new Context();
+		BitVectorBuilder pmapBuilder = new BitVectorBuilder(7);
+		assertEquals("11111110 00000001 00010110 10101100", decimal.encode(d(19245, -2), template, context , pmapBuilder));
+		assertEquals("11000000", pmapBuilder.getBitVector().getBytes());
+		pmapBuilder = new BitVectorBuilder(7);
+		assertEquals("11111100", decimal.encode(d(19241, -2), template, context , pmapBuilder));
+		assertEquals("10000000", pmapBuilder.getBitVector().getBytes());
+	}
+	
+	public void testCopyExponentDefaultMantissa() {
+		ComposedScalar decimal = Util.composedDecimal(name, Operator.COPY, ScalarValue.UNDEFINED, Operator.DEFAULT, new IntegerValue(1), false);
+		Context context = new Context();
+		BitVectorBuilder pmapBuilder = new BitVectorBuilder(7);
+		assertEquals("11111110 00000001 00010110 10101101", decimal.encode(d(19245, -2), template, context , pmapBuilder));
+		assertEquals("11100000", pmapBuilder.getBitVector().getBytes());
+		
+		pmapBuilder = new BitVectorBuilder(7);
+		assertEquals("00000001 00010110 10101001", decimal.encode(d(19241, -2), template, context , pmapBuilder));
+		assertEquals("10100000", pmapBuilder.getBitVector().getBytes());
 
+		pmapBuilder = new BitVectorBuilder(7);
+		assertEquals("10000000", decimal.encode(d(1, 0), template, context , pmapBuilder));
+		assertEquals("11000000", pmapBuilder.getBitVector().getBytes());
+		
+		pmapBuilder = new BitVectorBuilder(7);
+		assertEquals("", decimal.encode(d(1, 0), template, context , pmapBuilder));
+		assertEquals("10000000", pmapBuilder.getBitVector().getBytes());
+		assertEquals(2, pmapBuilder.getIndex());
+	}
+
+	public void testOptionalDefaultNullExponent() {
+		ComposedScalar decimal = Util.composedDecimal(name, Operator.DEFAULT, ScalarValue.UNDEFINED, Operator.DELTA, new IntegerValue(12200), true);
+		Context context = new Context();
+		BitVectorBuilder pmapBuilder = new BitVectorBuilder(7);
+		
+		assertEquals("", decimal.encode(null, template, context , pmapBuilder));
+		assertEquals("10000000", pmapBuilder.getBitVector().getBytes());
+		assertEquals(1, pmapBuilder.getIndex()); // ONLY ONE PMAP BIT SHOULD BE WRITTEN
+		
+		pmapBuilder = new BitVectorBuilder(7);
+		assertEquals("11111110 10000001", decimal.encode(d(12201, -2), template, context , pmapBuilder));
+		assertEquals("11000000", pmapBuilder.getBitVector().getBytes());
+		assertEquals(1, pmapBuilder.getIndex());
+	}
+	
+	public void testOptionalConstantExponent() {
+		ComposedScalar decimal = Util.composedDecimal(name, Operator.CONSTANT, new IntegerValue(-2), Operator.DEFAULT, new IntegerValue(100), true);
+		Context context = new Context();
+		BitVectorBuilder pmapBuilder = new BitVectorBuilder(7);
+		
+		assertEquals("", decimal.encode(d(100, -2), template, context , pmapBuilder));
+		assertEquals("11000000", pmapBuilder.getBitVector().getBytes());
+		assertEquals(2, pmapBuilder.getIndex());
+	}
+	
+	public void testOptionalDeltaExponentCopyMantissa() {
+		ComposedScalar decimal = Util.composedDecimal(name, Operator.DELTA, ScalarValue.UNDEFINED, Operator.COPY, ScalarValue.UNDEFINED, true);
+		Context context = new Context();
+		BitVectorBuilder pmapBuilder = new BitVectorBuilder(7);
+
+		assertEquals("10000000", decimal.encode(null, template, context , pmapBuilder));
+		assertEquals("10000000", pmapBuilder.getBitVector().getBytes());
+		assertEquals(0, pmapBuilder.getIndex());
+
+		pmapBuilder = new BitVectorBuilder(7);
+		assertEquals("10000001 10000001", decimal.encode(d(1, 0), template, context , pmapBuilder));
+		assertEquals("11000000", pmapBuilder.getBitVector().getBytes());
+		assertEquals(1, pmapBuilder.getIndex());
+	}
 }

@@ -47,4 +47,38 @@ public class ErrorCasesTest extends OpenFastTestCase {
 		FastDecoder decoder = decoder("11000000 10000001", t);
 		assertEquals(message, decoder.readMessage());
 	}
+	
+	public void testDictionaryNotInherited() {
+		String templateDef = "<template name=\"OptDeltaDec\" id=\"58\" dictionary=\"template\">" +
+	    "    <string name=\"desc\"/>" +
+	    "    <decimal id=\"1\" presence=\"optional\" name=\"Line1\">" + 
+	    "         <exponent><copy/></exponent>" + 
+	    "         <mantissa><copy/></mantissa>" + 
+	    "    </decimal>" +
+	    "    <decimal id=\"1\" presence=\"optional\" name=\"Line2\">" +
+	    "         <exponent><copy/></exponent>" + 
+	    "         <mantissa><copy/></mantissa>" + 
+	    "    </decimal>    " +
+	    "    <decimal id=\"1\" presence=\"optional\" name=\"Line3\">" +
+	    "         <exponent><copy/></exponent> " +
+	    "         <mantissa><copy/></mantissa>" + 
+	    "    </decimal>" +    
+        "</template>";
+		
+		MessageTemplate template = template(templateDef);
+
+        Message m = new Message(template);
+        
+        m.setString("desc", "prev");
+        // m.setDecimal("Line1", null);
+        m.setDecimal("Line2", 9427.61 );     
+        m.setDecimal("Line3", 9427.6 );
+        
+        byte[] bytes = encoder(template).encode(m);
+        Message m2 = decoder(template, bytes).readMessage();
+        
+        assertEquals(m, m2);
+        
+
+	}
 }

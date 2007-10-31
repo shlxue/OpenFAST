@@ -28,7 +28,7 @@ import org.openfast.QName;
 
 
 
-public interface TemplateRegistry {
+public interface TemplateRegistry extends Iterable {
 	TemplateRegistry NULL = new NullTemplateRegistry();
 	
 	void registerAll(TemplateRegistry registry);
@@ -62,6 +62,18 @@ public interface TemplateRegistry {
 	
 	void addTemplateRegisteredListener(TemplateRegisteredListener templateRegisteredListener);
 	void removeTemplateRegisteredListener(TemplateRegisteredListener templateRegisteredListener);
+	
+	/**
+	 * Iterator over the names of each template (defined or registered) in this registry
+	 * 
+	 * @return an iterator over the qualified names each item is of type QName
+	 */
 	Iterator/*<QName>*/ nameIterator();
+	
+	/**
+	 * Iterator over the set of templates (defined or registered) in this registry
+	 * 
+	 * @return an iterator over the set of templates each item is an instance of MessageTemplate
+	 */
 	Iterator/*<MessageTemplate>*/ iterator();
 }

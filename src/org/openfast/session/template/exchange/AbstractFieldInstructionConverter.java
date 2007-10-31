@@ -47,7 +47,7 @@ public abstract class AbstractFieldInstructionConverter implements FieldInstruct
 	}
 	
 	private static final Map/*<Operator, MessageTemplate>*/ OPERATOR_TEMPLATE_MAP = new HashMap();
-	private static final Map/*<Operator, MessageTemplate>*/ TEMPLATE_OPERATOR_MAP = new HashMap();
+	private static final Map/*<MessageTemplate, Operator>*/ TEMPLATE_OPERATOR_MAP = new HashMap();
 	
 	static {
 		OPERATOR_TEMPLATE_MAP.put(Operator.CONSTANT,  SessionControlProtocol_1_1.CONSTANT_OP);

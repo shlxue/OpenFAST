@@ -33,8 +33,10 @@ public class BasicTemplateRegistry extends AbstractTemplateRegistry {
 	}
 	
 	public void define(MessageTemplate template) {
-		nameMap.put(template.getQName(), template);
-		templates.add(template);
+		if (!templates.contains(template)) {
+			nameMap.put(template.getQName(), template);
+			templates.add(template);
+		}
 	}
 
 	public int getId(QName name) {
