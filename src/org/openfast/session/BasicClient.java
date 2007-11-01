@@ -18,4 +18,13 @@ public class BasicClient implements Client {
 		return vendorId;
 	}
 
+	public boolean equals(Object obj) {
+		if (obj == this) return true;
+		if (obj == null || !(obj instanceof BasicClient)) return false;
+		return ((BasicClient) obj).name.equals(name);
+	}
+	
+	public int hashCode() {
+		return name.hashCode();
+	}
 }

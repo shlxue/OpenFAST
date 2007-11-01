@@ -70,7 +70,6 @@ public class ErrorCasesTest extends OpenFastTestCase {
         Message m = new Message(template);
         
         m.setString("desc", "prev");
-        // m.setDecimal("Line1", null);
         m.setDecimal("Line2", 9427.61 );     
         m.setDecimal("Line3", 9427.6 );
         
@@ -78,7 +77,5 @@ public class ErrorCasesTest extends OpenFastTestCase {
         Message m2 = decoder(template, bytes).readMessage();
         
         assertEquals(m, m2);
-        
-
 	}
 }

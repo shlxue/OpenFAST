@@ -11,7 +11,7 @@ import org.w3c.dom.NodeList;
 
 public class SequenceParser extends AbstractFieldParser {
 
-	private FieldParser sequenceLengthParser = new ScalarParser("length") {
+	private ScalarParser sequenceLengthParser = new ScalarParser("length") {
 		protected Type getType(Element fieldNode, ParsingContext context) {
 			return Type.U32;
 		}
@@ -50,7 +50,8 @@ public class SequenceParser extends AbstractFieldParser {
         }
 
         Element length = (Element) lengthElements.item(0);
-        return (Scalar) sequenceLengthParser.parse(length, parent);
+        ParsingContext context = new ParsingContext(length, parent);
+        return (Scalar) sequenceLengthParser.parse(length, optional, context);
     }
 
 }

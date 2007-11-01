@@ -91,7 +91,12 @@ class SessionControlProtocol_1_0 extends AbstractSessionControlProtocol {
 
 	public void handleMessage(Session session, Message message) {
 		if (message.getTemplate().equals(FAST_ALERT_TEMPLATE)) {
-			session.getErrorHandler().error(ErrorCode.getAlertCode(message), message.getString(4));
+			ErrorCode alertCode = ErrorCode.getAlertCode(message);
+			if (alertCode.equals(SessionConstants.CLOSE)) {
+				session.close(alertCode);
+			} else {
+				session.getErrorHandler().error(alertCode, message.getString(4));
+			}
 		}
 	}
 
