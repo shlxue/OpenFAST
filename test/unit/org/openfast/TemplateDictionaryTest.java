@@ -24,6 +24,7 @@ package org.openfast;
 
 import junit.framework.TestCase;
 
+import org.openfast.error.FastConstants;
 import org.openfast.template.Field;
 import org.openfast.template.Group;
 import org.openfast.template.MessageTemplate;
@@ -40,16 +41,16 @@ public class TemplateDictionaryTest extends TestCase {
                     new Scalar("exchange", Type.STRING, Operator.COPY, ScalarValue.UNDEFINED, false)
                 });
         ScalarValue value = new StringValue("NYSE");
-        dictionary.store(template, "any", new QName("exchange"), value);
+        dictionary.store(template, FastConstants.ANY_TYPE, new QName("exchange"), value);
 
-        assertEquals(value, dictionary.lookup(template, new QName("exchange"), "any"));
+        assertEquals(value, dictionary.lookup(template, new QName("exchange"), FastConstants.ANY_TYPE));
 
         Group quoteTemplate = new MessageTemplate("Quote",
                 new Field[] {
                     new Scalar("bid", Type.DECIMAL, Operator.DELTA, ScalarValue.UNDEFINED, false)
                 });
         assertEquals(ScalarValue.UNDEFINED,
-            dictionary.lookup(quoteTemplate, new QName("exchange"), "any"));
+            dictionary.lookup(quoteTemplate, new QName("exchange"), FastConstants.ANY_TYPE));
     }
 
     public void testLookupMultipleValuesForTemplate() throws Exception {
@@ -60,12 +61,12 @@ public class TemplateDictionaryTest extends TestCase {
                 });
         ScalarValue value = new StringValue("NYSE");
         ScalarValue marketValue = new DecimalValue(100000.00);
-        dictionary.store(template, "any", new QName("exchange"), value);
-        dictionary.store(template, "any", new QName("marketValue"), marketValue);
+        dictionary.store(template, FastConstants.ANY_TYPE, new QName("exchange"), value);
+        dictionary.store(template, FastConstants.ANY_TYPE, new QName("marketValue"), marketValue);
 
         assertFalse(value.equals(ScalarValue.UNDEFINED));
-        assertEquals(value, dictionary.lookup(template, new QName("exchange"), "any"));
-        assertEquals(marketValue, dictionary.lookup(template, new QName("marketValue"), "any"));
+        assertEquals(value, dictionary.lookup(template, new QName("exchange"), FastConstants.ANY_TYPE));
+        assertEquals(marketValue, dictionary.lookup(template, new QName("marketValue"), FastConstants.ANY_TYPE));
     }
 
     public void testReset() {
@@ -75,12 +76,12 @@ public class TemplateDictionaryTest extends TestCase {
                     new Scalar("exchange", Type.STRING, Operator.COPY, ScalarValue.UNDEFINED, false)
                 });
         ScalarValue value = new StringValue("NYSE");
-        dictionary.store(template, "any", new QName("exchange"), value);
+        dictionary.store(template, FastConstants.ANY_TYPE, new QName("exchange"), value);
 
-        assertEquals(value, dictionary.lookup(template, new QName("exchange"), "any"));
+        assertEquals(value, dictionary.lookup(template, new QName("exchange"), FastConstants.ANY_TYPE));
         dictionary.reset();
         assertEquals(ScalarValue.UNDEFINED,
-            dictionary.lookup(template, new QName("exchange"), "any"));
+            dictionary.lookup(template, new QName("exchange"), FastConstants.ANY_TYPE));
     }
 
     public void testExistingTemplateValueLookup() throws Exception {
@@ -90,8 +91,8 @@ public class TemplateDictionaryTest extends TestCase {
                     new Scalar("exchange", Type.STRING, Operator.COPY, ScalarValue.UNDEFINED, false)
                 });
         ScalarValue value = new StringValue("NYSE");
-        dictionary.store(template, "any", new QName("exchange"), value);
+        dictionary.store(template, FastConstants.ANY_TYPE, new QName("exchange"), value);
 
-        assertEquals(ScalarValue.UNDEFINED, dictionary.lookup(template, new QName("bid"), "any"));
+        assertEquals(ScalarValue.UNDEFINED, dictionary.lookup(template, new QName("bid"), FastConstants.ANY_TYPE));
     }
 }

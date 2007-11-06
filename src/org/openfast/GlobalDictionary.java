@@ -31,7 +31,7 @@ import java.util.Map;
 public class GlobalDictionary implements Dictionary {
     protected Map table = new HashMap();
 
-    public ScalarValue lookup(Group template, QName key, String applicationType) {
+    public ScalarValue lookup(Group template, QName key, QName applicationType) {
         if (!table.containsKey(key)) {
             return ScalarValue.UNDEFINED;
         }
@@ -39,7 +39,7 @@ public class GlobalDictionary implements Dictionary {
         return (ScalarValue) table.get(key);
     }
 
-    public void store(Group group, String applicationType, QName key, ScalarValue value) {
+    public void store(Group group, QName applicationType, QName key, ScalarValue value) {
         table.put(key, value);
     }
 

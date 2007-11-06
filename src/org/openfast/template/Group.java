@@ -49,7 +49,7 @@ public class Group extends Field {
 	private static final long serialVersionUID = 1L;
 
 	
-	private String typeReference = null;
+	private QName typeReference = null;
 	protected String childNamespace = "";
     protected final Field[] fields;
     protected final Map fieldIndexMap;
@@ -440,7 +440,7 @@ public class Group extends Field {
      * Set the name of the type referenced by this group
      * @param typeReference The name of the application type referenced by this goup
      */
-    public void setTypeReference(String typeReference) {
+    public void setTypeReference(QName typeReference) {
         this.typeReference = typeReference;
     }
     
@@ -448,7 +448,7 @@ public class Group extends Field {
      * 
      * @return Returns the application type referenced by this group
      */
-    public String getTypeReference() {
+    public QName getTypeReference() {
         return typeReference;
     }
     

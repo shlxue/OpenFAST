@@ -247,7 +247,7 @@ public class Sequence extends Field implements FieldSet {
      * Set the type reference
      * @param typeReference The type reference name as a string
      */
-	public void setTypeReference(String typeReference) {
+	public void setTypeReference(QName typeReference) {
 		this.group.setTypeReference(typeReference);
 	}
 
@@ -255,7 +255,7 @@ public class Sequence extends Field implements FieldSet {
 	 * 
 	 * @return Returns the typeReference as a string
 	 */
-	public String getTypeReference() {
+	public QName getTypeReference() {
 		return group.getTypeReference();
 	}
 	

@@ -138,7 +138,7 @@ public class XMLMessageTemplateLoaderTest extends OpenFastTestCase {
         MessageTemplateLoader loader = new XMLMessageTemplateLoader();
         MessageTemplate messageTemplate = loader.load(templateStream)[0];
 
-        assertEquals("MDIncrementalRefresh", messageTemplate.getTypeReference());
+        assertEquals("MDIncrementalRefresh", messageTemplate.getTypeReference().getName());
         assertEquals("MDRefreshSample", messageTemplate.getName());
         assertEquals(10, messageTemplate.getFieldCount());
 
@@ -157,7 +157,7 @@ public class XMLMessageTemplateLoaderTest extends OpenFastTestCase {
         assertSequence(messageTemplate, index, 17);
 
         Sequence sequence = (Sequence) messageTemplate.getField(index++);
-        assertEquals("MDEntries", sequence.getTypeReference());
+        assertEquals("MDEntries", sequence.getTypeReference().getName());
         assertSequenceLengthField(sequence, "268", Type.U32, Operator.NONE);
 
         /********************************** SEQUENCE FIELDS **********************************/

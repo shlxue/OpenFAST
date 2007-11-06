@@ -160,8 +160,7 @@
 			<xs:element name="string">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:group minOccurs="0"
-							ref="td:byteVectorLength" />
+						<xs:group minOccurs="0" ref="td:byteVectorLength" />
 						<xs:group ref="td:fieldInstrContent" />
 					</xs:sequence>
 					<xs:attributeGroup ref="td:fieldInstrContent" />

@@ -3,6 +3,7 @@ package org.openfast.template.loader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openfast.QName;
 import org.openfast.error.FastConstants;
 import org.openfast.template.Field;
 import org.openfast.template.Group;
@@ -67,16 +68,21 @@ public class GroupParser extends AbstractFieldParser {
 	 * @param templateTag The dom element object 
 	 * @return Returns a string of the TypeReference from the passed element dom object
 	 */
-    protected static String getTypeReference(Element templateTag) {
+    protected static QName getTypeReference(Element templateTag) {
         String typeReference = null;
+        String typeRefNs = "";
         NodeList typeReferenceTags = templateTag.getElementsByTagName("typeRef");
 
         if (typeReferenceTags.getLength() > 0) {
             Element messageRef = (Element) typeReferenceTags.item(0);
             typeReference = messageRef.getAttribute("name");
+            if (messageRef.hasAttribute("ns"))
+            	typeRefNs = messageRef.getAttribute("ns");
+            return new QName(typeReference, typeRefNs);
+        } else {
+        	return FastConstants.ANY_TYPE;
         }
 
-        return typeReference;
     }
 
 }

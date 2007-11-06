@@ -45,7 +45,7 @@ public class Context {
     private int lastTemplateId;
     private Map dictionaries = new HashMap();
     private ErrorHandler errorHandler = ErrorHandler.DEFAULT;
-	private String currentApplicationType;
+	private QName currentApplicationType;
 	private List listeners = Collections.EMPTY_LIST;
 	private boolean traceEnabled;
 	private Trace encodeTrace;
@@ -119,11 +119,11 @@ public class Context {
     }
 
 	public void newMessage(MessageTemplate template) {
-		currentApplicationType = (template.hasTypeReference()) ? template.getTypeReference() : FastConstants.ANY;
+		currentApplicationType = (template.hasTypeReference()) ? template.getTypeReference() : FastConstants.ANY_TYPE;
 	}
 
-	public void setCurrentApplicationType(String typeReference) {
-		currentApplicationType = typeReference;
+	public void setCurrentApplicationType(QName name) {
+		currentApplicationType = name;
 	}
 
 	public TemplateRegistry getTemplateRegistry() {

@@ -29,9 +29,9 @@ public interface Dictionary {
     public static final String TEMPLATE = "template";
 	public static final String GLOBAL = "global";
 
-    ScalarValue lookup(Group template, QName key, String applicationType);
+    ScalarValue lookup(Group template, QName key, QName currentApplicationType);
 
-    void store(Group group, String applicationType, QName key, ScalarValue valueToEncode);
+    void store(Group group, QName applicationType, QName key, ScalarValue valueToEncode);
 
     void reset();
 }

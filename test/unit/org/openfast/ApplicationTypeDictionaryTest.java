@@ -6,8 +6,8 @@ import org.openfast.test.OpenFastTestCase;
 public class ApplicationTypeDictionaryTest extends OpenFastTestCase {
 
 	public void testLookup() {
-		ObjectMother.allocationInstruction().setTypeReference("AllocationInstruction");
-		ObjectMother.allocations().setTypeReference("Allocation");
+		ObjectMother.allocationInstruction().setTypeReference(new QName("AllocationInstruction"));
+		ObjectMother.allocations().setTypeReference(new QName("Allocation"));
 		
 		Context context = new Context();
 		

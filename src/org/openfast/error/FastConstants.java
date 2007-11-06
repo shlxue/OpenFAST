@@ -24,7 +24,7 @@ package org.openfast.error;
 import org.openfast.QName;
 
 public interface FastConstants {
-	String ANY = "any";
+	QName ANY_TYPE = new QName("any");
 
 	FastAlertSeverity ERROR = FastAlertSeverity.ERROR;
 	FastAlertSeverity WARN = FastAlertSeverity.WARN;
