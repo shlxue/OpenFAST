@@ -37,6 +37,8 @@ public class TcpEndpoint implements Endpoint {
     private final int port;
     private String host;
 	private ConnectionListener connectionListener = ConnectionListener.NULL;
+	private ServerSocket serverSocket;
+	private boolean closed = true;
 
     public TcpEndpoint(int port) {
         this.port = port;
@@ -61,18 +63,29 @@ public class TcpEndpoint implements Endpoint {
 	}
 
 	public void accept() throws FastConnectionException {
+		closed = false;
 		try {
-			ServerSocket serverSocket = new ServerSocket(port);
+			serverSocket = new ServerSocket(port);
 			while (true) {
 				Socket socket = serverSocket.accept();
 				connectionListener.onConnect(new TcpConnection(socket));
 			}
 		} catch (IOException e) {
-			throw new FastConnectionException(e);
+			if (!closed)
+				throw new FastConnectionException(e);
 		}
 	}
 
 	public void setConnectionListener(ConnectionListener listener) {
 		this.connectionListener = listener;
+	}
+
+	public void close() {
+		closed = true;
+		if (serverSocket != null)
+			try {
+				serverSocket.close();
+			} catch (IOException e) {
+			}
 	}
 }

@@ -53,4 +53,8 @@ public class RecordingEndpoint implements Endpoint {
 			return recordingOutputStream;
 		}
 	}
+
+	public void close() {
+		underlyingEndpoint.close();
+	}
 }

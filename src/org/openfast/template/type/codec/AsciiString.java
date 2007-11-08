@@ -48,8 +48,7 @@ final class AsciiString extends TypeCodec {
      */
     public byte[] encodeValue(ScalarValue value) {
         if ((value == null) || value.isNull()) {
-            throw new IllegalStateException(
-                "Only nullable strings can represent null values.");
+            throw new IllegalStateException("Only nullable strings can represent null values.");
         }
 
         String string = value.toString();

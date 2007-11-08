@@ -39,4 +39,7 @@ public class LocalEndpoint implements Endpoint {
 		this.listener = listener;
 	}
 
+	public void close() {
+	}
+
 }

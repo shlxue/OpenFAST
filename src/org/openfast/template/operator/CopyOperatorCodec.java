@@ -46,8 +46,7 @@ public class CopyOperatorCodec extends OptionallyPresentOperatorCodec {
      */
     protected ScalarValue getValueToEncode(ScalarValue value,
         ScalarValue priorValue, ScalarValue defaultValue) {
-        if ((priorValue == ScalarValue.UNDEFINED) &&
-                value.equals(defaultValue)) {
+        if ((priorValue == ScalarValue.UNDEFINED) && value.equals(defaultValue)) {
             return null;
         }
 

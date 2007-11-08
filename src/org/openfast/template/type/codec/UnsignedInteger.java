@@ -55,8 +55,7 @@ public final class UnsignedInteger extends IntegerCodec {
         byte[] encoded = new byte[size];
 
         for (int factor = 0; factor < size; factor++) {
-            encoded[size - factor - 1] = (byte) ((value >> (factor * 7)) &
-                0x7f);
+            encoded[size - factor - 1] = (byte) ((value >> (factor * 7)) & 0x7f);
         }
 
         return encoded;

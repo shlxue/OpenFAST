@@ -98,6 +98,8 @@ public class Context {
     }
 
     private Dictionary getDictionary(String dictionary) {
+    	if (!dictionaries.containsKey(dictionary))
+    		dictionaries.put(dictionary, new GlobalDictionary());
         return (Dictionary) dictionaries.get(dictionary);
     }
 

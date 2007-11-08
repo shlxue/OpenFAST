@@ -69,6 +69,7 @@ public class FastServer implements ConnectionListener {
 
     public void close() throws FastConnectionException {
     	listening = false;
+    	endpoint.close();
     }
 
     // ************* OPTIONAL DEPENDENCY SETTERS **************
