@@ -56,6 +56,8 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
 	private final boolean namespaceAwareness;
 	private final ParsingContext initialContext;
 
+	private boolean loadTemplateIdFromAuxId;
+
 	
 	public XMLMessageTemplateLoader() {
 		this(false);
@@ -99,7 +101,7 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
 
         Element root = document.getDocumentElement();
 		
-        TemplateParser templateParser = new TemplateParser();
+        TemplateParser templateParser = new TemplateParser(loadTemplateIdFromAuxId);
 		
 		if (root.getNodeName().equals("template")) {
 			return new MessageTemplate[] { (MessageTemplate) templateParser.parse(root, initialContext) };
@@ -171,5 +173,9 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
 	
 	public void setTypeMap(Map typeMap) {
 		initialContext.setTypeMap(typeMap);
+	}
+
+	public void setLoadTemplateIdFromAuxId(boolean loadTempalteIdFromAuxId) {
+		this.loadTemplateIdFromAuxId = loadTempalteIdFromAuxId;
 	}
 }

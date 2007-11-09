@@ -12,6 +12,7 @@ public class NullableSignedIntegerTest extends OpenFastTestCase {
 		assertEncodeDecode(i(-17), "11101111", TypeCodec.NULLABLE_INTEGER);
 		assertEncodeDecode(i(547), "00000100 10100100", TypeCodec.NULLABLE_INTEGER);
 		assertEncodeDecode(i(-5), "11111011", TypeCodec.NULLABLE_INTEGER);
+		assertEncodeDecode(i(124322), "00000111 01001011 10100011", TypeCodec.NULLABLE_INTEGER);
 	}
 
 }

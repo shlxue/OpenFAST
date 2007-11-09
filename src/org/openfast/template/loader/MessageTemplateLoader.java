@@ -32,7 +32,6 @@ import org.openfast.template.TemplateRegistry;
  */
 public interface MessageTemplateLoader {
     MessageTemplate[] load(InputStream source);
-    
 	void setTemplateRegistry(TemplateRegistry templateRegistry);
 	TemplateRegistry getTemplateRegistry();
 }

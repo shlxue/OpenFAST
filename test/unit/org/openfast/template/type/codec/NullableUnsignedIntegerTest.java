@@ -1,5 +1,6 @@
 package org.openfast.template.type.codec;
 
+import org.openfast.ScalarValue;
 import org.openfast.test.OpenFastTestCase;
 
 public class NullableUnsignedIntegerTest extends OpenFastTestCase {
