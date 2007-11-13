@@ -31,6 +31,7 @@ public class StringValue extends ScalarValue {
 	public final String value;
 
     public StringValue(String value) {
+    	if (value == null) throw new NullPointerException();
         this.value = value;
     }
     

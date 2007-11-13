@@ -62,7 +62,7 @@ public abstract class OptionallyPresentOperatorCodec extends OperatorCodec {
         }
 
         if (field.isOptional()) {
-            if (!field.getDefaultValue().isUndefined() || ((priorValue != ScalarValue.UNDEFINED) && (priorValue != null))) {
+            if (((priorValue == ScalarValue.UNDEFINED) && !field.getDefaultValue().isUndefined()) || ((priorValue != ScalarValue.UNDEFINED) && (priorValue != null))) {
                 return ScalarValue.NULL;
             }
         } else {

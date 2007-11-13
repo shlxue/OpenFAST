@@ -257,7 +257,11 @@ public class GroupValue implements FieldValue {
         }
 
         for (int i = 0; i < values.length; i++) {
-            if (!values[i].equals(other.values[i])) {
+        	if (values[i] == null) {
+        		if (other.values[i] != null)
+        			return false;
+        	}
+        	else if (!values[i].equals(other.values[i])) {
                 return false;
             }
         }

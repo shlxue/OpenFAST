@@ -27,8 +27,15 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Map;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.dom.DOMResult;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
 
 import org.openfast.error.ErrorCode;
 import org.openfast.error.ErrorHandler;
@@ -56,7 +63,11 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
 	private final boolean namespaceAwareness;
 	private final ParsingContext initialContext;
 
+	private boolean validate;
 	private boolean loadTemplateIdFromAuxId;
+
+	private Schema templateDefinitionSchema;
+
 
 	
 	public XMLMessageTemplateLoader() {
@@ -86,6 +97,28 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
 
 	public void addFieldParser(FieldParser fieldParser) {
 		initialContext.getFieldParsers().add(fieldParser);
+	}
+	
+	public boolean isValid(InputStream source) {
+    	try {
+			Schema schema = loadFastTemplateDefinitionSchema();
+			schema.newValidator().validate(new StreamSource(source), null);
+			return true;
+		} catch (SAXException e) {
+			initialContext.getErrorHandler().error(FastConstants.S1_INVALID_XML, e.getMessage(), e);
+			return false;
+		} catch (IOException e) {
+			initialContext.getErrorHandler().error(FastConstants.IO_ERROR, e.getMessage(), e);
+			return false;
+		}
+	}
+
+	private Schema loadFastTemplateDefinitionSchema() throws SAXException {
+		if (templateDefinitionSchema == null) {
+			SchemaFactory schemaFactory =  SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+			templateDefinitionSchema = schemaFactory.newSchema(new StreamSource(this.getClass().getClassLoader().getResourceAsStream("org/openfast/fastTemplateSchema.v11.xsd")));
+		}
+		return templateDefinitionSchema;
 	}
 
 	/**
@@ -127,24 +160,31 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
      * @return Returns a DOM org.w3c.dom.Document object, returns null if there are exceptions caught
      */
     private Document parseXml(InputStream templateStream) {
+    	org.xml.sax.ErrorHandler errorHandler = new org.xml.sax.ErrorHandler() {
+    		public void error(SAXParseException exception) throws SAXException {
+    			initialContext.getErrorHandler().error(XML_PARSING_ERROR, "ERROR: " + exception.getMessage(), exception);
+    		}
+    		public void fatalError(SAXParseException exception) throws SAXException {
+    			initialContext.getErrorHandler().error(XML_PARSING_ERROR, "FATAL: " + exception.getMessage(), exception);
+    		}
+    		public void warning(SAXParseException exception) throws SAXException {
+    			initialContext.getErrorHandler().error(XML_PARSING_ERROR, "WARNING: " + exception.getMessage(), exception);
+    		}};
         try {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             dbf.setIgnoringElementContentWhitespace(true);
             dbf.setNamespaceAware(namespaceAwareness);
 
             DocumentBuilder builder = dbf.newDocumentBuilder();
-            builder.setErrorHandler(new org.xml.sax.ErrorHandler() {
-				public void error(SAXParseException exception) throws SAXException {
-					initialContext.getErrorHandler().error(XML_PARSING_ERROR, "ERROR: " + exception.getMessage(), exception);
-				}
-				public void fatalError(SAXParseException exception) throws SAXException {
-					initialContext.getErrorHandler().error(XML_PARSING_ERROR, "FATAL: " + exception.getMessage(), exception);
-				}
-				public void warning(SAXParseException exception) throws SAXException {
-					initialContext.getErrorHandler().error(XML_PARSING_ERROR, "WARNING: " + exception.getMessage(), exception);
-				}});
-
-            return builder.parse(templateStream);
+			builder.setErrorHandler(errorHandler);
+            Document document = builder.parse(templateStream);
+            if (validate) {
+            	Validator validator = loadFastTemplateDefinitionSchema().newValidator();
+            	DOMResult result = new DOMResult();
+				validator.validate(new DOMSource(document), result);
+            	return (Document) result.getNode();
+            }
+			return document;
         } catch (IOException e) {
         	initialContext.getErrorHandler().error(IO_ERROR,
                 "Error occurred while trying to read xml template: " + e.getMessage(), e);
@@ -177,5 +217,9 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
 
 	public void setLoadTemplateIdFromAuxId(boolean loadTempalteIdFromAuxId) {
 		this.loadTemplateIdFromAuxId = loadTempalteIdFromAuxId;
+	}
+
+	public void setValidate(boolean validate) {
+		this.validate = validate;
 	}
 }

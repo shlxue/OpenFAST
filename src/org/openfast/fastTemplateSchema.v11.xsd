@@ -353,8 +353,7 @@
 	</xs:attributeGroup>
 	<xs:group name="other">
 		<xs:sequence>
-			<xs:group minOccurs="0" ref="td:foreignElm"
-				maxOccurs="unbounded" />
+			<xs:group minOccurs="0" ref="td:foreignElm" maxOccurs="unbounded" />
 		</xs:sequence>
 	</xs:group>
 	<xs:attributeGroup name="other">

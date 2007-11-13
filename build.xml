@@ -62,6 +62,9 @@
 		<javac srcdir="${src.dir}" destdir="${build.classes.dir}" debug="yes" debuglevel="lines,source,vars" target="1.4" source="1.4">
 			<compilerarg line="-Xlint:deprecation -Xlint:unchecked"/>
 		</javac>
+		<copy todir="${build.classes.dir}">
+			<fileset dir="${src.dir}" excludes="**/*.java" includes="**/*" />
+		</copy>
 	</target>
 
 	<target name="compile-test" depends="compile">

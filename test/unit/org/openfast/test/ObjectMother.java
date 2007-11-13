@@ -159,9 +159,10 @@ public class ObjectMother {
 
     public static GroupValue newAllocation(String account, double price,
         double quantity) {
-        return new GroupValue(allocations().getGroup(),
+        StringValue acct = account != null ? new StringValue(account) : null;
+		return new GroupValue(allocations().getGroup(),
             new FieldValue[] {
-                new StringValue(account), new DecimalValue(price),
+                acct, new DecimalValue(price),
                 new DecimalValue(quantity), new DecimalValue(0.0)
             });
     }
