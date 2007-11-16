@@ -39,4 +39,31 @@ public class TailOperatorCodecTest extends OpenFastTestCase {
 		ScalarValue expected = new StringValue("ce");
 		assertEquals(expected, OperatorCodec.TAIL.getValueToEncode(value, priorValue, byteVectorField));
 	}
+	
+	public void testGetValueToEncodeAsciiStringTooLong() {
+		Scalar byteVectorField = new Scalar("str", Type.ASCII, Operator.TAIL, ScalarValue.UNDEFINED, true);
+		
+		ScalarValue priorValue = new StringValue("abcde");
+		ScalarValue value = new StringValue("dbcdef");
+		
+		assertEquals(value, OperatorCodec.TAIL.getValueToEncode(value, priorValue, byteVectorField));
+	}
+	
+	public void testGetValueToEncodeAsciiStringLengthMismatch() {
+		Scalar byteVectorField = new Scalar("str", Type.ASCII, Operator.TAIL, ScalarValue.UNDEFINED, true);
+		
+		ScalarValue priorValue = new StringValue("abcde");
+		ScalarValue value = new StringValue("abcdef");
+		
+		assertEquals(value, OperatorCodec.TAIL.getValueToEncode(value, priorValue, byteVectorField));
+	}
+	
+	public void testGetValueToEncodeAsciiStringSameValue() {
+		Scalar byteVectorField = new Scalar("str", Type.ASCII, Operator.TAIL, ScalarValue.UNDEFINED, true);
+		
+		ScalarValue priorValue = new StringValue("abcde");
+		ScalarValue value = new StringValue("abcde");
+		
+		assertEquals(new StringValue(""), OperatorCodec.TAIL.getValueToEncode(value, priorValue, byteVectorField));
+	}
 }

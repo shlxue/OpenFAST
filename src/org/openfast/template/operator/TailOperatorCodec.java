@@ -39,7 +39,10 @@ final class TailOperatorCodec extends OperatorCodec {
 	    byte[] val = value.getBytes();
 		byte[] prior = priorValue.getBytes();
 		
-		while (val[index] == prior[index])
+		if (val.length > prior.length)
+			return value;
+		
+		while (index < val.length && val[index] == prior[index])
 			index++;
 	
 	    return (ScalarValue) field.createValue(new String(val, index, val.length-index));
