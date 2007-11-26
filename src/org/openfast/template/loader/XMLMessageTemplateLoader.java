@@ -27,15 +27,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Map;
 
-import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.dom.DOMResult;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
-import javax.xml.validation.Validator;
 
 import org.openfast.error.ErrorCode;
 import org.openfast.error.ErrorHandler;
@@ -48,6 +41,7 @@ import org.openfast.template.type.Type;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
@@ -63,13 +57,8 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
 	private final boolean namespaceAwareness;
 	private final ParsingContext initialContext;
 
-	private boolean validate;
 	private boolean loadTemplateIdFromAuxId;
 
-	private Schema templateDefinitionSchema;
-
-
-	
 	public XMLMessageTemplateLoader() {
 		this(false);
 	}
@@ -99,28 +88,6 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
 		initialContext.getFieldParsers().add(fieldParser);
 	}
 	
-	public boolean isValid(InputStream source) {
-    	try {
-			Schema schema = loadFastTemplateDefinitionSchema();
-			schema.newValidator().validate(new StreamSource(source), null);
-			return true;
-		} catch (SAXException e) {
-			initialContext.getErrorHandler().error(FastConstants.S1_INVALID_XML, e.getMessage(), e);
-			return false;
-		} catch (IOException e) {
-			initialContext.getErrorHandler().error(FastConstants.IO_ERROR, e.getMessage(), e);
-			return false;
-		}
-	}
-
-	private Schema loadFastTemplateDefinitionSchema() throws SAXException {
-		if (templateDefinitionSchema == null) {
-			SchemaFactory schemaFactory =  SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-			templateDefinitionSchema = schemaFactory.newSchema(new StreamSource(this.getClass().getClassLoader().getResourceAsStream("org/openfast/fastTemplateSchema.v11.xsd")));
-		}
-		return templateDefinitionSchema;
-	}
-
 	/**
      * Parses the XML stream and creates an array of the elements
      * @param source The inputStream object to load
@@ -174,16 +141,11 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             dbf.setIgnoringElementContentWhitespace(true);
             dbf.setNamespaceAware(namespaceAwareness);
-
             DocumentBuilder builder = dbf.newDocumentBuilder();
+            
 			builder.setErrorHandler(errorHandler);
-            Document document = builder.parse(templateStream);
-            if (validate) {
-            	Validator validator = loadFastTemplateDefinitionSchema().newValidator();
-            	DOMResult result = new DOMResult();
-				validator.validate(new DOMSource(document), result);
-            	return (Document) result.getNode();
-            }
+            InputSource inputSource = new InputSource(templateStream);
+			Document document = builder.parse(inputSource);
 			return document;
         } catch (IOException e) {
         	initialContext.getErrorHandler().error(IO_ERROR,
@@ -217,9 +179,5 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
 
 	public void setLoadTemplateIdFromAuxId(boolean loadTempalteIdFromAuxId) {
 		this.loadTemplateIdFromAuxId = loadTempalteIdFromAuxId;
-	}
-
-	public void setValidate(boolean validate) {
-		this.validate = validate;
 	}
 }

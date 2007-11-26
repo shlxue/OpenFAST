@@ -86,8 +86,4 @@ public class UtilTest extends TestCase {
     private ScalarValue diff(String base, String value) {
         return Util.getDifference(new StringValue(value), new StringValue(base));
     }
-    
-	public void testIt() throws Exception {
-		 System.out.println(this.getClass().getResource("/org/openfast/fastTemplateSchema.v11.xsd").toString());
-	}
 }

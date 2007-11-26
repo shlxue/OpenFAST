@@ -2,13 +2,11 @@ package org.openfast.submitted;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
 
 import org.openfast.Message;
 import org.openfast.MessageInputStream;
 import org.openfast.MessageOutputStream;
 import org.openfast.ScalarValue;
-import org.openfast.codec.FastEncoder;
 import org.openfast.template.Field;
 import org.openfast.template.MessageTemplate;
 import org.openfast.template.Scalar;

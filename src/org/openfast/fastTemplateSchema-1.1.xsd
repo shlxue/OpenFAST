@@ -2,7 +2,7 @@
 	xmlns:xs="http://www.w3.org/2001/XMLSchema"
 	elementFormDefault="qualified"
 	targetNamespace="http://www.fixprotocol.org/ns/fast/td/1.1">
-	<xs:element name="templates">
+	<xs:element name="templates">	
 		<xs:complexType>
 			<xs:choice minOccurs="0" maxOccurs="unbounded">
 				<xs:element ref="td:template" />

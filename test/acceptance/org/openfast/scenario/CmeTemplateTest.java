@@ -18,7 +18,6 @@ public class CmeTemplateTest extends OpenFastTestCase {
 		InputStream is = this.getClass().getResourceAsStream("1.fast");
 		MessageInputStream mis = new MessageInputStream(is);
 		mis.setTemplateRegistry(templateLoader.getTemplateRegistry());
-		mis.getContext().setTraceEnabled(true);
 		Message md = mis.readMessage();
 		assertEquals(-5025.0, md.getSequence("MDEntries").get(0).getDouble("NetChgPrevDay"), .1);
 	}
