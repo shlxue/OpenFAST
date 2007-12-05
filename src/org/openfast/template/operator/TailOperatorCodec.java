@@ -27,11 +27,7 @@ final class TailOperatorCodec extends OperatorCodec {
 	    }
 	
 	    if (priorValue.isUndefined()) {
-	        if (value.equals(field.getDefaultValue())) {
-	            return null;
-	        } else {
-	            return value;
-	        }
+        	priorValue = field.getBaseValue();
 	    }
 	
 	    int index = 0;
@@ -44,7 +40,8 @@ final class TailOperatorCodec extends OperatorCodec {
 		
 		while (index < val.length && val[index] == prior[index])
 			index++;
-	
+		if (val.length == index)
+			return null;
 	    return (ScalarValue) field.createValue(new String(val, index, val.length-index));
 	}
 

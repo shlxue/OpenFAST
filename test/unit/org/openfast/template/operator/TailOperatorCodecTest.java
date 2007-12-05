@@ -64,6 +64,6 @@ public class TailOperatorCodecTest extends OpenFastTestCase {
 		ScalarValue priorValue = new StringValue("abcde");
 		ScalarValue value = new StringValue("abcde");
 		
-		assertEquals(new StringValue(""), OperatorCodec.TAIL.getValueToEncode(value, priorValue, byteVectorField));
+		assertEquals(null, OperatorCodec.TAIL.getValueToEncode(value, priorValue, byteVectorField));
 	}
 }
