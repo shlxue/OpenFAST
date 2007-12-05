@@ -1,12 +1,10 @@
 
 <project name="openfast4j" default="all">
 
-	<property name="src.dir" value="src" />
+	<property name="src.dir" value="src/main/java" />
 	<property name="lib" value="${basedir}/lib" />
 	<property name="demo.dir" value="demo" />
-	<property name="test.dir" value="test" />
-	<property name="test.unit.dir" value="${test.dir}/unit" />
-	<property name="test.acceptance.dir" value="${test.dir}/acceptance" />
+	<property name="test.unit.dir" value="src/test/java" />
 
 	<property name="build.dir" value="build" />
 
@@ -72,12 +70,8 @@
 		<javac srcdir="${test.unit.dir}" destdir="${build.test.classes.dir}" classpathref="test.path" debug="yes" debuglevel="lines,source,vars" target="1.4" source="1.4">
 			<compilerarg line="-Xlint:deprecation -Xlint:unchecked"/>
 		</javac>
-		<javac srcdir="${test.acceptance.dir}" destdir="${build.test.classes.dir}" classpathref="test.path" debug="yes" debuglevel="lines,source,vars" target="1.4" source="1.4">
-			<compilerarg line="-Xlint:deprecation -Xlint:unchecked"/>
-		</javac>
 		<copy todir="${build.test.classes.dir}">
 			<fileset dir="${test.unit.dir}" excludes="**/*.java" includes="**/*" />
-			<fileset dir="${test.acceptance.dir}" excludes="**/*.java" includes="**/*" />
 		</copy>
 	</target>
 
@@ -103,7 +97,6 @@
 			<jvmarg line="-ea" />
 			<batchtest todir="${reports.unit}">
 				<fileset includes="**/*Test.java" dir="${test.unit.dir}" />
-				<fileset includes="**/*Test.java" dir="${test.acceptance.dir}" />
 				<formatter type="xml" usefile="true" />
 			</batchtest>
 			<formatter type="xml" />
@@ -173,9 +166,6 @@
 		</copy>
 		<copy todir="${work.dir}/dist/doc">
 			<fileset dir="${docs.dir}"/>
-		</copy>
-		<copy todir="${work.dir}/dist/test">
-			<fileset dir="${test.dir}"/>
 		</copy>
 		<copy todir="${work.dir}/dist/lib">
 			<fileset dir="${lib}"/>

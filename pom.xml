@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.openfast</groupId>
+    <artifactId>openfast</artifactId>
+    <packaging>jar</packaging>
+    <version>0.9.4-SNAPSHOT</version>
+	
+    <organization>
+        <name>The LaSalle Technology Group, LLC</name>
+        <url>http://www.lasalletech.com</url>
+    </organization>
+	
+	<name>OpenFAST</name>
+
+    <description>OpenFAST is a 100% Java implementation of the FAST Protocol.</description>
+	
+	<licenses>
+		<license>
+			<name>Mozilla Public License Version 1.1</name>
+			<url>http://www.mozilla.org/MPL/MPL-1.1.html</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	
+    <url>http://www.openfast.org</url>
+    <inceptionYear>2006</inceptionYear>
+	
+    <issueManagement>
+        <system>sourceforge</system>
+        <url>http://sourceforge.net/tracker/?group_id=198357</url>
+    </issueManagement>
+	
+    <scm>
+        <connection>scm:svn:https://openfast.svn.sourceforge.net/svnroot/openfast/trunk</connection>
+        <developerConnection>scm:svn:https://openfast.svn.sourceforge.net/svnroot/openfast/trunk/</developerConnection>
+        <url>http://openfast.svn.sourceforge.net/viewvc/openfast/trunk</url>
+    </scm>
+    
+    <mailingLists>
+    	<mailingList>
+    		<name>OpenFAST Users Mailing List</name>
+    		<subscribe>http://lists.sourceforge.net/mailman/listinfo/openfast-user</subscribe>
+    		<unsubscribe>http://lists.sourceforge.net/mailman/listinfo/openfast-user</unsubscribe>
+    		<archive>https://sourceforge.net/mailarchive/forum.php?forum_name=openfast-user</archive>
+    		<post>openfast-user@lists.sourceforge.net</post>
+    	</mailingList>
+    	<mailingList>
+    		<name>OpenFAST Commits Mailing List</name>
+    		<subscribe>http://lists.sourceforge.net/mailman/listinfo/openfast-commit</subscribe>
+    		<unsubscribe>http://lists.sourceforge.net/mailman/listinfo/openfast-commit</unsubscribe>
+    		<archive>https://sourceforge.net/mailarchive/forum.php?forum_name=openfast-commit</archive>
+    		<post>openfast-commit@lists.sourceforge.net</post>
+    	</mailingList>
+    	<mailingList>
+    		<name>OpenFAST Announcements Mailing List</name>
+    		<subscribe>http://lists.sourceforge.net/mailman/listinfo/openfast-announce</subscribe>
+    		<unsubscribe>http://lists.sourceforge.net/mailman/listinfo/openfast-announce</unsubscribe>
+    		<archive>https://sourceforge.net/mailarchive/forum.php?forum_name=openfast-announce</archive>
+    		<post>openfast-announce@lists.sourceforge.net</post>
+    	</mailingList>
+    </mailingLists>
+	
+	<build>
+		<resources>
+		    <resource>
+		        <directory>src/main/java</directory>
+		        <excludes>
+		            <exclude>**/*.java</exclude>
+		        </excludes>
+		    </resource>
+		    <resource>
+		        <directory>src/test/java</directory>
+		        <excludes>
+		            <exclude>**/*.java</exclude>
+		        </excludes>
+		    </resource>
+		</resources>
+		
+        <extensions>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-ssh</artifactId>
+                <version>1.0-beta-2</version>
+            </extension>
+        </extensions>
+		
+		<plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.4</source>
+                    <target>1.4</target>
+                </configuration>
+            </plugin>
+	    </plugins>
+	</build>
+	
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.2</version>
+		</dependency>
+	</dependencies>
+	
+	<distributionManagement>
+		<repository>
+			<id>sourceforge.net</id>
+			<name>Sourceforge.net Repository</name> 
+			<url>scp://shell.sourceforge.net/home/groups/o/op/openfast/maven/release</url>
+		</repository>
+		<snapshotRepository>
+			<id>sourceforge.net</id>
+			<name>Sourceforge.net Snapshot Repository</name>
+			<url>scp://shell.sourceforge.net/home/groups/o/op/openfast/maven/snapshot</url>
+		</snapshotRepository>
+	</distributionManagement>
+</project>
