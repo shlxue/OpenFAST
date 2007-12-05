@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.openfast</groupId>
     <artifactId>openfast</artifactId>
     <packaging>jar</packaging>
-    <version>0.9.4-SNAPSHOT</version>
+    <version>0.9.4</version>
 	
     <organization>
         <name>The LaSalle Technology Group, LLC</name>
@@ -32,9 +32,9 @@
     </issueManagement>
 	
     <scm>
-        <connection>scm:svn:https://openfast.svn.sourceforge.net/svnroot/openfast/trunk</connection>
-        <developerConnection>scm:svn:https://openfast.svn.sourceforge.net/svnroot/openfast/trunk/</developerConnection>
-        <url>http://openfast.svn.sourceforge.net/viewvc/openfast/trunk</url>
+        <connection>scm:svn:https://openfast.svn.sourceforge.net/svnroot/openfast/tags/openfast-0.9.4</connection>
+        <developerConnection>scm:svn:https://openfast.svn.sourceforge.net/svnroot/openfast/tags/openfast-0.9.4</developerConnection>
+        <url>http://openfast.svn.sourceforge.net/viewvc/openfast/tags/openfast-0.9.4</url>
     </scm>
     
     <mailingLists>
