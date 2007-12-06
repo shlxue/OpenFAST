@@ -62,21 +62,6 @@
     </mailingLists>
 	
 	<build>
-		<resources>
-		    <resource>
-		        <directory>src/main/java</directory>
-		        <excludes>
-		            <exclude>**/*.java</exclude>
-		        </excludes>
-		    </resource>
-		    <resource>
-		        <directory>src/test/java</directory>
-		        <excludes>
-		            <exclude>**/*.java</exclude>
-		        </excludes>
-		    </resource>
-		</resources>
-		
         <extensions>
             <extension>
                 <groupId>org.apache.maven.wagon</groupId>
@@ -98,6 +83,36 @@
             	<configuration>
             		<tagBase>https://openfast.svn.sourceforge.net/svnroot/openfast/tags</tagBase>
             	</configuration>
+            </plugin>
+	      	<plugin>
+		        <groupId>org.apache.maven.plugins</groupId>
+		        <artifactId>maven-javadoc-plugin</artifactId>
+		        <executions>
+		          <execution>
+		          	<id>javadoc</id>
+            		<phase>process-classes</phase>
+		            <goals>
+		              <goal>javadoc</goal>
+		            </goals>
+		          </execution>
+		        </executions>
+	      	</plugin>
+            <plugin>
+            	<artifactId>maven-assembly-plugin</artifactId>
+            	<configuration>
+            		<descriptors>
+            			<descriptor>src/assembly/source.xml</descriptor>
+            		</descriptors>
+            	</configuration>
+       	        <executions>
+		          <execution>
+		          	<id>make-assembly</id>
+		          	<phase>package</phase>
+		            <goals>
+		              <goal>attached</goal>
+		            </goals>
+		          </execution>
+		        </executions>
             </plugin>
 	    </plugins>
 	</build>
