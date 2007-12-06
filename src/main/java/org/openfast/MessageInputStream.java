@@ -42,6 +42,7 @@ public class MessageInputStream implements MessageStream {
     private Context context;
     private Map templateHandlers = Collections.EMPTY_MAP;
 	private List handlers = Collections.EMPTY_LIST;
+	private MessageBlockReader blockReader = MessageBlockReader.NULL;
 
     public MessageInputStream(InputStream inputStream) {
         this(inputStream, new Context());
@@ -61,11 +62,18 @@ public class MessageInputStream implements MessageStream {
         if (context.isTraceEnabled())
         	context.startTrace();
         
+        boolean keepReading = blockReader.readBlock(in);
+        
+        if (!keepReading) return null;
+        
         Message message = decoder.readMessage();
 
         if (message == null) {
             return null;
         }
+        
+        blockReader.messageRead(in, message);
+        
         if (!handlers.isEmpty()) {
     		for (int i=0; i<handlers.size(); i++) {
     			((MessageHandler) handlers.get(i)).handleMessage(message, context, decoder);
@@ -129,5 +137,9 @@ public class MessageInputStream implements MessageStream {
 
 	public Context getContext() {
 		return context;
+	}
+
+	public void setBlockReader(MessageBlockReader messageBlockReader) {
+		this.blockReader = messageBlockReader;
 	}
 }
