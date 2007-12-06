@@ -133,8 +133,7 @@ public class XMLMessageTemplateLoaderTest extends OpenFastTestCase {
     }
     
     public void testLoadMdIncrementalRefreshTemplate() {
-        InputStream templateStream = this.getClass()
-                                         .getResourceAsStream("mdIncrementalRefreshTemplate.xml");
+        InputStream templateStream = resource("mdIncrementalRefreshTemplate.xml");
         MessageTemplateLoader loader = new XMLMessageTemplateLoader();
         MessageTemplate messageTemplate = loader.load(templateStream)[0];
 

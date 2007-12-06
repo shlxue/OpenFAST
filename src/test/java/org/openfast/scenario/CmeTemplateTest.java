@@ -10,12 +10,12 @@ import org.openfast.test.OpenFastTestCase;
 public class CmeTemplateTest extends OpenFastTestCase {
 
 	public void testDeltas() throws Exception {
-		InputStream templateSource = this.getClass().getResourceAsStream("templates.xml");
+		InputStream templateSource = resource("templates.xml");
 		XMLMessageTemplateLoader templateLoader = new XMLMessageTemplateLoader();
 		templateLoader.setLoadTemplateIdFromAuxId(true);
 		templateLoader.load(templateSource);
 		
-		InputStream is = this.getClass().getResourceAsStream("1.fast");
+		InputStream is = resource("1.fast");
 		MessageInputStream mis = new MessageInputStream(is);
 		mis.setTemplateRegistry(templateLoader.getTemplateRegistry());
 		Message md = mis.readMessage();

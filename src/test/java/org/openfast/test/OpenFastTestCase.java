@@ -242,4 +242,8 @@ public abstract class OpenFastTestCase extends TestCase {
 		assertEquals(defaultVal, scalar.getDefaultValue());
 		assertEquals(optional, scalar.isOptional());
 	}
+
+	protected InputStream resource(String url) {
+		return this.getClass().getClassLoader().getResourceAsStream(url);
+	}
 }
