@@ -41,10 +41,10 @@ public class OpraFeedTest extends OpenFastTestCase {
 
 	public void testReadFeed() {
 		XMLMessageTemplateLoader loader = new XMLMessageTemplateLoader();
-		loader.load(resource("OPRATemplate.xml"));
+		loader.load(resource("OPRA/OPRATemplate.xml"));
 		loader.getTemplateRegistry().register(0, "OPRA");
 		
-		MessageInputStream in = new MessageInputStream(resource("testmsgs.encoded"));
+		MessageInputStream in = new MessageInputStream(resource("OPRA/messages.fast"));
 		OpraBlockReader opraBlockReader = new OpraBlockReader();
 		in.setBlockReader(opraBlockReader);
 		in.getContext().setTraceEnabled(true);
