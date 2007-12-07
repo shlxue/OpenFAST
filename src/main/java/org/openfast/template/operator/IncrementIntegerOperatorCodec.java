@@ -22,10 +22,9 @@ final class IncrementIntegerOperatorCodec extends OperatorCodec {
 	
 	    if (value == null) {
 	        if (field.isOptional()) {
-	            if (priorValue == ScalarValue.UNDEFINED) {
-	                return null;
+	            if (priorValue == ScalarValue.UNDEFINED && field.getDefaultValue().isUndefined()) {
+            		return null;
 	            }
-	
 	            return ScalarValue.NULL;
 	        } else {
 	            throw new IllegalArgumentException();
