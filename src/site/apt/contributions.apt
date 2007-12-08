@@ -1,0 +1,26 @@
+                                    ------
+                                    Contributing to OpenFAST
+                                    ------
+                                    Jacob Northey
+                                    ------
+                                    2007. 12. 07.
+
+Contributing to OpenFAST
+
+* Becoming a Committer
+
+      * Send an e-mail to {{{mailto:support@openfast.org}support@openfast.org}} requesting to be added to the project
+      
+      * Include some background information and what you are currently using OpenFAST for
+      
+* Submitting bugs/patches
+
+      * Open up a {{{issue-tracking.html}bug report}} on the SourceForge project page
+      
+      * Attach any patches and comments to the bug report 
+
+* Documentation
+
+      * To contribute to under-documented Javadocs, see becoming a committer above.
+      
+      * Additional documentation can be added to the {{{http://openfast.wiki.sourceforge.net/}OpenFAST Wiki}} 

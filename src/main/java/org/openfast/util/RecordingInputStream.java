@@ -41,7 +41,6 @@ public class RecordingInputStream extends InputStream {
     public int read() throws IOException {
         int read = in.read();
         buffer[index++] = (byte) read;
-
         return read;
     }
 

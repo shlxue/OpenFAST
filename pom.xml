@@ -15,6 +15,40 @@
 
     <description>OpenFAST is a 100% Java implementation of the FAST Protocol.</description>
 	
+	<developers>
+		<developer>
+			<name>Jacob Northey</name>
+			<organization>Lasalletech</organization>
+			<organizationUrl>http://www.lasalletech.com/</organizationUrl>
+			<roles>
+				<role>architect</role>
+				<role>developer</role>
+			</roles>
+			<timezone>-5</timezone>
+		</developer>
+		<developer>
+			<name>Craig Otis</name>
+			<organization>Lasalletech</organization>
+			<organizationUrl>http://www.lasalletech.com/</organizationUrl>
+			<roles>
+				<role>developer</role>
+			</roles>
+			<timezone>-5</timezone>
+		</developer>
+	</developers>
+	
+	<contributors>
+		<contributor>
+			<name>Stefan Schwendiman</name>
+			<organization>Swiss Exchange</organization>
+			<organizationUrl>http://www.swx.com</organizationUrl>
+			<roles>
+				<role>tester</role>
+			</roles>
+			<timezone>+1</timezone>
+		</contributor>
+	</contributors>
+	
 	<licenses>
 		<license>
 			<name>Mozilla Public License Version 1.1</name>
@@ -144,5 +178,10 @@
 			<name>Sourceforge.net Snapshot Repository</name>
 			<url>scp://shell.sourceforge.net/home/groups/o/op/openfast/htdocs/maven/snapshot</url>
 		</snapshotRepository>
+		<site>
+			<id>sourceforge.net</id>
+			<name>Sourceforge.net OpenFAST Web Site</name>
+			<url>scp://shell.sourceforge.net/home/groups/o/op/openfast/htdocs/</url>
+		</site>
 	</distributionManagement>
 </project>

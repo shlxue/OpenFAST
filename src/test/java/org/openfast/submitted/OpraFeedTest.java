@@ -16,18 +16,14 @@ public class OpraFeedTest extends OpenFastTestCase {
         	try {
 		        if (bytesLeft == 0) {
 		            bytesLeft = ((in.read() << 24) + (in.read() << 16) + (in.read() << 8) + (in.read() << 0));
-		            System.out.println("New block: " + bytesLeft + " bytes");
 		            in.read(); // read SOH byte
 		            bytesLeft--;
 		        }
 	            int msgLen =(0x000000FF & in.read()); // read message length
 	            bytesLeft--;
 	            if (msgLen == 3) {
-	            	System.out.println("End of block.");
 	            	return readBlock(in);
 	            } else {
-		            System.out.println("Bytes left in block: " + bytesLeft);
-		            System.out.println("Message length: " + msgLen);
 		            bytesLeft-=msgLen;
 	            }
 		        return true;
@@ -47,11 +43,9 @@ public class OpraFeedTest extends OpenFastTestCase {
 		MessageInputStream in = new MessageInputStream(resource("OPRA/messages.fast"));
 		OpraBlockReader opraBlockReader = new OpraBlockReader();
 		in.setBlockReader(opraBlockReader);
-		in.getContext().setTraceEnabled(true);
 		in.setTemplateRegistry(loader.getTemplateRegistry());
 		Message msg = in.readMessage();
 		while (msg != null) {
-			System.out.println(msg);
 			msg = in.readMessage();
 		}
 	}
