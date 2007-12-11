@@ -38,6 +38,8 @@ import java.io.InputStream;
 
 final class AsciiString extends TypeCodec {
     private static final long serialVersionUID = 1L;
+	private static final String ZERO_TERMINATOR = "\u0000";
+	private static final byte[] ZERO_PREAMBLE = new byte[] { 0, 0 };
 
 	AsciiString() { }
 
@@ -56,7 +58,9 @@ final class AsciiString extends TypeCodec {
         if ((string != null) && (string.length() == 0)) {
             return TypeCodec.NULL_VALUE_ENCODING;
         }
-
+        if (string.startsWith(ZERO_TERMINATOR)) {
+        	return ZERO_PREAMBLE;
+        }
         return string.getBytes();
     }
 
@@ -84,6 +88,8 @@ final class AsciiString extends TypeCodec {
         if (bytes[0] == 0) {
         	if (!ByteUtil.isEmpty(bytes))
         		Global.handleError(FastConstants.R9_STRING_OVERLONG, null);
+        	if (bytes.length > 1 && bytes[1] == 0)
+        		return new StringValue("\u0000");
             return new StringValue("");
         }
 

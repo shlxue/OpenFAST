@@ -12,7 +12,7 @@ public class AsciiStringTest extends OpenFastTestCase {
 		TypeCodec coder = Type.ASCII.getCodec(Operator.NONE, false);
 		
 		assertEquals(string(""), coder.decode(bitStream("10000000")));
-		assertEquals(string(""), coder.decode(bitStream("00000000 10000000")));
+		assertEquals(string("\u0000"), coder.decode(bitStream("00000000 10000000")));
 		
 		try {
 			coder.decode(bitStream("00000000 11000001"));
@@ -21,5 +21,4 @@ public class AsciiStringTest extends OpenFastTestCase {
 			assertEquals(FastConstants.R9_STRING_OVERLONG, e.getCode());
 		}
 	}
-
 }

@@ -19,7 +19,9 @@ final class TailOperatorCodec extends OperatorCodec {
 
 	public ScalarValue getValueToEncode(ScalarValue value, ScalarValue priorValue, Scalar field) {
 	    if (value == null) {
-	        return ScalarValue.NULL;
+	    	if (priorValue.isUndefined() && field.getDefaultValue().isUndefined())
+	    		return null;
+    		return ScalarValue.NULL;
 	    }
 	
 	    if (priorValue == null) {
@@ -45,17 +47,13 @@ final class TailOperatorCodec extends OperatorCodec {
 	    return (ScalarValue) field.createValue(new String(val, index, val.length-index));
 	}
 
-	public ScalarValue decodeValue(ScalarValue newValue,
-	    ScalarValue previousValue, Scalar field) {
+	public ScalarValue decodeValue(ScalarValue newValue, ScalarValue previousValue, Scalar field) {
 	    StringValue base;
 	
 	    if ((previousValue == null) && !field.isOptional()) {
-	        Global.handleError(FastConstants.D6_MNDTRY_FIELD_NOT_PRESENT,
-	            "");
-	
+	        Global.handleError(FastConstants.D6_MNDTRY_FIELD_NOT_PRESENT, "");
 	        return null;
-	    } else if ((previousValue == null) ||
-	            previousValue.isUndefined()) {
+	    } else if ((previousValue == null) || previousValue.isUndefined()) {
 	        base = (StringValue) field.getBaseValue();
 	    } else {
 	        base = (StringValue) previousValue;
@@ -76,9 +74,9 @@ final class TailOperatorCodec extends OperatorCodec {
 	    return new StringValue(root + delta);
 	}
 
-	public ScalarValue decodeEmptyValue(ScalarValue previousValue,
-	    Scalar field) {
+	public ScalarValue decodeEmptyValue(ScalarValue previousValue, Scalar field) {
 	    if (previousValue.isUndefined()) {
+	    	if (field.getDefaultValue().isUndefined()) return null;
 	        return field.getBaseValue();
 	    }
 	

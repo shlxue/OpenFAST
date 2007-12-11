@@ -45,4 +45,18 @@ public class OptionalInitialValueTest extends OpenFastTestCase {
 		Message decoded = decoder(template, encoding).readMessage();
 		assertEquals(m, decoded);
 	}
+	
+	public void testOptionalInitialValueForTail() throws Exception {
+		MessageTemplate template = template("<template name=\"OptCopyInit\" id=\"520\" dictionary=\"template\">" +
+	        "<string id=\"1\" presence=\"optional\" name=\"Line1\"><tail/></string>" +
+	        "<string id=\"1\" presence=\"optional\" name=\"Line2\"><tail value=\"abc\"/></string>" +
+        "</template>");
+		FastEncoder encoder = encoder(template);
+		Message m = new Message(template); // all fields null
+		byte[] encoding = encoder.encode(m);
+		assertEquals("11010000 10000001 10000000", encoding);
+		
+		Message decoded = decoder(template, encoding).readMessage();
+		assertEquals(m, decoded);
+	}
 }

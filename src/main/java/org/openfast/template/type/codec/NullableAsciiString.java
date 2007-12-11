@@ -39,6 +39,7 @@ import java.io.InputStream;
 final class NullableAsciiString extends TypeCodec {
     private static final long serialVersionUID = 1L;
 	private static final byte[] NULLABLE_EMPTY_STRING = new byte[] { 0x00, 0x00 };
+	private static final byte[] ZERO_ENCODING = new byte[] { 0x00, 0x00, 0x00 };
 
     NullableAsciiString() { }
 
@@ -58,6 +59,8 @@ final class NullableAsciiString extends TypeCodec {
             return NULLABLE_EMPTY_STRING;
         }
 
+        if (string.startsWith("\u0000"))
+        	return ZERO_ENCODING;
         return string.getBytes();
     }
     
@@ -87,8 +90,10 @@ final class NullableAsciiString extends TypeCodec {
         		Global.handleError(FastConstants.R9_STRING_OVERLONG, null);
 	        if ((bytes.length == 1)) {
 	            return null;
-	        } else {
+	        } else if (bytes.length == 2 && bytes[1] == 0){
 	            return new StringValue("");
+	        } else if (bytes.length == 3 && bytes[2] == 0) {
+	        	return new StringValue("\u0000");
 	        }
         }
 
