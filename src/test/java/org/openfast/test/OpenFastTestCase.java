@@ -60,6 +60,8 @@ import org.xml.sax.InputSource;
 
 
 public abstract class OpenFastTestCase extends TestCase {
+	protected static final ScalarValue NULL = ScalarValue.NULL;
+	protected static final ScalarValue UNDEF = ScalarValue.UNDEFINED;
     public static DecimalValue d(double value) {
         return new DecimalValue(value);
     }

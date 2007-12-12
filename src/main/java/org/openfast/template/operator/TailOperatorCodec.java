@@ -19,6 +19,8 @@ final class TailOperatorCodec extends OperatorCodec {
 
 	public ScalarValue getValueToEncode(ScalarValue value, ScalarValue priorValue, Scalar field) {
 	    if (value == null) {
+	    	if (priorValue == null)
+	    		return null;
 	    	if (priorValue.isUndefined() && field.getDefaultValue().isUndefined())
 	    		return null;
     		return ScalarValue.NULL;
@@ -39,6 +41,8 @@ final class TailOperatorCodec extends OperatorCodec {
 		
 		if (val.length > prior.length)
 			return value;
+		if (val.length < prior.length)
+			Global.handleError(FastConstants.D3_CANT_ENCODE_VALUE, "The value " + val + " cannot be encoded by a tail operator with previous value " + priorValue);
 		
 		while (index < val.length && val[index] == prior[index])
 			index++;

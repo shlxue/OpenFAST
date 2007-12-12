@@ -4,11 +4,69 @@ import org.openfast.ByteUtil;
 import org.openfast.ByteVectorValue;
 import org.openfast.ScalarValue;
 import org.openfast.StringValue;
+import org.openfast.error.FastConstants;
+import org.openfast.error.FastException;
 import org.openfast.template.Scalar;
 import org.openfast.template.type.Type;
 import org.openfast.test.OpenFastTestCase;
 
 public class TailOperatorCodecTest extends OpenFastTestCase {
+	private static final OperatorCodec TAIL_CODEC = Operator.TAIL.getCodec(Type.ASCII);
+	private static final Scalar OPT_NO_DEFAULT = new Scalar("noDefault", Type.ASCII, Operator.TAIL, ScalarValue.UNDEFINED, true);
+	private static final Scalar OPT_DEFAULT = new Scalar("noDefault", Type.ASCII, Operator.TAIL, new StringValue("abc"), true);
+	private static final Scalar MAND_NO_DEFAULT = new Scalar("noDefault", Type.ASCII, Operator.TAIL, ScalarValue.UNDEFINED, false);
+	private static final Scalar MAND_DEFAULT = new Scalar("noDefault", Type.ASCII, Operator.TAIL, new StringValue("abc"), false);
+	
+	public void testGetValueToEncodeAllCasesForOptionalNoInitialValue() {
+		//                                                        VALUE            PREVIOUS
+		assertEquals(null,            TAIL_CODEC.getValueToEncode(null,            UNDEF,           OPT_NO_DEFAULT));
+		assertEquals(string("abcd"),  TAIL_CODEC.getValueToEncode(string("abcd"),  UNDEF,           OPT_NO_DEFAULT));
+		assertEquals(string("e"),     TAIL_CODEC.getValueToEncode(string("abce"),  string("abcd"),  OPT_NO_DEFAULT));
+		assertEquals(null,            TAIL_CODEC.getValueToEncode(string("abce"),  string("abce"),  OPT_NO_DEFAULT));
+		assertEquals(string("abcef"), TAIL_CODEC.getValueToEncode(string("abcef"), string("abce"),  OPT_NO_DEFAULT));
+		assertEquals(NULL,            TAIL_CODEC.getValueToEncode(null,            string("abcef"), OPT_NO_DEFAULT));
+		assertEquals(null,            TAIL_CODEC.getValueToEncode(null,            null,            OPT_NO_DEFAULT));
+		assertEquals(string("z"),     TAIL_CODEC.getValueToEncode(string("z"),     null,            OPT_NO_DEFAULT));
+	}
+	
+	public void testGetValueToEncodeAllCasesForMandatoryNoInitialValue() {
+		//                                                        VALUE            PREVIOUS
+		assertEquals(string("abcd"),  TAIL_CODEC.getValueToEncode(string("abcd"),  UNDEF,           MAND_NO_DEFAULT));
+		assertEquals(string("e"),     TAIL_CODEC.getValueToEncode(string("abce"),  string("abcd"),  MAND_NO_DEFAULT));
+		assertEquals(string("abcef"), TAIL_CODEC.getValueToEncode(string("abcef"), string("abce"),  MAND_NO_DEFAULT));
+		assertEquals(string("z"),     TAIL_CODEC.getValueToEncode(string("z"),     null,            MAND_NO_DEFAULT));
+	}
+	
+	public void testGetValueToEncodeAllCasesForOptionalDefaultABC() {
+		//                                                        VALUE            PREVIOUS
+		assertEquals(null,            TAIL_CODEC.getValueToEncode(string("abc"),   UNDEF,           OPT_DEFAULT));
+		assertEquals(NULL,            TAIL_CODEC.getValueToEncode(null,            UNDEF,           OPT_DEFAULT));
+		assertEquals(string("abcd"),  TAIL_CODEC.getValueToEncode(string("abcd"),  null,            OPT_DEFAULT));
+		assertEquals(string("e"),     TAIL_CODEC.getValueToEncode(string("abce"),  string("abcd"),  OPT_DEFAULT));
+		assertEquals(null,            TAIL_CODEC.getValueToEncode(string("abce"),  string("abce"),  OPT_DEFAULT));
+		assertEquals(string("abcef"), TAIL_CODEC.getValueToEncode(string("abcef"), string("abce"),  OPT_DEFAULT));
+		assertEquals(NULL,            TAIL_CODEC.getValueToEncode(null,            string("abcef"), OPT_DEFAULT));
+		assertEquals(null,            TAIL_CODEC.getValueToEncode(null,            null,            OPT_DEFAULT));
+		assertEquals(string("z"),     TAIL_CODEC.getValueToEncode(string("z"),     null,            OPT_DEFAULT));
+	}
+	
+	public void testGetValueToEncodeAllCasesForMandatoryDefaultABC() {
+		//                                                        VALUE            PREVIOUS
+		assertEquals(null,            TAIL_CODEC.getValueToEncode(string("abc"),   UNDEF,           MAND_DEFAULT));
+		assertEquals(string("d"),     TAIL_CODEC.getValueToEncode(string("abd"),   UNDEF,           MAND_DEFAULT));
+		assertEquals(string("e"),     TAIL_CODEC.getValueToEncode(string("abce"),  string("abcd"),  MAND_DEFAULT));
+		assertEquals(string("abcef"), TAIL_CODEC.getValueToEncode(string("abcef"), string("abce"),  MAND_DEFAULT));
+		assertEquals(string("z"),     TAIL_CODEC.getValueToEncode(string("z"),     null,            MAND_DEFAULT));
+	}
+	
+	public void testUnencodableValue() {
+		try {
+			TAIL_CODEC.getValueToEncode(new StringValue("a"), new StringValue("abce"), OPT_NO_DEFAULT);
+			fail();
+		} catch (FastException e) {
+			assertEquals(FastConstants.D3_CANT_ENCODE_VALUE, e.getCode());
+		}
+	}
 
 	public void testGetValueToEncodeForByteVector() throws Exception {
 		Scalar byteVectorField = new Scalar("bv", Type.BYTE_VECTOR, Operator.TAIL, ScalarValue.UNDEFINED, true);
