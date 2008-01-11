@@ -4,7 +4,7 @@
     <groupId>org.openfast</groupId>
     <artifactId>openfast</artifactId>
     <packaging>jar</packaging>
-    <version>0.9.5</version>
+    <version>0.9.6-SNAPSHOT</version>
 	
     <organization>
         <name>The LaSalle Technology Group, LLC</name>
@@ -66,9 +66,9 @@
     </issueManagement>
 	
     <scm>
-        <connection>scm:svn:https://openfast.svn.sourceforge.net/svnroot/openfast/tags/openfast-0.9.5b</connection>
-        <developerConnection>scm:svn:https://openfast.svn.sourceforge.net/svnroot/openfast/tags/openfast-0.9.5b</developerConnection>
-        <url>http://openfast.svn.sourceforge.net/viewvc/openfast/tags/openfast-0.9.5b</url>
+        <connection>scm:svn:https://openfast.svn.sourceforge.net/svnroot/openfast/tags/openfast-0.9.5</connection>
+        <developerConnection>scm:svn:https://openfast.svn.sourceforge.net/svnroot/openfast/tags/openfast-0.9.5</developerConnection>
+        <url>http://openfast.svn.sourceforge.net/viewvc/openfast/tags/openfast-0.9.5</url>
     </scm>
     
     <mailingLists>
