@@ -59,6 +59,48 @@ public class TailOperatorCodecTest extends OpenFastTestCase {
 		assertEquals(string("z"),     TAIL_CODEC.getValueToEncode(string("z"),     null,            MAND_DEFAULT));
 	}
 	
+	public void testDecodeEmptyForOptionalNoDefault() {
+		assertEquals(null, TAIL_CODEC.decodeEmptyValue(UNDEF, OPT_NO_DEFAULT));
+		assertEquals(null, TAIL_CODEC.decodeEmptyValue(null, OPT_NO_DEFAULT));
+		assertEquals(string("abcd"), TAIL_CODEC.decodeEmptyValue(string("abcd"), OPT_NO_DEFAULT));
+	}
+	
+	public void testDecodeEmptyForMandatoryNoDefaultThrowsException() {
+		try {
+			TAIL_CODEC.decodeEmptyValue(UNDEF, MAND_NO_DEFAULT);
+			fail();
+		} catch (FastException e) {
+			assertEquals(FastConstants.D6_MNDTRY_FIELD_NOT_PRESENT, e.getCode());
+		}
+		try {
+			TAIL_CODEC.decodeEmptyValue(null, MAND_NO_DEFAULT);
+			fail();
+		} catch (FastException e) {
+			assertEquals(FastConstants.D6_MNDTRY_FIELD_NOT_PRESENT, e.getCode());
+		}
+	}
+	
+	public void testDecodeEmptyForMandatoryNoDefault() {
+		assertEquals(string("a"), TAIL_CODEC.decodeEmptyValue(string("a"), MAND_NO_DEFAULT));
+	}	
+	
+	public void testDecodeEmptyForOptionalDefaultABC() {
+		assertEquals(string("abc"), TAIL_CODEC.decodeEmptyValue(UNDEF, OPT_DEFAULT));
+		assertEquals(null, TAIL_CODEC.decodeEmptyValue(null, OPT_DEFAULT));
+		assertEquals(string("abcd"), TAIL_CODEC.decodeEmptyValue(string("abcd"), OPT_DEFAULT));
+	}
+	
+	public void testDecodeEmptyForMandatoryDefaultABC() {
+		assertEquals(string("abc"), TAIL_CODEC.decodeEmptyValue(UNDEF, MAND_DEFAULT));
+	}
+	
+	public void testDecodeForOptionalNoDefault() {
+		assertEquals(string("abc"), TAIL_CODEC.decodeValue(string("abc"), UNDEF, OPT_NO_DEFAULT));
+		assertEquals(string("abd"), TAIL_CODEC.decodeValue(string("d"), string("abc"), OPT_NO_DEFAULT));
+		assertEquals(string("abcd"), TAIL_CODEC.decodeValue(string("abcd"), string("abc"), OPT_NO_DEFAULT));
+		assertEquals(null, TAIL_CODEC.decodeValue(null, string("abc"), OPT_NO_DEFAULT));
+	}
+	
 	public void testUnencodableValue() {
 		try {
 			TAIL_CODEC.getValueToEncode(new StringValue("a"), new StringValue("abce"), OPT_NO_DEFAULT);

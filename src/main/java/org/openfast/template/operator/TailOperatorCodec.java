@@ -79,12 +79,12 @@ final class TailOperatorCodec extends OperatorCodec {
 	}
 
 	public ScalarValue decodeEmptyValue(ScalarValue previousValue, Scalar field) {
-	    if (previousValue.isUndefined()) {
-	    	if (field.getDefaultValue().isUndefined()) return null;
-	        return field.getBaseValue();
-	    }
-	
-	    return previousValue;
+		ScalarValue value = previousValue;
+	    if (value != null && value.isUndefined())
+	    	value = (field.getDefaultValue().isUndefined()) ? null : field.getDefaultValue();
+	    if (value == null && !field.isOptional())
+	    	Global.handleError(FastConstants.D6_MNDTRY_FIELD_NOT_PRESENT, "The field " + field + " was not present.");
+	    return value;
 	}
 
 	public boolean equals(Object obj) {
