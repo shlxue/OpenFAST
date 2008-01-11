@@ -4,7 +4,7 @@
     <groupId>org.openfast</groupId>
     <artifactId>openfast</artifactId>
     <packaging>jar</packaging>
-    <version>0.9.5</version>
+    <version>0.9.5-SNAPSHOT</version>
 	
     <organization>
         <name>The LaSalle Technology Group, LLC</name>
