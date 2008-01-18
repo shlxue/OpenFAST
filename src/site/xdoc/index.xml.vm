@@ -7,13 +7,13 @@
 	
 	<body>
 		<div id="downloadbox">
-		  <h5>Download OpenFAST 0.9.4</h5>
+		  <h5>Download OpenFAST ${project.version}</h5>
 		  <p>
 		    <img valign="top" src="images/icon_arrowfolderopen2_sml.gif" border="0" alt="" title="download"/>
 		    <a href="http://sourceforge.net/project/showfiles.php?group_id=198357&amp;package_id=240515">
 		      Download
 		    </a>
-		    OpenFAST 0.9.4
+		    OpenFAST ${project.version}
 		  </p>
 		  <ul>
 		    <li>
