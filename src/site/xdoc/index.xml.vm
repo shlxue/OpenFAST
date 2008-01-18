@@ -11,13 +11,15 @@
 		  <p>
 		    <img valign="top" src="images/icon_arrowfolderopen2_sml.gif" border="0" alt="" title="download"/>
 		    <a href="http://sourceforge.net/project/showfiles.php?group_id=198357&amp;package_id=240515">
-		      Download
+		      Download ${project.version}
 		    </a>
-		    OpenFAST ${project.version}
 		  </p>
 		  <ul>
 		    <li>
 		      <a href="http://openfast.wiki.sourceforge.net/FifteenMinute">Getting Started</a>
+		    </li>
+		    <li>
+		      <a href="apidocs/">Javadocs</a>
 		    </li>
 		    <li>
 		      <a href="license.html">License</a>
