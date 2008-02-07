@@ -8,32 +8,33 @@ import org.openfast.template.Scalar;
 import org.openfast.template.type.Type;
 
 final class DefaultOperatorCodec extends OperatorCodec {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	DefaultOperatorCodec(Operator operator, Type[] types) {
-		super(operator, types);
-	}
+    DefaultOperatorCodec(Operator operator, Type[] types) {
+        super(operator, types);
+    }
 
-	public ScalarValue getValueToEncode(ScalarValue value, ScalarValue priorValue, Scalar field) {
-	    if (value == null) {
-	    	if (field.getDefaultValue().isUndefined())
-	    		return null;
-	        return ScalarValue.NULL;
-	    }
-	
-	    return value.equals(field.getDefaultValue()) ? null : value;
-	}
+    public ScalarValue getValueToEncode(ScalarValue value, ScalarValue priorValue, Scalar field) {
+        if (value == null) {
+            if (field.getDefaultValue().isUndefined())
+                return null;
+            return ScalarValue.NULL;
+        }
 
-	public ScalarValue decodeValue(ScalarValue newValue, ScalarValue previousValue, Scalar field) {
-	    return newValue;
-	}
+        return value.equals(field.getDefaultValue()) ? null : value;
+    }
 
-	public ScalarValue decodeEmptyValue(ScalarValue previousValue, Scalar field) {
-		if (field.getDefaultValue().isUndefined()) return null;
-	    return field.getDefaultValue();
-	}
+    public ScalarValue decodeValue(ScalarValue newValue, ScalarValue previousValue, Scalar field) {
+        return newValue;
+    }
 
-	public boolean equals(Object obj) {
-		return obj != null && obj.getClass() == getClass();
-	}
+    public ScalarValue decodeEmptyValue(ScalarValue previousValue, Scalar field) {
+        if (field.getDefaultValue().isUndefined())
+            return null;
+        return field.getDefaultValue();
+    }
+
+    public boolean equals(Object obj) {
+        return obj != null && obj.getClass() == getClass();
+    }
 }

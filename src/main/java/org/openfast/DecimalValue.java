@@ -17,8 +17,7 @@ are Copyright (C) The LaSalle Technology Group, LLC. All Rights Reserved.
 
 Contributor(s): Jacob Northey <jacob@lasalletech.com>
                 Craig Otis <cotis@lasalletech.com>
-*/
-
+ */
 
 package org.openfast;
 
@@ -26,12 +25,14 @@ import java.math.BigDecimal;
 
 import org.openfast.error.FastConstants;
 
-
 public class DecimalValue extends NumericValue {
     private static final long serialVersionUID = 1L;
-	public final double value;
+
+    public final double value;
+
     public final int exponent;
-    public final int mantissa;
+
+    public final long mantissa;
 
     public DecimalValue(double value) {
         if (value == 0.0) {
@@ -46,7 +47,7 @@ public class DecimalValue extends NumericValue {
 
         BigDecimal decimalValue = BigDecimal.valueOf(value);
         int exponent = decimalValue.scale();
-        int mantissa = decimalValue.unscaledValue().intValue();
+        long mantissa = decimalValue.unscaledValue().longValue();
 
         while (((mantissa % 10) == 0) && (mantissa != 0)) {
             mantissa /= 10;
@@ -57,7 +58,7 @@ public class DecimalValue extends NumericValue {
         this.exponent = -exponent;
     }
 
-    public DecimalValue(int mantissa, int exponent) {
+    public DecimalValue(long mantissa, int exponent) {
         this.mantissa = mantissa;
         this.exponent = exponent;
 
@@ -109,42 +110,42 @@ public class DecimalValue extends NumericValue {
     }
 
     public long toLong() {
-    	if (exponent < 0)
-    		Global.handleError(FastConstants.R5_DECIMAL_CANT_CONVERT_TO_INT, "");
+        if (exponent < 0)
+            Global.handleError(FastConstants.R5_DECIMAL_CANT_CONVERT_TO_INT, "");
         return (long) value;
     }
 
     public int toInt() {
-    	if (exponent < 0)
-    		Global.handleError(FastConstants.R5_DECIMAL_CANT_CONVERT_TO_INT, "");
+        if (exponent < 0)
+            Global.handleError(FastConstants.R5_DECIMAL_CANT_CONVERT_TO_INT, "");
         return (int) value;
     }
 
     public short toShort() {
-    	if (exponent < 0)
-    		Global.handleError(FastConstants.R5_DECIMAL_CANT_CONVERT_TO_INT, "");
+        if (exponent < 0)
+            Global.handleError(FastConstants.R5_DECIMAL_CANT_CONVERT_TO_INT, "");
         return (short) value;
     }
 
     public byte toByte() {
-    	if (exponent < 0)
-    		Global.handleError(FastConstants.R5_DECIMAL_CANT_CONVERT_TO_INT, "");
+        if (exponent < 0)
+            Global.handleError(FastConstants.R5_DECIMAL_CANT_CONVERT_TO_INT, "");
         return (byte) value;
     }
-    
+
     public double toDouble() {
-    	return value;
+        return value;
     }
-    
+
     public BigDecimal toBigDecimal() {
-    	return new BigDecimal(value);
+        return new BigDecimal(value);
     }
 
     public String toString() {
         return String.valueOf(value);
     }
-    
+
     public int hashCode() {
-    	return exponent * 37 + mantissa;
+        return exponent * 37 + (int) mantissa;
     }
 }

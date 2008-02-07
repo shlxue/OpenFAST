@@ -25,16 +25,16 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
  */
 package org.openfast.template.type.codec;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
 import org.openfast.DecimalValue;
 import org.openfast.Global;
 import org.openfast.IntegerValue;
 import org.openfast.ScalarValue;
-
 import org.openfast.error.FastConstants;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import org.openfast.template.LongValue;
 
 
 final class NullableSingleFieldDecimal extends TypeCodec {
@@ -62,7 +62,7 @@ final class NullableSingleFieldDecimal extends TypeCodec {
 
             buffer.write(TypeCodec.NULLABLE_INTEGER.encode(
                     new IntegerValue(value.exponent)));
-            buffer.write(TypeCodec.INTEGER.encode(new IntegerValue(value.mantissa)));
+            buffer.write(TypeCodec.INTEGER.encode(new LongValue(value.mantissa)));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
