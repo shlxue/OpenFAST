@@ -17,8 +17,7 @@ are Copyright (C) The LaSalle Technology Group, LLC. All Rights Reserved.
 
 Contributor(s): Jacob Northey <jacob@lasalletech.com>
                 Craig Otis <cotis@lasalletech.com>
-*/
-
+ */
 
 package org.openfast.template;
 
@@ -42,29 +41,24 @@ import org.openfast.test.ObjectMother;
 import org.openfast.test.OpenFastTestCase;
 import org.openfast.test.TestUtil;
 
-
 public class GroupTest extends OpenFastTestCase {
     private Group template;
+
     private Context context;
 
     protected void setUp() throws Exception {
-        template = new MessageTemplate("", new Field[] {  });
+        template = new MessageTemplate("", new Field[] {});
         context = new Context();
     }
 
     public void testEncode() {
-        Scalar firstName = new Scalar("First Name", Type.U32,
-                Operator.COPY, ScalarValue.UNDEFINED, true);
-        Scalar lastName = new Scalar("Last Name", Type.U32,
-                Operator.NONE, ScalarValue.UNDEFINED, false);
+        Scalar firstName = new Scalar("First Name", Type.U32, Operator.COPY, ScalarValue.UNDEFINED, true);
+        Scalar lastName = new Scalar("Last Name", Type.U32, Operator.NONE, ScalarValue.UNDEFINED, false);
 
-        Group theGroup = new Group("guy", new Field[] { firstName, lastName },
-                false);
+        Group theGroup = new Group("guy", new Field[] { firstName, lastName }, false);
 
-        byte[] actual = theGroup.encode(new GroupValue(
-                    new Group("", new Field[] {  }, false),
-                    new FieldValue[] { new IntegerValue(1), new IntegerValue(2) }),
-                template, context);
+        byte[] actual = theGroup.encode(new GroupValue(new Group("", new Field[] {}, false), new FieldValue[] { new IntegerValue(1),
+                new IntegerValue(2) }), template, context);
 
         String expected = "11000000 10000010 10000010";
 
@@ -73,60 +67,54 @@ public class GroupTest extends OpenFastTestCase {
 
     public void testDecode() {
         String message = "11000000 10000010 10000010";
-        InputStream in = new ByteArrayInputStream(ByteUtil.convertBitStringToFastByteArray(
-                    message));
-        Scalar firstname = new Scalar("firstName", Type.U32,
-                Operator.COPY, ScalarValue.UNDEFINED, true);
-        Scalar lastName = new Scalar("lastName", Type.U32,
-                Operator.NONE, ScalarValue.UNDEFINED, false);
+        InputStream in = new ByteArrayInputStream(ByteUtil.convertBitStringToFastByteArray(message));
+        Scalar firstname = new Scalar("firstName", Type.U32, Operator.COPY, ScalarValue.UNDEFINED, true);
+        Scalar lastName = new Scalar("lastName", Type.U32, Operator.NONE, ScalarValue.UNDEFINED, false);
 
-        //		MessageInputStream in = new MessageInputStream(new ByteArrayInputStream(message.getBytes()));
-        Group group = new Group("person", new Field[] { firstname, lastName },
-                false);
+        // MessageInputStream in = new MessageInputStream(new
+        // ByteArrayInputStream(message.getBytes()));
+        Group group = new Group("person", new Field[] { firstname, lastName }, false);
         GroupValue groupValue = (GroupValue) group.decode(in, template, context, BitVectorReader.INFINITE_TRUE);
         assertEquals(1, ((IntegerValue) groupValue.getValue(0)).value);
         assertEquals(2, ((IntegerValue) groupValue.getValue(1)).value);
     }
-    
+
     public void testGroupWithoutPresenceMap() {
-    	MessageTemplate template = template(
-    			"<template>" +
-    			"  <group name=\"priceGroup\" presence=\"optional\">" +
-    			"    <decimal name=\"price\"><delta/></decimal>" +
-    			"  </group>" +
-    			"</template>");
-    	Context encodingContext = new Context();
-    	Context decodingContext = new Context();
-    	encodingContext.registerTemplate(1, template);
-    	decodingContext.registerTemplate(1, template);
-    	
-    	String encodedBits = "11100000 10000001 11111110 10111111";
-    	
-    	FastDecoder decoder = new FastDecoder(decodingContext, bitStream(encodedBits));
-		Message message = decoder.readMessage();
-    	assertEquals(0.63, message.getGroup("priceGroup").getDouble("price"), 0.01);
-    	
-    	byte[] encoding = template.encode(message, encodingContext);
-    	assertEquals(encodedBits, encoding);
+        MessageTemplate template = template("<template>" + "  <group name=\"priceGroup\" presence=\"optional\">"
+                + "    <decimal name=\"price\"><delta/></decimal>" + "  </group>" + "</template>");
+        Context encodingContext = new Context();
+        Context decodingContext = new Context();
+        encodingContext.registerTemplate(1, template);
+        decodingContext.registerTemplate(1, template);
+
+        String encodedBits = "11100000 10000001 11111110 10111111";
+
+        FastDecoder decoder = new FastDecoder(decodingContext, bitStream(encodedBits));
+        Message message = decoder.readMessage();
+        assertEquals(0.63, message.getGroup("priceGroup").getDouble("price"), 0.01);
+
+        byte[] encoding = template.encode(message, encodingContext);
+        assertEquals(encodedBits, encoding);
     }
-    
+
     public void testDecodeGroupWithOverlongPresenceMap() {
-    	try {
-    		ObjectMother.quoteTemplate().decode(bitStream("00000000 10000000"), ObjectMother.quoteTemplate(), new Context(), BitVectorReader.INFINITE_TRUE);
-    		fail();
-    	} catch (FastException e) {
-    		assertEquals(FastConstants.R7_PMAP_OVERLONG, e.getCode());
-    	}
+        try {
+            ObjectMother.quoteTemplate().decode(bitStream("00000000 10000000"), ObjectMother.quoteTemplate(), new Context(),
+                    BitVectorReader.INFINITE_TRUE);
+            fail();
+        } catch (FastException e) {
+            assertEquals(FastConstants.R7_PMAP_OVERLONG, e.getCode());
+        }
     }
-    
+
     public void testDecodeGroupWithPresenceMapWithTooManyBits() {
-    	MessageTemplate g = ObjectMother.quoteTemplate();
-    	Context c = new Context();
-    	c.registerTemplate(1, g);
-    	try {
-    		g.decode(bitStream("11111000 10000001 10000000 10000110 10000000 10000110"), g, c, BitVectorReader.INFINITE_TRUE);
-    	} catch (FastException e) {
-    		assertEquals(FastConstants.R8_PMAP_TOO_MANY_BITS, e.getCode());
-    	}
+        MessageTemplate g = ObjectMother.quoteTemplate();
+        Context c = new Context();
+        c.registerTemplate(1, g);
+        try {
+            g.decode(bitStream("11111000 10000001 10000000 10000110 10000000 10000110"), g, c, BitVectorReader.INFINITE_TRUE);
+        } catch (FastException e) {
+            assertEquals(FastConstants.R8_PMAP_TOO_MANY_BITS, e.getCode());
+        }
     }
 }

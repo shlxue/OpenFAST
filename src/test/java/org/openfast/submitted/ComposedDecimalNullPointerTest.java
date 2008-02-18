@@ -11,17 +11,17 @@ import org.openfast.test.OpenFastTestCase;
 import org.openfast.util.RecordingInputStream;
 
 public class ComposedDecimalNullPointerTest extends OpenFastTestCase {
-	public void testNullPointerOnTwinValue() throws Exception {
-		InputStream templateSource = resource("FPL/FASTTestTemplate.xml");
-		MessageTemplateLoader templateLoader = new XMLMessageTemplateLoader();
-		MessageTemplate[] templates = templateLoader.load(templateSource);
-		
-		InputStream is = resource("FPL/messages.fast");
-		MessageInputStream mis = new MessageInputStream(new RecordingInputStream(is));
-		mis.registerTemplate(35, templates[0]);
-		Message msg = mis.readMessage();
-		msg = mis.readMessage();
-		msg = mis.readMessage();
-		assertEquals(templates[0], msg.getTemplate());
-	}
+    public void testNullPointerOnTwinValue() throws Exception {
+        InputStream templateSource = resource("FPL/FASTTestTemplate.xml");
+        MessageTemplateLoader templateLoader = new XMLMessageTemplateLoader();
+        MessageTemplate[] templates = templateLoader.load(templateSource);
+
+        InputStream is = resource("FPL/messages.fast");
+        MessageInputStream mis = new MessageInputStream(new RecordingInputStream(is));
+        mis.registerTemplate(35, templates[0]);
+        Message msg = mis.readMessage();
+        msg = mis.readMessage();
+        msg = mis.readMessage();
+        assertEquals(templates[0], msg.getTemplate());
+    }
 }

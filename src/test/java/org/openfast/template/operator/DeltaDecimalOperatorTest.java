@@ -22,6 +22,8 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast.template.operator;
 
+import java.math.BigDecimal;
+
 import org.openfast.DecimalValue;
 import org.openfast.ScalarValue;
 import org.openfast.error.FastConstants;
@@ -38,7 +40,7 @@ public class DeltaDecimalOperatorTest extends OpenFastTestCase {
         OperatorCodec operator = field.getOperatorCodec();
 
         DecimalValue value = (DecimalValue) operator.getValueToEncode(d(9427.55),ScalarValue.UNDEFINED, field);
-        assertEquals(9427.55, value.value, 0.1);
+        assertEquals(BigDecimal.valueOf(9427.55), value.toBigDecimal());
 
         value = (DecimalValue) operator.getValueToEncode(d(9427.51), d(9427.55), field);
         assertEquals(-4, value.mantissa);
@@ -59,7 +61,7 @@ public class DeltaDecimalOperatorTest extends OpenFastTestCase {
 
         DecimalValue value = (DecimalValue) operator.getValueToEncode(d(9427.55),
                 ScalarValue.UNDEFINED, field);
-        assertEquals(9427.55, value.value, 0.1);
+        assertEquals(BigDecimal.valueOf(9427.55), value.toBigDecimal());
 
         value = (DecimalValue) operator.getValueToEncode(d(9427.51),
                 d(9427.55), field);

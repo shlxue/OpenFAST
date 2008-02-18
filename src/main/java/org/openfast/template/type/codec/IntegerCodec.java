@@ -126,8 +126,11 @@ public abstract class IntegerCodec extends TypeCodec {
         if ((value >= -36028797018963968L) && (value <= 36028797018963967L)) {
             return 8; // - 2 ^ 55 ... 2 ^ 55 -1
         }
-
-        return 9;
+        
+        if ((value >= -4611686018427387904L && value <= 4611686018427387903L)) {
+            return 9;
+        }
+        return 10;
     }
 
 	public boolean equals(Object obj) {

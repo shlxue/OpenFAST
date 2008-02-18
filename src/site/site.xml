@@ -29,8 +29,8 @@
     
     <menu name="Documentation">
       <item name="Javadocs" href="apidocs/"/>
-      <item name="15-minute Guide" href="http://openfast.wiki.sourceforge.net/FifteenMinute"/>
-      <item name="Wiki" href="http://openfast.wiki.sourceforge.net/"/>
+      <item name="15-minute Guide" href="http://www.quickfixj.org/confluence/display/FAST/FifteenMinuteGettingStarted"/>
+      <item name="Wiki" href="http://www.quickfixj.org/confluence/display/FAST/Home"/>
     </menu>
     
     <menu name="Developers">

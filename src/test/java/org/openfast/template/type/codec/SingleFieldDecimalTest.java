@@ -22,6 +22,7 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast.template.type.codec;
 
+import org.openfast.DecimalValue;
 import org.openfast.error.FastConstants;
 import org.openfast.error.FastException;
 
@@ -30,6 +31,11 @@ import org.openfast.test.OpenFastTestCase;
 
 
 public class SingleFieldDecimalTest extends OpenFastTestCase {
+    public void testEncodeDecodeBoundary() {
+        assertEncodeDecode(new DecimalValue(Long.MAX_VALUE, 63), "10111111 00000000 01111111 01111111 01111111 01111111 01111111 01111111 01111111 01111111 11111111", TypeCodec.SF_SCALED_NUMBER);
+        assertEncodeDecode(new DecimalValue(Long.MIN_VALUE, -63), "11000001 01111111 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000 10000000", TypeCodec.SF_SCALED_NUMBER);
+    }
+    
     public void testEncodeDecode() {
         assertEncodeDecode(94275500, "10000010 00111001 01000101 10100011");
         assertEncodeDecode(9427.55, "11111110 00111001 01000101 10100011");

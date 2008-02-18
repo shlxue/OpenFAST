@@ -17,8 +17,7 @@ are Copyright (C) The LaSalle Technology Group, LLC. All Rights Reserved.
 
 Contributor(s): Jacob Northey <jacob@lasalletech.com>
                 Craig Otis <cotis@lasalletech.com>
-*/
-
+ */
 
 package org.openfast;
 
@@ -33,10 +32,11 @@ import org.openfast.util.ArrayIterator;
 import java.math.BigDecimal;
 import java.util.Iterator;
 
-
 public class GroupValue implements FieldValue {
     private static final long serialVersionUID = 1L;
-	protected final FieldValue[] values;
+
+    protected final FieldValue[] values;
+
     private final Group group;
 
     public GroupValue(Group group, FieldValue[] values) {
@@ -59,135 +59,137 @@ public class GroupValue implements FieldValue {
     public int getInt(int fieldIndex) {
         return getScalar(fieldIndex).toInt();
     }
-    
-    public int getInt(String fieldName) {
-    	// BAD ABSTRACTION
-    	if (!group.hasField(fieldName)) {
-    		if (group.hasIntrospectiveField(fieldName)) {
-    			Scalar scalar = group.getIntrospectiveField(fieldName);
-    			if (scalar.getType().equals(Type.UNICODE) || 
-    				scalar.getType().equals(Type.STRING) ||
-    				scalar.getType().equals(Type.ASCII))
-    				return getString(scalar.getName()).length(); 
-    			if (scalar.getType().equals(Type.BYTE_VECTOR))
-    				return getBytes(scalar.getName()).length;
-    		}
-    			
-    	}
-	    return getScalar(fieldName).toInt();
-	}
 
-	public boolean getBool(String fieldName) {
-		if (!isDefined(fieldName)) return false;
-		return getScalar(fieldName).toInt() != 0;
-	}
+    public int getInt(String fieldName) {
+        // BAD ABSTRACTION
+        if (!group.hasField(fieldName)) {
+            if (group.hasIntrospectiveField(fieldName)) {
+                Scalar scalar = group.getIntrospectiveField(fieldName);
+                if (scalar.getType().equals(Type.UNICODE) || scalar.getType().equals(Type.STRING)
+                        || scalar.getType().equals(Type.ASCII))
+                    return getString(scalar.getName()).length();
+                if (scalar.getType().equals(Type.BYTE_VECTOR))
+                    return getBytes(scalar.getName()).length;
+            }
+
+        }
+        return getScalar(fieldName).toInt();
+    }
+
+    public boolean getBool(String fieldName) {
+        if (!isDefined(fieldName))
+            return false;
+        return getScalar(fieldName).toInt() != 0;
+    }
 
     public long getLong(int fieldIndex) {
         return getScalar(fieldIndex).toLong();
     }
-    
+
     public long getLong(String fieldName) {
-	    return getScalar(fieldName).toLong();
-	}
-
-	public byte getByte(int fieldIndex) {
-    	return getScalar(fieldIndex).toByte();
+        return getScalar(fieldName).toLong();
     }
 
-	public byte getByte(String fieldName) {
-    	return getScalar(fieldName).toByte();
+    public byte getByte(int fieldIndex) {
+        return getScalar(fieldIndex).toByte();
     }
 
-	public short getShort(int fieldIndex) {
-    	return getScalar(fieldIndex).toShort();
+    public byte getByte(String fieldName) {
+        return getScalar(fieldName).toByte();
     }
 
-	public short getShort(String fieldName) {
-    	return getScalar(fieldName).toShort();
+    public short getShort(int fieldIndex) {
+        return getScalar(fieldIndex).toShort();
+    }
+
+    public short getShort(String fieldName) {
+        return getScalar(fieldName).toShort();
     }
 
     public String getString(int index) {
-	    return getValue(index).toString();
-	}
+        return getValue(index).toString();
+    }
 
-	public String getString(String fieldName) {
-        return getValue(fieldName).toString();
+    public String getString(String fieldName) {
+        FieldValue value = getValue(fieldName);
+        return (value == null) ? null : value.toString();
     }
 
     public double getDouble(int fieldIndex) {
-	    return getScalar(fieldIndex).toDouble();
-	}
+        return getScalar(fieldIndex).toDouble();
+    }
 
     public double getDouble(String fieldName) {
-	    return getScalar(fieldName).toDouble();
-	}
+        return getScalar(fieldName).toDouble();
+    }
 
     public BigDecimal getBigDecimal(int fieldIndex) {
-	    return getScalar(fieldIndex).toBigDecimal();
-	}
+        return getScalar(fieldIndex).toBigDecimal();
+    }
 
     public BigDecimal getBigDecimal(String fieldName) {
-	    return getScalar(fieldName).toBigDecimal();
-	}
+        return getScalar(fieldName).toBigDecimal();
+    }
 
-	public byte[] getBytes(int fieldIndex) {
-		return getScalar(fieldIndex).getBytes();
-	}
-    
-	public byte[] getBytes(String fieldName) {
-		return getScalar(fieldName).getBytes();
-	}
+    public byte[] getBytes(int fieldIndex) {
+        return getScalar(fieldIndex).getBytes();
+    }
 
-	public SequenceValue getSequence(int fieldIndex) {
-	    return (SequenceValue) getValue(fieldIndex);
-	}
+    public byte[] getBytes(String fieldName) {
+        return getScalar(fieldName).getBytes();
+    }
 
-	public SequenceValue getSequence(String fieldName) {
-	    return (SequenceValue) getValue(fieldName);
-	}
-	
-	public ScalarValue getScalar(int fieldIndex) {
-	    return (ScalarValue) getValue(fieldIndex);
-	}
+    public SequenceValue getSequence(int fieldIndex) {
+        return (SequenceValue) getValue(fieldIndex);
+    }
 
-	public ScalarValue getScalar(String fieldName) {
-		return (ScalarValue) getValue(fieldName);
-	}
+    public SequenceValue getSequence(String fieldName) {
+        return (SequenceValue) getValue(fieldName);
+    }
 
-	public GroupValue getGroup(int fieldIndex) {
-	    return (GroupValue) getValue(fieldIndex);
-	}
+    public ScalarValue getScalar(int fieldIndex) {
+        return (ScalarValue) getValue(fieldIndex);
+    }
 
-	public GroupValue getGroup(String fieldName) {
-	    return (GroupValue) getValue(fieldName);
-	}
+    public ScalarValue getScalar(String fieldName) {
+        return (ScalarValue) getValue(fieldName);
+    }
 
-	public FieldValue getValue(int fieldIndex) {
-	    return values[fieldIndex];
-	}
+    public GroupValue getGroup(int fieldIndex) {
+        return (GroupValue) getValue(fieldIndex);
+    }
 
-	public FieldValue getValue(String fieldName) {
-	    if (!group.hasField(fieldName)) {
-	        throw new IllegalArgumentException("The field \"" + fieldName + "\" does not exist in group " + group);
-	    }
-	
-	    return values[group.getFieldIndex(fieldName)];
-	}
+    public GroupValue getGroup(String fieldName) {
+        return (GroupValue) getValue(fieldName);
+    }
 
-	public Group getGroup() {
-	    return group;
-	}
+    public FieldValue getValue(int fieldIndex) {
+        return values[fieldIndex];
+    }
 
-	public void setString(Field field, String value) {
-		if (field == null) throw new IllegalArgumentException("Field must not be null [value=" + value + "]");
-		setFieldValue(field, field.createValue(value));
-	}
+    public FieldValue getValue(String fieldName) {
+        if (!group.hasField(fieldName)) {
+            throw new IllegalArgumentException("The field \"" + fieldName + "\" does not exist in group " + group);
+        }
 
-	public void setFieldValue(Field field, FieldValue value) {
-		setFieldValue(group.getFieldIndex(field), value);
-	}
-	
-	public void setFieldValue(int fieldIndex, FieldValue value) {
+        return values[group.getFieldIndex(fieldName)];
+    }
+
+    public Group getGroup() {
+        return group;
+    }
+
+    public void setString(Field field, String value) {
+        if (field == null)
+            throw new IllegalArgumentException("Field must not be null [value=" + value + "]");
+        setFieldValue(field, field.createValue(value));
+    }
+
+    public void setFieldValue(Field field, FieldValue value) {
+        setFieldValue(group.getFieldIndex(field), value);
+    }
+
+    public void setFieldValue(int fieldIndex, FieldValue value) {
         values[fieldIndex] = value;
     }
 
@@ -199,37 +201,45 @@ public class GroupValue implements FieldValue {
         values[fieldIndex] = new ByteVectorValue(bytes);
     }
 
-	public void setByteVector(String fieldName, byte[] bytes) {
-		setFieldValue(fieldName, new ByteVectorValue(bytes));
-	}
+    public void setByteVector(String fieldName, byte[] bytes) {
+        setFieldValue(fieldName, new ByteVectorValue(bytes));
+    }
 
     public void setDecimal(int fieldIndex, double value) {
         values[fieldIndex] = new DecimalValue(value);
     }
 
-	public void setDecimal(String fieldName, double value) {
-		setFieldValue(fieldName, new DecimalValue(value));
-	}
+    public void setDecimal(String fieldName, double value) {
+        setFieldValue(fieldName, new DecimalValue(value));
+    }
+    
+    public void setDecimal(int fieldIndex, BigDecimal value) {
+        values[fieldIndex] = new DecimalValue(value);
+    }
+    
+    public void setDecimal(String fieldName, BigDecimal value) {
+        setFieldValue(fieldName, new DecimalValue(value));
+    }
 
     public void setInteger(String fieldName, int value) {
         setFieldValue(fieldName, new IntegerValue(value));
     }
-    
+
     public void setInteger(int fieldIndex, int value) {
-    	values[fieldIndex] = new IntegerValue(value);
+        values[fieldIndex] = new IntegerValue(value);
     }
 
-	public void setBool(String fieldName, boolean value) {
+    public void setBool(String fieldName, boolean value) {
         setFieldValue(fieldName, new IntegerValue(value ? 1 : 0));
-	}
+    }
 
-	public void setLong(String fieldName, long value) {
-		setFieldValue(fieldName, new LongValue(value));
-	}
+    public void setLong(String fieldName, long value) {
+        setFieldValue(fieldName, new LongValue(value));
+    }
 
-	public void setLong(int fieldIndex, long value) {
-		values[fieldIndex] = new LongValue(value);
-	}
+    public void setLong(int fieldIndex, long value) {
+        values[fieldIndex] = new LongValue(value);
+    }
 
     public void setString(int fieldIndex, String value) {
         values[fieldIndex] = new StringValue(value);
@@ -237,7 +247,7 @@ public class GroupValue implements FieldValue {
 
     public void setString(String fieldName, String value) {
         setFieldValue(fieldName, group.getField(fieldName).createValue(value));
-	}
+    }
 
     public boolean equals(Object other) {
         if (other == this) {
@@ -257,20 +267,19 @@ public class GroupValue implements FieldValue {
         }
 
         for (int i = 0; i < values.length; i++) {
-        	if (values[i] == null) {
-        		if (other.values[i] != null)
-        			return false;
-        	}
-        	else if (!values[i].equals(other.values[i])) {
+            if (values[i] == null) {
+                if (other.values[i] != null)
+                    return false;
+            } else if (!values[i].equals(other.values[i])) {
                 return false;
             }
         }
 
         return true;
     }
-    
+
     public int hashCode() {
-    	return values.hashCode();
+        return values.hashCode();
     }
 
     public String toString() {
@@ -290,8 +299,8 @@ public class GroupValue implements FieldValue {
     }
 
     public void setFieldValue(String fieldName, FieldValue value) {
-    	if (!group.hasField(fieldName))
-    		throw new IllegalArgumentException("The field " + fieldName + " does not exist in group " + group);
+        if (!group.hasField(fieldName))
+            throw new IllegalArgumentException("The field " + fieldName + " does not exist in group " + group);
         int index = group.getFieldIndex(fieldName);
         setFieldValue(index, value);
     }
@@ -311,12 +320,12 @@ public class GroupValue implements FieldValue {
     public boolean isDefined(String fieldName) {
         return getValue(fieldName) != null;
     }
-    
+
     public FieldValue copy() {
-		FieldValue[] copies = new FieldValue[values.length];
-		for (int i=0; i<copies.length; i++) {
-			copies[i] = values[i].copy();
-		}
-		return new GroupValue(group, this.values);
-	}
+        FieldValue[] copies = new FieldValue[values.length];
+        for (int i = 0; i < copies.length; i++) {
+            copies[i] = values[i].copy();
+        }
+        return new GroupValue(group, this.values);
+    }
 }

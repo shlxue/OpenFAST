@@ -22,28 +22,23 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 package org.openfast;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 
 import org.openfast.error.FastConstants;
 
 public class DecimalValue extends NumericValue {
     private static final long serialVersionUID = 1L;
 
-    public final double value;
-
     public final int exponent;
-
     public final long mantissa;
 
     public DecimalValue(double value) {
         if (value == 0.0) {
-            this.value = 0.0;
             this.exponent = 0;
             this.mantissa = 0;
 
             return;
         }
-
-        this.value = value;
 
         BigDecimal decimalValue = BigDecimal.valueOf(value);
         int exponent = decimalValue.scale();
@@ -61,12 +56,11 @@ public class DecimalValue extends NumericValue {
     public DecimalValue(long mantissa, int exponent) {
         this.mantissa = mantissa;
         this.exponent = exponent;
+    }
 
-        if (exponent < 0) {
-            this.value = mantissa / Math.pow(10, -exponent);
-        } else {
-            this.value = mantissa * Math.pow(10, exponent);
-        }
+    public DecimalValue(BigDecimal bigDecimal) {
+        this.mantissa = bigDecimal.unscaledValue().longValue();
+        this.exponent = bigDecimal.scale();
     }
 
     public NumericValue increment() {
@@ -90,59 +84,66 @@ public class DecimalValue extends NumericValue {
     }
 
     public boolean equals(DecimalValue other) {
-        return other.value == this.value;
+        return other.mantissa == this.mantissa && other.exponent == this.exponent;
     }
 
-    public NumericValue subtract(NumericValue priorValue) {
-        return new DecimalValue(this.value - ((DecimalValue) priorValue).value);
+    public NumericValue subtract(NumericValue subtrahend) {
+        return new DecimalValue(toBigDecimal().subtract(((DecimalValue)subtrahend).toBigDecimal()));
     }
 
     public NumericValue add(NumericValue addend) {
-        return new DecimalValue(((DecimalValue) addend).value + this.value);
+        return new DecimalValue(toBigDecimal().add(((DecimalValue)addend).toBigDecimal()));
     }
 
     public String serialize() {
-        return String.valueOf(value);
+        return toString();
     }
 
     public boolean equals(int value) {
-        return (double) value == this.value;
+        return false;
     }
 
     public long toLong() {
         if (exponent < 0)
             Global.handleError(FastConstants.R5_DECIMAL_CANT_CONVERT_TO_INT, "");
-        return (long) value;
+        return (long) (getValue());
     }
 
     public int toInt() {
-        if (exponent < 0)
+        long value = getValue();
+        if (exponent < 0 || (value) > Integer.MAX_VALUE)
             Global.handleError(FastConstants.R5_DECIMAL_CANT_CONVERT_TO_INT, "");
-        return (int) value;
+        return (int) (value);
     }
 
     public short toShort() {
-        if (exponent < 0)
+        long value = getValue();
+        if (exponent < 0 || (value) > Short.MAX_VALUE)
             Global.handleError(FastConstants.R5_DECIMAL_CANT_CONVERT_TO_INT, "");
-        return (short) value;
+        return (short) (value);
     }
 
     public byte toByte() {
-        if (exponent < 0)
+        long value = getValue();
+        if (exponent < 0 || (value) > Byte.MAX_VALUE)
             Global.handleError(FastConstants.R5_DECIMAL_CANT_CONVERT_TO_INT, "");
-        return (byte) value;
+        return (byte) (value);
+    }
+
+    private long getValue() {
+        return mantissa * ((long) Math.pow(10, exponent));
     }
 
     public double toDouble() {
-        return value;
+        return (mantissa * Math.pow(10, exponent));
     }
 
     public BigDecimal toBigDecimal() {
-        return new BigDecimal(value);
+        return new BigDecimal(BigInteger.valueOf(mantissa), -exponent);
     }
 
     public String toString() {
-        return String.valueOf(value);
+        return toBigDecimal().toPlainString();
     }
 
     public int hashCode() {

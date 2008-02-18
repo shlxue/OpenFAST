@@ -84,7 +84,7 @@ final class SingleFieldDecimal extends TypeCodec {
             Global.handleError(FastConstants.R1_LARGE_DECIMAL, "Encountered exponent of size " + exponent);
         }
 
-        int mantissa = ((IntegerValue) TypeCodec.INTEGER.decode(in)).value;
+        long mantissa = TypeCodec.INTEGER.decode(in).toLong();
         DecimalValue decimalValue = new DecimalValue(mantissa, exponent);
 
         return decimalValue;
