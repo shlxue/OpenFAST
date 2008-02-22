@@ -134,8 +134,11 @@ public class DecimalValue extends NumericValue {
         return mantissa * ((long) Math.pow(10, exponent));
     }
 
+    /**
+     * The double value should be rounded using a given precision by users of this method.
+     */
     public double toDouble() {
-        return (mantissa * Math.pow(10, exponent));
+        return mantissa * Math.pow(10.0, exponent);
     }
 
     public BigDecimal toBigDecimal() {

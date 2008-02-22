@@ -17,8 +17,7 @@ are Copyright (C) The LaSalle Technology Group, LLC. All Rights Reserved.
 
 Contributor(s): Jacob Northey <jacob@lasalletech.com>
                 Craig Otis <cotis@lasalletech.com>
-*/
-
+ */
 
 package org.openfast.template.loader;
 
@@ -45,113 +44,127 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-
 public class XMLMessageTemplateLoader implements MessageTemplateLoader {
     static final String TEMPLATE_DEFINITION_NS = "http://www.fixprotocol.org/ns/fast/td/1.1";
 
     static final ErrorCode IO_ERROR = new ErrorCode(FastConstants.STATIC, -1, "IOERROR", "IO Error", FastAlertSeverity.ERROR);
-    static final ErrorCode XML_PARSING_ERROR = new ErrorCode(FastConstants.STATIC, -1, "XMLPARSEERR", "XML Parsing Error", FastAlertSeverity.ERROR);
-	static final ErrorCode INVALID_TYPE = new ErrorCode(FastConstants.STATIC, -1, "INVALIDTYPE", "Invalid Type", FastAlertSeverity.ERROR);
-    
+
+    static final ErrorCode XML_PARSING_ERROR = new ErrorCode(FastConstants.STATIC, -1, "XMLPARSEERR", "XML Parsing Error",
+            FastAlertSeverity.ERROR);
+
+    static final ErrorCode INVALID_TYPE = new ErrorCode(FastConstants.STATIC, -1, "INVALIDTYPE", "Invalid Type",
+            FastAlertSeverity.ERROR);
+
     // IMMUTABLE
-	private final boolean namespaceAwareness;
-	private final ParsingContext initialContext;
+    private final boolean namespaceAwareness;
 
-	private boolean loadTemplateIdFromAuxId;
+    private final ParsingContext initialContext;
 
-	public XMLMessageTemplateLoader() {
-		this(false);
-	}
-	
-    public XMLMessageTemplateLoader(boolean namespaceAwareness) {
-    	this.namespaceAwareness = namespaceAwareness;
-    	this.initialContext = createInitialContext();
+    private boolean loadTemplateIdFromAuxId;
+
+    public XMLMessageTemplateLoader() {
+        this(false);
     }
 
-	public static ParsingContext createInitialContext() {
-		ParsingContext initialContext = new ParsingContext();
-    	initialContext.setErrorHandler(ErrorHandler.DEFAULT);
-    	initialContext.setTemplateRegistry(new BasicTemplateRegistry());
-    	initialContext.setTypeMap(Type.getRegisteredTypeMap());
-    	initialContext.setFieldParsers(new ArrayList());
-    	initialContext.addFieldParser(new ScalarParser());
-    	initialContext.addFieldParser(new GroupParser());
-    	initialContext.addFieldParser(new SequenceParser());
-    	initialContext.addFieldParser(new ComposedDecimalParser());
-    	initialContext.addFieldParser(new StringParser());
-    	initialContext.addFieldParser(new ByteVectorParser());
-    	initialContext.addFieldParser(new TemplateRefParser());
-    	return initialContext;
-	}
+    public XMLMessageTemplateLoader(boolean namespaceAwareness) {
+        this.namespaceAwareness = namespaceAwareness;
+        this.initialContext = createInitialContext();
+    }
 
-	public void addFieldParser(FieldParser fieldParser) {
-		initialContext.getFieldParsers().add(fieldParser);
-	}
-	
-	/**
+    public static ParsingContext createInitialContext() {
+        ParsingContext initialContext = new ParsingContext();
+        initialContext.setErrorHandler(ErrorHandler.DEFAULT);
+        initialContext.setTemplateRegistry(new BasicTemplateRegistry());
+        initialContext.setTypeMap(Type.getRegisteredTypeMap());
+        initialContext.setFieldParsers(new ArrayList());
+        initialContext.addFieldParser(new ScalarParser());
+        initialContext.addFieldParser(new GroupParser());
+        initialContext.addFieldParser(new SequenceParser());
+        initialContext.addFieldParser(new ComposedDecimalParser());
+        initialContext.addFieldParser(new StringParser());
+        initialContext.addFieldParser(new ByteVectorParser());
+        initialContext.addFieldParser(new TemplateRefParser());
+        return initialContext;
+    }
+
+    public void addFieldParser(FieldParser fieldParser) {
+        initialContext.getFieldParsers().add(fieldParser);
+    }
+
+    /**
      * Parses the XML stream and creates an array of the elements
-     * @param source The inputStream object to load
+     * 
+     * @param source
+     *            The inputStream object to load
      */
     public MessageTemplate[] load(InputStream source) {
         Document document = parseXml(source);
 
         if (document == null) {
-            return new MessageTemplate[] { };
+            return new MessageTemplate[] {};
         }
 
         Element root = document.getDocumentElement();
-		
+
         TemplateParser templateParser = new TemplateParser(loadTemplateIdFromAuxId);
-		
-		if (root.getNodeName().equals("template")) {
-			return new MessageTemplate[] { (MessageTemplate) templateParser.parse(root, initialContext) };
+
+        if (root.getNodeName().equals("template")) {
+            return new MessageTemplate[] { (MessageTemplate) templateParser.parse(root, initialContext) };
         } else if (root.getNodeName().equals("templates")) {
-			ParsingContext context = new ParsingContext(root, initialContext);
-			
-	        NodeList templateTags = root.getElementsByTagName("template");
-	        MessageTemplate[] templates = new MessageTemplate[templateTags.getLength()];
-	        for (int i = 0; i < templateTags.getLength(); i++) {
-	            Element templateTag = (Element) templateTags.item(i);
-	            templates[i] = (MessageTemplate) templateParser.parse(templateTag, context);
-	        }
-	        return templates;
+            ParsingContext context = new ParsingContext(root, initialContext);
+
+            NodeList templateTags = root.getElementsByTagName("template");
+            MessageTemplate[] templates = new MessageTemplate[templateTags.getLength()];
+            for (int i = 0; i < templateTags.getLength(); i++) {
+                Element templateTag = (Element) templateTags.item(i);
+                templates[i] = (MessageTemplate) templateParser.parse(templateTag, context);
+            }
+            return templates;
         } else {
-        	initialContext.getErrorHandler().error(FastConstants.S1_INVALID_XML, "Invalid root node " + root.getNodeName() + ", \"template\" or \"templates\" expected.");
-        	return new MessageTemplate[] {};
+            initialContext.getErrorHandler().error(FastConstants.S1_INVALID_XML,
+                    "Invalid root node " + root.getNodeName() + ", \"template\" or \"templates\" expected.");
+            return new MessageTemplate[] {};
         }
     }
 
     /**
-     * Parse an XML file from an inputStream, returns a DOM org.w3c.dom.Document object.
-     * @param templateStream The inputStream to be parsed
-     * @return Returns a DOM org.w3c.dom.Document object, returns null if there are exceptions caught
+     * Parse an XML file from an inputStream, returns a DOM org.w3c.dom.Document
+     * object.
+     * 
+     * @param templateStream
+     *            The inputStream to be parsed
+     * @return Returns a DOM org.w3c.dom.Document object, returns null if there
+     *         are exceptions caught
      */
     private Document parseXml(InputStream templateStream) {
-    	org.xml.sax.ErrorHandler errorHandler = new org.xml.sax.ErrorHandler() {
-    		public void error(SAXParseException exception) throws SAXException {
-    			initialContext.getErrorHandler().error(XML_PARSING_ERROR, "ERROR: " + exception.getMessage(), exception);
-    		}
-    		public void fatalError(SAXParseException exception) throws SAXException {
-    			initialContext.getErrorHandler().error(XML_PARSING_ERROR, "FATAL: " + exception.getMessage(), exception);
-    		}
-    		public void warning(SAXParseException exception) throws SAXException {
-    			initialContext.getErrorHandler().error(XML_PARSING_ERROR, "WARNING: " + exception.getMessage(), exception);
-    		}};
+        org.xml.sax.ErrorHandler errorHandler = new org.xml.sax.ErrorHandler() {
+            public void error(SAXParseException exception) throws SAXException {
+                initialContext.getErrorHandler().error(XML_PARSING_ERROR, "ERROR: " + exception.getMessage(), exception);
+            }
+
+            public void fatalError(SAXParseException exception) throws SAXException {
+                initialContext.getErrorHandler().error(XML_PARSING_ERROR, "FATAL: " + exception.getMessage(), exception);
+            }
+
+            public void warning(SAXParseException exception) throws SAXException {
+                initialContext.getErrorHandler().error(XML_PARSING_ERROR, "WARNING: " + exception.getMessage(), exception);
+            }
+        };
         try {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             dbf.setIgnoringElementContentWhitespace(true);
             dbf.setNamespaceAware(namespaceAwareness);
             DocumentBuilder builder = dbf.newDocumentBuilder();
-            
-			builder.setErrorHandler(errorHandler);
+
+            builder.setErrorHandler(errorHandler);
             InputSource inputSource = new InputSource(templateStream);
-			Document document = builder.parse(inputSource);
-			return document;
+            Document document = builder.parse(inputSource);
+            return document;
         } catch (IOException e) {
-        	initialContext.getErrorHandler().error(IO_ERROR,
-                "Error occurred while trying to read xml template: " + e.getMessage(), e);
+            initialContext.getErrorHandler().error(IO_ERROR, "Error occurred while trying to read xml template: " + e.getMessage(), e);
         } catch (Exception e) {
-        	initialContext.getErrorHandler().error(XML_PARSING_ERROR, "Error occurred while parsing xml template: " + e.getMessage(), e);
+            initialContext.getErrorHandler().error(XML_PARSING_ERROR, "Error occurred while parsing xml template: " + e.getMessage(),
+                    e);
         }
 
         return null;
@@ -159,25 +172,27 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
 
     /**
      * Sets the errorHandler object to a method
-     * @param errorHandler The errorHandler that is being set
+     * 
+     * @param errorHandler
+     *            The errorHandler that is being set
      */
     public void setErrorHandler(ErrorHandler errorHandler) {
         initialContext.setErrorHandler(errorHandler);
     }
 
-	public void setTemplateRegistry(TemplateRegistry templateRegistry) {
-		initialContext.setTemplateRegistry(templateRegistry);
-	}
+    public void setTemplateRegistry(TemplateRegistry templateRegistry) {
+        initialContext.setTemplateRegistry(templateRegistry);
+    }
 
-	public TemplateRegistry getTemplateRegistry() {
-		return initialContext.getTemplateRegistry();
-	}
-	
-	public void setTypeMap(Map typeMap) {
-		initialContext.setTypeMap(typeMap);
-	}
+    public TemplateRegistry getTemplateRegistry() {
+        return initialContext.getTemplateRegistry();
+    }
 
-	public void setLoadTemplateIdFromAuxId(boolean loadTempalteIdFromAuxId) {
-		this.loadTemplateIdFromAuxId = loadTempalteIdFromAuxId;
-	}
+    public void setTypeMap(Map typeMap) {
+        initialContext.setTypeMap(typeMap);
+    }
+
+    public void setLoadTemplateIdFromAuxId(boolean loadTempalteIdFromAuxId) {
+        this.loadTemplateIdFromAuxId = loadTempalteIdFromAuxId;
+    }
 }

@@ -17,8 +17,7 @@ are Copyright (C) The LaSalle Technology Group, LLC. All Rights Reserved.
 
 Contributor(s): Jacob Northey <jacob@lasalletech.com>
                 Craig Otis <cotis@lasalletech.com>
-*/
-
+ */
 
 package org.openfast.codec;
 
@@ -34,9 +33,9 @@ import org.openfast.template.type.codec.TypeCodec;
 
 import java.io.InputStream;
 
-
 public class FastDecoder implements Coder {
     private final InputStream in;
+
     private final Context context;
 
     public FastDecoder(Context context, InputStream in) {
@@ -52,8 +51,8 @@ public class FastDecoder implements Coder {
         }
 
         BitVector pmap = (bitVectorValue).value;
-		BitVectorReader presenceMapReader = new BitVectorReader(pmap);
-		
+        BitVectorReader presenceMapReader = new BitVectorReader(pmap);
+
         // if template id is not present, use previous, else decode template id
         int templateId = (presenceMapReader.read()) ? ((IntegerValue) TypeCodec.UINT.decode(in)).value : context.getLastTemplateId();
         MessageTemplate template = context.getTemplate(templateId);
@@ -64,7 +63,7 @@ public class FastDecoder implements Coder {
         context.newMessage(template);
 
         context.setLastTemplateId(templateId);
-        
+
         return template.decode(in, templateId, presenceMapReader, context);
     }
 

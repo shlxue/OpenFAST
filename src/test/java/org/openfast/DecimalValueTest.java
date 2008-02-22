@@ -34,6 +34,10 @@ public class DecimalValueTest extends OpenFastTestCase {
         assertEquals(new BigDecimal(BigInteger.valueOf(15), 4), new DecimalValue(15, -4).toBigDecimal());
     }
     
+    public void testToDouble() {
+        assertEquals(3.3, new DecimalValue(33, -1).toDouble(), 0.000000000001);
+    }
+    
     public void testMaxValue() {
         DecimalValue max = new DecimalValue(Long.MAX_VALUE, 63);
         assertEquals(new BigDecimal(new BigInteger(String.valueOf(Long.MAX_VALUE)), -63), max.toBigDecimal());
