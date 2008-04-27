@@ -18,13 +18,12 @@ are Copyright (C) The LaSalle Technology Group, LLC. All Rights Reserved.
 Contributor(s): Jacob Northey <jacob@lasalletech.com>
                 Craig Otis <cotis@lasalletech.com>
 */
-
-
 package org.openfast;
 
 import org.openfast.template.Group;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 
@@ -53,5 +52,21 @@ public class TemplateDictionary implements Dictionary {
         }
 
         ((Map) table.get(group)).put(key, valueToEncode);
+    }
+
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        Iterator templateIterator = table.keySet().iterator();
+        while (templateIterator.hasNext()) {
+            Object template = templateIterator.next();
+            builder.append("Dictionary: Template=" + template.toString());
+            Map templateMap = (Map)table.get(template);
+            Iterator keyIterator = templateMap.keySet().iterator();
+            while (keyIterator.hasNext()) {
+                Object key = keyIterator.next();
+                builder.append(key).append("=").append(templateMap.get(key)).append("\n");
+            }
+        }
+        return builder.toString();
     }
 }

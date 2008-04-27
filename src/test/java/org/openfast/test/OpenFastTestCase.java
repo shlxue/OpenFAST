@@ -143,6 +143,10 @@ public abstract class OpenFastTestCase extends TestCase {
         return ByteUtil.convertHexStringToByteArray(hexString);
     }
 
+    protected byte[] bytes(String binaryString) {
+        return ByteUtil.convertBitStringToFastByteArray(binaryString);
+    }
+
     protected DecimalValue d(int mantissa, int exponent) {
         return new DecimalValue(mantissa, exponent);
     }

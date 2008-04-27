@@ -32,6 +32,7 @@ import java.io.InputStream;
 import org.openfast.DecimalValue;
 import org.openfast.Global;
 import org.openfast.IntegerValue;
+import org.openfast.NumericValue;
 import org.openfast.ScalarValue;
 import org.openfast.error.FastConstants;
 import org.openfast.template.LongValue;
@@ -60,8 +61,7 @@ final class NullableSingleFieldDecimal extends TypeCodec {
                 Global.handleError(FastConstants.R1_LARGE_DECIMAL, "");
             }
 
-            buffer.write(TypeCodec.NULLABLE_INTEGER.encode(
-                    new IntegerValue(value.exponent)));
+            buffer.write(TypeCodec.NULLABLE_INTEGER.encode(new IntegerValue(value.exponent)));
             buffer.write(TypeCodec.INTEGER.encode(new LongValue(value.mantissa)));
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -82,8 +82,8 @@ final class NullableSingleFieldDecimal extends TypeCodec {
             return null;
         }
 
-        int exponent = ((IntegerValue) exp).value;
-        int mantissa = ((IntegerValue) TypeCodec.INTEGER.decode(in)).value;
+        int exponent = ((NumericValue) exp).toInt();
+        long mantissa = ((NumericValue) TypeCodec.INTEGER.decode(in)).toLong();
         DecimalValue decimalValue = new DecimalValue(mantissa, exponent);
 
         return decimalValue;

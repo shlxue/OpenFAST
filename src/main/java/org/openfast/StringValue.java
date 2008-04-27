@@ -17,9 +17,7 @@ are Copyright (C) The LaSalle Technology Group, LLC. All Rights Reserved.
 
 Contributor(s): Jacob Northey <jacob@lasalletech.com>
                 Craig Otis <cotis@lasalletech.com>
-*/
-
-
+ */
 package org.openfast;
 
 import java.math.BigDecimal;
@@ -28,86 +26,79 @@ import org.openfast.error.FastConstants;
 
 public class StringValue extends ScalarValue {
     private static final long serialVersionUID = 1L;
-	public final String value;
+    public final String value;
 
     public StringValue(String value) {
-    	if (value == null) throw new NullPointerException();
+        if (value == null)
+            throw new NullPointerException();
         this.value = value;
     }
-    
     public byte toByte() {
-    	int value = toInt();
-    	if (value > Byte.MAX_VALUE || value < Byte.MIN_VALUE) {
-    		Global.handleError(FastConstants.R4_NUMERIC_VALUE_TOO_LARGE, "The value \"" + value + "\" is too large to fit into a byte.");
-    		return 0;
-    	}
-    	return (byte) value;
+        int value = toInt();
+        if (value > Byte.MAX_VALUE || value < Byte.MIN_VALUE) {
+            Global.handleError(FastConstants.R4_NUMERIC_VALUE_TOO_LARGE, "The value \"" + value
+                    + "\" is too large to fit into a byte.");
+            return 0;
+        }
+        return (byte) value;
     }
-    
     public short toShort() {
-    	int value = toInt();
-    	if (value > Short.MAX_VALUE || value < Short.MIN_VALUE) {
-    		Global.handleError(FastConstants.R4_NUMERIC_VALUE_TOO_LARGE, "The value \"" + value + "\" is too large to fit into a short.");
-    		return 0;
-    	}
-    	return (short) value;
+        int value = toInt();
+        if (value > Short.MAX_VALUE || value < Short.MIN_VALUE) {
+            Global.handleError(FastConstants.R4_NUMERIC_VALUE_TOO_LARGE, "The value \"" + value
+                    + "\" is too large to fit into a short.");
+            return 0;
+        }
+        return (short) value;
     }
-    
     public int toInt() {
-    	try {
-    		return Integer.parseInt(value);
-    	} catch (NumberFormatException e) {
-    		Global.handleError(FastConstants.R4_NUMERIC_VALUE_TOO_LARGE, "The value \"" + value + "\" is too large to fit into an int.", e);
-    		return 0;
-    	}
+        try {
+            return Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            Global.handleError(FastConstants.R4_NUMERIC_VALUE_TOO_LARGE, "The value \"" + value
+                    + "\" is too large to fit into an int.", e);
+            return 0;
+        }
     }
-    
     public long toLong() {
-    	try {
-    		return Long.parseLong(value);
-    	} catch (NumberFormatException e) {
-    		Global.handleError(FastConstants.R4_NUMERIC_VALUE_TOO_LARGE, "The value \"" + value + "\" is too large to fit into a long.", e);
-    		return 0;
-    	}
+        try {
+            return Long.parseLong(value);
+        } catch (NumberFormatException e) {
+            Global.handleError(FastConstants.R4_NUMERIC_VALUE_TOO_LARGE, "The value \"" + value
+                    + "\" is too large to fit into a long.", e);
+            return 0;
+        }
     }
-    
     public double toDouble() {
-    	try {
-    		return Double.parseDouble(value);
-    	} catch (NumberFormatException e) {
-    		Global.handleError(FastConstants.R4_NUMERIC_VALUE_TOO_LARGE, "The value\"" + value + "\" is too large to fit into a double.", e);
-    		return 0.0;
-    	}
+        try {
+            return Double.parseDouble(value);
+        } catch (NumberFormatException e) {
+            Global.handleError(FastConstants.R4_NUMERIC_VALUE_TOO_LARGE, "The value\"" + value
+                    + "\" is too large to fit into a double.", e);
+            return 0.0;
+        }
     }
-    
     public byte[] getBytes() {
-    	return value.getBytes();
+        return value.getBytes();
     }
-    
     public BigDecimal toBigDecimal() {
-    	return new BigDecimal(value);
+        return new BigDecimal(value);
     }
-
     public String toString() {
         return value;
     }
-
     public boolean equals(Object obj) {
         if ((obj == null) || !(obj instanceof StringValue)) {
             return false;
         }
-
         return equals((StringValue) obj);
     }
-
     private boolean equals(StringValue otherValue) {
         return value.equals(otherValue.value);
     }
-    
     public int hashCode() {
-    	return value.hashCode();
+        return value.hashCode();
     }
-
     public boolean equalsValue(String defaultValue) {
         return value.equals(defaultValue);
     }

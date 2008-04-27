@@ -43,11 +43,11 @@ public class LongValue extends NumericValue {
      * @return True if the two objects are the same, false otherwise
      */
     public boolean equals(Object obj) {
-        if ((obj == null) || !(obj instanceof LongValue)) {
+        if ((obj == null) || !(obj instanceof NumericValue)) {
             return false;
         }
 
-        return equals((LongValue) obj);
+        return equals((NumericValue) obj);
     }
 
     /**
@@ -55,8 +55,8 @@ public class LongValue extends NumericValue {
      * @param otherValue The LongValue that is to be compared
      * @return Returns true if the two values are the same, false otherwise
      */
-    private boolean equals(LongValue otherValue) {
-        return value == otherValue.value;
+    private boolean equals(NumericValue otherValue) {
+        return value == otherValue.toLong();
     }
     
     public int hashCode() {

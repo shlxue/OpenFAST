@@ -17,9 +17,7 @@ are Copyright (C) The LaSalle Technology Group, LLC. All Rights Reserved.
 
 Contributor(s): Jacob Northey <jacob@lasalletech.com>
                 Craig Otis <cotis@lasalletech.com>
-*/
-
-
+ */
 package org.openfast;
 
 import java.util.Collections;
@@ -39,129 +37,111 @@ import org.openfast.template.MessageTemplate;
 import org.openfast.template.TemplateRegisteredListener;
 import org.openfast.template.TemplateRegistry;
 
-
+/**
+ * Manages current state of an encoding or decoding process.  Each encoder/decoder should have a separate context
+ * and contexts should never be shared.
+ * @author Jacob Northey
+ */
 public class Context {
-	private TemplateRegistry templateRegistry = new BasicTemplateRegistry();
+    private TemplateRegistry templateRegistry = new BasicTemplateRegistry();
     private int lastTemplateId;
     private Map dictionaries = new HashMap();
     private ErrorHandler errorHandler = ErrorHandler.DEFAULT;
-	private QName currentApplicationType;
-	private List listeners = Collections.EMPTY_LIST;
-	private boolean traceEnabled;
-	private Trace encodeTrace;
-	private Trace decodeTrace;
+    private QName currentApplicationType;
+    private List listeners = Collections.EMPTY_LIST;
+    private boolean traceEnabled;
+    private Trace encodeTrace;
+    private Trace decodeTrace;
 
     public Context() {
         dictionaries.put("global", new GlobalDictionary());
         dictionaries.put("template", new TemplateDictionary());
         dictionaries.put("type", new ApplicationTypeDictionary());
     }
-
     public int getTemplateId(MessageTemplate template) {
         if (!templateRegistry.isRegistered(template)) {
             errorHandler.error(FastConstants.D9_TEMPLATE_NOT_REGISTERED, "The template " + template + " has not been registered.");
             return 0;
         }
-
-		return templateRegistry.getId(template);
-	}
-
-	public MessageTemplate getTemplate(int templateId) {
+        return templateRegistry.getId(template);
+    }
+    public MessageTemplate getTemplate(int templateId) {
         if (!templateRegistry.isRegistered(templateId)) {
-            errorHandler.error(FastConstants.D9_TEMPLATE_NOT_REGISTERED, "The template with id " + templateId + " has not been registered.");
+            errorHandler.error(FastConstants.D9_TEMPLATE_NOT_REGISTERED, "The template with id " + templateId
+                    + " has not been registered.");
             return null;
         }
-
         return templateRegistry.get(templateId);
     }
-
     public void registerTemplate(int templateId, MessageTemplate template) {
         templateRegistry.register(templateId, template);
         Iterator iter = listeners.iterator();
         while (iter.hasNext()) {
-        	((TemplateRegisteredListener) iter.next()).templateRegistered(template, templateId);
+            ((TemplateRegisteredListener) iter.next()).templateRegistered(template, templateId);
         }
     }
-
     public int getLastTemplateId() {
         return lastTemplateId;
     }
-
     public void setLastTemplateId(int templateId) {
         lastTemplateId = templateId;
     }
-
     public ScalarValue lookup(String dictionary, Group group, QName key) {
-    	if (group.hasTypeReference())
-    		currentApplicationType = group.getTypeReference();
+        if (group.hasTypeReference())
+            currentApplicationType = group.getTypeReference();
         return getDictionary(dictionary).lookup(group, key, currentApplicationType);
     }
-
     private Dictionary getDictionary(String dictionary) {
-    	if (!dictionaries.containsKey(dictionary))
-    		dictionaries.put(dictionary, new GlobalDictionary());
+        if (!dictionaries.containsKey(dictionary))
+            dictionaries.put(dictionary, new GlobalDictionary());
         return (Dictionary) dictionaries.get(dictionary);
     }
-
     public void store(String dictionary, Group group, QName key, ScalarValue valueToEncode) {
-    	if (group.hasTypeReference())
-    		currentApplicationType = group.getTypeReference();
+        if (group.hasTypeReference())
+            currentApplicationType = group.getTypeReference();
         getDictionary(dictionary).store(group, currentApplicationType, key, valueToEncode);
     }
-
     public void reset() {
         for (Iterator iter = dictionaries.values().iterator(); iter.hasNext();) {
             Dictionary dict = (Dictionary) iter.next();
             dict.reset();
         }
     }
-
     public void setErrorHandler(ErrorHandler errorHandler) {
         this.errorHandler = errorHandler;
     }
-
-	public void newMessage(MessageTemplate template) {
-		currentApplicationType = (template.hasTypeReference()) ? template.getTypeReference() : FastConstants.ANY_TYPE;
-	}
-
-	public void setCurrentApplicationType(QName name) {
-		currentApplicationType = name;
-	}
-
-	public TemplateRegistry getTemplateRegistry() {
-		return templateRegistry;
-	}
-
-	public void setTemplateRegistry(TemplateRegistry registry) {
-		this.templateRegistry = registry;
-	}
-
-	public boolean isTraceEnabled() {
-		return traceEnabled;
-	}
-
-	public void startTrace() {
-		setEncodeTrace(new BasicEncodeTrace());
-		setDecodeTrace(new BasicDecodeTrace());
-	}
-
-	public void setTraceEnabled(boolean enabled) {
-		this.traceEnabled = enabled;
-	}
-
-	public void setEncodeTrace(BasicEncodeTrace encodeTrace) {
-		this.encodeTrace = encodeTrace;
-	}
-
-	public Trace getEncodeTrace() {
-		return encodeTrace;
-	}
-
-	public void setDecodeTrace(Trace decodeTrace) {
-		this.decodeTrace = decodeTrace;
-	}
-
-	public Trace getDecodeTrace() {
-		return decodeTrace;
-	}
+    public void newMessage(MessageTemplate template) {
+        currentApplicationType = (template.hasTypeReference()) ? template.getTypeReference() : FastConstants.ANY_TYPE;
+    }
+    public void setCurrentApplicationType(QName name) {
+        currentApplicationType = name;
+    }
+    public TemplateRegistry getTemplateRegistry() {
+        return templateRegistry;
+    }
+    public void setTemplateRegistry(TemplateRegistry registry) {
+        this.templateRegistry = registry;
+    }
+    public boolean isTraceEnabled() {
+        return traceEnabled;
+    }
+    public void startTrace() {
+        setEncodeTrace(new BasicEncodeTrace());
+        setDecodeTrace(new BasicDecodeTrace());
+    }
+    public void setTraceEnabled(boolean enabled) {
+        this.traceEnabled = enabled;
+    }
+    public void setEncodeTrace(BasicEncodeTrace encodeTrace) {
+        this.encodeTrace = encodeTrace;
+    }
+    public Trace getEncodeTrace() {
+        return encodeTrace;
+    }
+    public void setDecodeTrace(Trace decodeTrace) {
+        this.decodeTrace = decodeTrace;
+    }
+    public Trace getDecodeTrace() {
+        return decodeTrace;
+    }
 }

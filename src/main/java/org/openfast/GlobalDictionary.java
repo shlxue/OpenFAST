@@ -25,6 +25,7 @@ package org.openfast;
 import org.openfast.template.Group;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 
@@ -45,5 +46,16 @@ public class GlobalDictionary implements Dictionary {
 
     public void reset() {
         table.clear();
+    }
+    
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        Iterator keyIterator = table.keySet().iterator();
+        while (keyIterator.hasNext()) {
+            QName key = (QName) keyIterator.next();
+            builder.append("Dictionary: Global");
+            builder.append(key).append("=").append(table.get(key)).append("\n");
+        }
+        return builder.toString();
     }
 }

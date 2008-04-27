@@ -21,16 +21,16 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast;
 
+import java.math.BigDecimal;
+import java.util.Iterator;
+
 import org.openfast.template.Field;
 import org.openfast.template.Group;
 import org.openfast.template.LongValue;
 import org.openfast.template.Scalar;
+import org.openfast.template.operator.Operator;
 import org.openfast.template.type.Type;
-
 import org.openfast.util.ArrayIterator;
-
-import java.math.BigDecimal;
-import java.util.Iterator;
 
 public class GroupValue implements FieldValue {
     private static final long serialVersionUID = 1L;
@@ -46,6 +46,15 @@ public class GroupValue implements FieldValue {
 
         this.group = group;
         this.values = values;
+        
+        for (int i=0; i<group.getFieldCount(); i++) {
+            if (group.getField(i) instanceof Scalar) {
+                Scalar scalar = ((Scalar) group.getField(i));
+                if (scalar.getOperator().equals(Operator.CONSTANT) && !scalar.isOptional()) {
+                    values[i] = scalar.getDefaultValue();
+                }
+            }
+        }
     }
 
     public GroupValue(Group group) {

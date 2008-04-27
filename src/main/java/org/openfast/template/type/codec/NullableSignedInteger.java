@@ -47,9 +47,9 @@ public final class NullableSignedInteger extends IntegerCodec {
             return TypeCodec.NULL_VALUE_ENCODING;
         }
 
-        IntegerValue intValue = (IntegerValue) value;
+        NumericValue intValue = (NumericValue) value;
 
-        if (intValue.value >= 0) {
+        if (intValue.toLong() >= 0) {
             return TypeCodec.INTEGER.encodeValue(intValue.increment());
         } else {
             return TypeCodec.INTEGER.encodeValue(intValue);

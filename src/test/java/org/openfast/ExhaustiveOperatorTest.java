@@ -157,8 +157,7 @@ public class ExhaustiveOperatorTest extends TestCase {
 
     public void testConstantOperatorWithOptionalField()
         throws IOException {
-        Scalar field = new Scalar("", Type.U32, Operator.CONSTANT,
-                new IntegerValue(16), true);
+        Scalar field = new Scalar("", Type.U32, Operator.CONSTANT, new IntegerValue(16), true);
         MessageTemplate template = registerTemplate(field);
 
         Message msg1 = new Message(template);
@@ -166,7 +165,6 @@ public class ExhaustiveOperatorTest extends TestCase {
         msg1.setFieldValue(1, null);
 
         Message msg2 = new Message(template);
-        msg2.setInteger(1, 16);
 
         //                     --PMAP-- --TID---
         encodeAndAssertEquals("11000000 11110001", msg1);
@@ -180,13 +178,12 @@ public class ExhaustiveOperatorTest extends TestCase {
 
     public void testConstantOperatorWithMandatoryField()
         throws IOException {
-        Scalar field = new Scalar("", Type.U32, Operator.CONSTANT,
-                new IntegerValue(16), false);
+        Scalar field = new Scalar("", Type.U32, Operator.CONSTANT, new IntegerValue(16), false);
         MessageTemplate template = registerTemplate(field);
 
         // NOTE: The field is not set.
         Message msg1 = new Message(template);
-        msg1.setInteger(1, 16);
+//        msg1.setInteger(1, 16);
 
         Message msg2 = new Message(template);
         msg2.setInteger(1, 16);

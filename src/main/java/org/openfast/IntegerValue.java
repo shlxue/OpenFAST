@@ -37,15 +37,15 @@ public class IntegerValue extends NumericValue {
     }
 
     public boolean equals(Object obj) {
-        if ((obj == null) || !(obj instanceof IntegerValue)) {
+        if ((obj == null) || !(obj instanceof NumericValue)) {
             return false;
         }
 
-        return equals((IntegerValue) obj);
+        return equals((NumericValue) obj);
     }
 
-    private boolean equals(IntegerValue otherValue) {
-        return value == otherValue.value;
+    private boolean equals(NumericValue otherValue) {
+        return value == otherValue.toInt();
     }
     
     public int hashCode() {

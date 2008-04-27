@@ -75,13 +75,13 @@
 
     <scm>
         <connection>
-            scm:svn:https://openfast.svn.sourceforge.net/svnroot/openfast/tags/openfast-0.9.5
+            scm:svn:https://openfast.svn.sourceforge.net/svnroot/openfast/trunk
         </connection>
         <developerConnection>
-            scm:svn:https://openfast.svn.sourceforge.net/svnroot/openfast/tags/openfast-0.9.5
+            scm:svn:https://openfast.svn.sourceforge.net/svnroot/openfast/trunk
         </developerConnection>
         <url>
-            http://openfast.svn.sourceforge.net/viewvc/openfast/tags/openfast-0.9.5
+            http://openfast.svn.sourceforge.net/viewvc/openfast/trunk
         </url>
     </scm>
 
@@ -198,6 +198,24 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>3.8.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jmock</groupId>
+            <artifactId>jmock</artifactId>
+            <version>2.4.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jmock</groupId>
+            <artifactId>jmock-junit3</artifactId>
+            <version>2.4.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jmock</groupId>
+            <artifactId>jmock-legacy</artifactId>
+            <version>2.4.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

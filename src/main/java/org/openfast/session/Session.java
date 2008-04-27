@@ -17,9 +17,7 @@ are Copyright (C) The LaSalle Technology Group, LLC. All Rights Reserved.
 
 Contributor(s): Jacob Northey <jacob@lasalletech.com>
                 Craig Otis <cotis@lasalletech.com>
-*/
-
-
+ */
 package org.openfast.session;
 
 import java.io.IOException;
@@ -37,54 +35,51 @@ import org.openfast.error.FastException;
 import org.openfast.template.MessageTemplate;
 import org.openfast.template.TemplateRegistry;
 
-
 public class Session implements ErrorHandler {
-    private ErrorHandler errorHandler = ErrorHandler.DEFAULT;
     public final MessageInputStream in;
     public final MessageOutputStream out;
-    
     private final SessionProtocol protocol;
     private final Connection connection;
-    
     private Client client;
-	private MessageListener messageListener;
-	private boolean listening;
-	private Thread listeningThread;
-	private SessionListener sessionListener = SessionListener.NULL;
+    private MessageListener messageListener;
+    private boolean listening;
+    private Thread listeningThread;
+    private ErrorHandler errorHandler = ErrorHandler.DEFAULT;
+    private SessionListener sessionListener = SessionListener.NULL;
 
     public Session(Connection connection, SessionProtocol protocol) {
         Context inContext = new Context();
         Context outContext = new Context();
         inContext.setErrorHandler(this);
-        
+
         this.connection = connection;
         this.protocol = protocol;
         try {
-			this.in = new MessageInputStream(connection.getInputStream(), inContext);
-			this.out = new MessageOutputStream(connection.getOutputStream(), outContext);
-		} catch (IOException e) {
-			errorHandler.error(null, "Error occurred in connection.", e);
-			throw new IllegalStateException(e);
-		}
-        
+            this.in = new MessageInputStream(connection.getInputStream(), inContext);
+            this.out = new MessageOutputStream(connection.getOutputStream(), outContext);
+        } catch (IOException e) {
+            errorHandler.error(null, "Error occurred in connection.", e);
+            throw new IllegalStateException(e);
+        }
+
         protocol.configureSession(this);
     }
 
     // INITIATOR
     public void close() throws FastConnectionException {
-    	listening = false;
-    	out.writeMessage(protocol.getCloseMessage());
+        listening = false;
+        out.writeMessage(protocol.getCloseMessage());
         in.close();
         out.close();
     }
 
     // RESPONDER
-	public void close(ErrorCode alertCode) {
-		listening = false;
-		in.close();
-		out.close();
-		sessionListener.onClose();
-	}
+    public void close(ErrorCode alertCode) {
+        listening = false;
+        in.close();
+        out.close();
+        sessionListener.onClose();
+    }
 
     public void setClient(Client client) {
         this.client = client;
@@ -95,16 +90,16 @@ public class Session implements ErrorHandler {
     }
 
     public void error(ErrorCode code, String message) {
-		if (code.equals(FastConstants.D9_TEMPLATE_NOT_REGISTERED)) {
-			code = SessionConstants.TEMPLATE_NOT_SUPPORTED;
-			message = "Template Not Supported";
-		}
-		protocol.onError(this, code, message);
+        if (code.equals(FastConstants.D9_TEMPLATE_NOT_REGISTERED)) {
+            code = SessionConstants.TEMPLATE_NOT_SUPPORTED;
+            message = "Template Not Supported";
+        }
+        protocol.onError(this, code, message);
         errorHandler.error(code, message);
     }
 
     public void error(ErrorCode code, String message, Throwable t) {
-    	protocol.onError(this, code, message);
+        protocol.onError(this, code, message);
         errorHandler.error(code, message, t);
     }
 
@@ -116,100 +111,102 @@ public class Session implements ErrorHandler {
         this.errorHandler = errorHandler;
     }
 
-	public void reset() {
-		out.reset();
-		in.reset();
-		out.writeMessage(protocol.getResetMessage());
-	}
+    public void reset() {
+        out.reset();
+        in.reset();
+        out.writeMessage(protocol.getResetMessage());
+    }
 
-	public Connection getConnection() {
-		return connection;
-	}
+    public Connection getConnection() {
+        return connection;
+    }
 
-	public void setMessageHandler(MessageListener messageListener) {
-		this.messageListener = messageListener;
-		setListening(true);
-	}
+    public void setMessageHandler(MessageListener messageListener) {
+        this.messageListener = messageListener;
+        setListening(true);
+    }
 
-	private void listenForMessages() {
-		if (listeningThread == null) {
-			Runnable messageReader = new Runnable() {
-				public void run() {
-					while (listening) {
-						try {
-							Message message = in.readMessage();
-						
-							if (message == null) {
-								listening = false;
-								break;
-							}
-							if (protocol.isProtocolMessage(message)) {
-								protocol.handleMessage(Session.this, message);
-							} else if (messageListener != null) {
-								messageListener.onMessage(message);
-							} else {
-								throw new IllegalStateException("Received non-protocol message without a message listener.");
-							}
-						} catch (Exception e) {
-							Throwable cause = e.getCause();
-							
-							if (cause != null && cause.getClass().equals(SocketException.class) &&
-									cause.getMessage().equals("Socket closed")) {
-								listening = false;
-							} else if (e instanceof FastException) {
-								FastException fastException = ((FastException) e);
-								errorHandler.error(fastException.getCode(), fastException.getMessage());
-							} else {
-								errorHandler.error(FastConstants.GENERAL_ERROR, e.getMessage(), e);
-							}
-						}
-					}
-				}};
-			listeningThread = new Thread(messageReader, "FAST Session Message Reader");
-		}
-		if (listeningThread.isAlive()) return;
-		listeningThread.start();
-	}
+    private void listenForMessages() {
+        if (listeningThread == null) {
+            Runnable messageReader = new Runnable() {
+                public void run() {
+                    while (listening) {
+                        try {
+                            Message message = in.readMessage();
 
-	public void setListening(boolean listening) {
-		this.listening = listening;
-		if (listening)
-			listenForMessages();
-	}
+                            if (message == null) {
+                                listening = false;
+                                break;
+                            }
+                            if (protocol.isProtocolMessage(message)) {
+                                protocol.handleMessage(Session.this, message);
+                            } else if (messageListener != null) {
+                                messageListener.onMessage(message);
+                            } else {
+                                throw new IllegalStateException("Received non-protocol message without a message listener.");
+                            }
+                        } catch (Exception e) {
+                            Throwable cause = e.getCause();
 
-	public ErrorHandler getErrorHandler() {
-		return errorHandler;
-	}
+                            if (cause != null && cause.getClass().equals(SocketException.class)
+                                    && cause.getMessage().equals("Socket closed")) {
+                                listening = false;
+                            } else if (e instanceof FastException) {
+                                FastException fastException = ((FastException) e);
+                                errorHandler.error(fastException.getCode(), fastException.getMessage());
+                            } else {
+                                errorHandler.error(FastConstants.GENERAL_ERROR, e.getMessage(), e);
+                            }
+                        }
+                    }
+                }
+            };
+            listeningThread = new Thread(messageReader, "FAST Session Message Reader");
+        }
+        if (listeningThread.isAlive())
+            return;
+        listeningThread.start();
+    }
 
-	public void sendTemplates(TemplateRegistry registry) {
-		if (!protocol.supportsTemplateExchange()) {
-			throw new UnsupportedOperationException("The procotol " + protocol + " does not support template exchange.");
-		}
-		MessageTemplate[] templates = registry.getTemplates();
-		for (int i=0; i<templates.length; i++) {
-			MessageTemplate template = templates[i];
-			out.writeMessage(protocol.createTemplateDefinitionMessage(template));
-			out.writeMessage(protocol.createTemplateDeclarationMessage(template, registry.getId(template)));
-			if (!out.getTemplateRegistry().isRegistered(template))
-				out.registerTemplate(registry.getId(template), template);
-		}
-	}
-	
-	public void addDynamicTemplateDefinition(MessageTemplate template) {
-		in.getTemplateRegistry().define(template);
-		out.getTemplateRegistry().define(template);
-	}
+    public void setListening(boolean listening) {
+        this.listening = listening;
+        if (listening)
+            listenForMessages();
+    }
 
-	public void registerDynamicTemplate(QName templateName, int id) {
-		if (!in.getTemplateRegistry().isDefined(templateName))
-			throw new IllegalStateException("Template " + templateName + " has not been defined.");
-		in.getTemplateRegistry().register(id, templateName);
-		if (!out.getTemplateRegistry().isDefined(templateName))
-			throw new IllegalStateException("Template " + templateName + " has not been defined.");
-		out.getTemplateRegistry().register(id, templateName);
-	}
+    public ErrorHandler getErrorHandler() {
+        return errorHandler;
+    }
 
-	public void setSessionListener(SessionListener sessionListener) {
-		this.sessionListener = sessionListener;
-	}
+    public void sendTemplates(TemplateRegistry registry) {
+        if (!protocol.supportsTemplateExchange()) {
+            throw new UnsupportedOperationException("The procotol " + protocol + " does not support template exchange.");
+        }
+        MessageTemplate[] templates = registry.getTemplates();
+        for (int i = 0; i < templates.length; i++) {
+            MessageTemplate template = templates[i];
+            out.writeMessage(protocol.createTemplateDefinitionMessage(template));
+            out.writeMessage(protocol.createTemplateDeclarationMessage(template, registry.getId(template)));
+            if (!out.getTemplateRegistry().isRegistered(template))
+                out.registerTemplate(registry.getId(template), template);
+        }
+    }
+
+    public void addDynamicTemplateDefinition(MessageTemplate template) {
+        in.getTemplateRegistry().define(template);
+        out.getTemplateRegistry().define(template);
+    }
+
+    public void registerDynamicTemplate(QName templateName, int id) {
+        if (!in.getTemplateRegistry().isDefined(templateName))
+            throw new IllegalStateException("Template " + templateName + " has not been defined.");
+        in.getTemplateRegistry().register(id, templateName);
+        if (!out.getTemplateRegistry().isDefined(templateName))
+            throw new IllegalStateException("Template " + templateName + " has not been defined.");
+        out.getTemplateRegistry().register(id, templateName);
+    }
+
+    public void setSessionListener(SessionListener sessionListener) {
+        this.sessionListener = sessionListener;
+    }
 }

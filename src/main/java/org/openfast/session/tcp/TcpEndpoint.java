@@ -17,9 +17,7 @@ are Copyright (C) The LaSalle Technology Group, LLC. All Rights Reserved.
 
 Contributor(s): Jacob Northey <jacob@lasalletech.com>
                 Craig Otis <cotis@lasalletech.com>
-*/
-
-
+ */
 package org.openfast.session.tcp;
 
 import java.io.IOException;
@@ -32,27 +30,23 @@ import org.openfast.session.ConnectionListener;
 import org.openfast.session.Endpoint;
 import org.openfast.session.FastConnectionException;
 
-
 public class TcpEndpoint implements Endpoint {
     private final int port;
     private String host;
-	private ConnectionListener connectionListener = ConnectionListener.NULL;
-	private ServerSocket serverSocket;
-	private boolean closed = true;
+    private ConnectionListener connectionListener = ConnectionListener.NULL;
+    private ServerSocket serverSocket;
+    private boolean closed = true;
 
     public TcpEndpoint(int port) {
         this.port = port;
     }
-
     public TcpEndpoint(String host, int port) {
         this(port);
         this.host = host;
     }
-
-	public Connection connect() throws FastConnectionException {
-
+    public Connection connect() throws FastConnectionException {
         try {
-        	Socket socket = new Socket(host, port);
+            Socket socket = new Socket(host, port);
             Connection connection = new TcpConnection(socket);
             return connection;
         } catch (UnknownHostException e) {
@@ -60,32 +54,28 @@ public class TcpEndpoint implements Endpoint {
         } catch (IOException e) {
             throw new FastConnectionException(e);
         }
-	}
-
-	public void accept() throws FastConnectionException {
-		closed = false;
-		try {
-			serverSocket = new ServerSocket(port);
-			while (true) {
-				Socket socket = serverSocket.accept();
-				connectionListener.onConnect(new TcpConnection(socket));
-			}
-		} catch (IOException e) {
-			if (!closed)
-				throw new FastConnectionException(e);
-		}
-	}
-
-	public void setConnectionListener(ConnectionListener listener) {
-		this.connectionListener = listener;
-	}
-
-	public void close() {
-		closed = true;
-		if (serverSocket != null)
-			try {
-				serverSocket.close();
-			} catch (IOException e) {
-			}
-	}
+    }
+    public void accept() throws FastConnectionException {
+        closed = false;
+        try {
+            serverSocket = new ServerSocket(port);
+            while (true) {
+                Socket socket = serverSocket.accept();
+                connectionListener.onConnect(new TcpConnection(socket));
+            }
+        } catch (IOException e) {
+            if (!closed)
+                throw new FastConnectionException(e);
+        }
+    }
+    public void setConnectionListener(ConnectionListener listener) {
+        this.connectionListener = listener;
+    }
+    public void close() {
+        closed = true;
+        if (serverSocket != null)
+            try {
+                serverSocket.close();
+            } catch (IOException e) {}
+    }
 }

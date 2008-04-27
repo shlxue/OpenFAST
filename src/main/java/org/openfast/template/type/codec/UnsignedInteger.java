@@ -28,7 +28,6 @@ package org.openfast.template.type.codec;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.openfast.IntegerValue;
 import org.openfast.ScalarValue;
 
 
@@ -43,14 +42,7 @@ public final class UnsignedInteger extends IntegerCodec {
      * @return Returns a byte array of the passed object
      */
     public byte[] encodeValue(ScalarValue scalarValue) {
-        long value;
-
-        if (scalarValue instanceof IntegerValue) {
-            value = scalarValue.toLong();
-        } else {
-            value = scalarValue.toLong();
-        }
-
+        long value = scalarValue.toLong();
         int size = getUnsignedIntegerSize(value);
         byte[] encoded = new byte[size];
 
