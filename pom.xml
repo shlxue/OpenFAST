@@ -1,7 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.openfast</groupId>
     <artifactId>openfast</artifactId>
@@ -74,15 +71,9 @@
     </issueManagement>
 
     <scm>
-        <connection>
-            scm:svn:https://openfast.svn.sourceforge.net/svnroot/openfast/trunk
-        </connection>
-        <developerConnection>
-            scm:svn:https://openfast.svn.sourceforge.net/svnroot/openfast/trunk
-        </developerConnection>
-        <url>
-            http://openfast.svn.sourceforge.net/viewvc/openfast/trunk
-        </url>
+        <connection>scm:svn:https://openfast.svn.sourceforge.net/svnroot/openfast/trunk</connection>
+        <developerConnection>scm:svn:https://openfast.svn.sourceforge.net/svnroot/openfast/trunk</developerConnection>
+        <url>http://openfast.svn.sourceforge.net/viewvc/openfast/tags/trunk</url>
     </scm>
 
     <mailingLists>
@@ -195,24 +186,6 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>3.8.2</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jmock</groupId>
-            <artifactId>jmock</artifactId>
-            <version>2.4.0</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jmock</groupId>
-            <artifactId>jmock-junit3</artifactId>
-            <version>2.4.0</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jmock</groupId>
-            <artifactId>jmock-legacy</artifactId>
-            <version>2.4.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
