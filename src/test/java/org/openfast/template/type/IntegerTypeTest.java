@@ -17,9 +17,7 @@ are Copyright (C) The LaSalle Technology Group, LLC. All Rights Reserved.
 
 Contributor(s): Jacob Northey <jacob@lasalletech.com>
                 Craig Otis <cotis@lasalletech.com>
-*/
-
-
+ */
 package org.openfast.template.type;
 
 import org.openfast.codec.FastDecoder;
@@ -28,7 +26,6 @@ import org.openfast.error.FastException;
 import org.openfast.template.MessageTemplate;
 import org.openfast.template.type.codec.IntegerCodec;
 import org.openfast.test.OpenFastTestCase;
-
 
 public class IntegerTypeTest extends OpenFastTestCase {
     public void testGetSignedIntegerSize() {
@@ -41,20 +38,15 @@ public class IntegerTypeTest extends OpenFastTestCase {
         assertEquals(4, IntegerCodec.getSignedIntegerSize(134217727));
         assertEquals(4, IntegerCodec.getSignedIntegerSize(-134217728));
     }
-    
     public void testIntegerSizeTooLarge() {
-    	MessageTemplate template = template(
-    			"<template>" +
-    			"  <uInt32 name=\"price\"/>" +
-    			"</template>");
-    	
-    	FastDecoder decoder = decoder("11000000 10000001 00111111 01111111 01111111 01111111 11111111", template);
-    	try {
-    		decoder.readMessage();
-    		fail();
-    	} catch (FastException e) {
-    		assertEquals(FastConstants.D2_INT_OUT_OF_RANGE, e.getCode());
-    		assertEquals("The value 17179869183 is out of range for the type uInt32", e.getCause().getCause().getMessage());
-    	}
+        MessageTemplate template = template("<template>" + "  <uInt32 name=\"price\"/>" + "</template>");
+        FastDecoder decoder = decoder("11000000 10000001 00111111 01111111 01111111 01111111 11111111", template);
+        try {
+            decoder.readMessage();
+            fail();
+        } catch (FastException e) {
+            assertEquals(FastConstants.D2_INT_OUT_OF_RANGE, e.getCode());
+            assertEquals("The value 17179869183 is out of range for type uInt32", e.getCause().getCause().getMessage());
+        }
     }
 }

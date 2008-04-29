@@ -14,6 +14,8 @@ public class UnsignedIntegerTest extends OpenFastTestCase {
         assertEncodeDecode(i(269435452), "00000001 00000000 00111101 00000100 10111100", TypeCodec.UINT);
         assertEncodeDecode(l(274877906943L), "00000111 01111111 01111111 01111111 01111111 11111111", TypeCodec.UINT);
         assertEncodeDecode(l(1181048340000L), "00100010 00101111 01011111 01011101 01111100 10100000", TypeCodec.UINT);
+        
+        assertEncodeDecode(l(4294967295L), "00001111 01111111 01111111 01111111 11111111", TypeCodec.UINT);
     }
 
 }

@@ -3,9 +3,6 @@
  */
 package org.openfast.template.type;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.openfast.Global;
 import org.openfast.IntegerValue;
 import org.openfast.ScalarValue;
@@ -15,37 +12,6 @@ import org.openfast.template.type.codec.TypeCodec;
 import org.openfast.util.Util;
 
 public abstract class IntegerType extends SimpleType {
-    protected static final Map MAX_VALUES = new HashMap();
-    protected static final Map MIN_VALUES = new HashMap();
-    static {
-        MIN_VALUES.put(new Integer(8), new Byte(Byte.MIN_VALUE));
-        MIN_VALUES.put(new Integer(16), new Short(Short.MIN_VALUE));
-        MIN_VALUES.put(new Integer(32), new Integer(Integer.MIN_VALUE));
-        MIN_VALUES.put(new Integer(64), new Long(Long.MIN_VALUE));
-        MAX_VALUES.put(new Integer(8), new Byte(Byte.MAX_VALUE));
-        MAX_VALUES.put(new Integer(16), new Short(Short.MAX_VALUE));
-        MAX_VALUES.put(new Integer(32), new Integer(Integer.MAX_VALUE));
-        MAX_VALUES.put(new Integer(64), new Long(Long.MAX_VALUE));
-    }
-
-    /**
-     * 
-     * @param numberBits
-     *            The number of bits as an integer
-     * @return Returns a long of the max value of the passed integer
-     */
-    protected static long getMax(int numberBits) {
-        return ((Number) MAX_VALUES.get(new Integer(numberBits))).longValue();
-    }
-    /**
-     * 
-     * @param numberBits
-     *            The number of bits as an integer
-     * @return Returns a long of the min value of the passed integer
-     */
-    protected static long getMin(int numberBits) {
-        return ((Number) MIN_VALUES.get(new Integer(numberBits))).longValue();
-    }
 
     protected final long minValue;
     protected final long maxValue;

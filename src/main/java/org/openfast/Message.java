@@ -21,8 +21,6 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 package org.openfast;
 
 import org.openfast.template.MessageTemplate;
-import org.openfast.template.Scalar;
-import org.openfast.template.operator.Operator;
 
 public class Message extends GroupValue {
     private static final long serialVersionUID = 1L;
@@ -34,14 +32,6 @@ public class Message extends GroupValue {
     }
     public Message(MessageTemplate template) {
         this(template, initializeFieldValues(template.getFieldCount()));
-        for (int i = 1; i < template.getFieldCount(); i++) {
-            if (template.getField(i) instanceof Scalar) {
-                Scalar scalar = ((Scalar) template.getField(i));
-                if (scalar.getOperator().equals(Operator.CONSTANT)) {
-                    setFieldValue(i, scalar.getDefaultValue());
-                }
-            }
-        }
     }
     private static FieldValue[] initializeFieldValues(int fieldCount) {
         FieldValue[] fields = new FieldValue[fieldCount];

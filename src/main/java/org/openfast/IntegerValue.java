@@ -45,7 +45,7 @@ public class IntegerValue extends NumericValue {
     }
 
     private boolean equals(NumericValue otherValue) {
-        return value == otherValue.toInt();
+        return value == otherValue.toLong();
     }
     
     public int hashCode() {
