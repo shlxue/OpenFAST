@@ -37,4 +37,16 @@ public class DecimalTest extends OpenFastTestCase {
         String expected = "11000000 10000001";
         assertEquals(expected, encoder.encode(message));
     }
+    
+    public void testInitialValue() {
+        MessageTemplate template = template("<template>" + 
+        "<decimal id=\"1\" presence=\"optional\" name=\"Line1\">" + 
+             "<exponent><copy value=\"-2\"/></exponent> " +
+             "<mantissa><copy value=\"94276\"/></mantissa> " +
+        "</decimal></template>");
+        FastEncoder encoder = encoder(template);
+        Message m = (Message) template.createValue(null);
+        m.setDecimal("Line1", 9427.6 ); 
+        assertEquals("11100000 10000001 11111111", encoder.encode(m));
+    }
 }
