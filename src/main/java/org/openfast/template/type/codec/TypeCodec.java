@@ -64,13 +64,17 @@ public abstract class TypeCodec implements Serializable {
     public abstract ScalarValue decode(InputStream in);
 
     /**
-     * Encode the passed object
+     * Template Method to encode the passed object, the actual encoding is done in the
+     * encodeValue() method overridden in sub-classes.
+     * <p>
+     * <b>Note</b>: The final SBIT is set in this method, not in encodeValue().
+     * </p>
      * @param value The ScalarValue object to be encoded
      * @return Returns an encoded byte array with an added stop bit at the end
      */
     public byte[] encode(ScalarValue value) {
         byte[] encoding = encodeValue(value);
-        encoding[encoding.length - 1] |= 0x80; // add stop bit;
+        encoding[encoding.length - 1] |= STOP_BIT;
         return encoding;
     }
 
