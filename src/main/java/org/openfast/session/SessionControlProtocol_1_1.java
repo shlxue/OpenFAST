@@ -99,8 +99,9 @@ public class SessionControlProtocol_1_1 extends AbstractSessionControlProtocol {
     public void registerSessionTemplates(TemplateRegistry registry) {
         registry.registerAll(TEMPLATE_REGISTRY);
     }
-    public Session connect(String senderName, Connection connection) {
-        Session session = new Session(connection, this);
+    public Session connect(String senderName, Connection connection, TemplateRegistry inboundRegistry, 
+            TemplateRegistry outboundRegistry, MessageListener messageListener, SessionListener sessionListener) {
+        Session session = new Session(connection, this, inboundRegistry, outboundRegistry);
         session.out.writeMessage(createHelloMessage(senderName));
         try {
             Thread.sleep(20);
@@ -115,7 +116,7 @@ public class SessionControlProtocol_1_1 extends AbstractSessionControlProtocol {
         session.out.writeMessage(createFastAlertMessage(code));
     }
     public Session onNewConnection(String serverName, Connection connection) {
-        Session session = new Session(connection, this);
+        Session session = new Session(connection, this, TemplateRegistry.NULL, TemplateRegistry.NULL);
         Message message = session.in.readMessage();
         String clientName = message.getString(1);
         String vendorId = message.isDefined(2) ? message.getString(2) : "unknown";
@@ -408,4 +409,5 @@ public class SessionControlProtocol_1_1 extends AbstractSessionControlProtocol {
     }
 
     private static final Message CLOSE = createFastAlertMessage(SessionConstants.CLOSE);
+    private static final TemplateRegistry PROTOCOL_TEMPLATES = new BasicTemplateRegistry();
 }

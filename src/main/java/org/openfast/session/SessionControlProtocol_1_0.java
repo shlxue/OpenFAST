@@ -38,15 +38,18 @@ class SessionControlProtocol_1_0 extends AbstractSessionControlProtocol {
     static final int FAST_ALERT_TEMPLATE_ID = 16001;
 
     public Session onNewConnection(String serverName, Connection connection) {
-        Session session = new Session(connection, this);
+        Session session = new Session(connection, this, TemplateRegistry.NULL, TemplateRegistry.NULL);
         Message message = session.in.readMessage();
         session.out.writeMessage(createHelloMessage(serverName));
         String clientName = message.getString(1);
         session.setClient(new BasicClient(clientName, "unknown"));
         return session;
     }
-    public Session connect(String senderName, Connection connection) {
-        Session session = new Session(connection, this);
+    public Session connect(String senderName, Connection connection, TemplateRegistry inboundRegistry, 
+            TemplateRegistry outboundRegistry, MessageListener messageListener, SessionListener sessionListener) {
+        Session session = new Session(connection, this, inboundRegistry, outboundRegistry);
+        session.setMessageHandler(messageListener);
+        session.setSessionListener(sessionListener);
         session.out.writeMessage(createHelloMessage(senderName));
         Message message = session.in.readMessage();
         String serverName = message.getString(1);

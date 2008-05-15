@@ -17,9 +17,7 @@ are Copyright (C) The LaSalle Technology Group, LLC. All Rights Reserved.
 
 Contributor(s): Jacob Northey <jacob@lasalletech.com>
                 Craig Otis <cotis@lasalletech.com>
-*/
-
-
+ */
 package org.openfast;
 
 import java.io.IOException;
@@ -35,7 +33,6 @@ import org.openfast.error.FastConstants;
 import org.openfast.template.MessageTemplate;
 import org.openfast.template.TemplateRegistry;
 
-
 public class MessageOutputStream implements MessageStream {
     private final OutputStream out;
     private final FastEncoder encoder;
@@ -46,54 +43,43 @@ public class MessageOutputStream implements MessageStream {
     public MessageOutputStream(OutputStream outputStream) {
         this(outputStream, new Context());
     }
-
     public MessageOutputStream(OutputStream outputStream, Context context) {
         this.out = outputStream;
         this.encoder = new FastEncoder(context);
         this.context = context;
     }
-    
     public void writeMessage(Message message) {
-    	writeMessage(message, false);
+        writeMessage(message, false);
     }
-
     public void writeMessage(Message message, boolean flush) {
         try {
             if (context.isTraceEnabled())
-            	context.startTrace();
-            
-        	if (!handlers.isEmpty()) {
-        		for (int i=0; i<handlers.size(); i++) {
-        			((MessageHandler) handlers.get(i)).handleMessage(message, context, encoder);
-        		}
-        	}
-            if (templateHandlers.containsKey(message.getTemplate())) {
-                ((MessageHandler) templateHandlers.get(message.getTemplate())).handleMessage(message,
-                    context, encoder);
+                context.startTrace();
+            if (!handlers.isEmpty()) {
+                for (int i = 0; i < handlers.size(); i++) {
+                    ((MessageHandler) handlers.get(i)).handleMessage(message, context, encoder);
+                }
             }
-
+            if (templateHandlers.containsKey(message.getTemplate())) {
+                ((MessageHandler) templateHandlers.get(message.getTemplate())).handleMessage(message, context, encoder);
+            }
             byte[] data = encoder.encode(message);
-
             if ((data == null) || (data.length == 0)) {
                 return;
             }
-
             out.write(data);
             if (flush)
-            	out.flush();
+                out.flush();
         } catch (IOException e) {
-        	Global.handleError(FastConstants.IO_ERROR, "An IO error occurred while writing message " + message, e);
+            Global.handleError(FastConstants.IO_ERROR, "An IO error occurred while writing message " + message, e);
         }
     }
-
     public void reset() {
         encoder.reset();
     }
-
     public void registerTemplate(int templateId, MessageTemplate template) {
         encoder.registerTemplate(templateId, template);
     }
-
     public void close() {
         try {
             out.close();
@@ -101,35 +87,28 @@ public class MessageOutputStream implements MessageStream {
             Global.handleError(FastConstants.IO_ERROR, "An error occurred while closing output stream.", e);
         }
     }
-
     public OutputStream getUnderlyingStream() {
         return out;
     }
-
     public void addMessageHandler(MessageTemplate template, MessageHandler handler) {
         if (templateHandlers == Collections.EMPTY_MAP) {
             templateHandlers = new HashMap();
         }
-
         templateHandlers.put(template, handler);
     }
-
-	public void addMessageHandler(MessageHandler handler) {
-		if (handlers == Collections.EMPTY_LIST) {
-			handlers = new ArrayList(4);
-		}
-		handlers.add(handler);
-	}
-
-	public void setTemplateRegistry(TemplateRegistry registry) {
-		context.setTemplateRegistry(registry);
-	}
-
-	public TemplateRegistry getTemplateRegistry() {
-		return context.getTemplateRegistry();
-	}
-
-	public Context getContext() {
-		return context;
-	}
+    public void addMessageHandler(MessageHandler handler) {
+        if (handlers == Collections.EMPTY_LIST) {
+            handlers = new ArrayList(4);
+        }
+        handlers.add(handler);
+    }
+    public void setTemplateRegistry(TemplateRegistry registry) {
+        context.setTemplateRegistry(registry);
+    }
+    public TemplateRegistry getTemplateRegistry() {
+        return context.getTemplateRegistry();
+    }
+    public Context getContext() {
+        return context;
+    }
 }

@@ -17,9 +17,7 @@ are Copyright (C) The LaSalle Technology Group, LLC. All Rights Reserved.
 
 Contributor(s): Jacob Northey <jacob@lasalletech.com>
                 Craig Otis <cotis@lasalletech.com>
-*/
-
-
+ */
 package org.openfast.codec;
 
 import java.util.ArrayList;
@@ -31,18 +29,17 @@ import org.openfast.Message;
 import org.openfast.template.MessageTemplate;
 import org.openfast.template.TemplateRegisteredListener;
 
-
 /* In 1.5 version use : static import java.lang.Math.*; */
 public class FastEncoder implements Coder {
     private Context context;
-	private List listeners = Collections.EMPTY_LIST;
+    private List listeners = Collections.EMPTY_LIST;
 
     public FastEncoder(Context context) {
         this.context = context;
     }
-
     /**
      * WARNING: Not thread-safe.
+     * 
      * @param message
      * @return the fast encoding of the message
      */
@@ -51,19 +48,16 @@ public class FastEncoder implements Coder {
         context.newMessage(template);
         return template.encode(message, context);
     }
-
     public void reset() {
         context.reset();
     }
-
     public void registerTemplate(int templateId, MessageTemplate template) {
         context.registerTemplate(templateId, template);
     }
-
-	public void addTemplateRegisteredListener(TemplateRegisteredListener templateRegisteredListener) {
-		if (listeners.isEmpty()) {
-			listeners = new ArrayList();
-		}
-		listeners.add(templateRegisteredListener);
-	}
+    public void addTemplateRegisteredListener(TemplateRegisteredListener templateRegisteredListener) {
+        if (listeners.isEmpty()) {
+            listeners = new ArrayList();
+        }
+        listeners.add(templateRegisteredListener);
+    }
 }

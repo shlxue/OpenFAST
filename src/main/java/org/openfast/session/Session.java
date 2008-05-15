@@ -47,9 +47,11 @@ public class Session implements ErrorHandler {
     private ErrorHandler errorHandler = ErrorHandler.DEFAULT;
     private SessionListener sessionListener = SessionListener.NULL;
 
-    public Session(Connection connection, SessionProtocol protocol) {
+    public Session(Connection connection, SessionProtocol protocol, TemplateRegistry inboundRegistry, TemplateRegistry outboundRegistry) {
         Context inContext = new Context();
+        inContext.getTemplateRegistry().registerAll(inboundRegistry);
         Context outContext = new Context();
+        outContext.getTemplateRegistry().registerAll(outboundRegistry);
         inContext.setErrorHandler(this);
 
         this.connection = connection;
@@ -141,7 +143,7 @@ public class Session implements ErrorHandler {
                             if (protocol.isProtocolMessage(message)) {
                                 protocol.handleMessage(Session.this, message);
                             } else if (messageListener != null) {
-                                messageListener.onMessage(message);
+                                messageListener.onMessage(Session.this, message);
                             } else {
                                 throw new IllegalStateException("Received non-protocol message without a message listener.");
                             }

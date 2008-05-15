@@ -17,63 +17,53 @@ are Copyright (C) The LaSalle Technology Group, LLC. All Rights Reserved.
 
 Contributor(s): Jacob Northey <jacob@lasalletech.com>
                 Craig Otis <cotis@lasalletech.com>
-*/
-
-
+ */
 package org.openfast.template;
 
 import java.util.Iterator;
 
 import org.openfast.QName;
 
-
-
 public interface TemplateRegistry extends Iterable {
-	TemplateRegistry NULL = new NullTemplateRegistry();
-	
-	void registerAll(TemplateRegistry registry);
-	void register(int id, MessageTemplate template);
-	void register(int id, String name);
-	void register(int id, QName name);
-	
-	void define(MessageTemplate template);
-	
-	void remove(String name);
-	void remove(QName name);
-	void remove(MessageTemplate template);
-	void remove(int id);
-	
-	MessageTemplate get(int id);
-	MessageTemplate get(String name);
-	MessageTemplate get(QName name);
-	
-	MessageTemplate[] getTemplates();
-	
-	int getId(String name);
-	int getId(QName name);
-	int getId(MessageTemplate template);
-	
-	boolean isRegistered(String name);
-	boolean isRegistered(QName name);
-	boolean isRegistered(int id);
-	boolean isRegistered(MessageTemplate template);
-	boolean isDefined(String name);
-	boolean isDefined(QName name);
-	
-	void addTemplateRegisteredListener(TemplateRegisteredListener templateRegisteredListener);
-	void removeTemplateRegisteredListener(TemplateRegisteredListener templateRegisteredListener);
-	
-	/**
-	 * Iterator over the names of each template (defined or registered) in this registry
-	 * 
-	 * @return an iterator over the qualified names each item is of type QName
-	 */
-	Iterator/*<QName>*/ nameIterator();
-	
-	/**
-	 * Iterator over the set of templates (defined or registered) in this registry
-	 * 
-	 * @return an iterator over the set of templates each item is an instance of MessageTemplate
-	 */
-	Iterator/*<MessageTemplate>*/ iterator();
+    TemplateRegistry NULL = new NullTemplateRegistry();
+
+    void registerAll(TemplateRegistry registry);
+    void register(int id, MessageTemplate template);
+    void register(int id, String name);
+    void register(int id, QName name);
+    void define(MessageTemplate template);
+    void remove(String name);
+    void remove(QName name);
+    void remove(MessageTemplate template);
+    void remove(int id);
+    MessageTemplate get(int id);
+    MessageTemplate get(String name);
+    MessageTemplate get(QName name);
+    MessageTemplate[] getTemplates();
+    int getId(String name);
+    int getId(QName name);
+    int getId(MessageTemplate template);
+    boolean isRegistered(String name);
+    boolean isRegistered(QName name);
+    boolean isRegistered(int id);
+    boolean isRegistered(MessageTemplate template);
+    boolean isDefined(String name);
+    boolean isDefined(QName name);
+    void addTemplateRegisteredListener(TemplateRegisteredListener templateRegisteredListener);
+    void removeTemplateRegisteredListener(TemplateRegisteredListener templateRegisteredListener);
+    /**
+     * Iterator over the names of each template (defined or registered) in this
+     * registry
+     * 
+     * @return an iterator over the qualified names each item is of type QName
+     */
+    Iterator/* <QName> */nameIterator();
+    /**
+     * Iterator over the set of templates (defined or registered) in this
+     * registry
+     * 
+     * @return an iterator over the set of templates each item is an instance of
+     *         MessageTemplate
+     */
+    Iterator/* <MessageTemplate> */iterator();
 }

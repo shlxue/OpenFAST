@@ -17,23 +17,19 @@ are Copyright (C) The LaSalle Technology Group, LLC. All Rights Reserved.
 
 Contributor(s): Jacob Northey <jacob@lasalletech.com>
                 Craig Otis <cotis@lasalletech.com>
-*/
-
-
+ */
 package org.openfast.session;
 
 import org.openfast.error.ErrorHandler;
 
-
 public class FastServer implements ConnectionListener {
     private ErrorHandler errorHandler = ErrorHandler.DEFAULT;
     private SessionHandler sessionHandler = SessionHandler.NULL;
-	private boolean listening;
-	
-	private final SessionProtocol sessionProtocol;
-	private final Endpoint endpoint;
-	private final String serverName;
-	private Thread serverThread;
+    private boolean listening;
+    private final SessionProtocol sessionProtocol;
+    private final Endpoint endpoint;
+    private final String serverName;
+    private Thread serverThread;
 
     public FastServer(String serverName, SessionProtocol sessionProtocol, Endpoint endpoint) {
         if (endpoint == null || sessionProtocol == null) {
@@ -44,50 +40,43 @@ public class FastServer implements ConnectionListener {
         this.serverName = serverName;
         endpoint.setConnectionListener(this);
     }
-
     public void listen() {
-    	listening = true;
-    	if (serverThread == null) {
-	    	Runnable runnable = new Runnable() {
-				public void run() {
-			        while (listening) {
-			        	try {
-							endpoint.accept();
-						} catch (FastConnectionException e) {
-							errorHandler.error(null, null, e);
-						}
-						try {
-							Thread.sleep(20);
-						} catch (InterruptedException e) {
-						}
-			        }
-				}};
-			serverThread = new Thread(runnable, "FastServer");
-    	}
-		serverThread.start();
+        listening = true;
+        if (serverThread == null) {
+            Runnable runnable = new Runnable() {
+                public void run() {
+                    while (listening) {
+                        try {
+                            endpoint.accept();
+                        } catch (Exception e) {
+                            errorHandler.error(null, null, e);
+                        }
+                        try {
+                            Thread.sleep(20);
+                        } catch (InterruptedException e) {}
+                    }
+                }
+            };
+            serverThread = new Thread(runnable, "FastServer");
+        }
+        serverThread.start();
     }
-
     public void close() throws FastConnectionException {
-    	listening = false;
-    	endpoint.close();
+        listening = false;
+        endpoint.close();
     }
-
     // ************* OPTIONAL DEPENDENCY SETTERS **************
-
     public void setErrorHandler(ErrorHandler errorHandler) {
         if (errorHandler == null) {
             throw new NullPointerException();
         }
-
         this.errorHandler = errorHandler;
     }
-
-	public void onConnect(Connection connection) {
-		Session session = sessionProtocol.onNewConnection(serverName, connection);
-		this.sessionHandler.newSession(session);
-	}
-
-	public void setSessionHandler(SessionHandler sessionHandler) {
-		this.sessionHandler = sessionHandler;
-	}
+    public void onConnect(Connection connection) {
+        Session session = sessionProtocol.onNewConnection(serverName, connection);
+        this.sessionHandler.newSession(session);
+    }
+    public void setSessionHandler(SessionHandler sessionHandler) {
+        this.sessionHandler = sessionHandler;
+    }
 }
