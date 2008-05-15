@@ -165,7 +165,10 @@
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
                     <descriptors>
+                        <descriptor>src/assembly/sources-jar.xml</descriptor>
+                        <descriptor>src/assembly/javadoc-jar.xml</descriptor>
                         <descriptor>src/assembly/source.xml</descriptor>
+                        <descriptor>src/assembly/binary.xml</descriptor>
                     </descriptors>
                 </configuration>
                 <executions>

@@ -1,0 +1,8 @@
+OpenFAST uses the Maven2 build tool. Downloaded the latest version of Maven2 from http://maven.apache.org.
+
+To build OpenFAST using maven, enter from a command line:
+  > mvn package
+  
+To generate Eclipse .project and .classpath files so that OpenFAST can be imported into Eclipse:
+  > mvn eclipse:eclipse
+  
