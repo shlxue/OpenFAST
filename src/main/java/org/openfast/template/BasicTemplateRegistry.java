@@ -66,7 +66,7 @@ public class BasicTemplateRegistry extends AbstractTemplateRegistry {
         return nameMap.containsKey(name);
     }
     public MessageTemplate[] getTemplates() {
-        return (MessageTemplate[]) templateMap.keySet().toArray(new MessageTemplate[templateMap.size()]);
+        return (MessageTemplate[]) templates.toArray(new MessageTemplate[templateMap.size()]);
     }
     public void remove(QName name) {
         MessageTemplate template = (MessageTemplate) nameMap.remove(name);
