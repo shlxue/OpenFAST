@@ -13,7 +13,7 @@ public class SessionControlProtocol_1_1Test extends OpenFastTestCase {
 	private SessionControlProtocol_1_1 SCP_1_1;
 
 	protected void setUp() throws Exception {
-		SCP_1_1 = new SessionControlProtocol_1_1();
+		SCP_1_1 = (SessionControlProtocol_1_1) SessionConstants.SCP_1_1;
 	}
 	
 	public void testSimpleCreateTemplateDefinitionMessage() {

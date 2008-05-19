@@ -58,7 +58,7 @@ public class SessionControlProtocol_1_1 extends AbstractSessionControlProtocol {
     private static final Map/* <MessageTemplate, SessionMessageHandler> */messageHandlers = new HashMap();
     private ConversionContext initialContext = createInitialContext();
 
-    public SessionControlProtocol_1_1() {
+    protected SessionControlProtocol_1_1() {
         messageHandlers.put(FAST_ALERT_TEMPLATE, ALERT_HANDLER);
         messageHandlers.put(TEMPLATE_DEFINITION, new SessionMessageHandler() {
             public void handleMessage(Session session, Message message) {
@@ -102,6 +102,7 @@ public class SessionControlProtocol_1_1 extends AbstractSessionControlProtocol {
     public Session connect(String senderName, Connection connection, TemplateRegistry inboundRegistry, 
             TemplateRegistry outboundRegistry, MessageListener messageListener, SessionListener sessionListener) {
         Session session = new Session(connection, this, inboundRegistry, outboundRegistry);
+        configureSession(session);
         session.out.writeMessage(createHelloMessage(senderName));
         try {
             Thread.sleep(20);
@@ -169,8 +170,8 @@ public class SessionControlProtocol_1_1 extends AbstractSessionControlProtocol {
     }
 
     public static final int FAST_RESET_TEMPLATE_ID = 120;
-    public static final int FAST_HELLO_TEMPLATE_ID = 16003;
-    public static final int FAST_ALERT_TEMPLATE_ID = 16004;
+    public static final int FAST_HELLO_TEMPLATE_ID = 16002;
+    public static final int FAST_ALERT_TEMPLATE_ID = 16003;
     public static final int TEMPLATE_DECL_ID = 16010;
     public static final int TEMPLATE_DEF_ID = 16011;
     public static final int INT32_INSTR_ID = 16012;
@@ -195,12 +196,12 @@ public class SessionControlProtocol_1_1 extends AbstractSessionControlProtocol {
     public static final int FOREIGN_INSTR_ID = 16031;
     public static final int ELEMENT_ID = 16032;
     public static final int TEXT_ID = 16033;
-    public final static MessageTemplate FAST_ALERT_TEMPLATE = new MessageTemplate("", new Field[] {
+    public final static MessageTemplate FAST_ALERT_TEMPLATE = new MessageTemplate("Alert", new Field[] {
             new Scalar("Severity", Type.U32, Operator.NONE, ScalarValue.UNDEFINED, false),
             new Scalar("Code", Type.U32, Operator.NONE, ScalarValue.UNDEFINED, false),
             new Scalar("Value", Type.U32, Operator.NONE, ScalarValue.UNDEFINED, true),
             new Scalar("Description", Type.ASCII, Operator.NONE, ScalarValue.UNDEFINED, false), });
-    public final static MessageTemplate FAST_HELLO_TEMPLATE = new MessageTemplate("", new Field[] {
+    public final static MessageTemplate FAST_HELLO_TEMPLATE = new MessageTemplate("Hello", new Field[] {
             new Scalar("SenderName", Type.ASCII, Operator.NONE, ScalarValue.UNDEFINED, false),
             new Scalar("VendorId", Type.ASCII, Operator.NONE, ScalarValue.UNDEFINED, true) });
     public static final Message RESET = new Message(FAST_RESET_TEMPLATE) {

@@ -124,6 +124,7 @@
                 <directory>src/main/resources</directory>
             </resource>
         </resources>
+        
         <extensions>
             <extension>
                 <groupId>org.apache.maven.wagon</groupId>
@@ -154,7 +155,7 @@
                 <executions>
                     <execution>
                         <id>javadoc</id>
-                        <phase>process-classes</phase>
+                        <phase>site</phase>
                         <goals>
                             <goal>javadoc</goal>
                         </goals>
@@ -174,7 +175,7 @@
                 <executions>
                     <execution>
                         <id>make-assembly</id>
-                        <phase>package</phase>
+                        <phase>deploy</phase>
                         <goals>
                             <goal>attached</goal>
                         </goals>
