@@ -155,7 +155,7 @@ public class Session implements ErrorHandler {
                                 listening = false;
                             } else if (e instanceof FastException) {
                                 FastException fastException = ((FastException) e);
-                                errorHandler.error(fastException.getCode(), fastException.getMessage());
+                                errorHandler.error(fastException.getCode(), fastException.getMessage(), e);
                             } else {
                                 errorHandler.error(FastConstants.GENERAL_ERROR, e.getMessage(), e);
                             }
