@@ -8,6 +8,7 @@ import org.openfast.template.ComposedValueConverter;
 import org.openfast.template.LongValue;
 
 public class DecimalConverter implements ComposedValueConverter {
+    private static final long serialVersionUID = 1L;
 
     private static final FieldValue[] NULL_SET = new FieldValue[] { null, null };
 

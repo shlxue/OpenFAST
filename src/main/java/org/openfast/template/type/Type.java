@@ -4,10 +4,7 @@ import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.openfast.Global;
 import org.openfast.ScalarValue;
-import org.openfast.error.FastConstants;
-import org.openfast.template.LongValue;
 import org.openfast.template.operator.Operator;
 import org.openfast.template.type.codec.TypeCodec;
 import org.openfast.util.Util;

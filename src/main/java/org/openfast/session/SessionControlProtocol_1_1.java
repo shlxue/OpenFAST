@@ -410,5 +410,4 @@ public class SessionControlProtocol_1_1 extends AbstractSessionControlProtocol {
     }
 
     private static final Message CLOSE = createFastAlertMessage(SessionConstants.CLOSE);
-    private static final TemplateRegistry PROTOCOL_TEMPLATES = new BasicTemplateRegistry();
 }

@@ -25,11 +25,10 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
  */
 package org.openfast.template.type.codec;
 
-import org.openfast.IntegerValue;
+import java.io.InputStream;
+
 import org.openfast.NumericValue;
 import org.openfast.ScalarValue;
-
-import java.io.InputStream;
 
 
 public final class NullableUnsignedInteger extends IntegerCodec {

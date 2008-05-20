@@ -6,7 +6,6 @@ package org.openfast.template.operator;
 import org.openfast.NumericValue;
 import org.openfast.ScalarValue;
 import org.openfast.template.Scalar;
-import org.openfast.template.type.IntegerType;
 import org.openfast.template.type.Type;
 
 final class IncrementIntegerOperatorCodec extends OperatorCodec {
