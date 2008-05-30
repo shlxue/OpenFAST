@@ -18,7 +18,6 @@ are Copyright (C) The LaSalle Technology Group, LLC. All Rights Reserved.
 Contributor(s): Jacob Northey <jacob@lasalletech.com>
                 Craig Otis <cotis@lasalletech.com>
  */
-
 package org.openfast.template;
 
 import java.io.ByteArrayOutputStream;
@@ -29,7 +28,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.openfast.BitVector;
 import org.openfast.BitVectorBuilder;
 import org.openfast.BitVectorReader;
@@ -45,25 +43,15 @@ import org.openfast.template.type.codec.TypeCodec;
 
 public class Group extends Field {
     private static final long serialVersionUID = 1L;
-
     private QName typeReference = null;
-
     protected String childNamespace = "";
-
     protected final Field[] fields;
-
     protected final Map fieldIndexMap;
-
     protected final Map fieldIdMap;
-
     protected final Map fieldNameMap;
-
     protected final boolean usesPresenceMap;
-
     protected final StaticTemplateReference[] staticTemplateReferences;
-
     protected final Field[] fieldDefinitions;
-
     protected final Map introspectiveFieldMap;
 
     public Group(String name, Field[] fields, boolean optional) {
@@ -171,7 +159,6 @@ public class Group extends Field {
         if (value == null) {
             return new byte[] {};
         }
-
         GroupValue groupValue = (GroupValue) value;
         if (context.isTraceEnabled()) {
             context.getEncodeTrace().groupStart(this);
@@ -179,7 +166,6 @@ public class Group extends Field {
         BitVectorBuilder presenceMapBuilder = new BitVectorBuilder(template.getMaxPresenceMapSize());
         try {
             byte[][] fieldEncodings = new byte[fields.length][];
-
             for (int fieldIndex = 0; fieldIndex < fields.length; fieldIndex++) {
                 FieldValue fieldValue = groupValue.getValue(fieldIndex);
                 Field field = getField(fieldIndex);
@@ -189,7 +175,6 @@ public class Group extends Field {
                 fieldEncodings[fieldIndex] = encoding;
             }
             ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-
             if (usesPresenceMap()) {
                 byte[] pmap = presenceMapBuilder.getBitVector().getTruncatedBytes();
                 if (context.isTraceEnabled())
@@ -302,7 +287,6 @@ public class Group extends Field {
         if (pmapReader.hasMoreBitsSet())
             Global.handleError(FastConstants.R8_PMAP_TOO_MANY_BITS, "The presence map " + pmapReader
                     + " has too many bits for the group " + this);
-
         return values;
     }
 
@@ -400,19 +384,15 @@ public class Group extends Field {
      */
     private static Map constructFieldNameMap(Field[] fields) {
         Map map = new HashMap();
-
         for (int i = 0; i < fields.length; i++)
             map.put(fields[i].getQName(), fields[i]);
-
         return map;
     }
 
     private static Map constructFieldIdMap(Field[] fields) {
         Map map = new HashMap();
-
         for (int i = 0; i < fields.length; i++)
             map.put(fields[i].getId(), fields[i]);
-
         return map;
     }
 
@@ -427,10 +407,8 @@ public class Group extends Field {
      */
     private static Map constructFieldIndexMap(Field[] fields) {
         Map map = new HashMap();
-
         for (int i = 0; i < fields.length; i++)
             map.put(fields[i], new Integer(i));
-
         return map;
     }
 

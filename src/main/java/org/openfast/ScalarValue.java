@@ -17,51 +17,46 @@ are Copyright (C) The LaSalle Technology Group, LLC. All Rights Reserved.
 
 Contributor(s): Jacob Northey <jacob@lasalletech.com>
                 Craig Otis <cotis@lasalletech.com>
-*/
-
-
+ */
 package org.openfast;
 
 import java.math.BigDecimal;
 
-
 public class ScalarValue implements FieldValue {
     private static final long serialVersionUID = 1L;
+    public static final ScalarValue UNDEFINED = new ScalarValue() {
+        private static final long serialVersionUID = 1L;
 
-	public static final ScalarValue UNDEFINED = new ScalarValue() {
-            private static final long serialVersionUID = 1L;
+        public boolean isUndefined() {
+            return true;
+        }
 
-			public boolean isUndefined() {
-                return true;
-            }
-
-            public String toString() {
-                return "UNDEFINED";
-            }
-        };
-
+        public String toString() {
+            return "UNDEFINED";
+        }
+    };
     static public final ScalarValue NULL = new ScalarValue() {
-            private static final long serialVersionUID = 1L;
+        private static final long serialVersionUID = 1L;
 
-			public boolean isNull() {
-                return true;
-            }
+        public boolean isNull() {
+            return true;
+        }
 
-            public String toString() {
-                return "NULL";
-            }
-        };
+        public String toString() {
+            return "NULL";
+        }
+    };
 
     /**
      * 
      * @return Returns false
-     */    
+     */
     public boolean equalsValue(String defaultValue) {
         return false;
     }
-    
+
     public FieldValue copy() {
-    	return this; // immutable objects don't need actual copies.
+        return this; // immutable objects don't need actual copies.
     }
 
     /**
@@ -81,34 +76,34 @@ public class ScalarValue implements FieldValue {
     }
 
     public byte toByte() {
-    	throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     }
-    
+
     public short toShort() {
-    	throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     }
-    
+
     public int toInt() {
-    	throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     }
-    
+
     public long toLong() {
-    	throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     }
-    
+
     public String toString() {
-    	throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     }
-    
+
     public byte[] getBytes() {
-    	throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     }
-    
+
     public double toDouble() {
-    	throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     }
-    
+
     public BigDecimal toBigDecimal() {
-    	throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     }
 }

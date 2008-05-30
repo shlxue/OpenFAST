@@ -29,7 +29,6 @@ import org.openfast.Message;
 import org.openfast.template.MessageTemplate;
 import org.openfast.template.TemplateRegisteredListener;
 
-/* In 1.5 version use : static import java.lang.Math.*; */
 public class FastEncoder implements Coder {
     private Context context;
     private List listeners = Collections.EMPTY_LIST;

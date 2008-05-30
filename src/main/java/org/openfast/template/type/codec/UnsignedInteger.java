@@ -17,9 +17,7 @@ are Copyright (C) The LaSalle Technology Group, LLC. All Rights Reserved.
 
 Contributor(s): Jacob Northey <jacob@lasalletech.com>
                 Craig Otis <cotis@lasalletech.com>
-*/
-
-
+ */
 /**
  *
  */
@@ -27,41 +25,39 @@ package org.openfast.template.type.codec;
 
 import java.io.IOException;
 import java.io.InputStream;
-
 import org.openfast.ScalarValue;
-
 
 public final class UnsignedInteger extends IntegerCodec {
     private static final long serialVersionUID = 1L;
 
-	UnsignedInteger() { }
+    UnsignedInteger() {}
 
     /**
      * Takes a ScalarValue object, and converts it to a byte array
-     * @param scalarValue The value to be encoded
+     * 
+     * @param scalarValue
+     *            The value to be encoded
      * @return Returns a byte array of the passed object
      */
     public byte[] encodeValue(ScalarValue scalarValue) {
         long value = scalarValue.toLong();
         int size = getUnsignedIntegerSize(value);
         byte[] encoded = new byte[size];
-
         for (int factor = 0; factor < size; factor++) {
             encoded[size - factor - 1] = (byte) ((value >> (factor * 7)) & 0x7f);
         }
-
         return encoded;
     }
 
     /**
      * 
-     * @param in The InputStream to be decoded
+     * @param in
+     *            The InputStream to be decoded
      * @return the decoded value from the fast input stream
      */
     public ScalarValue decode(InputStream in) {
         long value = 0;
         int byt;
-
         try {
             do {
                 byt = in.read();
@@ -70,11 +66,10 @@ public final class UnsignedInteger extends IntegerCodec {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
         return createValue(value);
     }
-    
+
     public boolean equals(Object obj) {
-    	return obj != null && getClass() == obj.getClass();
+        return obj != null && getClass() == obj.getClass();
     }
 }

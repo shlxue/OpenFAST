@@ -18,7 +18,6 @@ are Copyright (C) The LaSalle Technology Group, LLC. All Rights Reserved.
 Contributor(s): Jacob Northey <jacob@lasalletech.com>
                 Craig Otis <cotis@lasalletech.com>
  */
-
 /**
  *
  */
@@ -27,7 +26,6 @@ package org.openfast.template.type.codec;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
 import org.openfast.DecimalValue;
 import org.openfast.Global;
 import org.openfast.IntegerValue;
@@ -38,8 +36,7 @@ import org.openfast.template.LongValue;
 final class SingleFieldDecimal extends TypeCodec {
     private static final long serialVersionUID = 1L;
 
-    SingleFieldDecimal() {
-    }
+    SingleFieldDecimal() {}
 
     /**
      * Takes a ScalarValue object, and converts it to a byte array
@@ -52,21 +49,17 @@ final class SingleFieldDecimal extends TypeCodec {
         if (v == ScalarValue.NULL) {
             return TypeCodec.NULL_VALUE_ENCODING;
         }
-
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         DecimalValue value = (DecimalValue) v;
-
         try {
             if (Math.abs(value.exponent) > 63) {
                 Global.handleError(FastConstants.R1_LARGE_DECIMAL, "Encountered exponent of size " + value.exponent);
             }
-
             buffer.write(TypeCodec.INTEGER.encode(new IntegerValue(value.exponent)));
             buffer.write(TypeCodec.INTEGER.encode(new LongValue(value.mantissa)));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
         return buffer.toByteArray();
     }
 
@@ -79,14 +72,11 @@ final class SingleFieldDecimal extends TypeCodec {
      */
     public ScalarValue decode(InputStream in) {
         int exponent = ((IntegerValue) TypeCodec.INTEGER.decode(in)).value;
-
         if (Math.abs(exponent) > 63) {
             Global.handleError(FastConstants.R1_LARGE_DECIMAL, "Encountered exponent of size " + exponent);
         }
-
         long mantissa = TypeCodec.INTEGER.decode(in).toLong();
         DecimalValue decimalValue = new DecimalValue(mantissa, exponent);
-
         return decimalValue;
     }
 

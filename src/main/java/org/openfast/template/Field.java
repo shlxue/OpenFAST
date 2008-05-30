@@ -17,16 +17,13 @@ are Copyright (C) The LaSalle Technology Group, LLC. All Rights Reserved.
 
 Contributor(s): Jacob Northey <jacob@lasalletech.com>
                 Craig Otis <cotis@lasalletech.com>
-*/
-
-
+ */
 package org.openfast.template;
 
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.openfast.BitVectorBuilder;
 import org.openfast.BitVectorReader;
 import org.openfast.Context;
@@ -38,12 +35,15 @@ public abstract class Field implements Serializable {
     protected QName key;
     protected final boolean optional;
     protected String id;
-	private Map attributes;
+    private Map attributes;
 
     /**
      * Field Constructor
-     * @param name The name of the Field, a string
-     * @param optional Determines if the Field is required or not for the data
+     * 
+     * @param name
+     *            The name of the Field, a string
+     * @param optional
+     *            Determines if the Field is required or not for the data
      */
     public Field(QName name, boolean optional) {
         this.name = name;
@@ -53,44 +53,55 @@ public abstract class Field implements Serializable {
 
     /**
      * Field Constructor
-     * @param name The name of the Field, a string
-     * @param key The key of the Field, a string
-     * @param optional Determines if the Field is required or not for the data
+     * 
+     * @param name
+     *            The name of the Field, a string
+     * @param key
+     *            The key of the Field, a string
+     * @param optional
+     *            Determines if the Field is required or not for the data
      */
     public Field(QName name, QName key, boolean optional) {
         this.name = name;
         this.key = key;
         this.optional = optional;
     }
-    
+
     /**
      * Field Constructor
-     * @param name The name of the Field, a string
-     * @param key The key of the Field, a string
-     * @param optional Determines if the Field is required or not for the data
-     * @param id The id string
+     * 
+     * @param name
+     *            The name of the Field, a string
+     * @param key
+     *            The key of the Field, a string
+     * @param optional
+     *            Determines if the Field is required or not for the data
+     * @param id
+     *            The id string
      */
     public Field(String name, String key, boolean optional, String id) {
-    	this.name = new QName(name);
-    	this.key = new QName(key);
-    	this.optional = optional;
-    	this.id = id;
+        this.name = new QName(name);
+        this.key = new QName(key);
+        this.optional = optional;
+        this.id = id;
     }
 
     /**
      * Find the name
+     * 
      * @return Returns the name of the Field as a string
      */
     public String getName() {
         return name.getName();
     }
-    
+
     public QName getQName() {
-    	return name;
+        return name;
     }
 
     /**
-     * Check to see if the Field is required 
+     * Check to see if the Field is required
+     * 
      * @return Returns true if the Field isn't required, false otherwise
      */
     public boolean isOptional() {
@@ -99,6 +110,7 @@ public abstract class Field implements Serializable {
 
     /**
      * Find the key
+     * 
      * @return Returns the Key as a string
      */
     public QName getKey() {
@@ -107,61 +119,76 @@ public abstract class Field implements Serializable {
 
     /**
      * Sets the passed key to the current field key
-     * @param key The key to be set
+     * 
+     * @param key
+     *            The key to be set
      */
-	public void setKey(QName key) {
-		this.key = key;
-	}
-	
-	/**
+    public void setKey(QName key) {
+        this.key = key;
+    }
+
+    /**
      * Find the ID
+     * 
      * @return Returns the ID as a string
      */
-	public String getId() {
-		return id;
-	}
-	
-	/**
-     * Set the ID
-     * @param id The new ID to set the Field's ID to
-     */
-	public void setId(String id) {
-		this.id = id;
-	}
-	
-	public boolean hasAttribute(QName attributeName) {
-		return attributes != null && attributes.containsKey(attributeName);
-	}
+    public String getId() {
+        return id;
+    }
 
-	public void addAttribute(QName name, String value) {
-		if (attributes == null) attributes = new HashMap(4);
-		attributes.put(name, value);
-	}
-	
-	public String getAttribute(QName name) {
-		return (String) attributes.get(name);
-	}
+    /**
+     * Set the ID
+     * 
+     * @param id
+     *            The new ID to set the Field's ID to
+     */
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public boolean hasAttribute(QName attributeName) {
+        return attributes != null && attributes.containsKey(attributeName);
+    }
+
+    public void addAttribute(QName name, String value) {
+        if (attributes == null)
+            attributes = new HashMap(4);
+        attributes.put(name, value);
+    }
+
+    public String getAttribute(QName name) {
+        return (String) attributes.get(name);
+    }
 
     protected boolean isPresent(BitVectorReader presenceMapReader) {
-		return (!usesPresenceMapBit()) || presenceMapReader.read();
-	}
+        return (!usesPresenceMapBit()) || presenceMapReader.read();
+    }
 
     /**
      * byte[] encode method declaration
-     * @param value The FieldValue object to be encoded
-     * @param template The Group object to be encoded
-     * @param context The previous object to keep the data in sync
-     * @param presenceMapBuilder The BitVectorBuilder object to be encoded
+     * 
+     * @param value
+     *            The FieldValue object to be encoded
+     * @param template
+     *            The Group object to be encoded
+     * @param context
+     *            The previous object to keep the data in sync
+     * @param presenceMapBuilder
+     *            The BitVectorBuilder object to be encoded
      */
     public abstract byte[] encode(FieldValue value, Group template, Context context, BitVectorBuilder presenceMapBuilder);
 
     /**
      * FieldValue decode method declaration
-     * @param in The inputStream to be decoded
-     * @param template The Group object to be decoded
-     * @param context The previous object to keep the data in sync
+     * 
+     * @param in
+     *            The inputStream to be decoded
+     * @param template
+     *            The Group object to be decoded
+     * @param context
+     *            The previous object to keep the data in sync
      * @param present
-     *
+     * 
      */
     public abstract FieldValue decode(InputStream in, Group template, Context context, BitVectorReader presenceMapReader);
 
@@ -174,8 +201,11 @@ public abstract class Field implements Serializable {
 
     /**
      * isPresenceMapBitSet method declaration
-     * @param encoding The byte array to check if it is present
-     * @param fieldValue The fieldValue object
+     * 
+     * @param encoding
+     *            The byte array to check if it is present
+     * @param fieldValue
+     *            The fieldValue object
      */
     public abstract boolean isPresenceMapBitSet(byte[] encoding, FieldValue fieldValue);
 
@@ -186,7 +216,9 @@ public abstract class Field implements Serializable {
 
     /**
      * createValue method declaration
-     * @param value The string of the FieldValue that is to be created
+     * 
+     * @param value
+     *            The string of the FieldValue that is to be created
      */
     public abstract FieldValue createValue(String value);
 

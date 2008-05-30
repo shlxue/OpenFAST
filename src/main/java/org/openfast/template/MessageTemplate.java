@@ -21,7 +21,6 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 package org.openfast.template;
 
 import java.io.InputStream;
-
 import org.openfast.BitVectorReader;
 import org.openfast.Context;
 import org.openfast.FieldValue;
@@ -40,12 +39,15 @@ public class MessageTemplate extends Group implements FieldSet {
     public MessageTemplate(QName name, Field[] fields) {
         super(name, addTemplateIdField(fields), false);
     }
+
     public boolean usesPresenceMap() {
         return true;
     }
+
     public MessageTemplate(String name, Field[] fields) {
         this(new QName(name), fields);
     }
+
     /**
      * Take an existing field array and add TemplateID information to it
      * 
@@ -60,6 +62,7 @@ public class MessageTemplate extends Group implements FieldSet {
         System.arraycopy(fields, 0, newFields, 1, fields.length);
         return newFields;
     }
+
     /**
      * @param index
      *            The index to find the field
@@ -68,12 +71,14 @@ public class MessageTemplate extends Group implements FieldSet {
     public Field getField(int index) {
         return fields[index];
     }
+
     /**
      * @return Returns the length of the fields as an int
      */
     public int getFieldCount() {
         return fields.length;
     }
+
     /**
      * Uses the superclasses encode method to encode the byte array - see
      * Group.java
@@ -91,6 +96,7 @@ public class MessageTemplate extends Group implements FieldSet {
         message.setInteger(0, context.getTemplateId(message.getTemplate()));
         return super.encode(message, this, context);
     }
+
     /**
      * Decodes the inputStream and creates a new message that contains this
      * information
@@ -119,15 +125,18 @@ public class MessageTemplate extends Group implements FieldSet {
             throw new FastException("An error occurred while decoding " + this, e.getCode(), e);
         }
     }
+
     /**
      * @return Returns the class of the message
      */
     public Class getValueType() {
         return Message.class;
     }
+
     public String toString() {
         return name.getName();
     }
+
     /**
      * @return Creates a new Message object with the specified FieldValue and
      *         the passed string value
@@ -135,12 +144,14 @@ public class MessageTemplate extends Group implements FieldSet {
     public FieldValue createValue(String value) {
         return new Message(this);
     }
+
     /**
      * @return Returns the field array
      */
     public Field[] getFields() {
         return fields;
     }
+
     /**
      * Returns a field array of the current stored fields
      * 
@@ -151,6 +162,7 @@ public class MessageTemplate extends Group implements FieldSet {
         System.arraycopy(fields, 1, f, 0, fields.length - 1);
         return f;
     }
+
     public boolean equals(Object obj) {
         if (obj == this)
             return true;
@@ -158,6 +170,7 @@ public class MessageTemplate extends Group implements FieldSet {
             return false;
         return equals((MessageTemplate) obj);
     }
+
     private boolean equals(MessageTemplate other) {
         if (!name.equals(other.name))
             return false;
@@ -169,6 +182,7 @@ public class MessageTemplate extends Group implements FieldSet {
         }
         return true;
     }
+
     public int hashCode() {
         int hashCode = (name != null) ? name.hashCode() : 0;
         for (int i = 0; i < fields.length; i++)

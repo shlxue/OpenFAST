@@ -17,9 +17,7 @@ are Copyright (C) The LaSalle Technology Group, LLC. All Rights Reserved.
 
 Contributor(s): Jacob Northey <jacob@lasalletech.com>
                 Craig Otis <cotis@lasalletech.com>
-*/
-
-
+ */
 /**
  *
  */
@@ -28,20 +26,20 @@ package org.openfast.template.type.codec;
 import org.openfast.BitVector;
 import org.openfast.BitVectorValue;
 import org.openfast.ScalarValue;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-
 public final class BitVectorType extends TypeCodec {
     private static final long serialVersionUID = 1L;
 
-	BitVectorType() { }
+    BitVectorType() {}
 
     /**
      * Takes a ScalarValue object, and converts it to a byte array
-     * @param value The ScalarValue to be encoded
+     * 
+     * @param value
+     *            The ScalarValue to be encoded
      * @return Returns a byte array of the passed object
      */
     public byte[] encodeValue(ScalarValue value) {
@@ -50,27 +48,25 @@ public final class BitVectorType extends TypeCodec {
 
     /**
      * Reads in a stream of data and stores it to a BitVector object
-     * @param in The InputStream to be decoded
+     * 
+     * @param in
+     *            The InputStream to be decoded
      * @return Returns a new BitVector object with the data stream as an array
      */
     public ScalarValue decode(InputStream in) {
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         int byt;
-
         do {
             try {
                 byt = in.read();
-
                 if (byt < 0) {
                     return null;
                 }
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-
             buffer.write(byt);
         } while ((byt & 0x80) == 0);
-
         return new BitVectorValue(new BitVector(buffer.toByteArray()));
     }
 
@@ -90,7 +86,7 @@ public final class BitVectorType extends TypeCodec {
         return new BitVectorValue(new BitVector(0));
     }
 
-	public boolean equals(Object obj) {
-		return obj != null && obj.getClass() == getClass();
-	}
+    public boolean equals(Object obj) {
+        return obj != null && obj.getClass() == getClass();
+    }
 }

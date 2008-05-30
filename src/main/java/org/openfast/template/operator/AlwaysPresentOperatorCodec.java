@@ -17,9 +17,7 @@ are Copyright (C) The LaSalle Technology Group, LLC. All Rights Reserved.
 
 Contributor(s): Jacob Northey <jacob@lasalletech.com>
                 Craig Otis <cotis@lasalletech.com>
-*/
-
-
+ */
 package org.openfast.template.operator;
 
 import org.openfast.BitVectorBuilder;
@@ -38,12 +36,12 @@ public abstract class AlwaysPresentOperatorCodec extends OperatorCodec {
     public boolean usesPresenceMapBit(boolean optional) {
         return false;
     }
-    
+
     public ScalarValue getValueToEncode(ScalarValue value, ScalarValue priorValue, Scalar scalar, BitVectorBuilder presenceMapBuilder) {
-    	return getValueToEncode(value, priorValue, scalar);
+        return getValueToEncode(value, priorValue, scalar);
     }
 
-	public boolean equals(Object obj) {
-		return obj != null && obj.getClass() == getClass();
-	}
+    public boolean equals(Object obj) {
+        return obj != null && obj.getClass() == getClass();
+    }
 }

@@ -17,13 +17,11 @@ are Copyright (C) The LaSalle Technology Group, LLC. All Rights Reserved.
 
 Contributor(s): Jacob Northey <jacob@lasalletech.com>
                 Craig Otis <cotis@lasalletech.com>
-*/
-
-
+ */
 package org.openfast;
 
 import java.io.Serializable;
 
 public interface FieldValue extends Serializable {
-	FieldValue copy();
+    FieldValue copy();
 }

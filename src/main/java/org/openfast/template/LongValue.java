@@ -17,21 +17,20 @@ are Copyright (C) The LaSalle Technology Group, LLC. All Rights Reserved.
 
 Contributor(s): Jacob Northey <jacob@lasalletech.com>
                 Craig Otis <cotis@lasalletech.com>
-*/
-
-
+ */
 package org.openfast.template;
 
 import org.openfast.NumericValue;
 
-
 public class LongValue extends NumericValue {
     private static final long serialVersionUID = 1L;
-	public final long value;
+    public final long value;
 
     /**
      * LongValue Constructor
-     * @param value The value of the LongValue as type long
+     * 
+     * @param value
+     *            The value of the LongValue as type long
      */
     public LongValue(long value) {
         this.value = value;
@@ -39,34 +38,41 @@ public class LongValue extends NumericValue {
 
     /**
      * Compares a LongValue object with another LongValue object
-     * @param obj the object to compare to
+     * 
+     * @param obj
+     *            the object to compare to
      * @return True if the two objects are the same, false otherwise
      */
     public boolean equals(Object obj) {
         if ((obj == null) || !(obj instanceof NumericValue)) {
             return false;
         }
-
         return equals((NumericValue) obj);
     }
 
     /**
      * Compares the value parameter of two LongValues
-     * @param otherValue The LongValue that is to be compared
+     * 
+     * @param otherValue
+     *            The LongValue that is to be compared
      * @return Returns true if the two values are the same, false otherwise
      */
     private boolean equals(NumericValue otherValue) {
         return value == otherValue.toLong();
     }
-    
+
     public int hashCode() {
-    	return (int) value;
+        return (int) value;
     }
 
     /**
-     * Compares a string that is converted to an integer to the value of LogValue
-     * @param defaultValue The string to be convereted to an integer and compared
-     * @return Returns true if the string and the value are equal, false otherwise
+     * Compares a string that is converted to an integer to the value of
+     * LogValue
+     * 
+     * @param defaultValue
+     *            The string to be convereted to an integer and compared
+     * @return Returns true if the string and the value are equal, false
+     *         otherwise
      */
     public boolean equalsValue(String defaultValue) {
         return Integer.parseInt(defaultValue) == value;
@@ -74,7 +80,9 @@ public class LongValue extends NumericValue {
 
     /**
      * Increment 'value' and create a new LongValue with the new value
-     * @return Returns a new LongValue with the value that is one more then before
+     * 
+     * @return Returns a new LongValue with the value that is one more then
+     *         before
      */
     public NumericValue increment() {
         return new LongValue(value + 1);
@@ -82,7 +90,9 @@ public class LongValue extends NumericValue {
 
     /**
      * Decrement 'value' and create a new LongValue with the new value
-     * @return Returns a new LongValue with the value that is one less then before
+     * 
+     * @return Returns a new LongValue with the value that is one less then
+     *         before
      */
     public NumericValue decrement() {
         return new LongValue(value - 1);
@@ -96,9 +106,13 @@ public class LongValue extends NumericValue {
     }
 
     /**
-     * Subtracts two NumericValues values and creates a new LongValue with the new value
-     * @param subend The NumericValue to be subtracted
-     * @return Returns a new LongValue with the value as the difference between the two NumericValues
+     * Subtracts two NumericValues values and creates a new LongValue with the
+     * new value
+     * 
+     * @param subend
+     *            The NumericValue to be subtracted
+     * @return Returns a new LongValue with the value as the difference between
+     *         the two NumericValues
      */
     public NumericValue subtract(NumericValue subend) {
         return new LongValue(this.value - subend.toLong());
@@ -106,9 +120,13 @@ public class LongValue extends NumericValue {
 
     /**
      * 
-     * Adds two Numeric Values values and creates a new LongValue with the new value
-     * @param addend The NumericValue to be added
-     * @return Returns a new LongValue with the value as he addition between the two NumericValues
+     * Adds two Numeric Values values and creates a new LongValue with the new
+     * value
+     * 
+     * @param addend
+     *            The NumericValue to be added
+     * @return Returns a new LongValue with the value as he addition between the
+     *         two NumericValues
      * 
      */
     public NumericValue add(NumericValue addend) {
@@ -124,8 +142,11 @@ public class LongValue extends NumericValue {
 
     /**
      * Finds if the passed value is the same as the Value of LongValue
-     * @param value The integer to be compared
-     * @return Returns true if the integer value passd is the same as the value of LongValue
+     * 
+     * @param value
+     *            The integer to be compared
+     * @return Returns true if the integer value passd is the same as the value
+     *         of LongValue
      */
     public boolean equals(int value) {
         return value == this.value;

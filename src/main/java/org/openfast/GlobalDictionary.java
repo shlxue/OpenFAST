@@ -18,8 +18,6 @@ are Copyright (C) The LaSalle Technology Group, LLC. All Rights Reserved.
 Contributor(s): Jacob Northey <jacob@lasalletech.com>
                 Craig Otis <cotis@lasalletech.com>
 */
-
-
 package org.openfast;
 
 import org.openfast.template.Group;

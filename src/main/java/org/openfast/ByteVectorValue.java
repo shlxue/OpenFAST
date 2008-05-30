@@ -17,39 +17,36 @@ are Copyright (C) The LaSalle Technology Group, LLC. All Rights Reserved.
 
 Contributor(s): Jacob Northey <jacob@lasalletech.com>
                 Craig Otis <cotis@lasalletech.com>
-*/
-
-
+ */
 package org.openfast;
 
 public class ByteVectorValue extends ScalarValue {
     private static final long serialVersionUID = 1L;
-	public final byte[] value;
+    public final byte[] value;
 
     public ByteVectorValue(byte[] value) {
         this.value = value;
     }
-    
+
     public byte[] getBytes() {
-    	return value;
+        return value;
     }
-    
+
     public String toString() {
-    	StringBuffer builder = new StringBuffer(value.length*2);
-    	for (int i=0; i<value.length; i++) {
-    		String hex = Integer.toHexString(value[i]);
-    		if (hex.length() == 1)
-    			builder.append('0');
-			builder.append(hex);
-    	}
-    	return builder.toString();
+        StringBuffer builder = new StringBuffer(value.length * 2);
+        for (int i = 0; i < value.length; i++) {
+            String hex = Integer.toHexString(value[i]);
+            if (hex.length() == 1)
+                builder.append('0');
+            builder.append(hex);
+        }
+        return builder.toString();
     }
 
     public boolean equals(Object obj) {
         if ((obj == null) || !(obj instanceof ByteVectorValue)) {
             return false;
         }
-
         return equals((ByteVectorValue) obj);
     }
 
@@ -57,16 +54,14 @@ public class ByteVectorValue extends ScalarValue {
         if (this.value.length != other.value.length) {
             return false;
         }
-
         for (int i = 0; i < this.value.length; i++)
             if (this.value[i] != other.value[i]) {
                 return false;
             }
-
         return true;
     }
 
     public int hashCode() {
-    	return value.hashCode();
+        return value.hashCode();
     }
 }

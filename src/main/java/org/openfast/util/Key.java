@@ -17,55 +17,55 @@ are Copyright (C) The LaSalle Technology Group, LLC. All Rights Reserved.
 
 Contributor(s): Jacob Northey <jacob@lasalletech.com>
                 Craig Otis <cotis@lasalletech.com>
-*/
-
-
+ */
 package org.openfast.util;
 
 import java.util.Arrays;
-
 
 public class Key {
     private final Object[] keys;
 
     public Key(Object key1, Object key2) {
-    	this(new Object[] { key1, key2 });
+        this(new Object[] { key1, key2 });
     }
 
-	public Key(Object key1, Object key2, Object key3) {
-		this(new Object[] { key1, key2, key3 });
-	}
+    public Key(Object key1, Object key2, Object key3) {
+        this(new Object[] { key1, key2, key3 });
+    }
 
     public Key(Object[] keys) {
-		this.keys = keys;
-		checkNull();
-	}
+        this.keys = keys;
+        checkNull();
+    }
 
-	private void checkNull() {
-    	for (int i=0; i<keys.length; i++)
-    		if (keys[i] == null) throw new NullPointerException();
-    	}
+    private void checkNull() {
+        for (int i = 0; i < keys.length; i++)
+            if (keys[i] == null)
+                throw new NullPointerException();
+    }
 
-	public boolean equals(Object obj) {
-    	if (this == obj) return true;
-        if ((obj == null) || !(obj instanceof Key)) return false;
-
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if ((obj == null) || !(obj instanceof Key))
+            return false;
         Key other = ((Key) obj);
-        if (other.keys.length != keys.length) return false;
-        for (int i=0; i<keys.length; i++)
-        	if (!other.keys[i].equals(keys[i]))
-        		return false;
+        if (other.keys.length != keys.length)
+            return false;
+        for (int i = 0; i < keys.length; i++)
+            if (!other.keys[i].equals(keys[i]))
+                return false;
         return true;
     }
 
     public int hashCode() {
-    	int hashCode = 0;
-    	for (int i=0; i<keys.length; i++)
-    		hashCode += keys[i].hashCode() * (37 ^ i);
-        return hashCode; 
+        int hashCode = 0;
+        for (int i = 0; i < keys.length; i++)
+            hashCode += keys[i].hashCode() * (37 ^ i);
+        return hashCode;
     }
-    
+
     public String toString() {
-    	return Arrays.toString(keys);
+        return Arrays.toString(keys);
     }
 }

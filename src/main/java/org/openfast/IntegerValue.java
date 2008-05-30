@@ -17,20 +17,16 @@ are Copyright (C) The LaSalle Technology Group, LLC. All Rights Reserved.
 
 Contributor(s): Jacob Northey <jacob@lasalletech.com>
                 Craig Otis <cotis@lasalletech.com>
-*/
-
-
+ */
 package org.openfast;
 
 import java.math.BigDecimal;
-
 import org.openfast.error.FastConstants;
 import org.openfast.template.LongValue;
 
-
 public class IntegerValue extends NumericValue {
     private static final long serialVersionUID = 1L;
-	public final int value;
+    public final int value;
 
     public IntegerValue(int value) {
         this.value = value;
@@ -40,16 +36,15 @@ public class IntegerValue extends NumericValue {
         if ((obj == null) || !(obj instanceof NumericValue)) {
             return false;
         }
-
         return equals((NumericValue) obj);
     }
 
     private boolean equals(NumericValue otherValue) {
         return value == otherValue.toLong();
     }
-    
+
     public int hashCode() {
-    	return value;
+        return value;
     }
 
     public boolean equalsValue(String defaultValue) {
@@ -68,7 +63,6 @@ public class IntegerValue extends NumericValue {
         if (subend instanceof LongValue) {
             return new LongValue(this.value - subend.toLong());
         }
-
         return new IntegerValue(this.value - subend.toInt());
     }
 
@@ -76,7 +70,6 @@ public class IntegerValue extends NumericValue {
         if (addend instanceof LongValue) {
             return addend.add(this);
         }
-
         return new IntegerValue(this.value + addend.toInt());
     }
 
@@ -99,24 +92,24 @@ public class IntegerValue extends NumericValue {
     public String toString() {
         return String.valueOf(value);
     }
-    
+
     public byte toByte() {
-    	if (value > Byte.MAX_VALUE || value < Byte.MIN_VALUE)
-    		Global.handleError(FastConstants.R4_NUMERIC_VALUE_TOO_LARGE, "The value \"" + value + "\" is too large for a byte.");
-    	return (byte) value;
+        if (value > Byte.MAX_VALUE || value < Byte.MIN_VALUE)
+            Global.handleError(FastConstants.R4_NUMERIC_VALUE_TOO_LARGE, "The value \"" + value + "\" is too large for a byte.");
+        return (byte) value;
     }
-    
+
     public short toShort() {
-    	if (value > Short.MAX_VALUE || value < Short.MIN_VALUE)
-    		Global.handleError(FastConstants.R4_NUMERIC_VALUE_TOO_LARGE, "The value \"" + value + "\" is too large for a short.");
-    	return (short) value;
+        if (value > Short.MAX_VALUE || value < Short.MIN_VALUE)
+            Global.handleError(FastConstants.R4_NUMERIC_VALUE_TOO_LARGE, "The value \"" + value + "\" is too large for a short.");
+        return (short) value;
     }
-    
+
     public double toDouble() {
-    	return value;
+        return value;
     }
-    
+
     public BigDecimal toBigDecimal() {
-    	return new BigDecimal(value);
+        return new BigDecimal(value);
     }
 }

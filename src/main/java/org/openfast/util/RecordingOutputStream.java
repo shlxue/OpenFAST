@@ -17,16 +17,12 @@ are Copyright (C) The LaSalle Technology Group, LLC. All Rights Reserved.
 
 Contributor(s): Jacob Northey <jacob@lasalletech.com>
                 Craig Otis <cotis@lasalletech.com>
-*/
-
-
+ */
 package org.openfast.util;
 
 import org.openfast.ByteUtil;
-
 import java.io.IOException;
 import java.io.OutputStream;
-
 
 public class RecordingOutputStream extends OutputStream {
     private byte[] buffer = new byte[1024];
@@ -46,7 +42,7 @@ public class RecordingOutputStream extends OutputStream {
         return ByteUtil.convertByteArrayToBitString(buffer, index);
     }
 
-	public void clear() {
-		index = 0;
-	}
+    public void clear() {
+        index = 0;
+    }
 }

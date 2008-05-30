@@ -17,29 +17,24 @@ are Copyright (C) The LaSalle Technology Group, LLC. All Rights Reserved.
 
 Contributor(s): Jacob Northey <jacob@lasalletech.com>
                 Craig Otis <cotis@lasalletech.com>
-*/
-
-
+ */
 package org.openfast;
 
 import org.openfast.template.Sequence;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-
 public class SequenceValue implements FieldValue {
     private static final long serialVersionUID = 1L;
-	private List elements = Collections.EMPTY_LIST;
+    private List elements = Collections.EMPTY_LIST;
     private Sequence sequence;
 
     public SequenceValue(Sequence sequence) {
         if (sequence == null) {
             throw new NullPointerException();
         }
-
         this.sequence = sequence;
     }
 
@@ -55,7 +50,6 @@ public class SequenceValue implements FieldValue {
         if (elements == Collections.EMPTY_LIST) {
             elements = new ArrayList();
         }
-
         elements.add(value);
     }
 
@@ -63,7 +57,6 @@ public class SequenceValue implements FieldValue {
         if (elements == Collections.EMPTY_LIST) {
             elements = new ArrayList();
         }
-
         elements.add(new GroupValue(sequence.getGroup(), values));
     }
 
@@ -71,11 +64,9 @@ public class SequenceValue implements FieldValue {
         if (other == this) {
             return true;
         }
-
         if ((other == null) || !(other instanceof SequenceValue)) {
             return false;
         }
-
         return equals((SequenceValue) other);
     }
 
@@ -83,32 +74,27 @@ public class SequenceValue implements FieldValue {
         if (getLength() != other.getLength()) {
             return false;
         }
-
         for (int i = 0; i < getLength(); i++) {
             if (!elements.get(i).equals(other.elements.get(i))) {
                 return false;
             }
         }
-
         return true;
     }
-    
+
     public int hashCode() {
-    	return elements.hashCode() * 37 + sequence.hashCode();
+        return elements.hashCode() * 37 + sequence.hashCode();
     }
 
     public String toString() {
         StringBuilder builder = new StringBuilder();
         Iterator iter = elements.iterator();
         builder.append("[ ");
-
         while (iter.hasNext()) {
             GroupValue value = (GroupValue) iter.next();
             builder.append('[').append(value).append("] ");
         }
-
         builder.append("]");
-
         return builder.toString();
     }
 
@@ -120,15 +106,15 @@ public class SequenceValue implements FieldValue {
         return sequence;
     }
 
-	public GroupValue[] getValues() {
-		return (GroupValue[]) this.elements.toArray(new GroupValue[elements.size()]);
-	}
-	
-	public FieldValue copy() {
-		SequenceValue value = new SequenceValue(this.sequence);
-		for (int i=0; i<elements.size(); i++) {
-			value.add((GroupValue) ((GroupValue)elements.get(i)).copy());
-		}
-		return value;
-	}
+    public GroupValue[] getValues() {
+        return (GroupValue[]) this.elements.toArray(new GroupValue[elements.size()]);
+    }
+
+    public FieldValue copy() {
+        SequenceValue value = new SequenceValue(this.sequence);
+        for (int i = 0; i < elements.size(); i++) {
+            value.add((GroupValue) ((GroupValue) elements.get(i)).copy());
+        }
+        return value;
+    }
 }

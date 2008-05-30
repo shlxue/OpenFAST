@@ -17,13 +17,10 @@ are Copyright (C) The LaSalle Technology Group, LLC. All Rights Reserved.
 
 Contributor(s): Jacob Northey <jacob@lasalletech.com>
                 Craig Otis <cotis@lasalletech.com>
-*/
-
-
+ */
 package org.openfast.util;
 
 import java.util.Iterator;
-
 
 public class ArrayIterator implements Iterator {
     private int position;
@@ -42,6 +39,6 @@ public class ArrayIterator implements Iterator {
     }
 
     public void remove() {
-    	throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     }
 }

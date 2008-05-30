@@ -17,16 +17,12 @@ are Copyright (C) The LaSalle Technology Group, LLC. All Rights Reserved.
 
 Contributor(s): Jacob Northey <jacob@lasalletech.com>
                 Craig Otis <cotis@lasalletech.com>
-*/
-
-
+ */
 package org.openfast.error;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.openfast.Message;
-
 
 public class ErrorCode {
     private static final Map ALERT_CODES = new HashMap();
@@ -36,8 +32,7 @@ public class ErrorCode {
     private final FastAlertSeverity severity;
     private final ErrorType type;
 
-    public ErrorCode(ErrorType type, int code, String shortName,
-        String description, FastAlertSeverity severity) {
+    public ErrorCode(ErrorType type, int code, String shortName, String description, FastAlertSeverity severity) {
         ALERT_CODES.put(new Integer(code), this);
         this.type = type;
         this.code = code;
@@ -73,15 +68,17 @@ public class ErrorCode {
     public ErrorType getType() {
         return type;
     }
-    
+
     public String toString() {
-    	return shortName + ": " + description;
+        return shortName + ": " + description;
     }
-    
+
     public boolean equals(Object obj) {
-    	if (obj == this) return true;
-    	if (obj == null || !(obj instanceof ErrorCode)) return false;
-    	ErrorCode other = (ErrorCode) obj;
-    	return other.code == this.code && other.getType().equals(this.getType());
+        if (obj == this)
+            return true;
+        if (obj == null || !(obj instanceof ErrorCode))
+            return false;
+        ErrorCode other = (ErrorCode) obj;
+        return other.code == this.code && other.getType().equals(this.getType());
     }
 }

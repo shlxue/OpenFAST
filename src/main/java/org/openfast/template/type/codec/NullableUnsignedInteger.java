@@ -17,61 +17,58 @@ are Copyright (C) The LaSalle Technology Group, LLC. All Rights Reserved.
 
 Contributor(s): Jacob Northey <jacob@lasalletech.com>
                 Craig Otis <cotis@lasalletech.com>
-*/
-
-
+ */
 /**
  *
  */
 package org.openfast.template.type.codec;
 
 import java.io.InputStream;
-
 import org.openfast.NumericValue;
 import org.openfast.ScalarValue;
-
 
 public final class NullableUnsignedInteger extends IntegerCodec {
     private static final long serialVersionUID = 1L;
 
-	NullableUnsignedInteger() { }
+    NullableUnsignedInteger() {}
 
     /**
      * Takes a ScalarValue object, and converts it to a byte array
-     * @param v The ScalarValue to be encoded
+     * 
+     * @param v
+     *            The ScalarValue to be encoded
      * @return Returns a byte array of the passed object
      */
     public byte[] encodeValue(ScalarValue v) {
         if (v.isNull()) {
             return TypeCodec.NULL_VALUE_ENCODING;
         }
-
         return TypeCodec.UINT.encodeValue(((NumericValue) v).increment());
     }
 
     /**
      * Reads in a stream of data and stores it to a NumericValue object
-     * @param in The InputStream to be decoded
+     * 
+     * @param in
+     *            The InputStream to be decoded
      * @return Returns a NumericValue object
      */
     public ScalarValue decode(InputStream in) {
         NumericValue value = (NumericValue) TypeCodec.UINT.decode(in);
-
         if (value.equals(0)) {
             return null;
         }
-
         return value.decrement();
     }
-    
+
     /**
      * @return Returns true
      */
     public boolean isNullable() {
-    	return true;
+        return true;
     }
 
-	public boolean equals(Object obj) {
-		return obj != null && obj.getClass() == getClass();
-	}
+    public boolean equals(Object obj) {
+        return obj != null && obj.getClass() == getClass();
+    }
 }

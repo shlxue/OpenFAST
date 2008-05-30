@@ -17,9 +17,7 @@ are Copyright (C) The LaSalle Technology Group, LLC. All Rights Reserved.
 
 Contributor(s): Jacob Northey <jacob@lasalletech.com>
                 Craig Otis <cotis@lasalletech.com>
-*/
-
-
+ */
 /**
  *
  */
@@ -34,11 +32,10 @@ import org.openfast.template.TwinValue;
 import org.openfast.template.type.Type;
 import org.openfast.util.Util;
 
-
 final class DeltaStringOperatorCodec extends AlwaysPresentOperatorCodec {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	DeltaStringOperatorCodec() {
+    DeltaStringOperatorCodec() {
         super(Operator.DELTA, new Type[] { Type.ASCII, Type.STRING });
     }
 
@@ -46,52 +43,46 @@ final class DeltaStringOperatorCodec extends AlwaysPresentOperatorCodec {
      * @param value
      * @param priorValue
      * @param field
-     * @return 
+     * @return
      */
-    public ScalarValue getValueToEncode(ScalarValue value,
-        ScalarValue priorValue, Scalar field) {
+    public ScalarValue getValueToEncode(ScalarValue value, ScalarValue priorValue, Scalar field) {
         if (value == null) {
             return ScalarValue.NULL;
         }
-
         if (priorValue == null) {
-        	Global.handleError(FastConstants.D6_MNDTRY_FIELD_NOT_PRESENT, "The field " + field + " must have a priorValue defined.");
-        	return null;
+            Global.handleError(FastConstants.D6_MNDTRY_FIELD_NOT_PRESENT, "The field " + field + " must have a priorValue defined.");
+            return null;
         }
-
         ScalarValue base = (priorValue.isUndefined()) ? field.getBaseValue() : priorValue;
-
         return Util.getDifference((StringValue) value, (StringValue) base);
     }
 
     /**
      * 
-     * @param newValue 
+     * @param newValue
      * @param previousValue
      * @param field
-     * @return Returns null if the passed ScalarValue objects are null, otherwise 
+     * @return Returns null if the passed ScalarValue objects are null,
+     *         otherwise
      */
-    public ScalarValue decodeValue(ScalarValue newValue,
-        ScalarValue previousValue, Scalar field) {
+    public ScalarValue decodeValue(ScalarValue newValue, ScalarValue previousValue, Scalar field) {
         if ((newValue == null) || newValue.isNull()) {
             return null;
         }
-
         TwinValue diffValue = (TwinValue) newValue;
         ScalarValue base = (previousValue.isUndefined()) ? field.getBaseValue() : previousValue;
-
         if (diffValue.first.toInt() > base.toString().length()) {
-        	Global.handleError(FastConstants.D7_SUBTRCTN_LEN_LONG, "The string diff <" + diffValue + "> cannot be applied to the base value \"" + base + "\" because the subtraction length is too long.");
+            Global.handleError(FastConstants.D7_SUBTRCTN_LEN_LONG, "The string diff <" + diffValue
+                    + "> cannot be applied to the base value \"" + base + "\" because the subtraction length is too long.");
         }
         return Util.applyDifference((StringValue) base, diffValue);
     }
 
     public ScalarValue decodeEmptyValue(ScalarValue previousValue, Scalar field) {
-        throw new IllegalStateException(
-            "As of FAST v1.1 Delta values must be present in stream");
+        throw new IllegalStateException("As of FAST v1.1 Delta values must be present in stream");
     }
 
-	public boolean equals(Object obj) {
-		return obj != null && obj.getClass() == getClass();
-	}
+    public boolean equals(Object obj) {
+        return obj != null && obj.getClass() == getClass();
+    }
 }

@@ -18,22 +18,14 @@ are Copyright (C) The LaSalle Technology Group, LLC. All Rights Reserved.
 Contributor(s): Jacob Northey <jacob@lasalletech.com>
                 Craig Otis <cotis@lasalletech.com>
 */
-
-
 package org.openfast;
 
 public abstract class NumericValue extends ScalarValue {
     public abstract NumericValue increment();
-
     public abstract NumericValue decrement();
-
     public abstract NumericValue subtract(NumericValue priorValue);
-
     public abstract NumericValue add(NumericValue addend);
-
     public abstract boolean equals(int value);
-
     public abstract long toLong();
-
     public abstract int toInt();
 }

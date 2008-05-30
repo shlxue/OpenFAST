@@ -17,9 +17,7 @@ are Copyright (C) The LaSalle Technology Group, LLC. All Rights Reserved.
 
 Contributor(s): Jacob Northey <jacob@lasalletech.com>
                 Craig Otis <cotis@lasalletech.com>
-*/
-
-
+ */
 /**
  *
  */
@@ -30,49 +28,47 @@ import org.openfast.Global;
 import org.openfast.ScalarValue;
 import org.openfast.StringValue;
 import org.openfast.error.FastConstants;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-
 final class NullableAsciiString extends TypeCodec {
     private static final long serialVersionUID = 1L;
-	private static final byte[] NULLABLE_EMPTY_STRING = new byte[] { 0x00, 0x00 };
-	private static final byte[] ZERO_ENCODING = new byte[] { 0x00, 0x00, 0x00 };
+    private static final byte[] NULLABLE_EMPTY_STRING = new byte[] { 0x00, 0x00 };
+    private static final byte[] ZERO_ENCODING = new byte[] { 0x00, 0x00, 0x00 };
 
-    NullableAsciiString() { }
+    NullableAsciiString() {}
 
     /**
      * Takes a ScalarValue object, and converts it to a byte array
-     * @param value The ScalarValue to be encoded
+     * 
+     * @param value
+     *            The ScalarValue to be encoded
      * @return Returns a byte array of the passed object
      */
     public byte[] encodeValue(ScalarValue value) {
         if (value.isNull()) {
             return TypeCodec.NULL_VALUE_ENCODING;
         }
-
         String string = ((StringValue) value).value;
-
         if ((string != null) && (string.length() == 0)) {
             return NULLABLE_EMPTY_STRING;
         }
-
         if (string.startsWith("\u0000"))
-        	return ZERO_ENCODING;
+            return ZERO_ENCODING;
         return string.getBytes();
     }
-    
+
     /**
      * Reads in a stream of data and stores it to a StringValue object
-     * @param in The InputStream to be decoded
+     * 
+     * @param in
+     *            The InputStream to be decoded
      * @return Returns a new StringValue object with the data stream as a String
      */
     public ScalarValue decode(InputStream in) {
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         int byt;
-
         try {
             do {
                 byt = in.read();
@@ -81,30 +77,29 @@ final class NullableAsciiString extends TypeCodec {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
         byte[] bytes = buffer.toByteArray();
         bytes[bytes.length - 1] &= 0x7f;
-
         if (bytes[0] == 0) {
-        	if (!ByteUtil.isEmpty(bytes))
-        		Global.handleError(FastConstants.R9_STRING_OVERLONG, null);
-	        if ((bytes.length == 1)) {
-	            return null;
-	        } else if (bytes.length == 2 && bytes[1] == 0){
-	            return new StringValue("");
-	        } else if (bytes.length == 3 && bytes[2] == 0) {
-	        	return new StringValue("\u0000");
-	        }
+            if (!ByteUtil.isEmpty(bytes))
+                Global.handleError(FastConstants.R9_STRING_OVERLONG, null);
+            if ((bytes.length == 1)) {
+                return null;
+            } else if (bytes.length == 2 && bytes[1] == 0) {
+                return new StringValue("");
+            } else if (bytes.length == 3 && bytes[2] == 0) {
+                return new StringValue("\u0000");
+            }
         }
-
         return new StringValue(new String(bytes));
     }
 
     /**
      * Creates a new StringValue object
-     * @param value The string to be value of the new object
+     * 
+     * @param value
+     *            The string to be value of the new object
      * @return Returns a new StringValue object with the passed string as its
-     * parameter
+     *         parameter
      */
     public ScalarValue fromString(String value) {
         return new StringValue(value);
@@ -117,15 +112,15 @@ final class NullableAsciiString extends TypeCodec {
     public ScalarValue getDefaultValue() {
         return new StringValue("");
     }
-    
+
     /**
      * @return Returns true
      */
     public boolean isNullable() {
-    	return true;
+        return true;
     }
 
-	public boolean equals(Object obj) {
-		return obj != null && obj.getClass() == getClass();
-	}
+    public boolean equals(Object obj) {
+        return obj != null && obj.getClass() == getClass();
+    }
 }
