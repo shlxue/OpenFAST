@@ -108,6 +108,7 @@ public class SessionControlProtocol_1_1 extends AbstractSessionControlProtocol {
             Thread.sleep(20);
         } catch (InterruptedException e) {}
         Message message = session.in.readMessage();
+        session.setMessageHandler(messageListener);
         String serverName = message.getString(1);
         String vendorId = message.isDefined(2) ? message.getString(2) : "unknown";
         session.setClient(new BasicClient(serverName, vendorId));
