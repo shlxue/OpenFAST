@@ -3,7 +3,7 @@
                                     ------
                                     Jacob Northey
                                     ------
-                                    2007. 12. 07.
+                                    2008. 07. 09.
 
 Contributing to OpenFAST
 
@@ -15,7 +15,7 @@ Contributing to OpenFAST
       
 * Submitting bugs/patches
 
-      * Open up a {{{issue-tracking.html}bug report}} on the SourceForge project page
+      * Open up a {{{issue-tracking.html}bug report}} in Jira
       
       * Attach any patches and comments to the bug report 
 
@@ -23,4 +23,4 @@ Contributing to OpenFAST
 
       * To contribute to under-documented Javadocs, see becoming a committer above.
       
-      * Additional documentation can be added to the {{{http://openfast.wiki.sourceforge.net/}OpenFAST Wiki}} 
+      * Additional documentation can be added to the {{{http://www.quickfixj.org/confluence/display/FAST/Home}OpenFAST Wiki}} 

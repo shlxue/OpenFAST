@@ -13,7 +13,7 @@ import org.openfast.test.ObjectMother;
 import org.openfast.util.RecordingOutputStream;
 
 public class SCP_1_1_Test extends TestCase {
-    private static final int MAX_TIMEOUT = 15000;
+    private static final int MAX_TIMEOUT = 5000;
     private LocalEndpoint serverEndpoint;
     private RecordingEndpoint clientEndpoint;
     private FastServer server;

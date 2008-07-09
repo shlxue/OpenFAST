@@ -93,6 +93,10 @@ public class ComposedScalar extends Field {
     }
 
     public boolean usesPresenceMapBit() {
+        for (int i=0; i<fields.length; i++) {
+            if (fields[i].usesPresenceMapBit())
+                return true;
+        }
         return false;
     }
 
