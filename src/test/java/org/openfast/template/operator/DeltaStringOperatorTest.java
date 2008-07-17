@@ -17,9 +17,7 @@ are Copyright (C) The LaSalle Technology Group, LLC. All Rights Reserved.
 
 Contributor(s): Jacob Northey <jacob@lasalletech.com>
                 Craig Otis <cotis@lasalletech.com>
-*/
-
-
+ */
 package org.openfast.template.operator;
 
 import org.openfast.IntegerValue;
@@ -32,25 +30,24 @@ import org.openfast.template.TwinValue;
 import org.openfast.template.type.Type;
 import org.openfast.test.OpenFastTestCase;
 
-
 public class DeltaStringOperatorTest extends OpenFastTestCase {
     private Scalar field;
 
     public void testDecodeSubtractionLengthError() {
-    	field = new Scalar("", Type.ASCII, Operator.DELTA, ScalarValue.UNDEFINED, false);
-    	
-    	try {
-    		decode(twin(i(5), string("abc")), string("def"));
-    		fail();
-    	} catch (FastException e) {
-    		assertEquals(FastConstants.D7_SUBTRCTN_LEN_LONG, e.getCode());
-    		assertEquals("The string diff <5, abc> cannot be applied to the base value \"def\" because the subtraction length is too long.", e.getMessage());
-    	}
+        field = new Scalar("", Type.ASCII, Operator.DELTA, ScalarValue.UNDEFINED, false);
+        try {
+            decode(twin(i(5), string("abc")), string("def"));
+            fail();
+        } catch (FastException e) {
+            assertEquals(FastConstants.D7_SUBTRCTN_LEN_LONG, e.getCode());
+            assertEquals(
+                    "The string diff <5, abc> cannot be applied to the base value \"def\" because the subtraction length is too long.",
+                    e.getMessage());
+        }
     }
-    
+
     public void testGetValueToEncodeMandatory() {
         field = new Scalar("", Type.ASCII, Operator.DELTA, ScalarValue.UNDEFINED, false);
-
         assertEquals(tv(0, "ABCD"), encode("ABCD", ScalarValue.UNDEFINED));
         assertEquals(tv(1, "E"), encode("ABCE", string("ABCD")));
         assertEquals(tv(-2, "Z"), encode("ZBCE", string("ABCE")));
@@ -60,9 +57,7 @@ public class DeltaStringOperatorTest extends OpenFastTestCase {
 
     public void testDecodeValueMandatory() {
         field = new Scalar("", Type.ASCII, Operator.DELTA, ScalarValue.UNDEFINED, false);
-
-        assertEquals(new StringValue("ABCD"),
-            decode(tv(0, "ABCD"), ScalarValue.UNDEFINED));
+        assertEquals(new StringValue("ABCD"), decode(tv(0, "ABCD"), ScalarValue.UNDEFINED));
         assertEquals(new StringValue("ABCE"), decode(tv(1, "E"), string("ABCD")));
         assertEquals(new StringValue("ZBCE"), decode(tv(-2, "Z"), string("ABCE")));
         assertEquals(new StringValue("YZBCE"), decode(tv(-1, "Y"), string("ZBCE")));
@@ -71,7 +66,6 @@ public class DeltaStringOperatorTest extends OpenFastTestCase {
 
     public void testGetValueToEncodeOptional() {
         field = new Scalar("", Type.ASCII, Operator.DELTA, ScalarValue.UNDEFINED, true);
-
         assertEquals(tv(0, "ABCD"), encode("ABCD", ScalarValue.UNDEFINED));
         assertEquals(tv(1, "E"), encode("ABCE", string("ABCD")));
         assertEquals(tv(-2, "Z"), encode("ZBCE", string("ABCE")));
@@ -82,9 +76,7 @@ public class DeltaStringOperatorTest extends OpenFastTestCase {
 
     public void testDecodeValueOptional() {
         field = new Scalar("", Type.ASCII, Operator.DELTA, ScalarValue.UNDEFINED, true);
-
-        assertEquals(new StringValue("ABCD"),
-            decode(tv(0, "ABCD"), ScalarValue.UNDEFINED));
+        assertEquals(new StringValue("ABCD"), decode(tv(0, "ABCD"), ScalarValue.UNDEFINED));
         assertEquals(new StringValue("ABCE"), decode(tv(1, "E"), string("ABCD")));
         assertEquals(new StringValue("ZBCE"), decode(tv(-2, "Z"), string("ABCE")));
         assertEquals(new StringValue("YZBCE"), decode(tv(-1, "Y"), string("ZBCE")));
@@ -94,12 +86,9 @@ public class DeltaStringOperatorTest extends OpenFastTestCase {
 
     private ScalarValue encode(String value, ScalarValue priorValue) {
         if (value == null) {
-            return OperatorCodec.DELTA_STRING.getValueToEncode(null, priorValue,
-                field);
+            return OperatorCodec.DELTA_STRING.getValueToEncode(null, priorValue, field);
         }
-
-        return OperatorCodec.DELTA_STRING.getValueToEncode(new StringValue(value),
-            priorValue, field);
+        return OperatorCodec.DELTA_STRING.getValueToEncode(new StringValue(value), priorValue, field);
     }
 
     private ScalarValue decode(ScalarValue diff, ScalarValue priorValue) {
@@ -107,7 +96,6 @@ public class DeltaStringOperatorTest extends OpenFastTestCase {
     }
 
     private TwinValue tv(int subtraction, String diff) {
-        return new TwinValue(new IntegerValue(subtraction),
-            new StringValue(diff));
+        return new TwinValue(new IntegerValue(subtraction), new StringValue(diff));
     }
 }
