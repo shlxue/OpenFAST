@@ -25,6 +25,7 @@ import org.openfast.template.operator.Operator;
 import org.openfast.template.type.codec.TypeCodec;
 
 public abstract class SimpleType extends Type {
+    private static final long serialVersionUID = 1L;
     private final TypeCodec codec;
     private final TypeCodec nullableCodec;
 

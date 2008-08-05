@@ -29,7 +29,7 @@ import org.openfast.template.type.codec.TypeCodec;
 import org.openfast.util.Util;
 
 public abstract class IntegerType extends SimpleType {
-
+    private static final long serialVersionUID = 1L;
     protected final long minValue;
     protected final long maxValue;
 

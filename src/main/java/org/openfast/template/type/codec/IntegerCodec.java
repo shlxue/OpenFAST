@@ -26,6 +26,8 @@ import org.openfast.template.LongValue;
 import org.openfast.util.Util;
 
 public abstract class IntegerCodec extends TypeCodec {
+    private static final long serialVersionUID = 1L;
+
     protected IntegerCodec() {}
 
     /**

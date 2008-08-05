@@ -25,6 +25,7 @@ import java.io.Serializable;
 import org.openfast.ScalarValue;
 
 public abstract class TypeCodec implements Serializable {
+    private static final long serialVersionUID = 1L;
     protected static final byte STOP_BIT = (byte) 0x80;
     static final byte[] NULL_VALUE_ENCODING = new byte[] { STOP_BIT };
     // Codec Definitions

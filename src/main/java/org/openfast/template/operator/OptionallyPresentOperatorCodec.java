@@ -30,6 +30,8 @@ import org.openfast.template.type.Type;
 
 
 public abstract class OptionallyPresentOperatorCodec extends OperatorCodec {
+    private static final long serialVersionUID = 1L;
+
     protected OptionallyPresentOperatorCodec(Operator operator, Type[] types) {
         super(operator, types);
     }

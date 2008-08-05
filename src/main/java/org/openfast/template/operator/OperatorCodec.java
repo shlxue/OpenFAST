@@ -33,6 +33,7 @@ import org.openfast.template.type.Type;
 import org.openfast.util.Key;
 
 public abstract class OperatorCodec implements Serializable {
+    private static final long serialVersionUID = 1L;
     private static final Map OPERATOR_MAP = new HashMap();
     protected static final OperatorCodec NONE_ALL = new NoneOperatorCodec(Operator.NONE, Type.ALL_TYPES);
     protected static final OperatorCodec CONSTANT_ALL = new ConstantOperatorCodec(Operator.CONSTANT, Type.ALL_TYPES);

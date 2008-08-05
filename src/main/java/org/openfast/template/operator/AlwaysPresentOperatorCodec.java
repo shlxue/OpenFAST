@@ -26,6 +26,8 @@ import org.openfast.template.Scalar;
 import org.openfast.template.type.Type;
 
 public abstract class AlwaysPresentOperatorCodec extends OperatorCodec {
+    private static final long serialVersionUID = 1L;
+
     protected AlwaysPresentOperatorCodec(Operator operator, Type[] types) {
         super(operator, types);
     }

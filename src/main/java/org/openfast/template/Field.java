@@ -31,6 +31,7 @@ import org.openfast.FieldValue;
 import org.openfast.QName;
 
 public abstract class Field implements Serializable {
+    private static final long serialVersionUID = 1L;
     protected final QName name;
     protected QName key;
     protected final boolean optional;

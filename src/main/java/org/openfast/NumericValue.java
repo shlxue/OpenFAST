@@ -21,6 +21,7 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 package org.openfast;
 
 public abstract class NumericValue extends ScalarValue {
+    private static final long serialVersionUID = 1L;
     public abstract NumericValue increment();
     public abstract NumericValue decrement();
     public abstract NumericValue subtract(NumericValue priorValue);
