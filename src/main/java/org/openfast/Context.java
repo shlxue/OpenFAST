@@ -36,6 +36,8 @@ import org.openfast.template.Group;
 import org.openfast.template.MessageTemplate;
 import org.openfast.template.TemplateRegisteredListener;
 import org.openfast.template.TemplateRegistry;
+import org.openfast.util.Cache;
+import org.openfast.util.UnboundedCache;
 
 /**
  * Manages current state of an encoding or decoding process.  Each encoder/decoder should have a separate context
@@ -52,6 +54,7 @@ public class Context {
     private boolean traceEnabled;
     private Trace encodeTrace;
     private Trace decodeTrace;
+    private Map caches = new HashMap();
 
     public Context() {
         dictionaries.put("global", new GlobalDictionary());
@@ -143,5 +146,17 @@ public class Context {
     }
     public Trace getDecodeTrace() {
         return decodeTrace;
+    }
+    public Cache getCache(QName key) {
+        if (!caches.containsKey(key)) {
+            caches.put(key, new UnboundedCache());
+        }
+        return (Cache) caches.get(key);
+    }
+    public void store(QName key, int index, ScalarValue value) {
+        if (!caches.containsKey(key)) {
+            caches.put(key, new UnboundedCache());
+        }
+        ((Cache)caches.get(key)).store(index, value);
     }
 }
