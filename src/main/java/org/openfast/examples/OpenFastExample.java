@@ -28,14 +28,14 @@ public class OpenFastExample {
         try {
             return Integer.parseInt(cl.getOptionValue(option));
         } catch (NumberFormatException e) {
-            System.out.println("The required option \"" + option + "\" must be an integer.");
+            System.out.println("The required parameter \"" + option + "\" must be an integer.");
             System.exit(1);
             return 0;
         }
     }
 
     protected static File getFile(CommandLine cl, String option) {
-        Assert.assertTrue(cl.hasOption(option), "The required parameter " + option + " is missing.");
+        Assert.assertTrue(cl.hasOption(option), "The required parameter \"" + option + "\" is missing.");
         File file = new File(cl.getOptionValue(option));
         return file;
     }

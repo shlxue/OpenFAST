@@ -37,24 +37,30 @@ public class Main extends OpenFastExample {
         if (cl.hasOption("help")) {
             displayHelp(options);
         }
-        Assert.assertTrue(cl.hasOption(PORT), "The required parameter " + PORT + " is missing.");
-        int port = getInteger(cl, PORT);
-        String host = cl.hasOption(HOST) ? cl.getOptionValue(HOST) : "localhost";
-        boolean showStacktrace = cl.hasOption(ERROR);
         Endpoint endpoint = null;
-        
-        if (cl.hasOption(PROTOCOL)) {
-            if ("udp".equals(cl.getOptionValue(PROTOCOL))) {
-                endpoint = new MulticastEndpoint(port, host);
+        boolean showStacktrace = cl.hasOption(ERROR);
+        File templatesFile = null;
+        try {
+            Assert.assertTrue(cl.hasOption(PORT), "The required parameter \"" + PORT + "\" is missing.");
+            int port = getInteger(cl, PORT);
+            String host = cl.hasOption(HOST) ? cl.getOptionValue(HOST) : "localhost";
+            
+            if (cl.hasOption(PROTOCOL)) {
+                if ("udp".equals(cl.getOptionValue(PROTOCOL))) {
+                    endpoint = new MulticastEndpoint(port, host);
+                }
             }
+            if (endpoint == null) {
+                endpoint = new TcpEndpoint(host, port);
+            }
+            templatesFile = getFile(cl, MESSAGE_TEMPLATE_FILE);
+            Assert.assertTrue(templatesFile.exists(), "The template definition file \"" + templatesFile.getAbsolutePath() + "\" does not exist.");
+            Assert.assertTrue(!templatesFile.isDirectory(), "The template definition file \"" + templatesFile.getAbsolutePath() + "\" is a directory.");
+            Assert.assertTrue(templatesFile.canRead(), "The template definition file \"" + templatesFile.getAbsolutePath() + "\" is not readable.");
+        } catch (AssertionError e) {
+            System.out.println(e.getMessage());
+            displayHelp(options);
         }
-        if (endpoint == null) {
-            endpoint = new TcpEndpoint(host, port);
-        }
-        File templatesFile = getFile(cl, MESSAGE_TEMPLATE_FILE);
-        Assert.assertTrue(templatesFile.exists(), "The template definition file \"" + templatesFile.getAbsolutePath() + "\" does not exist.");
-        Assert.assertTrue(!templatesFile.isDirectory(), "The template definition file \"" + templatesFile.getAbsolutePath() + "\" is a directory.");
-        Assert.assertTrue(templatesFile.canRead(), "The template definition file \"" + templatesFile.getAbsolutePath() + "\" is not readable.");
         FastMessageConsumer consumer = new FastMessageConsumer(endpoint, templatesFile);
         try {
             consumer.start();

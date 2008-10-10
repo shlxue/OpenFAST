@@ -28,9 +28,9 @@ public class Main extends OpenFastExample {
         if (cl.hasOption("help")) {
             displayHelp(options);
         }
-        File templatesFile = new File(getString(cl, "template"));
-        File dataFile = new File(getString(cl, "data"));
         try {
+            File templatesFile = new File(getString(cl, "template"));
+            File dataFile = new File(getString(cl, "data"));
             PerformanceRunner performanceRunner = new PerformanceRunner(templatesFile, dataFile);
             if (cl.hasOption("ns"))
                 performanceRunner.setNamespaceAwareness(true);
@@ -46,6 +46,7 @@ public class Main extends OpenFastExample {
             System.out.println("Average decode time per message: " + ((result.getTime() * 1000) / (result.getMessageCount())) + " microseconds");
         } catch (AssertionError ae) {
             System.out.println(ae.getMessage());
+            displayHelp(options);
         } catch (Exception e) {
             if (cl.hasOption("error"))
                 e.printStackTrace();
@@ -54,7 +55,7 @@ public class Main extends OpenFastExample {
     }
 
     private static String getString(CommandLine cl, String option) {
-        Assert.assertTrue(cl.hasOption(option), "The required option \"" + option + "\" was not specified.");
+        Assert.assertTrue(cl.hasOption(option), "The required parameter \"" + option + "\" was not specified.");
         return cl.getOptionValue(option);
     }
 }
