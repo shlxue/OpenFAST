@@ -58,6 +58,14 @@
 					<li>Licensed under the <a href="http://www.mozilla.org/MPL/MPL-1.1.html">Mozilla Public License</a></li>
 				</ul>
 			</subsection>
+            <subsection name="Acknowledgments">
+                <h4>OpenFAST uses The YourKit Java Profiler for Performance Tuning</h4>
+                <p>YourKit is kindly supporting open source projects with its full-featured Java Profiler.
+                YourKit, LLC is the creator of innovative and intelligent tools for profiling
+                Java and .NET applications. Take a look at YourKit's leading software products:
+                <a href="http://www.yourkit.com/java/profiler/index.jsp">YourKit Java Profiler</a> and
+                <a href="http://www.yourkit.com/.net/profiler/index.jsp">YourKit .NET Profiler</a>.</p>
+            </subsection>
 		</section>
 	</body>
 </document>
