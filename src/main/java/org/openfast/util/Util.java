@@ -24,6 +24,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.TimeZone;
 import org.openfast.Global;
 import org.openfast.IntegerValue;
 import org.openfast.QName;
@@ -97,6 +98,7 @@ public class Util {
 
     public static int millisecondsSinceMidnight(Date date) {
         Calendar cal = Calendar.getInstance();
+        cal.setTimeZone(TimeZone.getTimeZone("GMT"));
         cal.setTime(date);
         return cal.get(Calendar.HOUR_OF_DAY) * 3600000 + cal.get(Calendar.MINUTE) * 60000 + cal.get(Calendar.SECOND) * 1000
                 + cal.get(Calendar.MILLISECOND);
@@ -114,18 +116,21 @@ public class Util {
      */
     public static Date date(int year, int month, int day) {
         Calendar cal = Calendar.getInstance();
+        cal.setTimeZone(TimeZone.getTimeZone("GMT"));
         cal.set(year - 1900, month - 1, day);
         return cal.getTime();
     }
 
     public static int dateToInt(Date date) {
         Calendar cal = Calendar.getInstance();
+        cal.setTimeZone(TimeZone.getTimeZone("GMT"));
         cal.setTime(date);
         return cal.get(Calendar.YEAR) * 10000 + (cal.get(Calendar.MONTH) + 1) * 100 + cal.get(Calendar.DATE);
     }
 
     public static int timeToInt(Date date) {
         Calendar cal = Calendar.getInstance();
+        cal.setTimeZone(TimeZone.getTimeZone("GMT"));
         cal.setTime(date);
         return cal.get(Calendar.HOUR_OF_DAY) * 10000000 + cal.get(Calendar.MINUTE) * 100000 + cal.get(Calendar.SECOND) * 1000
                 + cal.get(Calendar.MILLISECOND);
@@ -137,6 +142,7 @@ public class Util {
 
     public static Date toTimestamp(long value) {
         Calendar cal = Calendar.getInstance();
+        cal.setTimeZone(TimeZone.getTimeZone("GMT"));
         int year = (int) (value / 10000000000000L);
         value %= 10000000000000L;
         int month = (int) (value / 100000000000L);

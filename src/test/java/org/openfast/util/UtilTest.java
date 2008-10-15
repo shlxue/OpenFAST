@@ -24,6 +24,7 @@ import java.nio.ByteBuffer;
 import java.util.Calendar;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.TimeZone;
 
 import junit.framework.TestCase;
 
@@ -86,6 +87,7 @@ public class UtilTest extends TestCase {
     }
     public void testIntToTimestamp() {
         Calendar cal = Calendar.getInstance();
+        cal.setTimeZone(TimeZone.getTimeZone("GMT"));
         cal.set(2007, 0, 10, 14, 25, 12);
         cal.set(Calendar.MILLISECOND, 253);
         assertEquals(cal.getTime(), Util.toTimestamp(20070110142512253L));

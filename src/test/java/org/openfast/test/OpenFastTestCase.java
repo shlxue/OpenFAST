@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -125,6 +126,7 @@ public abstract class OpenFastTestCase extends TestCase {
 
     protected static Date date(int year, int month, int day) {
         Calendar cal = Calendar.getInstance();
+        cal.setTimeZone(TimeZone.getTimeZone("GMT"));
         cal.set(year, month, day, 0, 0, 0);
         cal.set(Calendar.MILLISECOND, 0);
         return cal.getTime();
@@ -132,6 +134,7 @@ public abstract class OpenFastTestCase extends TestCase {
 
     protected static Date time(int hour, int min, int sec, int ms) {
         Calendar cal = Calendar.getInstance();
+        cal.setTimeZone(TimeZone.getTimeZone("GMT"));
         cal.set(Calendar.HOUR_OF_DAY, hour);
         cal.set(Calendar.MINUTE, min);
         cal.set(Calendar.SECOND, sec);

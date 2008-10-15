@@ -23,6 +23,7 @@ package org.openfast.template.type.codec;
 import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 import org.openfast.DateValue;
 import org.openfast.IntegerValue;
 import org.openfast.ScalarValue;
@@ -34,6 +35,7 @@ public class MillisecondsSinceMidnight extends TypeCodec {
     public ScalarValue decode(InputStream in) {
         int millisecondsSinceMidnight = TypeCodec.INTEGER.decode(in).toInt();
         Calendar cal = Calendar.getInstance();
+        cal.setTimeZone(TimeZone.getTimeZone("GMT"));
         int hour = millisecondsSinceMidnight / 3600000;
         millisecondsSinceMidnight -= hour * 3600000;
         cal.set(Calendar.HOUR_OF_DAY, hour);
