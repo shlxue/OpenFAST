@@ -23,6 +23,7 @@ package org.openfast.template;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import org.openfast.BitVectorBuilder;
 import org.openfast.BitVectorReader;
 import org.openfast.Context;
@@ -36,6 +37,7 @@ public class ComposedScalar extends Field {
     private Scalar[] fields;
     private ComposedValueConverter valueConverter;
     private Type type;
+    private FieldValue[] values;
 
     public ComposedScalar(String name, Type type, Scalar[] fields, boolean optional, ComposedValueConverter valueConverter) {
         this(new QName(name), type, fields, optional, valueConverter);
@@ -46,6 +48,7 @@ public class ComposedScalar extends Field {
         this.fields = fields;
         this.valueConverter = valueConverter;
         this.type = type;
+        this.values = new FieldValue[fields.length];
     }
 
     public FieldValue createValue(String value) {
@@ -53,13 +56,15 @@ public class ComposedScalar extends Field {
     }
 
     public FieldValue decode(InputStream in, Group template, Context context, BitVectorReader presenceMapReader) {
-        FieldValue[] values = new FieldValue[fields.length];
-        for (int i = 0; i < fields.length; i++) {
-            values[i] = fields[i].decode(in, template, context, presenceMapReader);
-            if (i == 0 && values[0] == null)
-                return null;
+        synchronized(values) {
+            Arrays.fill(values, null);
+            for (int i = 0; i < fields.length; i++) {
+                values[i] = fields[i].decode(in, template, context, presenceMapReader);
+                if (i == 0 && values[0] == null)
+                    return null;
+            }
+            return valueConverter.compose(values);
         }
-        return valueConverter.compose(values);
     }
 
     public byte[] encode(FieldValue value, Group template, Context context, BitVectorBuilder presenceMapBuilder) {

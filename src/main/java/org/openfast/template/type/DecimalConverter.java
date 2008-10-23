@@ -46,6 +46,6 @@ public class DecimalConverter implements ComposedValueConverter {
             return null;
         if (values[0] == ScalarValue.UNDEFINED)
             return ScalarValue.UNDEFINED;
-        return new DecimalValue(((ScalarValue) values[1]).toLong(), ((IntegerValue) values[0]).value);
+        return new DecimalValue(((ScalarValue) values[1]).toLong(), ((ScalarValue) values[0]).toInt());
     }
 }

@@ -197,11 +197,11 @@ public class Sequence extends Field implements FieldSet {
      */
     public FieldValue decode(InputStream in, Group template, Context context, BitVectorReader pmapReader) {
         SequenceValue sequenceValue = new SequenceValue(this);
-        FieldValue lengthValue = length.decode(in, template, context, pmapReader);
+        ScalarValue lengthValue = (ScalarValue) length.decode(in, template, context, pmapReader);
         if ((lengthValue == ScalarValue.NULL) || (lengthValue == null)) {
             return null;
         }
-        int len = ((IntegerValue) lengthValue).value;
+        int len = lengthValue.toInt();
         for (int i = 0; i < len; i++)
             sequenceValue.add((GroupValue) group.decode(in, template, context, BitVectorReader.INFINITE_TRUE));
         return sequenceValue;

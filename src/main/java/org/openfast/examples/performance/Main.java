@@ -17,7 +17,8 @@ public class Main extends OpenFastExample {
         options.addOption("p", "preload", false, "Preload data into memory instead of decoding directly from file");
         options.addOption("e", "error", false, "Show stacktrace information");
         options.addOption("r", "repeat", true, "Re process data file X number of times");
-        options.addOption("f", "format", true, "Data format [hex|binary] default is binary ");
+        options.addOption("f", "format", true, "Data format [hex|binary] default is binary");
+        options.addOption("c", "continuous", false, "Keep repeating the test until the process is killed");
     }
 
     /**
@@ -40,10 +41,15 @@ public class Main extends OpenFastExample {
                 performanceRunner.setPreloadData(true);
             if (cl.hasOption("format"))
                 performanceRunner.setFormat(cl.getOptionValue("format"));
-            PerformanceResult result = performanceRunner.run();
-    
-            System.out.println("Decoded " + result.getMessageCount() + " messages in " + result.getTime() + " milliseconds.");
-            System.out.println("Average decode time per message: " + ((result.getTime() * 1000) / (result.getMessageCount())) + " microseconds");
+            
+            if (cl.hasOption("continuous"))
+                runContinuous(performanceRunner);
+            else if (cl.hasOption("repeat"))
+                runRepeat(performanceRunner, Integer.parseInt(cl.getOptionValue("repeat")));
+            else {
+                run(performanceRunner);
+                run(performanceRunner);
+            }
         } catch (AssertionError ae) {
             System.out.println(ae.getMessage());
             displayHelp(options);
@@ -52,6 +58,24 @@ public class Main extends OpenFastExample {
                 e.printStackTrace();
             System.out.println(e.getMessage());
         }
+    }
+
+    private static void runRepeat(PerformanceRunner performanceRunner, int repeat) {
+        for (int i=0; i<repeat; i++)
+            run(performanceRunner);
+    }
+
+    private static void runContinuous(PerformanceRunner performanceRunner) {
+        while (true) {
+            run (performanceRunner);
+        }
+    }
+
+    private static void run(PerformanceRunner performanceRunner) {
+        PerformanceResult result = performanceRunner.run();
+   
+        System.out.println("Decoded " + result.getMessageCount() + " messages in " + result.getTime() + " milliseconds.");
+        System.out.println("Average decode time per message: " + ((result.getTime() * 1000) / (result.getMessageCount())) + " microseconds");
     }
 
     private static String getString(CommandLine cl, String option) {

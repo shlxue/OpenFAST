@@ -50,7 +50,7 @@ final class NullableSingleFieldDecimal extends TypeCodec {
         if (v == ScalarValue.NULL) {
             return TypeCodec.NULL_VALUE_ENCODING;
         }
-        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        ByteArrayOutputStream buffer = Global.getBuffer();
         DecimalValue value = (DecimalValue) v;
         try {
             if (Math.abs(value.exponent) > 63) {

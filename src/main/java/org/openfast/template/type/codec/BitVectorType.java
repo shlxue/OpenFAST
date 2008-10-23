@@ -25,6 +25,7 @@ package org.openfast.template.type.codec;
 
 import org.openfast.BitVector;
 import org.openfast.BitVectorValue;
+import org.openfast.Global;
 import org.openfast.ScalarValue;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -54,8 +55,8 @@ public final class BitVectorType extends TypeCodec {
      * @return Returns a new BitVector object with the data stream as an array
      */
     public ScalarValue decode(InputStream in) {
-        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         int byt;
+        ByteArrayOutputStream buffer = Global.getBuffer();
         do {
             try {
                 byt = in.read();

@@ -27,17 +27,19 @@ import java.util.List;
 import java.util.Map;
 
 import org.openfast.QName;
+import org.openfast.util.IntegerMap;
+import org.openfast.util.SimpleIntegerMap;
 
 public class BasicTemplateRegistry extends AbstractTemplateRegistry {
     private Map nameMap = new HashMap();
-    private Map idMap = new HashMap();
+    private IntegerMap idMap = new SimpleIntegerMap();
     private Map templateMap = new HashMap();
     private List templates = new ArrayList();
 
     public void register(int id, MessageTemplate template) {
         define(template);
         Integer tid = new Integer(id);
-        idMap.put(tid, template);
+        idMap.put(id, template);
         templateMap.put(template, tid);
         notifyTemplateRegistered(template, id);
     }
@@ -47,7 +49,7 @@ public class BasicTemplateRegistry extends AbstractTemplateRegistry {
         Integer tid = new Integer(id);
         MessageTemplate template = (MessageTemplate) nameMap.get(name);
         templateMap.put(template, tid);
-        idMap.put(tid, template);
+        idMap.put(id, template);
         notifyTemplateRegistered(template, id);
     }
     public void define(MessageTemplate template) {
@@ -63,7 +65,7 @@ public class BasicTemplateRegistry extends AbstractTemplateRegistry {
         return ((Integer) templateMap.get(template)).intValue();
     }
     public MessageTemplate get(int templateId) {
-        return (MessageTemplate) idMap.get(new Integer(templateId));
+        return (MessageTemplate) idMap.get(templateId);
     }
     public MessageTemplate get(QName name) {
         return (MessageTemplate) nameMap.get(name);
@@ -77,7 +79,7 @@ public class BasicTemplateRegistry extends AbstractTemplateRegistry {
         return nameMap.containsKey(name);
     }
     public boolean isRegistered(int templateId) {
-        return idMap.containsKey(new Integer(templateId));
+        return idMap.containsKey(templateId);
     }
     public boolean isRegistered(MessageTemplate template) {
         return templateMap.containsKey(template);
@@ -91,16 +93,16 @@ public class BasicTemplateRegistry extends AbstractTemplateRegistry {
     public void remove(QName name) {
         MessageTemplate template = (MessageTemplate) nameMap.remove(name);
         Object id = templateMap.remove(template);
-        idMap.remove(id);
+        idMap.remove(((Integer) id).intValue());
         templates.remove(template);
     }
     public void remove(MessageTemplate template) {
         Object id = templateMap.remove(template);
         nameMap.remove(template.getName());
-        idMap.remove(id);
+        idMap.remove(((Integer)id).intValue());
     }
     public void remove(int id) {
-        MessageTemplate template = (MessageTemplate) idMap.remove(new Integer(id));
+        MessageTemplate template = (MessageTemplate) idMap.remove(id);
         templateMap.remove(template);
         nameMap.remove(template.getName());
     }

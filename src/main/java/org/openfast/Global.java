@@ -20,12 +20,16 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
  */
 package org.openfast;
 
+import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 import org.openfast.error.ErrorCode;
 import org.openfast.error.ErrorHandler;
 
 public final class Global {
     private static ErrorHandler errorHandler = ErrorHandler.DEFAULT;
     private static int currentImplicitId = (int) (System.currentTimeMillis() % 10000);
+    private static List buffers = new ArrayList();
 
     public static void setErrorHandler(ErrorHandler handler) {
         if (handler == null) {
@@ -47,4 +51,24 @@ public final class Global {
     }
 
     private Global() {}
+
+    public static ByteArrayOutputStream getBuffer() {
+        synchronized(buffers) {
+            if (buffers.isEmpty())
+                return new PooledByteArrayOutputStream();
+            ByteArrayOutputStream buffer = (ByteArrayOutputStream) buffers.remove(0);
+            buffer.reset();
+            return buffer;
+        }
+    }
+    
+    private static class PooledByteArrayOutputStream extends ByteArrayOutputStream {
+        public synchronized byte[] toByteArray() {
+            byte[] byteArray = super.toByteArray();
+            synchronized(buffers) {
+                buffers.add(this);
+            }
+            return byteArray;
+        }
+    }
 }

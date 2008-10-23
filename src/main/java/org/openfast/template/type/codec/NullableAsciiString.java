@@ -67,8 +67,8 @@ final class NullableAsciiString extends TypeCodec {
      * @return Returns a new StringValue object with the data stream as a String
      */
     public ScalarValue decode(InputStream in) {
-        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         int byt;
+        ByteArrayOutputStream buffer = Global.getBuffer();
         try {
             do {
                 byt = in.read();

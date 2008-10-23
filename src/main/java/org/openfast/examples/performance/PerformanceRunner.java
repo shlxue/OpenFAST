@@ -16,6 +16,7 @@ import org.openfast.codec.FastDecoder;
 import org.openfast.error.ErrorCode;
 import org.openfast.error.ErrorHandler;
 import org.openfast.examples.Assert;
+import org.openfast.template.TemplateRegistry;
 import org.openfast.template.loader.XMLMessageTemplateLoader;
 
 public class PerformanceRunner implements ErrorHandler {
@@ -26,6 +27,8 @@ public class PerformanceRunner implements ErrorHandler {
     private boolean namespaceAware;
     private boolean preloadData;
     private String format;
+    private ByteArrayInputStream byteIn;
+    private TemplateRegistry templateRegistry;
     
     public PerformanceRunner(File templatesFile, File dataFile) {
         this.templatesFile = templatesFile;
@@ -33,17 +36,11 @@ public class PerformanceRunner implements ErrorHandler {
     }
     
     public PerformanceResult run() {
-        XMLMessageTemplateLoader loader = new XMLMessageTemplateLoader(namespaceAware);
-        loader.setLoadTemplateIdFromAuxId(true);
-        
-        InputStream source = null;
         try {
-            Assert.assertTrue(templatesFile.exists(), "The message template file \"" + templatesFile.getAbsolutePath() + "\" does not exist.");
-            source = new FileInputStream(templatesFile);
-            loader.load(source);
+            loadTemplates();
             InputStream dataIn = getFastEncodedDataStream();
             Context context = new Context();
-            context.setTemplateRegistry(loader.getTemplateRegistry());
+            context.setTemplateRegistry(templateRegistry);
             context.setErrorHandler(this);
             FastDecoder decoder = new FastDecoder(context, dataIn);
             PerformanceResult result = new PerformanceResult();
@@ -63,14 +60,28 @@ public class PerformanceRunner implements ErrorHandler {
             } else {
                 System.out.println("Error occurred while decoding messages: " + e.getMessage());
             }
-        } finally {
-            if (source != null)
-                try {
-                    source.close();
-                } catch (IOException e) {
-                }
         }
         return null;
+    }
+
+    private void loadTemplates() throws FileNotFoundException {
+        InputStream source = null;
+        if (templateRegistry == null) {
+            try {
+                XMLMessageTemplateLoader loader = new XMLMessageTemplateLoader(namespaceAware);
+                loader.setLoadTemplateIdFromAuxId(true);
+                Assert.assertTrue(templatesFile.exists(), "The message template file \"" + templatesFile.getAbsolutePath() + "\" does not exist.");
+                source = new FileInputStream(templatesFile);
+                loader.load(source);
+                this.templateRegistry = loader.getTemplateRegistry();
+            } finally {
+                if (source != null)
+                    try {
+                        source.close();
+                    } catch (IOException e) {
+                    }
+            }
+        }
     }
 
     public void setPreloadData(boolean preloadData) {
@@ -86,6 +97,10 @@ public class PerformanceRunner implements ErrorHandler {
     }
 
     private InputStream getFastEncodedDataStream() {
+        if (preloadData && byteIn != null) {
+            byteIn.reset();
+            return byteIn;
+        }
         Assert.assertTrue(dataFile.exists() && dataFile.canRead(), "The file \"" + dataFile.getAbsolutePath() + "\" does not exist.");
         try {
             InputStream dataIn = null;
@@ -98,7 +113,7 @@ public class PerformanceRunner implements ErrorHandler {
                 ByteArrayOutputStream byteOut = new ByteArrayOutputStream((int) dataFile.length());
                 copy(dataIn, byteOut, 1024);
                 byte[] buffer = byteOut.toByteArray();
-                InputStream byteIn = new ByteArrayInputStream(buffer);
+                byteIn = new ByteArrayInputStream(buffer);
                 return byteIn;
             }
             return new BufferedInputStream(dataIn);
