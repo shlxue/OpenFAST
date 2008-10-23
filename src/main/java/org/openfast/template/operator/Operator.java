@@ -49,18 +49,6 @@ public class Operator implements Serializable {
         }
     };
     
-    public static final Operator MAP = new Operator("map") {
-        private static final long serialVersionUID = 2L;
-        
-        public boolean usesDictionary() {
-            return false;
-        }
-        
-        public boolean shouldStoreValue(ScalarValue value) {
-            return false;
-        }
-    };
-
     public static final Operator CONSTANT = new Operator("constant") {
         private static final long serialVersionUID = 1L;
 

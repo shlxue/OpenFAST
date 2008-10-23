@@ -83,7 +83,6 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
         initialContext.addFieldParser(new StringParser());
         initialContext.addFieldParser(new ByteVectorParser());
         initialContext.addFieldParser(new TemplateRefParser());
-        initialContext.addFieldParser(new MapFieldParser());
         return initialContext;
     }
 

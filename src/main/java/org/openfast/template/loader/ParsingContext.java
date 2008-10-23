@@ -27,7 +27,7 @@ import org.openfast.error.ErrorHandler;
 import org.openfast.template.TemplateRegistry;
 import org.w3c.dom.Element;
 
-class ParsingContext {
+public class ParsingContext {
     static final ParsingContext NULL = new ParsingContext();
     static {
         NULL.setDictionary("global");

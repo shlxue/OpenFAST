@@ -9,6 +9,7 @@ import org.openfast.GroupValue;
 import org.openfast.Message;
 import org.openfast.SequenceValue;
 import org.openfast.codec.FastDecoder;
+import org.openfast.extensions.MapFieldParser;
 import org.openfast.template.MessageTemplate;
 import org.openfast.template.Sequence;
 import org.openfast.template.TemplateRegistry;
@@ -29,6 +30,7 @@ public class FastToXmlConverter {
     public FastToXmlConverter() {
         XMLMessageTemplateLoader xmlTemplateLoader = new XMLMessageTemplateLoader();
         xmlTemplateLoader.setLoadTemplateIdFromAuxId(true);
+        xmlTemplateLoader.addFieldParser(new MapFieldParser());
         xmlTemplateLoader.load(this.getClass().getResourceAsStream("xmlOverFastTemplates.xml"));
         this.templateRegistry = xmlTemplateLoader.getTemplateRegistry();
         this.elementTemplate = templateRegistry.get("element");

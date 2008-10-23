@@ -1,4 +1,4 @@
-package org.openfast.template;
+package org.openfast.extensions;
 
 import java.io.InputStream;
 import org.openfast.BitVectorBuilder;
@@ -9,6 +9,8 @@ import org.openfast.FieldValue;
 import org.openfast.IntegerValue;
 import org.openfast.QName;
 import org.openfast.ScalarValue;
+import org.openfast.template.Field;
+import org.openfast.template.Group;
 import org.openfast.template.type.codec.TypeCodec;
 
 public class MapScalar extends Field {

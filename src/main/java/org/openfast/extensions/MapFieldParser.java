@@ -1,8 +1,9 @@
-package org.openfast.template.loader;
+package org.openfast.extensions;
 
 import org.openfast.QName;
 import org.openfast.template.Field;
-import org.openfast.template.MapScalar;
+import org.openfast.template.loader.FieldParser;
+import org.openfast.template.loader.ParsingContext;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
