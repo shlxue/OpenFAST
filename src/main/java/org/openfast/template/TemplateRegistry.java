@@ -24,7 +24,7 @@ import java.util.Iterator;
 
 import org.openfast.QName;
 
-public interface TemplateRegistry extends Iterable {
+public interface TemplateRegistry {
     TemplateRegistry NULL = new NullTemplateRegistry();
 
     void registerAll(TemplateRegistry registry);
