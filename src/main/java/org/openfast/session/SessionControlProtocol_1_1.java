@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.openfast.Context;
+import org.openfast.Dictionary;
 import org.openfast.FieldValue;
 import org.openfast.Message;
 import org.openfast.MessageHandler;
@@ -250,10 +251,11 @@ public class SessionControlProtocol_1_1 extends AbstractSessionControlProtocol {
                     new Sequence(qualify("ForeignAttributes"), new Field[] { new StaticTemplateReference(ATTRIBUTE) }, true),
                     new Sequence(qualify("ForeignElements"), new Field[] { new StaticTemplateReference(ELEMENT) }, true) }, true) });
     private static final MessageTemplate TEMPLATE_NAME = new MessageTemplate(new QName("TemplateName", NAMESPACE), new Field[] {
-            new Scalar(qualify("Ns"), Type.UNICODE, Operator.COPY, null, false),
+            dict("Ns", Type.UNICODE, false, Dictionary.TEMPLATE), 
             new Scalar(qualify("Name"), Type.UNICODE, Operator.NONE, null, false) });
     private static final MessageTemplate NS_NAME = new MessageTemplate(new QName("NsName", NAMESPACE), new Field[] {
-            dict("Ns", Type.UNICODE, false, "template"), new Scalar(qualify("Name"), Type.UNICODE, Operator.NONE, null, false) });
+            new Scalar(qualify("Ns"), Type.UNICODE, Operator.COPY, null, false),
+            new Scalar(qualify("Name"), Type.UNICODE, Operator.NONE, null, false) });
     private static final MessageTemplate NS_NAME_WITH_AUX_ID = new MessageTemplate(
             new QName("NsNameWithAuxId", NAMESPACE),
             new Field[] { new StaticTemplateReference(NS_NAME), new Scalar(qualify("AuxId"), Type.UNICODE, Operator.NONE, null, true) });
@@ -345,7 +347,7 @@ public class SessionControlProtocol_1_1 extends AbstractSessionControlProtocol {
         return new Scalar(qualify(name), Type.U32, Operator.NONE, null, false);
     }
     private static Field dict(String name, Type type, boolean optional, String dictionary) {
-        Scalar scalar = new Scalar(qualify(name), Type.UNICODE, Operator.COPY, null, optional);
+        Scalar scalar = new Scalar(qualify(name), type, Operator.COPY, null, optional);
         scalar.setDictionary(dictionary);
         return scalar;
     }

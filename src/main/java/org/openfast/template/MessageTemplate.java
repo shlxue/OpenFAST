@@ -38,6 +38,14 @@ public class MessageTemplate extends Group implements FieldSet {
 
     public MessageTemplate(QName name, Field[] fields) {
         super(name, addTemplateIdField(fields), false);
+        updateTemplateReference(fields);
+        this.fields[0].setMessageTemplate(this);
+    }
+
+    private void updateTemplateReference(Field[] fields) {
+        for (int i=0; i<fields.length; i++) {
+            fields[i].setMessageTemplate(this);
+        }
     }
 
     public boolean usesPresenceMap() {

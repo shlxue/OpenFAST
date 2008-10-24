@@ -171,7 +171,10 @@ public class Group extends Field {
                 Field field = getField(fieldIndex);
                 if (!field.isOptional() && fieldValue == null)
                     Global.handleError(FastConstants.GENERAL_ERROR, "Mandatory field " + field + " is null");
-                byte[] encoding = field.encode(fieldValue, template, context, presenceMapBuilder);
+                Group fieldTmpl = template;
+                if (field.getTemplate() != null)
+                    fieldTmpl = field.getTemplate();
+                byte[] encoding = field.encode(fieldValue, fieldTmpl, context, presenceMapBuilder);
                 fieldEncodings[fieldIndex] = encoding;
             }
             ByteArrayOutputStream buffer = new ByteArrayOutputStream();
@@ -282,7 +285,10 @@ public class Group extends Field {
         int start = this instanceof MessageTemplate ? 1 : 0;
         for (int fieldIndex = start; fieldIndex < fields.length; fieldIndex++) {
             Field field = getField(fieldIndex);
-            values[fieldIndex] = field.decode(in, template, context, pmapReader);
+            Group fieldTmpl = template;
+            if (field.getTemplate() != null)
+                fieldTmpl = field.getTemplate();
+            values[fieldIndex] = field.decode(in, fieldTmpl, context, pmapReader);
         }
         if (pmapReader.hasMoreBitsSet())
             Global.handleError(FastConstants.R8_PMAP_TOO_MANY_BITS, "The presence map " + pmapReader

@@ -94,7 +94,7 @@ public class Session implements ErrorHandler {
     public void error(ErrorCode code, String message) {
         if (code.equals(FastConstants.D9_TEMPLATE_NOT_REGISTERED)) {
             code = SessionConstants.TEMPLATE_NOT_SUPPORTED;
-            message = "Template Not Supported";
+            message = "Template Not Supported: " + message;
         }
         protocol.onError(this, code, message);
         errorHandler.error(code, message);

@@ -37,6 +37,7 @@ public abstract class Field implements Serializable {
     protected final boolean optional;
     protected String id;
     private Map attributes;
+    private MessageTemplate template;
 
     /**
      * Field Constructor
@@ -227,4 +228,12 @@ public abstract class Field implements Serializable {
      * getTypeName method declaration
      */
     public abstract String getTypeName();
+
+    public MessageTemplate getTemplate() {
+        return template;
+    }
+    
+    public void setMessageTemplate(MessageTemplate template) {
+        this.template = template;
+    }
 }
