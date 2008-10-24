@@ -25,9 +25,9 @@ public class Main extends OpenFastExample {
      * @param args
      */
     public static void main(String[] args) {
-        CommandLine cl = parseCommandLine(args, options);
+        CommandLine cl = parseCommandLine("perf", args, options);
         if (cl.hasOption("help")) {
-            displayHelp(options);
+            displayHelp("perf", options);
         }
         try {
             File templatesFile = new File(getString(cl, "template"));
@@ -52,7 +52,7 @@ public class Main extends OpenFastExample {
             }
         } catch (AssertionError ae) {
             System.out.println(ae.getMessage());
-            displayHelp(options);
+            displayHelp("perf", options);
         } catch (Exception e) {
             if (cl.hasOption("error"))
                 e.printStackTrace();

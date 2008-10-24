@@ -33,9 +33,9 @@ public class Main extends OpenFastExample {
      * @param args
      */
     public static void main(String[] args) {
-        CommandLine cl = parseCommandLine(args, options);
+        CommandLine cl = parseCommandLine("consumer", args, options);
         if (cl.hasOption("help")) {
-            displayHelp(options);
+            displayHelp("consumer", options);
         }
         Endpoint endpoint = null;
         boolean showStacktrace = cl.hasOption(ERROR);
@@ -59,7 +59,7 @@ public class Main extends OpenFastExample {
             Assert.assertTrue(templatesFile.canRead(), "The template definition file \"" + templatesFile.getAbsolutePath() + "\" is not readable.");
         } catch (AssertionError e) {
             System.out.println(e.getMessage());
-            displayHelp(options);
+            displayHelp("consumer", options);
         }
         FastMessageConsumer consumer = new FastMessageConsumer(endpoint, templatesFile);
         try {

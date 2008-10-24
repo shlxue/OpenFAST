@@ -8,19 +8,19 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 public class OpenFastExample {
-    protected static CommandLine parseCommandLine(String[] args, Options options) {
+    protected static CommandLine parseCommandLine(String name, String[] args, Options options) {
         try {
             BasicParser parser = new BasicParser();
             return parser.parse(options, args);
         } catch (ParseException e) {
-            displayHelp(options);
+            displayHelp(name, options);
             return null;
         }
     }
 
-    protected static void displayHelp(Options options) {
+    protected static void displayHelp(String name, Options options) {
         HelpFormatter formatter = new HelpFormatter();
-        formatter.printHelp("perf", options);
+        formatter.printHelp(name, options);
         System.exit(1);
     }
 
