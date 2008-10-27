@@ -25,7 +25,7 @@ public class ScalarConverterTest extends TestCase {
         Field decodedScalar = converter.convert(fieldDef, TemplateRegistry.NULL, context);
         assertEquals(scalar, decodedScalar);
     }
-
+    
     public void testConvertDeltaWithDefaultValue() {
         Field scalar = new Scalar("value", Type.U32, Operator.DELTA, new IntegerValue(1), false);
         GroupValue fieldDef = converter.convert(scalar, context);

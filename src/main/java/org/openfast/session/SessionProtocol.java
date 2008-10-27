@@ -49,4 +49,6 @@ public interface SessionProtocol {
     public Message createTemplateDeclarationMessage(MessageTemplate messageTemplate, int templateId);
 
     public Message getCloseMessage();
+    
+    void registerSessionTemplates(TemplateRegistry registry);
 }

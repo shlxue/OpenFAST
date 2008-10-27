@@ -70,4 +70,19 @@ public interface FastConstants {
     ErrorCode PARSE_ERROR = new ErrorCode(DYNAMIC, 103, "PARSEERR", "An exception occurred while parsing.", ERROR);
     String TEMPLATE_DEFINITION_1_1 = "http://www.fixprotocol.org/ns/fast/td/1.1";
     QName LENGTH_FIELD = new QName("length", TEMPLATE_DEFINITION_1_1);
+    ErrorHandler BASIC_ERROR_HANDLER = new ErrorHandler() {
+        public void error(ErrorCode code, String message) {
+            if (REPORTABLE.equals(code.getType()))
+                System.out.println("WARNING: " + message);
+            else
+                code.throwException(message);
+        }
+
+        public void error(ErrorCode code, String message, Throwable t) {
+            if (REPORTABLE.equals(code.getType()))
+                System.out.println(message);
+            else
+                throw new FastException(message, code, t);
+            
+        }};
 }

@@ -103,4 +103,14 @@ public class ByteUtil {
                 return false;
         return true;
     }
+
+    public static byte[] combine(byte[] first, int firstOffset, int firstLength, byte[] second, int secondOffset, int secondLength) {
+        int fLen = Math.min(firstLength, first.length - firstOffset);
+        int sLen = Math.min(secondLength, second.length - secondOffset);
+        int totalLength = fLen + sLen;
+        byte[] result = new byte[totalLength];
+        System.arraycopy(first, firstOffset, result, 0, fLen);
+        System.arraycopy(second, secondOffset, result, fLen, sLen);
+        return result;
+    }
 }

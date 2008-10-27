@@ -301,9 +301,9 @@ public class SessionControlProtocol_1_1 extends AbstractSessionControlProtocol {
             unicodeopt("Dictionary"), new Group(qualify("Key"), new Field[] { new StaticTemplateReference(NS_NAME) }, true),
             new StaticTemplateReference(OTHER) });
     public static final MessageTemplate CONSTANT_OP = new MessageTemplate(new QName("ConstantOp", NAMESPACE),
-            new Field[] { new StaticTemplateReference(OP_BASE) });
+            new Field[] { new StaticTemplateReference(OTHER) });
     public static final MessageTemplate DEFAULT_OP = new MessageTemplate(new QName("DefaultOp", NAMESPACE),
-            new Field[] { new StaticTemplateReference(OP_BASE) });
+            new Field[] { new StaticTemplateReference(OTHER) });
     public static final MessageTemplate COPY_OP = new MessageTemplate(new QName("CopyOp", NAMESPACE),
             new Field[] { new StaticTemplateReference(OP_BASE) });
     public static final MessageTemplate INCREMENT_OP = new MessageTemplate(new QName("IncrementOp", NAMESPACE),

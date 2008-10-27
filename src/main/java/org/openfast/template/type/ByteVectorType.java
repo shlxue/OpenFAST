@@ -59,4 +59,8 @@ final class ByteVectorType extends SimpleType {
     public boolean isValueOf(ScalarValue previousValue) {
         return previousValue instanceof ByteVectorValue;
     }
+    
+    public ScalarValue getValue(byte[] bytes) {
+        return new ByteVectorValue(bytes);
+    }
 }

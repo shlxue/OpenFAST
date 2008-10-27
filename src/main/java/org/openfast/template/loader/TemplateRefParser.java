@@ -21,7 +21,6 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 package org.openfast.template.loader;
 
 import org.openfast.QName;
-import org.openfast.error.FastConstants;
 import org.openfast.template.DynamicTemplateReference;
 import org.openfast.template.Field;
 import org.openfast.template.StaticTemplateReference;
@@ -34,13 +33,11 @@ public class TemplateRefParser implements FieldParser {
             if (element.hasAttribute("templateNs"))
                 templateName = new QName(element.getAttribute("name"), element.getAttribute("templateNs"));
             else
-                templateName = new QName(element.getAttribute("name"), "");
-            if (context.getTemplateRegistry().isDefined(templateName))
+                templateName = new QName(element.getAttribute("name"), context.getTemplateNamespace());
+            if (context.getTemplateRegistry().isDefined(templateName)) {
                 return new StaticTemplateReference(context.getTemplateRegistry().get(templateName));
-            else {
-                context.getErrorHandler().error(FastConstants.D8_TEMPLATE_NOT_EXIST,
-                        "The template \"" + templateName + "\" was not found.");
-                return null;
+            } else {
+                throw new UnresolvedStaticTemplateReferenceException();
             }
         } else {
             return DynamicTemplateReference.INSTANCE;

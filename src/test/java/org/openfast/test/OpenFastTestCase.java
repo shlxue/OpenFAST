@@ -263,6 +263,10 @@ public abstract class OpenFastTestCase extends TestCase {
         return this.getClass().getClassLoader().getResourceAsStream(url);
     }
     
+    protected ByteVectorValue bv(String hexString) {
+        return byt(byt(hexString));
+    }
+
     protected static void assertEquals(BigDecimal expected, BigDecimal actual) {
         if (expected.compareTo(actual) != 0)
             throw new AssertionFailedError("expected:<" + expected.toPlainString() + "> bug was:<" + actual.toPlainString() + ">");

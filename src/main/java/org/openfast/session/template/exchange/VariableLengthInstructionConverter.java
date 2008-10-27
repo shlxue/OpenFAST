@@ -43,6 +43,7 @@ public class VariableLengthInstructionConverter extends ScalarConverter {
         GroupValue fieldDef = super.convert(field, context);
         if (scalar.hasAttribute(FastConstants.LENGTH_FIELD)) {
             GroupValue lengthDef = new GroupValue(fieldDef.getGroup().getGroup("Length"));
+            lengthDef.setString("Ns", ""); // TODO - Need to handle full Length definition
             lengthDef.setString("Name", scalar.getAttribute(FastConstants.LENGTH_FIELD));
             fieldDef.setFieldValue("Length", lengthDef);
         }

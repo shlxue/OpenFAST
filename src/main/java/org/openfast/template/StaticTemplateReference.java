@@ -30,9 +30,18 @@ public class StaticTemplateReference extends Field {
     private static final long serialVersionUID = 1L;
     private MessageTemplate template;
 
+    protected void setTemplate(MessageTemplate template) {
+        this.template = template;
+    }
+
     public StaticTemplateReference(MessageTemplate template) {
         super(template.getQName(), false);
         this.template = template;
+    }
+    
+    public StaticTemplateReference() {
+        super(null, false);
+        this.template = null;
     }
 
     public FieldValue createValue(String value) {

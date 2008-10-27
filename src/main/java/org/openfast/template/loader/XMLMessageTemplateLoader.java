@@ -32,6 +32,7 @@ import org.openfast.error.ErrorCode;
 import org.openfast.error.ErrorHandler;
 import org.openfast.error.FastAlertSeverity;
 import org.openfast.error.FastConstants;
+import org.openfast.error.FastException;
 import org.openfast.template.BasicTemplateRegistry;
 import org.openfast.template.MessageTemplate;
 import org.openfast.template.TemplateRegistry;
@@ -114,9 +115,23 @@ public class XMLMessageTemplateLoader implements MessageTemplateLoader {
 
             NodeList templateTags = root.getElementsByTagName("template");
             MessageTemplate[] templates = new MessageTemplate[templateTags.getLength()];
-            for (int i = 0; i < templateTags.getLength(); i++) {
-                Element templateTag = (Element) templateTags.item(i);
-                templates[i] = (MessageTemplate) templateParser.parse(templateTag, context);
+            int templatesToLoad = templates.length;
+            int previousNumberOfTemplatesLeft = templates.length;
+            while (templatesToLoad > 0) {
+                for (int i = 0; i < templateTags.getLength(); i++) {
+                    if (templates[i] == null) {
+                        Element templateTag = (Element) templateTags.item(i);
+                        MessageTemplate template = (MessageTemplate) templateParser.parse(templateTag, context);
+                        if (template != null) {
+                            templates[i] = template;
+                            templatesToLoad--;
+                        }
+                    }
+                }
+                if (previousNumberOfTemplatesLeft == templatesToLoad) {
+                    throw new FastException("Unresolved static template references exist.", FastConstants.PARSE_ERROR);
+                }
+                previousNumberOfTemplatesLeft = templatesToLoad;
             }
             return templates;
         } else {

@@ -21,6 +21,8 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 package org.openfast.template.loader;
 
 import org.openfast.QName;
+import org.openfast.error.FastConstants;
+import org.openfast.error.FastException;
 import org.openfast.template.Field;
 import org.openfast.template.MessageTemplate;
 import org.w3c.dom.Element;
@@ -40,9 +42,18 @@ public class TemplateParser extends GroupParser {
      *            The dom element object
      * @return Returns a newly created MessageTemplate object
      */
-    protected Field parse(Element templateElement, boolean optional, ParsingContext context) {
-        MessageTemplate messageTemplate = new MessageTemplate(getTemplateName(templateElement, context), parseFields(templateElement,
-                context));
+    protected Field parse(final Element templateElement, boolean optional, final ParsingContext context) {
+        final QName templateName = getTemplateName(templateElement, context);
+        try {
+            final Field[] fields = parseFields(templateElement, context);
+            return createMessageTemplate(templateElement, context, templateName, fields);
+        } catch (UnresolvedStaticTemplateReferenceException e) {
+            return null;
+        }
+    }
+
+    private MessageTemplate createMessageTemplate(Element templateElement, ParsingContext context, QName templateName, Field[] fields) {
+        MessageTemplate messageTemplate = new MessageTemplate(templateName, fields);
         parseMore(templateElement, messageTemplate, context);
         if (loadTemplateIdFromAuxId && templateElement.hasAttribute("id")) {
             try {
@@ -51,8 +62,9 @@ public class TemplateParser extends GroupParser {
             } catch (NumberFormatException e) {
                 context.getTemplateRegistry().define(messageTemplate);
             }
-        } else
+        } else {
             context.getTemplateRegistry().define(messageTemplate);
+        }
         return messageTemplate;
     }
 

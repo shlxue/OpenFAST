@@ -22,10 +22,19 @@ package org.openfast;
 
 public class ByteVectorValue extends ScalarValue {
     private static final long serialVersionUID = 1L;
+    public static final ScalarValue EMPTY_BYTES = new ByteVectorValue(new byte[] {});
     public final byte[] value;
+    private int offset;
+    private int length;
 
     public ByteVectorValue(byte[] value) {
+        this(value, 0, value.length);
+    }
+
+    public ByteVectorValue(byte[] value, int offset, int length) {
         this.value = value;
+        this.offset = offset;
+        this.length = length;
     }
 
     public byte[] getBytes() {
@@ -33,14 +42,14 @@ public class ByteVectorValue extends ScalarValue {
     }
 
     public String toString() {
-        StringBuffer builder = new StringBuffer(value.length * 2);
-        for (int i = 0; i < value.length; i++) {
-            String hex = Integer.toHexString(value[i]);
-            if (hex.length() == 1)
-                builder.append('0');
-            builder.append(hex);
-        }
-        return builder.toString();
+//        StringBuffer builder = new StringBuffer(value.length * 2);
+//        for (int i = 0; i < value.length; i++) {
+//            String hex = Integer.toHexString(value[i]);
+//            if (hex.length() == 1)
+//                builder.append('0');
+//            builder.append(hex);
+//        }
+        return new String(value, offset, length);
     }
 
     public boolean equals(Object obj) {
@@ -51,11 +60,11 @@ public class ByteVectorValue extends ScalarValue {
     }
 
     public boolean equals(ByteVectorValue other) {
-        if (this.value.length != other.value.length) {
+        if (this.length != other.length) {
             return false;
         }
-        for (int i = 0; i < this.value.length; i++)
-            if (this.value[i] != other.value[i]) {
+        for (int i = 0; i < length; i++)
+            if (this.value[offset + i] != other.value[other.offset + i]) {
                 return false;
             }
         return true;

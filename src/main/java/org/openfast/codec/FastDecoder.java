@@ -20,17 +20,14 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
  */
 package org.openfast.codec;
 
+import java.io.InputStream;
 import org.openfast.BitVector;
 import org.openfast.BitVectorReader;
 import org.openfast.BitVectorValue;
 import org.openfast.Context;
-import org.openfast.IntegerValue;
 import org.openfast.Message;
-
 import org.openfast.template.MessageTemplate;
 import org.openfast.template.type.codec.TypeCodec;
-
-import java.io.InputStream;
 
 public class FastDecoder implements Coder {
     private final InputStream in;

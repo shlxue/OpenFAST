@@ -31,7 +31,7 @@ import org.openfast.template.TwinValue;
 import org.openfast.template.type.Type;
 import org.openfast.test.OpenFastTestCase;
 
-public class DeltaStringOperatorTest extends OpenFastTestCase {
+public class DeltaUnicodeOperatorTest extends OpenFastTestCase {
     private Scalar field;
 
     public void testDecodeSubtractionLengthError() {
@@ -58,15 +58,11 @@ public class DeltaStringOperatorTest extends OpenFastTestCase {
 
     public void testDecodeValueMandatory() {
         field = new Scalar("", Type.ASCII, Operator.DELTA, ScalarValue.UNDEFINED, false);
-        assertEquals(string("ABCD"), decode(tv(0, "ABCD"), ScalarValue.UNDEFINED));
-        assertEquals(string("ABCE"), decode(tv(1, "E"), string("ABCD")));
-        assertEquals(string("ZBCE"), decode(tv(-2, "Z"), string("ABCE")));
-        assertEquals(string("YZBCE"), decode(tv(-1, "Y"), string("ZBCE")));
-        assertEquals(string("YZBCEF"), decode(tv(0, "F"), string("YZBCE")));
-    }
-
-    private ByteVectorValue str2bv(String string) {
-        return new ByteVectorValue(string.getBytes());
+        assertEquals(new StringValue("ABCD"), decode(tv(0, "ABCD"), ScalarValue.UNDEFINED));
+        assertEquals(new StringValue("ABCE"), decode(tv(1, "E"), string("ABCD")));
+        assertEquals(new StringValue("ZBCE"), decode(tv(-2, "Z"), string("ABCE")));
+        assertEquals(new StringValue("YZBCE"), decode(tv(-1, "Y"), string("ZBCE")));
+        assertEquals(new StringValue("YZBCEF"), decode(tv(0, "F"), string("YZBCE")));
     }
 
     public void testGetValueToEncodeOptional() {
@@ -101,6 +97,6 @@ public class DeltaStringOperatorTest extends OpenFastTestCase {
     }
 
     private TwinValue tv(int subtraction, String diff) {
-        return new TwinValue(new IntegerValue(subtraction), str2bv(diff));
+        return new TwinValue(new IntegerValue(subtraction), new ByteVectorValue(diff.getBytes()));
     }
 }

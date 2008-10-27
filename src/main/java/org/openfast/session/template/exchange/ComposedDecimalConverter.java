@@ -61,8 +61,10 @@ public class ComposedDecimalConverter extends AbstractFieldInstructionConverter 
         message.setInteger("Optional", field.isOptional() ? 1 : 0);
         GroupValue exponentDef = createComponent(composedScalar.getFields()[0], "Exponent");
         GroupValue mantissaDef = createComponent(composedScalar.getFields()[1], "Mantissa");
-        message.setFieldValue("Exponent", exponentDef);
-        message.setFieldValue("Mantissa", mantissaDef);
+        if (exponentDef != null)
+            message.setFieldValue("Exponent", exponentDef);
+        if (mantissaDef != null)
+            message.setFieldValue("Mantissa", mantissaDef);
         return message;
     }
 
@@ -70,6 +72,8 @@ public class ComposedDecimalConverter extends AbstractFieldInstructionConverter 
         Group componentGroup = SessionControlProtocol_1_1.COMP_DECIMAL_INSTR.getGroup(componentName);
         GroupValue componentDef = new GroupValue(componentGroup);
         GroupValue componentOperatorDef = createOperator(component);
+        if (componentOperatorDef == null)
+            return null;
         GroupValue componentOperatorGroup = new GroupValue(componentGroup.getGroup("Operator"));
         componentDef.setFieldValue("Operator", componentOperatorGroup);
         componentOperatorGroup.setFieldValue(0, componentOperatorDef);

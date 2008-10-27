@@ -25,16 +25,15 @@ import java.util.Calendar;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.TimeZone;
-
-import junit.framework.TestCase;
-
 import org.openfast.ByteUtil;
+import org.openfast.ByteVectorValue;
 import org.openfast.IntegerValue;
 import org.openfast.ScalarValue;
 import org.openfast.StringValue;
 import org.openfast.template.TwinValue;
+import org.openfast.test.OpenFastTestCase;
 
-public class UtilTest extends TestCase {
+public class UtilTest extends OpenFastTestCase {
     public void testCollectionToString() {
         Map map = new LinkedHashMap();
         map.put("abc", "123");
@@ -77,14 +76,18 @@ public class UtilTest extends TestCase {
         assertEquals(tv(0, ""), diff("RSESM6", "RSESM6"));
     }
     public void testApplyDifference() {
-        assertEquals(s("abcd"), apply("abc", tv(0, "d")));
-        assertEquals(s("abed"), apply("abc", tv(1, "ed")));
-        assertEquals(s("GEH6"), apply("", tv(0, "GEH6")));
-        assertEquals(s("GEM6"), apply("GEH6", tv(2, "M6")));
-        assertEquals(s("ESM6"), apply("GEM6", tv(-3, "ES")));
-        assertEquals(s("RSESM6"), apply("ESM6", tv(-1, "RS")));
-        assertEquals(s("RSESM6"), apply("RSESM6", tv(0, "")));
+        assertEquals(b("abcd"), apply("abc", tv(0, "d")));
+        assertEquals(b("abed"), apply("abc", tv(1, "ed")));
+        assertEquals(b("GEH6"), apply("", tv(0, "GEH6")));
+        assertEquals(b("GEM6"), apply("GEH6", tv(2, "M6")));
+        assertEquals(b("ESM6"), apply("GEM6", tv(-3, "ES")));
+        assertEquals(b("RSESM6"), apply("ESM6", tv(-1, "RS")));
+        assertEquals(b("RSESM6"), apply("RSESM6", tv(0, "")));
     }
+    private String b(String string) {
+        return ByteUtil.convertByteArrayToBitString(string.getBytes());
+    }
+
     public void testIntToTimestamp() {
         Calendar cal = Calendar.getInstance();
         cal.setTimeZone(TimeZone.getTimeZone("GMT"));
@@ -92,16 +95,13 @@ public class UtilTest extends TestCase {
         cal.set(Calendar.MILLISECOND, 253);
         assertEquals(cal.getTime(), Util.toTimestamp(20070110142512253L));
     }
-    private StringValue s(String value) {
-        return new StringValue(value);
-    }
-    private StringValue apply(String base, TwinValue diff) {
+    private byte[] apply(String base, TwinValue diff) {
         return Util.applyDifference(new StringValue(base), diff);
     }
     private TwinValue tv(int sub, String diff) {
-        return new TwinValue(new IntegerValue(sub), new StringValue(diff));
+        return new TwinValue(new IntegerValue(sub), new ByteVectorValue(diff.getBytes()));
     }
     private ScalarValue diff(String base, String value) {
-        return Util.getDifference(new StringValue(value), new StringValue(base));
+        return Util.getDifference(value.getBytes(), base.getBytes());
     }
 }

@@ -291,8 +291,7 @@ public class Group extends Field {
             values[fieldIndex] = field.decode(in, fieldTmpl, context, pmapReader);
         }
         if (pmapReader.hasMoreBitsSet())
-            Global.handleError(FastConstants.R8_PMAP_TOO_MANY_BITS, "The presence map " + pmapReader
-                    + " has too many bits for the group " + this);
+            Global.handleError(FastConstants.R8_PMAP_TOO_MANY_BITS, "The presence map " + pmapReader + " has too many bits for the group " + this);
         return values;
     }
 

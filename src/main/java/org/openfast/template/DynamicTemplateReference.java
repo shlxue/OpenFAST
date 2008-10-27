@@ -98,4 +98,8 @@ public class DynamicTemplateReference extends Field {
     public boolean equals(Object obj) {
         return obj != null && obj.getClass().equals(this.getClass());
     }
+    
+    public String toString() {
+        return "DynamicTemplateRef";
+    }
 }

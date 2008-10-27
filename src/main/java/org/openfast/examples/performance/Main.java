@@ -73,7 +73,8 @@ public class Main extends OpenFastExample {
 
     private static void run(PerformanceRunner performanceRunner) {
         PerformanceResult result = performanceRunner.run();
-   
+        if (result == null)
+            return;
         System.out.println("Decoded " + result.getMessageCount() + " messages in " + result.getTime() + " milliseconds.");
         System.out.println("Average decode time per message: " + ((result.getTime() * 1000) / (result.getMessageCount())) + " microseconds");
     }

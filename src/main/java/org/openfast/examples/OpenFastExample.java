@@ -8,6 +8,17 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 public class OpenFastExample {
+    protected static final String HELP = "help";
+    protected static final String MESSAGE_TEMPLATE_FILE = "template";
+    protected static final String PORT = "port";
+    protected static final String PROTOCOL = "protocol";
+    protected static final String HOST = "host";
+    protected static final String ERROR = "error";
+    protected static final String NAMESPACE_AWARENESS = "ns";
+    protected static final String OUTPUT_FILE = "output";
+    protected static final String TRACE = "trace";
+    protected static final String FAST_DATA_FILE = "data";
+
     protected static CommandLine parseCommandLine(String name, String[] args, Options options) {
         try {
             BasicParser parser = new BasicParser();

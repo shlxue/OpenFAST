@@ -31,9 +31,4 @@ public class ByteVectorValueTest extends OpenFastTestCase {
         ByteVectorValue actual = new ByteVectorValue(new byte[] { (byte) 0xff });
         assertEquals(expected, actual);
     }
-    
-    public void testConvertToString() {
-    	assertEquals("61626364", byt("abcd".getBytes()).toString());
-    	assertEquals("7a4f4e65", byt("zONe".getBytes()).toString());
-    }
 }

@@ -1,4 +1,4 @@
-package org.openfast.examples.consumer;
+package org.openfast.examples.decoder;
 
 import java.io.File;
 import java.io.IOException;
@@ -6,21 +6,17 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 import org.openfast.examples.Assert;
 import org.openfast.examples.OpenFastExample;
-import org.openfast.session.Endpoint;
-import org.openfast.session.FastConnectionException;
-import org.openfast.session.multicast.MulticastEndpoint;
-import org.openfast.session.tcp.TcpEndpoint;
 
 public class Main extends OpenFastExample {
     private static Options options = new Options();
     
     static {
-        options.addOption("?", HELP, false, "Displays this message");
-        options.addOption("r", PROTOCOL, true, "Protocol [tcp|udp] defaults to tcp");
-        options.addOption("p", PORT, true, "Port to connect to");
-        options.addOption("h", HOST, true, "The host name of the server (or group name for multicast)");
+        options.addOption("?", "help", false, "Displays this message");
+        options.addOption("d", FAST_DATA_FILE, true, "FAST encoded data file");
         options.addOption("e", ERROR, false, "Show stacktrace information");
+        options.addOption("n", NAMESPACE_AWARENESS, false, "Enables namespace awareness");
         options.addOption("t", MESSAGE_TEMPLATE_FILE, true, "Message template definition file");
+        options.addOption("v", TRACE, false, "Trace");
     }
     
     /**
@@ -28,25 +24,17 @@ public class Main extends OpenFastExample {
      */
     public static void main(String[] args) {
         CommandLine cl = parseCommandLine("consumer", args, options);
-        if (cl.hasOption(HELP)) {
+        if (cl.hasOption("help")) {
             displayHelp("consumer", options);
         }
-        Endpoint endpoint = null;
         boolean showStacktrace = cl.hasOption(ERROR);
         File templatesFile = null;
+        File dataFile = null;
         try {
-            Assert.assertTrue(cl.hasOption(PORT), "The required parameter \"" + PORT + "\" is missing.");
-            int port = getInteger(cl, PORT);
-            String host = cl.hasOption(HOST) ? cl.getOptionValue(HOST) : "localhost";
-            
-            if (cl.hasOption(PROTOCOL)) {
-                if ("udp".equals(cl.getOptionValue(PROTOCOL))) {
-                    endpoint = new MulticastEndpoint(port, host);
-                }
-            }
-            if (endpoint == null) {
-                endpoint = new TcpEndpoint(host, port);
-            }
+            dataFile = getFile(cl, FAST_DATA_FILE);
+            Assert.assertTrue(dataFile.exists(), "The fast data file \"" + dataFile.getAbsolutePath() + "\" does not exist.");
+            Assert.assertTrue(!dataFile.isDirectory(), "The fast data file \"" + dataFile.getAbsolutePath() + "\" is a directory.");
+            Assert.assertTrue(dataFile.canRead(), "The fast data file \"" + dataFile.getAbsolutePath() + "\" is not readable.");
             templatesFile = getFile(cl, MESSAGE_TEMPLATE_FILE);
             Assert.assertTrue(templatesFile.exists(), "The template definition file \"" + templatesFile.getAbsolutePath() + "\" does not exist.");
             Assert.assertTrue(!templatesFile.isDirectory(), "The template definition file \"" + templatesFile.getAbsolutePath() + "\" is a directory.");
@@ -55,14 +43,11 @@ public class Main extends OpenFastExample {
             System.out.println(e.getMessage());
             displayHelp("consumer", options);
         }
-        FastMessageConsumer consumer = new FastMessageConsumer(endpoint, templatesFile);
+        FastMessageDecoder consumer = new FastMessageDecoder(dataFile, templatesFile, cl.hasOption(NAMESPACE_AWARENESS));
+        if (cl.hasOption(TRACE))
+            consumer.setTraceEnabled();
         try {
             consumer.start();
-        } catch (FastConnectionException e) {
-            if (showStacktrace)
-                e.printStackTrace();
-            System.out.println("Unable to connect to endpoint: " + e.getMessage());
-            System.exit(1);
         } catch (IOException e) {
             if (showStacktrace)
                 e.printStackTrace();

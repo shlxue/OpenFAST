@@ -25,7 +25,6 @@ package org.openfast.template.operator;
 
 import org.openfast.Global;
 import org.openfast.ScalarValue;
-import org.openfast.StringValue;
 import org.openfast.error.FastConstants;
 import org.openfast.template.Scalar;
 import org.openfast.template.TwinValue;
@@ -36,7 +35,7 @@ final class DeltaStringOperatorCodec extends AlwaysPresentOperatorCodec {
     private static final long serialVersionUID = 1L;
 
     DeltaStringOperatorCodec() {
-        super(Operator.DELTA, new Type[] { Type.ASCII, Type.STRING });
+        super(Operator.DELTA, new Type[] { Type.ASCII, Type.STRING, Type.UNICODE, Type.BYTE_VECTOR });
     }
 
     /**
@@ -54,7 +53,7 @@ final class DeltaStringOperatorCodec extends AlwaysPresentOperatorCodec {
             return null;
         }
         ScalarValue base = (priorValue.isUndefined()) ? field.getBaseValue() : priorValue;
-        return Util.getDifference((StringValue) value, (StringValue) base);
+        return Util.getDifference(value.getBytes(), base.getBytes());
     }
 
     /**
@@ -75,7 +74,8 @@ final class DeltaStringOperatorCodec extends AlwaysPresentOperatorCodec {
             Global.handleError(FastConstants.D7_SUBTRCTN_LEN_LONG, "The string diff <" + diffValue
                     + "> cannot be applied to the base value \"" + base + "\" because the subtraction length is too long.");
         }
-        return Util.applyDifference((StringValue) base, diffValue);
+        byte[] bytes = Util.applyDifference(base, diffValue);
+        return field.getType().getValue(bytes);
     }
 
     public ScalarValue decodeEmptyValue(ScalarValue previousValue, Scalar field) {

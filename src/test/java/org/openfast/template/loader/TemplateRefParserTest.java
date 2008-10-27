@@ -10,35 +10,32 @@ import org.openfast.test.OpenFastTestCase;
 import org.w3c.dom.Element;
 
 public class TemplateRefParserTest extends OpenFastTestCase {
+    private TemplateRefParser parser;
+    private ParsingContext context;
 
-	private TemplateRefParser parser;
-	private ParsingContext context;
+    protected void setUp() throws Exception {
+        parser = new TemplateRefParser();
+        context = XMLMessageTemplateLoader.createInitialContext();
+    }
 
-	protected void setUp() throws Exception {
-		parser = new TemplateRefParser();
-		context = XMLMessageTemplateLoader.createInitialContext();
-	}
-	
-	public void testParseDynamic() throws Exception {
-		 Element dynTempRefDef = document("<templateRef/>").getDocumentElement();
-		 assertEquals(DynamicTemplateReference.INSTANCE, parser.parse(dynTempRefDef, context));
-	}
-	
-	public void testParseStatic() throws Exception {
-		Element statTempRefDef = document("<templateRef name=\"base\"/>").getDocumentElement();
-		MessageTemplate base = new MessageTemplate("base", new Field[] {});
-		context.getTemplateRegistry().define(base);
-		StaticTemplateReference statTempRef = (StaticTemplateReference) parser.parse(statTempRefDef, context);
-		assertEquals(base, statTempRef.getTemplate());
-	}
-	
-	public void testParseStaticWithUndefinedTemplate() throws Exception {
-		Element statTempRefDef = document("<templateRef name=\"base\"/>").getDocumentElement();
-		try {
-			parser.parse(statTempRefDef, context);
-		} catch (FastException e) {
-			assertEquals(FastConstants.D8_TEMPLATE_NOT_EXIST, e.getCode());
-			assertEquals("The template \"base\" was not found.", e.getMessage());
-		}
-	}
+    public void testParseDynamic() throws Exception {
+        Element dynTempRefDef = document("<templateRef/>").getDocumentElement();
+        assertEquals(DynamicTemplateReference.INSTANCE, parser.parse(dynTempRefDef, context));
+    }
+
+    public void testParseStatic() throws Exception {
+        Element statTempRefDef = document("<templateRef name=\"base\"/>").getDocumentElement();
+        MessageTemplate base = new MessageTemplate("base", new Field[] {});
+        context.getTemplateRegistry().define(base);
+        StaticTemplateReference statTempRef = (StaticTemplateReference) parser.parse(statTempRefDef, context);
+        assertEquals(base, statTempRef.getTemplate());
+    }
+
+    public void testParseStaticWithUndefinedTemplate() throws Exception {
+        Element statTempRefDef = document("<templateRef name=\"base\"/>").getDocumentElement();
+        try {
+            parser.parse(statTempRefDef, context);
+        } catch (UnresolvedStaticTemplateReferenceException e) {
+        }
+    }
 }
