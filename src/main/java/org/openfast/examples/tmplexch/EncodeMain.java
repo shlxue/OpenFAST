@@ -10,7 +10,7 @@ import org.apache.commons.cli.Options;
 import org.openfast.examples.Assert;
 import org.openfast.examples.OpenFastExample;
 
-public class Main extends OpenFastExample {
+public class EncodeMain extends OpenFastExample {
     
     private static Options options = new Options();
     
@@ -56,7 +56,7 @@ public class Main extends OpenFastExample {
                 System.exit(1);
             }
         }
-        TemplateExchangeDefinition tmplExchanger = new TemplateExchangeDefinition(templatesFile, cl.hasOption(NAMESPACE_AWARENESS), out);
+        TemplateExchangeDefinitionEncoder tmplExchanger = new TemplateExchangeDefinitionEncoder(templatesFile, cl.hasOption(NAMESPACE_AWARENESS), out);
         try {
             tmplExchanger.start();
         } catch (IOException e) {

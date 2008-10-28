@@ -14,14 +14,14 @@ import org.openfast.template.MessageTemplate;
 import org.openfast.template.TemplateRegistry;
 import org.openfast.template.loader.XMLMessageTemplateLoader;
 
-public class TemplateExchangeDefinition {
+public class TemplateExchangeDefinitionEncoder {
     private final TemplateRegistry templateRegistry;
     private final OutputStream out;
 
-    public TemplateExchangeDefinition(File templatesFile, boolean namespaceAware) {
+    public TemplateExchangeDefinitionEncoder(File templatesFile, boolean namespaceAware) {
         this(templatesFile, namespaceAware, System.out);
     }
-    public TemplateExchangeDefinition(File templatesFile, boolean namespaceAware, OutputStream out) {
+    public TemplateExchangeDefinitionEncoder(File templatesFile, boolean namespaceAware, OutputStream out) {
         XMLMessageTemplateLoader loader = new XMLMessageTemplateLoader(namespaceAware);
         loader.setLoadTemplateIdFromAuxId(true);
         try {

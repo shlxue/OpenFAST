@@ -33,7 +33,7 @@ public class DynamicTemplateReference extends Field {
     private static final long serialVersionUID = 1L;
     public static final DynamicTemplateReference INSTANCE = new DynamicTemplateReference();
 
-    private DynamicTemplateReference() {
+    public DynamicTemplateReference() {
         super(QName.NULL, false);
     }
 

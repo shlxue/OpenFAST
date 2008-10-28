@@ -116,12 +116,15 @@ class SessionControlProtocol_1_0 extends AbstractSessionControlProtocol {
         return false;
     }
     public Message createTemplateDeclarationMessage(MessageTemplate messageTemplate, int templateId) {
-        return null;
+        throw new UnsupportedOperationException();
     }
     public Message createTemplateDefinitionMessage(MessageTemplate messageTemplate) {
-        return null;
+        throw new UnsupportedOperationException();
     }
     public Message getCloseMessage() {
         return createFastAlertMessage(SessionConstants.CLOSE);
+    }
+    public MessageTemplate createTemplateFromMessage(Message templateDef, TemplateRegistry registry) {
+        throw new UnsupportedOperationException();
     }
 }

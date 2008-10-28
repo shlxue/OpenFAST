@@ -44,7 +44,11 @@ public class ScalarParser extends AbstractFieldParser {
     public boolean canParse(Element element, ParsingContext context) {
         return context.getTypeMap().containsKey(getTypeName(element));
     }
-
+    
+    public boolean canSerialize(Field field) {
+        return field instanceof Scalar;
+    }
+    
     public Field parse(Element fieldNode, boolean optional, ParsingContext context) {
         Operator operator = Operator.NONE;
         String defaultValue = null;

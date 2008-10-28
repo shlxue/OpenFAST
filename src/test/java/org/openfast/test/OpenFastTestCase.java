@@ -27,12 +27,9 @@ import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
-
 import javax.xml.parsers.DocumentBuilderFactory;
-
 import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
-
 import org.openfast.ByteUtil;
 import org.openfast.ByteVectorValue;
 import org.openfast.Context;
@@ -61,6 +58,7 @@ import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
 public abstract class OpenFastTestCase extends TestCase {
+    protected static final String NL = System.getProperty("line.separator");
     protected static final ScalarValue NULL = ScalarValue.NULL;
 
     protected static final ScalarValue UNDEF = ScalarValue.UNDEFINED;

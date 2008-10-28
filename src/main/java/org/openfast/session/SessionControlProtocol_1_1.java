@@ -165,6 +165,7 @@ public class SessionControlProtocol_1_1 extends AbstractSessionControlProtocol {
         templateDefinition.setInteger("Reset", reset);
         return templateDefinition;
     }
+    
     public MessageTemplate createTemplateFromMessage(Message templateDef, TemplateRegistry registry) {
         String name = templateDef.getString("Name");
         Field[] fields = GroupConverter.parseFieldInstructions(templateDef, registry, initialContext);

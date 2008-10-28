@@ -39,18 +39,24 @@ public class ComposedDecimalConverter extends AbstractFieldInstructionConverter 
     public Field convert(GroupValue fieldDef, TemplateRegistry templateRegistry, ConversionContext context) {
         QName name = new QName(fieldDef.getString("Name"), fieldDef.getString("Ns"));
         boolean optional = fieldDef.getBool("Optional");
-        GroupValue exponentDef = fieldDef.getGroup("Exponent");
-        GroupValue exponentOperatorDef = exponentDef.getGroup("Operator").getGroup(0);
-        Operator exponentOperator = getOperator(exponentOperatorDef.getGroup());
+        Operator exponentOperator = Operator.NONE;
         ScalarValue exponentDefaultValue = ScalarValue.UNDEFINED;
-        if (exponentDef.isDefined("InitialValue"))
-            exponentDefaultValue = new IntegerValue(exponentDef.getInt("InitialValue"));
-        GroupValue mantissaDef = fieldDef.getGroup("Mantissa");
-        GroupValue mantissaOperatorDef = mantissaDef.getGroup("Operator").getGroup(0);
-        Operator mantissaOperator = getOperator(mantissaOperatorDef.getGroup());
+        Operator mantissaOperator = Operator.NONE;
         ScalarValue mantissaDefaultValue = ScalarValue.UNDEFINED;
-        if (mantissaDef.isDefined("InitialValue"))
-            mantissaDefaultValue = new LongValue(mantissaDef.getInt("InitialValue"));
+        if (fieldDef.isDefined("Exponent")) {
+            GroupValue exponentDef = fieldDef.getGroup("Exponent");
+            GroupValue exponentOperatorDef = exponentDef.getGroup("Operator").getGroup(0);
+            exponentOperator = getOperator(exponentOperatorDef.getGroup());
+            if (exponentDef.isDefined("InitialValue"))
+                exponentDefaultValue = new IntegerValue(exponentDef.getInt("InitialValue"));
+        }
+        if (fieldDef.isDefined("Mantissa")) {
+            GroupValue mantissaDef = fieldDef.getGroup("Mantissa");
+            GroupValue mantissaOperatorDef = mantissaDef.getGroup("Operator").getGroup(0);
+            mantissaOperator = getOperator(mantissaOperatorDef.getGroup());
+            if (mantissaDef.isDefined("InitialValue"))
+                mantissaDefaultValue = new LongValue(mantissaDef.getInt("InitialValue"));
+        }
         return Util.composedDecimal(name, exponentOperator, exponentDefaultValue, mantissaOperator, mantissaDefaultValue, optional);
     }
 
