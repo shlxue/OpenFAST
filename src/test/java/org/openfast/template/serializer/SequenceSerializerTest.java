@@ -2,11 +2,13 @@ package org.openfast.template.serializer;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
+import org.openfast.Node;
 import org.openfast.QName;
 import org.openfast.template.DynamicTemplateReference;
 import org.openfast.template.Field;
 import org.openfast.template.Sequence;
 import org.openfast.test.OpenFastTestCase;
+import org.openfast.util.Util;
 import org.openfast.util.XmlWriter;
 
 public class SequenceSerializerTest extends OpenFastTestCase {
@@ -19,9 +21,12 @@ public class SequenceSerializerTest extends OpenFastTestCase {
             new DynamicTemplateReference()
         }, true);
         sequence.setTypeReference(new QName("Party", "org.openfast"));
+        Node lengthNode = Util.createLength(new QName("NoParties", "http://www.openfast.org"), "100");
+        sequence.addNode(lengthNode);
         String expected =
             "<sequence name=\"Parties\" ns=\"http://openfast.org\" presence=\"optional\">" + NL +
             "    <typeRef name=\"Party\" ns=\"org.openfast\"/>" + NL +
+            "    <length name=\"NoParties\" ns=\"http://www.openfast.org\" id=\"100\"/>" + NL +
             "    <templateRef/>" + NL +
             "</sequence>" + NL;
         serializer.serialize(writer, sequence, XMLMessageTemplateSerializer.createInitialContext());

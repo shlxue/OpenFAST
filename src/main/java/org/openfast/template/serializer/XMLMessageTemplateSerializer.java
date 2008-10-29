@@ -24,6 +24,7 @@ public class XMLMessageTemplateSerializer implements MessageTemplateSerializer {
         registry.addFieldSerializer(new GroupSerializer());
         registry.addFieldSerializer(new SequenceSerializer());
         registry.addFieldSerializer(new TemplateSerializer());
+        registry.addFieldSerializer(new VariableLengthScalarSerializer());
         SerializingContext context = SerializingContext.createInitialContext(registry);
         return context;
     }

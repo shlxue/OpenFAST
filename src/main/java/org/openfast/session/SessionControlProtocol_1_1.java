@@ -231,7 +231,7 @@ public class SessionControlProtocol_1_1 extends AbstractSessionControlProtocol {
         }
     };
     static {
-        FAST_RESET_TEMPLATE.addAttribute(RESET_PROPERTY, "yes");
+        FAST_RESET_TEMPLATE.setAttribute(RESET_PROPERTY, "yes");
     }
     /**
      * ************************ MESSAGE HANDLERS

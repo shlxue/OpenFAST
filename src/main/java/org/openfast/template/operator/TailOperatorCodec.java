@@ -60,7 +60,7 @@ final class TailOperatorCodec extends OperatorCodec {
             index++;
         if (val.length == index)
             return null;
-        return (ScalarValue) field.createValue(new String(val, index, val.length - index));
+        return (ScalarValue) field.getType().getValue(val, index, val.length - index);
     }
 
     public ScalarValue decodeValue(ScalarValue newValue, ScalarValue previousValue, Scalar field) {

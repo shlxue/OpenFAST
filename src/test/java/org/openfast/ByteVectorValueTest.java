@@ -31,4 +31,10 @@ public class ByteVectorValueTest extends OpenFastTestCase {
         ByteVectorValue actual = new ByteVectorValue(new byte[] { (byte) 0xff });
         assertEquals(expected, actual);
     }
+    
+    public void testSerialize() {
+        byte[] bytes = ByteUtil.convertHexStringToByteArray("DDBBCCAA");
+        ByteVectorValue val = new ByteVectorValue(bytes);
+        assertEquals("ddbbccaa", val.serialize());
+    }
 }

@@ -22,21 +22,18 @@ package org.openfast.template;
 
 import java.io.InputStream;
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 import org.openfast.BitVectorBuilder;
 import org.openfast.BitVectorReader;
 import org.openfast.Context;
 import org.openfast.FieldValue;
 import org.openfast.QName;
+import org.openfast.SimpleNode;
 
-public abstract class Field implements Serializable {
+public abstract class Field extends SimpleNode implements Serializable {
     private static final long serialVersionUID = 1L;
-    protected final QName name;
     protected QName key;
     protected final boolean optional;
     protected String id;
-    private Map attributes;
     private MessageTemplate template;
 
     /**
@@ -48,7 +45,7 @@ public abstract class Field implements Serializable {
      *            Determines if the Field is required or not for the data
      */
     public Field(QName name, boolean optional) {
-        this.name = name;
+        super(name);
         this.key = name;
         this.optional = optional;
     }
@@ -64,7 +61,7 @@ public abstract class Field implements Serializable {
      *            Determines if the Field is required or not for the data
      */
     public Field(QName name, QName key, boolean optional) {
-        this.name = name;
+        super(name);
         this.key = key;
         this.optional = optional;
     }
@@ -82,7 +79,7 @@ public abstract class Field implements Serializable {
      *            The id string
      */
     public Field(String name, String key, boolean optional, String id) {
-        this.name = new QName(name);
+        super(new QName(name));
         this.key = new QName(key);
         this.optional = optional;
         this.id = id;
@@ -146,20 +143,6 @@ public abstract class Field implements Serializable {
      */
     public void setId(String id) {
         this.id = id;
-    }
-
-    public boolean hasAttribute(QName attributeName) {
-        return attributes != null && attributes.containsKey(attributeName);
-    }
-
-    public void addAttribute(QName name, String value) {
-        if (attributes == null)
-            attributes = new HashMap(4);
-        attributes.put(name, value);
-    }
-
-    public String getAttribute(QName name) {
-        return (String) attributes.get(name);
     }
 
     protected boolean isPresent(BitVectorReader presenceMapReader) {

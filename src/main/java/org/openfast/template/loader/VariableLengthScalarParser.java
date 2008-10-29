@@ -20,9 +20,10 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
  */
 package org.openfast.template.loader;
 
-import org.openfast.error.FastConstants;
+import org.openfast.QName;
 import org.openfast.template.Field;
 import org.openfast.template.Scalar;
+import org.openfast.util.Util;
 import org.w3c.dom.Element;
 
 public class VariableLengthScalarParser extends ScalarParser {
@@ -34,8 +35,14 @@ public class VariableLengthScalarParser extends ScalarParser {
         Scalar scalar = (Scalar) super.parse(fieldNode, optional, context);
         Element element = getElement(fieldNode, 1);
         if (element != null && element.getNodeName().equals("length")) {
-            String length = element.getAttribute("name");
-            scalar.addAttribute(FastConstants.LENGTH_FIELD, length);
+            String lengthName = element.getAttribute("name");
+            String lengthNamespace = context.getNamespace();
+            String lengthId = null;
+            if (element.hasAttribute("ns"))
+                lengthNamespace = element.getAttribute("ns");
+            if (element.hasAttribute("id"))
+                lengthId = element.getAttribute("id");
+            scalar.addNode(Util.createLength(new QName(lengthName, lengthNamespace), lengthId));
         }
         return scalar;
     }

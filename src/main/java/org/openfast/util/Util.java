@@ -30,8 +30,11 @@ import org.openfast.ByteUtil;
 import org.openfast.ByteVectorValue;
 import org.openfast.Global;
 import org.openfast.IntegerValue;
+import org.openfast.Node;
 import org.openfast.QName;
 import org.openfast.ScalarValue;
+import org.openfast.SimpleNode;
+import org.openfast.error.FastConstants;
 import org.openfast.template.ComposedScalar;
 import org.openfast.template.Scalar;
 import org.openfast.template.TwinValue;
@@ -175,5 +178,14 @@ public class Util {
         } catch (NumberFormatException e) {
             return 0;
         }
+    }
+
+    public static Node createLength(QName name, String id) {
+        SimpleNode lengthNode = new SimpleNode(FastConstants.LENGTH_FIELD);
+        lengthNode.setAttribute(FastConstants.LENGTH_NAME_ATTR, name.getName());
+        lengthNode.setAttribute(FastConstants.LENGTH_NS_ATTR, name.getNamespace());
+        if (id != null)
+            lengthNode.setAttribute(FastConstants.LENGTH_ID_ATTR, id);
+        return lengthNode;
     }
 }

@@ -20,6 +20,7 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
  */
 package org.openfast.template.type;
 
+import org.openfast.ByteUtil;
 import org.openfast.ByteVectorValue;
 import org.openfast.ScalarValue;
 import org.openfast.template.type.codec.TypeCodec;
@@ -36,7 +37,7 @@ final class ByteVectorType extends SimpleType {
      * @return
      */
     protected ScalarValue getVal(String value) {
-        return new ByteVectorValue(value.getBytes());
+        return new ByteVectorValue(ByteUtil.convertHexStringToByteArray(value));
     }
 
     /**
@@ -62,5 +63,8 @@ final class ByteVectorType extends SimpleType {
     
     public ScalarValue getValue(byte[] bytes) {
         return new ByteVectorValue(bytes);
+    }
+    public ScalarValue getValue(byte[] bytes, int offset, int length) {
+        return new ByteVectorValue(bytes, offset, length);
     }
 }

@@ -13,7 +13,7 @@ public class GroupSerializer extends AbstractFieldSerializer implements FieldSer
         Group group = (Group) field;
         writer.start("group");
         writeCommonAttributes(writer, field, context);
-        writeTypeReference(writer, group);
+        writeTypeReference(writer, group, context);
         writeChildren(writer, context, group);
         writer.end();
     }

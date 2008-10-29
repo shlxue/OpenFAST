@@ -60,7 +60,7 @@ public abstract class AbstractFieldParser implements FieldParser {
             if (attribute.getNamespaceURI() == null || attribute.getNamespaceURI().equals("")
                     || attribute.getNamespaceURI().equals(XMLMessageTemplateLoader.TEMPLATE_DEFINITION_NS))
                 continue;
-            field.addAttribute(new QName(attribute.getLocalName(), attribute.getNamespaceURI()), attribute.getValue());
+            field.setAttribute(new QName(attribute.getLocalName(), attribute.getNamespaceURI()), attribute.getValue());
         }
     }
 

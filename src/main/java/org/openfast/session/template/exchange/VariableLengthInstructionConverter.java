@@ -21,6 +21,8 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 package org.openfast.session.template.exchange;
 
 import org.openfast.GroupValue;
+import org.openfast.Node;
+import org.openfast.QName;
 import org.openfast.error.FastConstants;
 import org.openfast.session.SessionControlProtocol_1_1;
 import org.openfast.template.Field;
@@ -28,12 +30,19 @@ import org.openfast.template.Group;
 import org.openfast.template.Scalar;
 import org.openfast.template.TemplateRegistry;
 import org.openfast.template.type.Type;
+import org.openfast.util.Util;
 
 public class VariableLengthInstructionConverter extends ScalarConverter {
     public Field convert(GroupValue fieldDef, TemplateRegistry templateRegistry, ConversionContext context) {
         Scalar scalar = (Scalar) super.convert(fieldDef, templateRegistry, context);
         if (fieldDef.isDefined("Length")) {
-            scalar.addAttribute(FastConstants.LENGTH_FIELD, fieldDef.getGroup("Length").getString("Name"));
+            GroupValue lengthDef = fieldDef.getGroup("Length");
+            String lengthName = lengthDef.getString("Name");
+            String lengthNs = "";
+            if (lengthDef.isDefined("Ns"))
+                lengthNs = lengthDef.getString("Ns");
+            String id = lengthDef.getString("AuxId");
+            scalar.addNode(Util.createLength(new QName(lengthName, lengthNs), id));
         }
         return scalar;
     }
@@ -41,10 +50,13 @@ public class VariableLengthInstructionConverter extends ScalarConverter {
     public GroupValue convert(Field field, ConversionContext context) {
         Scalar scalar = (Scalar) field;
         GroupValue fieldDef = super.convert(field, context);
-        if (scalar.hasAttribute(FastConstants.LENGTH_FIELD)) {
+        if (scalar.hasChild(FastConstants.LENGTH_FIELD)) {
+            Node lengthNode = (Node) scalar.getChildren(FastConstants.LENGTH_FIELD).get(0);
             GroupValue lengthDef = new GroupValue(fieldDef.getGroup().getGroup("Length"));
-            lengthDef.setString("Ns", ""); // TODO - Need to handle full Length definition
-            lengthDef.setString("Name", scalar.getAttribute(FastConstants.LENGTH_FIELD));
+            lengthDef.setString("Ns", lengthNode.getAttribute(FastConstants.LENGTH_NS_ATTR));
+            lengthDef.setString("Name", lengthNode.getAttribute(FastConstants.LENGTH_NAME_ATTR));
+            if (lengthNode.hasAttribute(FastConstants.LENGTH_ID_ATTR))
+                lengthDef.setString("AuxId", lengthNode.getAttribute(FastConstants.LENGTH_ID_ATTR));
             fieldDef.setFieldValue("Length", lengthDef);
         }
         return fieldDef;

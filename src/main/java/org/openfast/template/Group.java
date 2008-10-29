@@ -36,6 +36,7 @@ import org.openfast.Context;
 import org.openfast.FieldValue;
 import org.openfast.Global;
 import org.openfast.GroupValue;
+import org.openfast.Node;
 import org.openfast.QName;
 import org.openfast.error.FastConstants;
 import org.openfast.error.FastException;
@@ -88,8 +89,9 @@ public class Group extends Field {
         Map map = new HashMap();
         for (int i = 0; i < fields.length; i++) {
             if (fields[i] instanceof Scalar) {
-                if (fields[i].hasAttribute(FastConstants.LENGTH_FIELD)) {
-                    map.put(fields[i].getAttribute(FastConstants.LENGTH_FIELD), fields[i]);
+                if (fields[i].hasChild(FastConstants.LENGTH_FIELD)) {
+                    Node lengthNode = (Node) fields[i].getChildren(FastConstants.LENGTH_FIELD).get(0);
+                    map.put(lengthNode.getAttribute(FastConstants.LENGTH_NAME_ATTR), fields[i]);
                 }
             }
         }

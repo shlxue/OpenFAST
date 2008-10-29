@@ -88,12 +88,18 @@ public abstract class Type implements Serializable {
         public ScalarValue getValue(byte[] bytes) {
             return new StringValue(new String(bytes));
         }
+        public ScalarValue getValue(byte[] bytes, int offset, int length) {
+            return new StringValue(new String(bytes, offset, length));
+        }
     };
     public final static Type ASCII = new StringType("ascii", TypeCodec.ASCII, TypeCodec.NULLABLE_ASCII) {
         private static final long serialVersionUID = 1L;
 
         public ScalarValue getValue(byte[] bytes) {
             return new StringValue(new String(bytes));
+        }
+        public ScalarValue getValue(byte[] bytes, int offset, int length) {
+            return new StringValue(new String(bytes, offset, length));
         }
     };
     public final static Type UNICODE = new StringType("unicode", TypeCodec.UNICODE, TypeCodec.NULLABLE_UNICODE) {
@@ -102,6 +108,13 @@ public abstract class Type implements Serializable {
         public ScalarValue getValue(byte[] bytes) {
             try {
                 return new StringValue(new String(bytes, "UTF8"));
+            } catch (UnsupportedEncodingException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        public ScalarValue getValue(byte[] bytes, int offset, int length) {
+            try {
+                return new StringValue(new String(bytes, offset, length, "UTF8"));
             } catch (UnsupportedEncodingException e) {
                 throw new RuntimeException(e);
             }
@@ -125,6 +138,9 @@ public abstract class Type implements Serializable {
         return name.hashCode();
     }
     public ScalarValue getValue(byte[] bytes) {
+        throw new UnsupportedOperationException();
+    }
+    public ScalarValue getValue(byte[] bytes, int offset, int length) {
         throw new UnsupportedOperationException();
     }
 }

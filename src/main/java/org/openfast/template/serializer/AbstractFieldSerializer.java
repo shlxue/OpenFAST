@@ -1,5 +1,8 @@
 package org.openfast.template.serializer;
 
+import java.util.List;
+import org.openfast.Node;
+import org.openfast.error.FastConstants;
 import org.openfast.template.Field;
 import org.openfast.template.Group;
 import org.openfast.template.Scalar;
@@ -27,7 +30,7 @@ public abstract class AbstractFieldSerializer implements FieldSerializer {
                 writer.addAttribute("ns", scalar.getKey().getNamespace());
         }
         if (!scalar.getDefaultValue().isUndefined()) {
-            writer.addAttribute("value", scalar.getDefaultValue().toString());
+            writer.addAttribute("value", scalar.getDefaultValue().serialize());
         }
         writer.end();
     }
@@ -38,19 +41,30 @@ public abstract class AbstractFieldSerializer implements FieldSerializer {
         }
     }
 
-    protected static void writeTypeReference(XmlWriter writer, Group group) {
+    protected static void writeTypeReference(XmlWriter writer, Group group, SerializingContext context) {
         if (group.getTypeReference() != null) {
             writer.start("typeRef");
             writer.addAttribute("name", group.getTypeReference().getName());
-            if (!"".equals(group.getTypeReference().getNamespace()))
+            if (!group.getTypeReference().getNamespace().equals(context.getNamespace()))
                 writer.addAttribute("ns", group.getTypeReference().getNamespace());
             writer.end();
         }
     }
     
-    protected static void writeLength(XmlWriter writer, Field field, SerializingContext context) {
-//        if (field.hasChild("length")) {
-//            
-//        }
+    protected static void writeLength(XmlWriter writer, Node node, SerializingContext context) {
+        List lengthNodes = node.getChildren(FastConstants.LENGTH_FIELD);
+        if (!lengthNodes.isEmpty()) {
+            Node lengthNode = (Node) lengthNodes.get(0);
+            writer.start("length");
+            writer.addAttribute("name", lengthNode.getAttribute(FastConstants.LENGTH_NAME_ATTR));
+            if (lengthNode.hasAttribute(FastConstants.LENGTH_NS_ATTR)) {
+                String namespace = lengthNode.getAttribute(FastConstants.LENGTH_NS_ATTR);
+                if (!namespace.equals(context.getNamespace()))
+                    writer.addAttribute("ns", namespace);
+            }
+            if (lengthNode.hasAttribute(FastConstants.LENGTH_ID_ATTR))
+                writer.addAttribute("id", lengthNode.getAttribute(FastConstants.LENGTH_ID_ATTR));
+            writer.end();
+        }
     }
 }

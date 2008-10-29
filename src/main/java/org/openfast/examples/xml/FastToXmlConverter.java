@@ -34,7 +34,7 @@ public class FastToXmlConverter {
         xmlTemplateLoader.load(this.getClass().getResourceAsStream("xmlOverFastTemplates.xml"));
         this.templateRegistry = xmlTemplateLoader.getTemplateRegistry();
         this.elementTemplate = templateRegistry.get("element");
-        this.nodeNameIdx = elementTemplate.getFieldIndex("nodeName");
+        this.nodeNameIdx = elementTemplate.getFieldIndex("name");
         this.attributesIdx = elementTemplate.getFieldIndex("attributes");
         Sequence attributesSequence = elementTemplate.getSequence("attributes");
         this.attributeNameIdx = attributesSequence.getGroup().getFieldIndex("name");

@@ -94,6 +94,10 @@ public class ScalarValue implements FieldValue {
     public String toString() {
         throw new UnsupportedOperationException();
     }
+    
+    public String serialize() {
+        return toString();
+    }
 
     public byte[] getBytes() {
         throw new UnsupportedOperationException();

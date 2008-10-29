@@ -4,7 +4,7 @@ import org.openfast.template.Field;
 import org.openfast.template.MessageTemplate;
 import org.openfast.util.XmlWriter;
 
-public class TemplateSerializer implements FieldSerializer {
+public class TemplateSerializer extends AbstractFieldSerializer implements FieldSerializer {
     public void serialize(XmlWriter writer, Field field, SerializingContext context) {
         MessageTemplate template = (MessageTemplate) field;
         writer.start("template");
@@ -22,13 +22,8 @@ public class TemplateSerializer implements FieldSerializer {
 //        if (template.getDictionary() != null) {
 //            writer.addAttribute("dictionary", template.getDictionary());
 //        }
-        if (template.getTypeReference() != null) {
-            writer.start("typeRef");
-            writer.addAttribute("name", template.getTypeReference().getName());
-            if (!"".equals(template.getTypeReference().getNamespace()))
-                writer.addAttribute("ns", template.getTypeReference().getNamespace());
-            writer.end();
-        }
+        
+        writeTypeReference(writer, template, context);
         for (int i=1; i<template.getFieldCount(); i++) {
             context.serialize(writer, template.getField(i));
         }
