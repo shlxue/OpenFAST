@@ -249,7 +249,7 @@ public class GroupValue implements FieldValue {
     }
 
     public void setString(int fieldIndex, String value) {
-        values[fieldIndex] = new StringValue(value);
+        values[fieldIndex] = group.getField(fieldIndex).createValue(value);
     }
 
     public void setString(String fieldName, String value) {

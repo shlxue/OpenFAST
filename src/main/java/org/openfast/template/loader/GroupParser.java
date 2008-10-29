@@ -54,7 +54,7 @@ public class GroupParser extends AbstractFieldParser {
         group.setChildNamespace(context.getNamespace());
         if (groupElement.hasAttribute("id"))
             group.setId(groupElement.getAttribute("id"));
-        group.setTypeReference(getTypeReference(groupElement));
+        group.setTypeReference(getTypeReference(groupElement, context));
         parseExternalAttributes(groupElement, group);
     }
 
@@ -88,12 +88,13 @@ public class GroupParser extends AbstractFieldParser {
      * 
      * @param templateTag
      *            The dom element object
+     * @param context 
      * @return Returns a string of the TypeReference from the passed element dom
      *         object
      */
-    protected static QName getTypeReference(Element templateTag) {
+    protected static QName getTypeReference(Element templateTag, ParsingContext context) {
         String typeReference = null;
-        String typeRefNs = "";
+        String typeRefNs = context.getNamespace();
         NodeList typeReferenceTags = templateTag.getElementsByTagName("typeRef");
         if (typeReferenceTags.getLength() > 0) {
             Element messageRef = (Element) typeReferenceTags.item(0);

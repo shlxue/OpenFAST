@@ -54,6 +54,17 @@ public class ByteUtil {
         }
         return bytes;
     }
+    
+    public static String convertByteArrayToHexString(byte[] value) {
+        StringBuffer builder = new StringBuffer(value.length * 2);
+        for (int i = 0; i < value.length; i++) {
+            String hex = Integer.toHexString(value[i] & 0xff);
+            if (hex.length() == 1)
+                builder.append('0');
+            builder.append(hex);
+        }
+        return builder.toString();
+    }
 
     /**
      * 

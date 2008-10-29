@@ -52,10 +52,14 @@ public class IntegerValue extends NumericValue {
     }
 
     public NumericValue increment() {
+        if (value == Integer.MAX_VALUE)
+            return new LongValue(value + 1L);
         return new IntegerValue(value + 1);
     }
 
     public NumericValue decrement() {
+        if (value == Integer.MIN_VALUE)
+            return new LongValue(value - 1L);
         return new IntegerValue(value - 1);
     }
 
@@ -67,10 +71,10 @@ public class IntegerValue extends NumericValue {
     }
 
     public NumericValue add(NumericValue addend) {
-        if (addend instanceof LongValue) {
-            return addend.add(this);
-        }
-        return new IntegerValue(this.value + addend.toInt());
+        long total = value + addend.toLong();
+        if (total <= Integer.MAX_VALUE && total >= Integer.MIN_VALUE)
+            return new IntegerValue((int) total);
+        return new LongValue(total);
     }
 
     public String serialize() {

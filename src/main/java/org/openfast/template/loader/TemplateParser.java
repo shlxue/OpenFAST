@@ -21,8 +21,6 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 package org.openfast.template.loader;
 
 import org.openfast.QName;
-import org.openfast.error.FastConstants;
-import org.openfast.error.FastException;
 import org.openfast.template.Field;
 import org.openfast.template.MessageTemplate;
 import org.w3c.dom.Element;
