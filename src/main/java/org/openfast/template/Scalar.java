@@ -334,9 +334,23 @@ public class Scalar extends Field {
         return equals((Scalar) other);
     }
     private boolean equals(Scalar other) {
-        return name.equals(other.name) && type.equals(other.type) && typeCodec.equals(other.typeCodec)
-                && operator.equals(other.operator) && operatorCodec.equals(other.operatorCodec)
-                && initialValue.equals(other.initialValue) && dictionary.equals(other.dictionary);
+        boolean equals = equals(name, other.name);
+        equals = equals && equals(type, other.type);
+        equals = equals && equals(typeCodec, other.typeCodec);
+        equals = equals && equals(operator, other.operator);
+        equals = equals && equals(operatorCodec, other.operatorCodec);
+        equals = equals && equals(initialValue, other.initialValue);
+        equals = equals && equals(dictionary, other.dictionary);
+        equals = equals && equals(id, other.id);
+        return equals;
+    }
+    private boolean equals(Object o, Object o2) {
+        if (o == null) {
+            if (o2 == null)
+                return true;
+            return false;
+        }
+        return o.equals(o2);
     }
     public int hashCode() {
         return name.hashCode() + type.hashCode() + typeCodec.hashCode() + operator.hashCode() + operatorCodec.hashCode()

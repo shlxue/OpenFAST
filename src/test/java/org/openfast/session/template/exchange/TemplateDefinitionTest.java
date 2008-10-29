@@ -1,9 +1,9 @@
 package org.openfast.session.template.exchange;
 
 import org.openfast.Context;
-import org.openfast.GroupValue;
 import org.openfast.IntegerValue;
 import org.openfast.Message;
+import org.openfast.ScalarValue;
 import org.openfast.codec.FastEncoder;
 import org.openfast.session.SessionConstants;
 import org.openfast.session.SessionControlProtocol_1_1;
@@ -39,5 +39,18 @@ public class TemplateDefinitionTest extends OpenFastTestCase {
         //   -------- -DEFAULT
             "10011001 10001011";
         assertEquals(expected, encoded);
+    }
+    
+    public void testEncodeId() {
+        Field field = new Scalar("a", Type.U32, Operator.NONE, ScalarValue.UNDEFINED, false);
+        field.setId("1");
+        Message msg = (Message) converter.convert(field, conversionContext);
+        byte[] encoded = encoder.encode(msg);
+        String expected = 
+        //   --PMAP-- ---TEMPLATE ID--- ---NS--- -------NAME------ --------ID------- --OPT--- DFT VAL-
+            "11100000 01111101 10001101 10000000 10000001 01100001 10000010 00110001 10000000 10000000";
+        assertEquals(expected, encoded);
+        
+        assertEquals(field, converter.convert(msg, context.getTemplateRegistry(), conversionContext));
     }
 }

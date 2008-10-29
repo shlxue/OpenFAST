@@ -41,4 +41,12 @@ public class SerializingContext {
     public String getDictionary() {
         return dictionary;
     }
+
+    public void setTemplateNamespace(String templateNamespace) {
+        currentTemplateNamespace = templateNamespace;
+    }
+
+    public void setNamespace(String namespace) {
+        currentNamespace = namespace;
+    }
 }

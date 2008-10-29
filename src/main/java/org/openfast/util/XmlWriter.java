@@ -13,9 +13,15 @@ public class XmlWriter {
     private boolean open;
     private boolean hasChildren;
     private Stack elementStack = new Stack();
+    private boolean processingInstructionsEnabled;
+    private boolean started = false;
 
     public XmlWriter(OutputStream destination) {
         this.writer = new PrintWriter(new OutputStreamWriter(destination));
+    }
+    
+    public void setEnableProcessingInstructions(boolean enableProcessingInstructions) {
+        this.processingInstructionsEnabled = enableProcessingInstructions;
     }
     
     public void setTabSize(int tabSize) {
@@ -23,6 +29,9 @@ public class XmlWriter {
     }
 
     public void start(String nodeName) {
+        if (!started && processingInstructionsEnabled)
+            writer.println("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
+        started = true;
         hasChildren = false;
         if (open) {
             writer.println(">");

@@ -3,6 +3,7 @@ package org.openfast.examples.tmplexch;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -37,12 +38,20 @@ public class DecodeMain extends OpenFastExample {
         if (cl.hasOption(MESSAGE_TEMPLATE_FILE)) {
             try {
                 templatesFile = getFile(cl, MESSAGE_TEMPLATE_FILE);
-                Assert.assertTrue(templatesFile.exists(), "The template definition file \"" + templatesFile.getAbsolutePath() + "\" does not exist.");
                 Assert.assertTrue(!templatesFile.isDirectory(), "The template definition file \"" + templatesFile.getAbsolutePath() + "\" is a directory.");
-                Assert.assertTrue(templatesFile.canRead(), "The template definition file \"" + templatesFile.getAbsolutePath() + "\" is not readable.");
+                if (!templatesFile.exists())
+                    templatesFile.createNewFile();
+                Assert.assertTrue(templatesFile.exists(), "The template definition file \"" + templatesFile.getAbsolutePath() + "\" does not exist.");
+                out = new FileOutputStream(templatesFile);
             } catch (AssertionError e) {
                 System.out.println(e.getMessage());
                 displayHelp("consumer", options);
+            } catch (FileNotFoundException e) {
+                System.out.println("Unable to create output file.");
+                System.exit(1);
+            } catch (IOException e) {
+                System.out.println("Unable to create output file.");
+                System.exit(1);
             }
         }
         InputStream fastIn = null;
@@ -55,15 +64,18 @@ public class DecodeMain extends OpenFastExample {
             Assert.assertTrue(inFile.canRead(), "The fast encoded data file \"" + inFile.getAbsolutePath() + "\" is not readable.");
             fastIn = new FileInputStream(inFile);
         } catch (FileNotFoundException e) {
-            System.out.println("Unable to create output file.");
+            System.out.println("Unable to open data file.");
             System.exit(1);
         } catch (IOException e) {
-            System.out.println("Unable to create output file.");
+            System.out.println("Unable to open data file.");
             System.exit(1);
         }
         TemplateExchangeDefinitionDecoder tmplExchanger = new TemplateExchangeDefinitionDecoder(fastIn, cl.hasOption(NAMESPACE_AWARENESS), out);
         try {
             tmplExchanger.start();
+            if (cl.hasOption(MESSAGE_TEMPLATE_FILE)) {
+                System.out.println("Templates written to " + templatesFile.getAbsolutePath() + ".");
+            }
         } catch (IOException e) {
             if (showStacktrace)
                 e.printStackTrace();

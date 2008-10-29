@@ -66,21 +66,30 @@ public class ScalarConverter extends AbstractFieldInstructionConverter {
         ScalarValue initialValue = ScalarValue.UNDEFINED;
         if (fieldDef.isDefined("InitialValue"))
             initialValue = (ScalarValue) fieldDef.getValue("InitialValue");
+        Scalar scalar = null;
+        String name = fieldDef.getString("Name");
+        String namespace = "";
+        if (fieldDef.isDefined("Ns"))
+            namespace = fieldDef.getString("Ns");
+        QName qname = new QName(name, namespace);
         if (fieldDef.isDefined("Operator")) {
             GroupValue operatorGroup = fieldDef.getGroup("Operator").getGroup(0);
             Operator operator = getOperator(operatorGroup.getGroup());
-            Scalar scalar = new Scalar(fieldDef.getString("Name"), type, operator, initialValue, optional);
+            scalar = new Scalar(qname, type, operator, initialValue, optional);
             if (operatorGroup.isDefined("Dictionary"))
                 scalar.setDictionary(operatorGroup.getString("Dictionary"));
             if (operatorGroup.isDefined("Key")) {
-                String name = operatorGroup.getGroup("Key").getString("Name");
+                String keyName = operatorGroup.getGroup("Key").getString("Name");
                 String ns = operatorGroup.getGroup("Key").getString("Ns");
-                scalar.setKey(new QName(name, ns));
+                scalar.setKey(new QName(keyName, ns));
             }
-            return scalar;
         } else {
-            return new Scalar(fieldDef.getString("Name"), type, Operator.NONE, initialValue, optional);
+            scalar = new Scalar(qname, type, Operator.NONE, initialValue, optional);
         }
+        if (fieldDef.isDefined("AuxId")) {
+            scalar.setId(fieldDef.getString("AuxId"));
+        }
+        return scalar;
     }
 
     public GroupValue convert(Field field, ConversionContext context) {

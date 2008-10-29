@@ -11,27 +11,24 @@ import org.openfast.template.Sequence;
 import org.openfast.template.TemplateRegistry;
 import org.openfast.template.operator.Operator;
 import org.openfast.template.type.Type;
-
 import junit.framework.TestCase;
 
 public class SequenceConverterTest extends TestCase {
-	private SequenceConverter converter;
-	private ConversionContext context;
+    private SequenceConverter converter;
+    private ConversionContext context;
 
-	protected void setUp() throws Exception {
-		converter = new SequenceConverter();
-		context = SessionControlProtocol_1_1.createInitialContext();
-	}
-	
-	public void testConvert() {
-		Scalar lengthField = new Scalar("listSize", Type.U32, Operator.COPY, new IntegerValue(10), false);
-		Sequence sequence = new Sequence(new QName("list"), lengthField, new Field[] { new Scalar("item", Type.DECIMAL, Operator.DELTA, ScalarValue.UNDEFINED, false )}, false);
-		assertTrue(converter.shouldConvert(sequence));
-		
-		GroupValue fieldDef = converter.convert(sequence, context);
-		Sequence converted = (Sequence) converter.convert(fieldDef, TemplateRegistry.NULL, context);
-		
-		assertEquals(sequence, converted);
-	}
+    protected void setUp() throws Exception {
+        converter = new SequenceConverter();
+        context = SessionControlProtocol_1_1.createInitialContext();
+    }
 
+    public void testConvert() {
+        Scalar lengthField = new Scalar("listSize", Type.U32, Operator.COPY, new IntegerValue(10), false);
+        Sequence sequence = new Sequence(new QName("list"), lengthField, new Field[] { new Scalar("item", Type.DECIMAL,
+                Operator.DELTA, ScalarValue.UNDEFINED, false) }, false);
+        assertTrue(converter.shouldConvert(sequence));
+        GroupValue fieldDef = converter.convert(sequence, context);
+        Sequence converted = (Sequence) converter.convert(fieldDef, TemplateRegistry.NULL, context);
+        assertEquals(sequence, converted);
+    }
 }

@@ -17,9 +17,7 @@ are Copyright (C) The LaSalle Technology Group, LLC. All Rights Reserved.
 
 Contributor(s): Jacob Northey <jacob@lasalletech.com>
                 Craig Otis <cotis@lasalletech.com>
-*/
-
-
+ */
 package org.openfast.test;
 
 import org.openfast.DecimalValue;
@@ -40,65 +38,50 @@ import org.openfast.template.StaticTemplateReference;
 import org.openfast.template.operator.Operator;
 import org.openfast.template.type.Type;
 
-
 public class ObjectMother {
     private static MessageTemplate quoteTemplate;
     private static MessageTemplate allocationInstruction;
     private static Group instrument;
     private static Sequence allocations;
-	private static MessageTemplate batchTemplate;
-	private static MessageTemplate headerTemplate;
+    private static MessageTemplate batchTemplate;
+    private static MessageTemplate headerTemplate;
     public static final int QUOTE_TEMPLATE_ID = 10;
     public static final int ALLOC_INSTRCTN_TEMPLATE_ID = 25;
 
     public static MessageTemplate quoteTemplate() {
         if (quoteTemplate == null) {
-            quoteTemplate = new MessageTemplate("Quote",
-                    new Field[] {
-                        new Scalar("bid", Type.DECIMAL, Operator.DELTA, ScalarValue.UNDEFINED, false),
-                        new Scalar("ask", Type.DECIMAL, Operator.DELTA, ScalarValue.UNDEFINED, false)
-                    });
+            quoteTemplate = new MessageTemplate("Quote", new Field[] {
+                    new Scalar("bid", Type.DECIMAL, Operator.DELTA, ScalarValue.UNDEFINED, false),
+                    new Scalar("ask", Type.DECIMAL, Operator.DELTA, ScalarValue.UNDEFINED, false) });
         }
-
         return quoteTemplate;
     }
 
-	public static MessageTemplate batchTemplate() {
+    public static MessageTemplate batchTemplate() {
         if (batchTemplate == null) {
-        	batchTemplate = new MessageTemplate("Batch",
-                    new Field[] {
-        				new StaticTemplateReference(headerTemplate()),
-        				new Sequence("Batch", new Field[] {
-        						DynamicTemplateReference.INSTANCE
-        				}, false)
-                    });
+            batchTemplate = new MessageTemplate("Batch", new Field[] { new StaticTemplateReference(headerTemplate()),
+                    new Sequence("Batch", new Field[] { DynamicTemplateReference.INSTANCE }, false) });
         }
-
         return batchTemplate;
-	}
+    }
 
     public static MessageTemplate headerTemplate() {
         if (headerTemplate == null) {
-        	headerTemplate = new MessageTemplate("Header",
-                new Field[] {
-        			new Scalar("Sent", Type.U32, Operator.DELTA, ScalarValue.UNDEFINED, false)
-                });
+            headerTemplate = new MessageTemplate("Header", new Field[] { new Scalar("Sent", Type.U32, Operator.DELTA,
+                    ScalarValue.UNDEFINED, false) });
         }
-
         return headerTemplate;
-	}
+    }
 
-	public static Message quote(double bid, double ask) {
+    public static Message quote(double bid, double ask) {
         Message quote = new Message(quoteTemplate());
         quote.setDecimal(1, bid);
         quote.setDecimal(2, ask);
-
         return quote;
     }
 
-    public static Message newAllocInstrctn(String id, int side,
-        double quantity, double averagePrice, GroupValue instrument,
-        SequenceValue allocations) {
+    public static Message newAllocInstrctn(String id, int side, double quantity, double averagePrice, GroupValue instrument,
+            SequenceValue allocations) {
         Message allocInstrctn = new Message(allocationInstruction());
         allocInstrctn.setFieldValue(1, allocations);
         allocInstrctn.setFieldValue(2, instrument);
@@ -106,79 +89,62 @@ public class ObjectMother {
         allocInstrctn.setFieldValue(4, new IntegerValue(side));
         allocInstrctn.setFieldValue(5, new DecimalValue(quantity));
         allocInstrctn.setFieldValue(6, new DecimalValue(averagePrice));
-
         return allocInstrctn;
     }
 
     public static MessageTemplate allocationInstruction() {
         if (allocationInstruction == null) {
-            allocationInstruction = new MessageTemplate("AllocInstrctn",
-                new Field[] {
-                    allocations(), 
-                    instrument(),
-                    new Scalar("ID",            Type.ASCII,   Operator.DELTA, ScalarValue.UNDEFINED, false),
-                    new Scalar("Side",          Type.U32,     Operator.COPY,  ScalarValue.UNDEFINED, false),
-                    new Scalar("Quantity",      Type.DECIMAL, Operator.DELTA, ScalarValue.UNDEFINED, false),
-                    new Scalar("Average Price", Type.DECIMAL, Operator.DELTA, ScalarValue.UNDEFINED, false)
-                });
+            allocationInstruction = new MessageTemplate("AllocInstrctn", new Field[] { allocations(), instrument(),
+                    new Scalar("ID", Type.ASCII, Operator.DELTA, ScalarValue.UNDEFINED, false),
+                    new Scalar("Side", Type.U32, Operator.COPY, ScalarValue.UNDEFINED, false),
+                    new Scalar("Quantity", Type.DECIMAL, Operator.DELTA, ScalarValue.UNDEFINED, false),
+                    new Scalar("Average Price", Type.DECIMAL, Operator.DELTA, ScalarValue.UNDEFINED, false) });
         }
-
         return allocationInstruction;
     }
 
     public static Sequence allocations() {
         if (allocations == null) {
-        	allocations = new Sequence("Allocations",
-                new Field[] {
-                    new Scalar("Account",       Type.ASCII,   Operator.COPY,  ScalarValue.UNDEFINED, false),
-                    new Scalar("Price",         Type.DECIMAL, Operator.DELTA, ScalarValue.UNDEFINED, false),
-                    new Scalar("Quantity",      Type.DECIMAL, Operator.DELTA, ScalarValue.UNDEFINED, false),
-                    new Scalar("Average Price", Type.DECIMAL, Operator.DELTA, ScalarValue.UNDEFINED, false)
-                }, false);
+            allocations = new Sequence("Allocations", new Field[] {
+                    new Scalar("Account", Type.ASCII, Operator.COPY, ScalarValue.UNDEFINED, false),
+                    new Scalar("Price", Type.DECIMAL, Operator.DELTA, ScalarValue.UNDEFINED, false),
+                    new Scalar("Quantity", Type.DECIMAL, Operator.DELTA, ScalarValue.UNDEFINED, false),
+                    new Scalar("Average Price", Type.DECIMAL, Operator.DELTA, ScalarValue.UNDEFINED, false) }, false);
         }
-
         return allocations;
     }
 
     private static Group instrument() {
         if (instrument == null) {
-            instrument = new Group("Instrmt",
-                new Field[] {
-                    new Scalar("Symbol",        Type.ASCII,   Operator.COPY,  ScalarValue.UNDEFINED, false),
-                    new Scalar("MMY",           Type.ASCII,   Operator.DELTA, ScalarValue.UNDEFINED, false),
-                }, false);
+            instrument = new Group("Instrmt", new Field[] {
+                    new Scalar("Symbol", Type.ASCII, Operator.COPY, ScalarValue.UNDEFINED, false),
+                    new Scalar("MMY", Type.ASCII, Operator.DELTA, ScalarValue.UNDEFINED, false), }, false);
         }
-
         return instrument;
     }
 
     public static GroupValue newInstrument(String symbol, String mmy) {
-        return new GroupValue(instrument(),
-            new FieldValue[] { new StringValue(symbol), new StringValue(mmy) });
+        return new GroupValue(instrument(), new FieldValue[] { new StringValue(symbol), new StringValue(mmy) });
     }
 
-    public static GroupValue newAllocation(String account, double price,
-        double quantity) {
+    public static GroupValue newAllocation(String account, double price, double quantity) {
         StringValue acct = account != null ? new StringValue(account) : null;
-		return new GroupValue(allocations().getGroup(),
-            new FieldValue[] {
-                acct, new DecimalValue(price),
-                new DecimalValue(quantity), new DecimalValue(0.0)
-            });
+        return new GroupValue(allocations().getGroup(), new FieldValue[] { acct, new DecimalValue(price), new DecimalValue(quantity),
+                new DecimalValue(0.0) });
     }
 
-	public static Message basicAllocationInstruction() {
-		return newAllocInstrctn("abcd1234", 2, 25.0, 102.0, basicInstrument(), basicAllocations());
-	}
+    public static Message basicAllocationInstruction() {
+        return newAllocInstrctn("abcd1234", 2, 25.0, 102.0, basicInstrument(), basicAllocations());
+    }
 
-	private static SequenceValue basicAllocations() {
-		SequenceValue value = new SequenceValue(allocationInstruction().getSequence("Allocations"));
-		value.add(newAllocation("general", 101.0, 15.0));
-		value.add(newAllocation("specific", 103.0, 10.0));
-		return value;
-	}
+    private static SequenceValue basicAllocations() {
+        SequenceValue value = new SequenceValue(allocationInstruction().getSequence("Allocations"));
+        value.add(newAllocation("general", 101.0, 15.0));
+        value.add(newAllocation("specific", 103.0, 10.0));
+        return value;
+    }
 
-	private static GroupValue basicInstrument() {
-		return newInstrument("IBM", "200301");
-	}
+    private static GroupValue basicInstrument() {
+        return newInstrument("IBM", "200301");
+    }
 }

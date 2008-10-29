@@ -10,6 +10,8 @@ public abstract class AbstractFieldSerializer implements FieldSerializer {
         writer.addAttribute("name", field.getQName().getName());
         if (!context.getNamespace().equals(field.getQName().getNamespace()))
         writer.addAttribute("ns", field.getQName().getNamespace());
+        if (field.getId() != null)
+            writer.addAttribute("id", field.getId());
         if (field.isOptional())
             writer.addAttribute("presence", "optional");
     }

@@ -18,8 +18,6 @@ public class ScalarSerializer implements FieldSerializer {
         String nodeName = getNodeName(scalar);
         writer.start(nodeName);
         AbstractFieldSerializer.writeCommonAttributes(writer, field, context);
-        if (scalar.getId() != null)
-            writer.addAttribute("id", scalar.getId());
         if (scalar.getType().equals(Type.UNICODE))
             writer.addAttribute("charset", "unicode");
         if (!Operator.NONE.equals(scalar.getOperator())) {

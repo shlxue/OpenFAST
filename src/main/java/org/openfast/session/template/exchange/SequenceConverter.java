@@ -25,6 +25,7 @@ import org.openfast.GroupValue;
 import org.openfast.Message;
 import org.openfast.QName;
 import org.openfast.ScalarValue;
+import org.openfast.error.FastConstants;
 import org.openfast.session.SessionControlProtocol_1_1;
 import org.openfast.template.Field;
 import org.openfast.template.Group;
@@ -62,7 +63,17 @@ public class SequenceConverter extends AbstractFieldInstructionConverter {
             length = new Scalar(lengthName, Type.U32, operator, initialValue, optional);
             length.setId(id);
         }
-        return new Sequence(qname, length, fields, optional);
+        Sequence sequence = new Sequence(qname, length, fields, optional);
+
+        if (fieldDef.isDefined("TypeRef")) {
+            GroupValue typeRef = fieldDef.getGroup("TypeRef");
+            String typeRefName = typeRef.getString("Name");
+            String typeRefNs = ""; // context.getNamespace();
+            if (typeRef.isDefined("Ns"))
+                typeRefNs = typeRef.getString("Ns");
+            sequence.setTypeReference(new QName(typeRefName, typeRefNs));
+        }
+        return sequence;
     }
 
     public GroupValue convert(Field field, ConversionContext context) {
@@ -85,6 +96,11 @@ public class SequenceConverter extends AbstractFieldInstructionConverter {
             if (!length.getDefaultValue().isUndefined()) {
                 lengthDef.setFieldValue("InitialValue", length.getDefaultValue());
             }
+        }
+        if (sequence.getTypeReference() != null && !FastConstants.ANY_TYPE.equals(sequence.getTypeReference())) {
+            GroupValue typeRef = new GroupValue((Group) SessionControlProtocol_1_1.TYPE_REF.getField(new QName("TypeRef", SessionControlProtocol_1_1.NAMESPACE)));
+            setName(typeRef, sequence.getTypeReference());
+            seqDef.setFieldValue("TypeRef", typeRef);
         }
         return seqDef;
     }

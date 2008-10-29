@@ -57,7 +57,11 @@ public class ComposedDecimalConverter extends AbstractFieldInstructionConverter 
             if (mantissaDef.isDefined("InitialValue"))
                 mantissaDefaultValue = new LongValue(mantissaDef.getInt("InitialValue"));
         }
-        return Util.composedDecimal(name, exponentOperator, exponentDefaultValue, mantissaOperator, mantissaDefaultValue, optional);
+        ComposedScalar composedDecimal = Util.composedDecimal(name, exponentOperator, exponentDefaultValue, mantissaOperator, mantissaDefaultValue, optional);
+        if (fieldDef.isDefined("AuxId")) {
+            composedDecimal.setId(fieldDef.getString("AuxId"));
+        }
+        return composedDecimal;
     }
 
     public GroupValue convert(Field field, ConversionContext context) {

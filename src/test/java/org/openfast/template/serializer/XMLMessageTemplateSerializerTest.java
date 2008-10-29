@@ -12,7 +12,8 @@ public class XMLMessageTemplateSerializerTest extends OpenFastTestCase {
         ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
         serializer.serialize(new MessageTemplate[] { template }, byteOut);
         String expected = 
-            "<templates>" + NL +
+            "<?xml version=\"1.0\" encoding=\"utf-8\"?>" + NL +
+            "<templates xmlns=\"http://www.fixprotocol.org/ns/fast/td/1.1\">" + NL +
             "    <template name=\"reset\"/>" + NL +
             "</templates>" + NL;
         assertEquals(expected, byteOut.toString());

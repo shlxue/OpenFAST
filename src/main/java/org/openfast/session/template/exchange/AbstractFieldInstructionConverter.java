@@ -25,6 +25,7 @@ import java.util.Map;
 import org.openfast.Dictionary;
 import org.openfast.GroupValue;
 import org.openfast.Message;
+import org.openfast.QName;
 import org.openfast.session.SessionControlProtocol_1_1;
 import org.openfast.template.Field;
 import org.openfast.template.Group;
@@ -40,8 +41,13 @@ public abstract class AbstractFieldInstructionConverter implements FieldInstruct
     }
 
     public static void setName(Field field, GroupValue fieldDef) {
-        fieldDef.setString("Name", field.getName());
-        fieldDef.setString("Ns", field.getQName().getNamespace());
+        QName qname = field.getQName();
+        setName(fieldDef, qname);
+    }
+
+    public static void setName(GroupValue fieldDef, QName qname) {
+        fieldDef.setString("Name", qname.getName());
+        fieldDef.setString("Ns", qname.getNamespace());
     }
 
     public static GroupValue createOperator(Scalar scalar) {

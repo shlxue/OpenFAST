@@ -26,6 +26,7 @@ import java.util.Map;
 import org.openfast.Context;
 import org.openfast.Dictionary;
 import org.openfast.FieldValue;
+import org.openfast.GroupValue;
 import org.openfast.Message;
 import org.openfast.MessageHandler;
 import org.openfast.QName;
@@ -168,8 +169,23 @@ public class SessionControlProtocol_1_1 extends AbstractSessionControlProtocol {
     
     public MessageTemplate createTemplateFromMessage(Message templateDef, TemplateRegistry registry) {
         String name = templateDef.getString("Name");
+        String namespace = "";
+        if (templateDef.isDefined("Ns"))
+            namespace = templateDef.getString("Ns");
         Field[] fields = GroupConverter.parseFieldInstructions(templateDef, registry, initialContext);
-        return new MessageTemplate(name, fields);
+        MessageTemplate group = new MessageTemplate(new QName(name, namespace), fields);
+        if (templateDef.isDefined("TypeRef")) {
+            GroupValue typeRef = templateDef.getGroup("TypeRef");
+            String typeRefName = typeRef.getString("Name");
+            String typeRefNs = ""; // context.getNamespace();
+            if (typeRef.isDefined("Ns"))
+                typeRefNs = typeRef.getString("Ns");
+            group.setTypeReference(new QName(typeRefName, typeRefNs));
+        }
+        if (templateDef.isDefined("AuxId")) {
+            group.setId(templateDef.getString("AuxId"));
+        }
+        return group;
     }
 
     public static final int FAST_RESET_TEMPLATE_ID = 120;

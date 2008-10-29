@@ -42,9 +42,10 @@ public class EncodeMain extends OpenFastExample {
             displayHelp("consumer", options);
         }
         OutputStream out = System.out;
+        File outFile = null;
         if (cl.hasOption(OUTPUT_FILE)) {
             try {
-                File outFile = getFile(cl, OUTPUT_FILE);
+                outFile = getFile(cl, OUTPUT_FILE);
                 if (!outFile.exists())
                     outFile.createNewFile();
                 out = new FileOutputStream(outFile);
@@ -59,6 +60,9 @@ public class EncodeMain extends OpenFastExample {
         TemplateExchangeDefinitionEncoder tmplExchanger = new TemplateExchangeDefinitionEncoder(templatesFile, cl.hasOption(NAMESPACE_AWARENESS), out);
         try {
             tmplExchanger.start();
+            if (cl.hasOption(OUTPUT_FILE)) {
+                System.out.println("Templates encoded to file " + outFile.getAbsolutePath() + ".");
+            }
         } catch (IOException e) {
             if (showStacktrace)
                 e.printStackTrace();

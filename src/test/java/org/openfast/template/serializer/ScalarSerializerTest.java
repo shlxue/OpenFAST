@@ -24,7 +24,7 @@ public class ScalarSerializerTest extends OpenFastTestCase {
         scalar.setDictionary(Dictionary.TEMPLATE);
         scalar.setId("101");
         String expected = 
-            "<uInt32 name=\"value\" ns=\"http://openfast.org\" presence=\"optional\" id=\"101\">" + NL +
+            "<uInt32 name=\"value\" ns=\"http://openfast.org\" id=\"101\" presence=\"optional\">" + NL +
             "    <delta dictionary=\"template\" key=\"data\" ns=\"http://www.openfast.org\" value=\"100\"/>" + NL +
             "</uInt32>" + NL;
         serializer.serialize(writer, scalar, XMLMessageTemplateSerializer.createInitialContext());

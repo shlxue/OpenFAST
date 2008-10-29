@@ -12,7 +12,8 @@ public class TemplateSerializer implements FieldSerializer {
         if (!template.getQName().getNamespace().equals(context.getTemplateNamespace())) {
             writer.addAttribute("templateNs", template.getQName().getNamespace());
         }
-        if (!template.getChildNamespace().equals(context.getNamespace())) {
+        if (!template.getChildNamespace().equals(context.getNamespace()) &&
+            !template.getChildNamespace().equals("")) {
             writer.addAttribute("ns", template.getChildNamespace());
         }
         if (template.getId() != null) {

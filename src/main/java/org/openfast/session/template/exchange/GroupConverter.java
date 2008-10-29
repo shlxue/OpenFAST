@@ -23,7 +23,9 @@ package org.openfast.session.template.exchange;
 import org.openfast.FieldValue;
 import org.openfast.GroupValue;
 import org.openfast.Message;
+import org.openfast.QName;
 import org.openfast.SequenceValue;
+import org.openfast.error.FastConstants;
 import org.openfast.session.SessionControlProtocol_1_1;
 import org.openfast.template.Field;
 import org.openfast.template.Group;
@@ -33,9 +35,24 @@ import org.openfast.template.TemplateRegistry;
 public class GroupConverter extends AbstractFieldInstructionConverter {
     public Field convert(GroupValue fieldDef, TemplateRegistry templateRegistry, ConversionContext context) {
         String name = fieldDef.getString("Name");
+        String namespace = "";
+        if (fieldDef.isDefined("Ns"))
+            namespace = fieldDef.getString("Ns");
         Field[] fields = parseFieldInstructions(fieldDef, templateRegistry, context);
         boolean optional = fieldDef.getBool("Optional");
-        return new Group(name, fields, optional);
+        Group group = new Group(new QName(name, namespace), fields, optional);
+        if (fieldDef.isDefined("TypeRef")) {
+            GroupValue typeRef = fieldDef.getGroup("TypeRef");
+            String typeRefName = typeRef.getString("Name");
+            String typeRefNs = ""; // context.getNamespace();
+            if (typeRef.isDefined("Ns"))
+                typeRefNs = typeRef.getString("Ns");
+            group.setTypeReference(new QName(typeRefName, typeRefNs));
+        }
+        if (fieldDef.isDefined("AuxId")) {
+            group.setId(fieldDef.getString("AuxId"));
+        }
+        return group;
     }
 
     public GroupValue convert(Field field, ConversionContext context) {
@@ -55,6 +72,11 @@ public class GroupConverter extends AbstractFieldInstructionConverter {
 
     public static Message convert(Group group, Message groupMsg, ConversionContext context) {
         setNameAndId(group, groupMsg);
+        if (group.getTypeReference() != null && !FastConstants.ANY_TYPE.equals(group.getTypeReference())) {
+            GroupValue typeRef = new GroupValue((Group) SessionControlProtocol_1_1.TYPE_REF.getField(new QName("TypeRef", SessionControlProtocol_1_1.NAMESPACE)));
+            setName(typeRef, group.getTypeReference());
+            groupMsg.setFieldValue("TypeRef", typeRef);
+        }
         SequenceValue instructions = new SequenceValue(SessionControlProtocol_1_1.TEMPLATE_DEFINITION.getSequence("Instructions"));
         int i = group instanceof MessageTemplate ? 1 : 0;
         Field[] fields = group.getFieldDefinitions();
