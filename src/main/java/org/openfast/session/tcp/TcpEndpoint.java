@@ -78,4 +78,8 @@ public class TcpEndpoint implements Endpoint {
                 serverSocket.close();
             } catch (IOException e) {}
     }
+    
+    public String toString() {
+        return host + ":" + port;
+    }
 }
