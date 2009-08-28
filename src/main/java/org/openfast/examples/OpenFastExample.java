@@ -13,6 +13,7 @@ public class OpenFastExample {
     protected static final String PORT = "port";
     protected static final String PROTOCOL = "protocol";
     protected static final String HOST = "host";
+    protected static final String INTERFACE = "interface";
     protected static final String ERROR = "error";
     protected static final String NAMESPACE_AWARENESS = "ns";
     protected static final String OUTPUT_FILE = "output";

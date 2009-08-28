@@ -19,6 +19,7 @@ public class Main extends OpenFastExample {
         options.addOption("r", PROTOCOL, true, "Protocol [tcp|udp] defaults to tcp");
         options.addOption("p", PORT, true, "Port to connect to");
         options.addOption("h", HOST, true, "The host name of the server (or group name for multicast)");
+        options.addOption("i", INTERFACE, true, "The ip address of the network interface to use");
         options.addOption("e", ERROR, false, "Show stacktrace information");
         options.addOption("t", MESSAGE_TEMPLATE_FILE, true, "Message template definition file");
     }
@@ -38,10 +39,11 @@ public class Main extends OpenFastExample {
             Assert.assertTrue(cl.hasOption(PORT), "The required parameter \"" + PORT + "\" is missing.");
             int port = getInteger(cl, PORT);
             String host = cl.hasOption(HOST) ? cl.getOptionValue(HOST) : "localhost";
+            String ifaddr = cl.hasOption(INTERFACE) ? cl.getOptionValue(INTERFACE) : null;
             
             if (cl.hasOption(PROTOCOL)) {
                 if ("udp".equals(cl.getOptionValue(PROTOCOL))) {
-                    endpoint = new MulticastEndpoint(port, host);
+                    endpoint = new MulticastEndpoint(port, host, ifaddr);
                 }
             }
             if (endpoint == null) {

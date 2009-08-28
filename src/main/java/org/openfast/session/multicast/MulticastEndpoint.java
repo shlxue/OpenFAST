@@ -23,6 +23,7 @@ package org.openfast.session.multicast;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+import java.net.SocketException;
 
 import org.openfast.session.Connection;
 import org.openfast.session.ConnectionListener;
@@ -32,9 +33,15 @@ import org.openfast.session.FastConnectionException;
 public class MulticastEndpoint implements Endpoint {
     private int port;
     private String group;
+    private String ifaddr;
     public MulticastEndpoint(int port, String group) {
         this.port = port;
         this.group = group;
+        this.ifaddr = null;
+    }
+    public MulticastEndpoint(int port, String group, String ifaddr) {
+    	this(port, group);
+    	this.ifaddr = ifaddr;
     }
     public void accept() throws FastConnectionException {
         throw new UnsupportedOperationException();
@@ -43,6 +50,13 @@ public class MulticastEndpoint implements Endpoint {
     public Connection connect() throws FastConnectionException {
         try {
             MulticastSocket socket = new MulticastSocket(port);
+            if (ifaddr != null) {
+                try {
+                    socket.setInterface(InetAddress.getByName(ifaddr));	
+                } catch (SocketException e) {
+                    throw new FastConnectionException(e);
+                }
+            }
             InetAddress groupAddress = InetAddress.getByName(group);
             socket.joinGroup(groupAddress);
             return new MulticastConnection(socket, groupAddress);
