@@ -20,6 +20,7 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
  */
 package org.openfast.codec;
 
+import java.io.IOException;
 import java.io.InputStream;
 import org.openfast.BitVector;
 import org.openfast.BitVectorReader;
@@ -61,6 +62,17 @@ public class FastDecoder implements Coder {
         context.setLastTemplateId(templateId);
 
         return template.decode(in, templateId, presenceMapReader, context);
+    }
+   
+    public Message readMessage(int offset) {
+        if (offset > 0) {
+            try {
+                in.skip(offset);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return readMessage();
     }
 
     public void reset() {
