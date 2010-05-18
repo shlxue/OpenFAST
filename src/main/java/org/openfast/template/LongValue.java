@@ -28,7 +28,7 @@ public class LongValue extends NumericValue {
 
     /**
      * LongValue Constructor
-     * 
+     *
      * @param value
      *            The value of the LongValue as type long
      */
@@ -38,11 +38,12 @@ public class LongValue extends NumericValue {
 
     /**
      * Compares a LongValue object with another LongValue object
-     * 
+     *
      * @param obj
      *            the object to compare to
      * @return True if the two objects are the same, false otherwise
      */
+    @Override
     public boolean equals(Object obj) {
         if ((obj == null) || !(obj instanceof NumericValue)) {
             return false;
@@ -52,7 +53,7 @@ public class LongValue extends NumericValue {
 
     /**
      * Compares the value parameter of two LongValues
-     * 
+     *
      * @param otherValue
      *            The LongValue that is to be compared
      * @return Returns true if the two values are the same, false otherwise
@@ -61,6 +62,7 @@ public class LongValue extends NumericValue {
         return value == otherValue.toLong();
     }
 
+    @Override
     public int hashCode() {
         return (int) value;
     }
@@ -68,32 +70,35 @@ public class LongValue extends NumericValue {
     /**
      * Compares a string that is converted to an integer to the value of
      * LogValue
-     * 
+     *
      * @param defaultValue
      *            The string to be convereted to an integer and compared
      * @return Returns true if the string and the value are equal, false
      *         otherwise
      */
+    @Override
     public boolean equalsValue(String defaultValue) {
         return Integer.parseInt(defaultValue) == value;
     }
 
     /**
      * Increment 'value' and create a new LongValue with the new value
-     * 
+     *
      * @return Returns a new LongValue with the value that is one more then
      *         before
      */
+    @Override
     public NumericValue increment() {
         return new LongValue(value + 1);
     }
 
     /**
      * Decrement 'value' and create a new LongValue with the new value
-     * 
+     *
      * @return Returns a new LongValue with the value that is one less then
      *         before
      */
+    @Override
     public NumericValue decrement() {
         return new LongValue(value - 1);
     }
@@ -101,34 +106,42 @@ public class LongValue extends NumericValue {
     /**
      * @return Returns a string of the value of LongValue
      */
+    @Override
     public String toString() {
         return String.valueOf(value);
+    }
+
+    @Override
+    public Object toObject() {
+        return value;
     }
 
     /**
      * Subtracts two NumericValues values and creates a new LongValue with the
      * new value
-     * 
+     *
      * @param subend
      *            The NumericValue to be subtracted
      * @return Returns a new LongValue with the value as the difference between
      *         the two NumericValues
      */
+    @Override
     public NumericValue subtract(NumericValue subend) {
         return new LongValue(this.value - subend.toLong());
     }
 
     /**
-     * 
+     *
      * Adds two Numeric Values values and creates a new LongValue with the new
      * value
-     * 
+     *
      * @param addend
      *            The NumericValue to be added
      * @return Returns a new LongValue with the value as he addition between the
      *         two NumericValues
-     * 
+     *
      */
+    @Override
     public NumericValue add(NumericValue addend) {
         return new LongValue(this.value + addend.toLong());
     }
@@ -136,18 +149,20 @@ public class LongValue extends NumericValue {
     /**
      * @return Returns the value of LongValue as a string
      */
+    @Override
     public String serialize() {
         return String.valueOf(value);
     }
 
     /**
      * Finds if the passed value is the same as the Value of LongValue
-     * 
+     *
      * @param value
      *            The integer to be compared
      * @return Returns true if the integer value passd is the same as the value
      *         of LongValue
      */
+    @Override
     public boolean equals(int value) {
         return value == this.value;
     }
@@ -155,6 +170,7 @@ public class LongValue extends NumericValue {
     /**
      * @return Returns the value of LongValue as a long
      */
+    @Override
     public long toLong() {
         return value;
     }
@@ -162,6 +178,7 @@ public class LongValue extends NumericValue {
     /**
      * @return Returns the value of LongValue as an integer
      */
+    @Override
     public int toInt() {
         return (int) value;
     }

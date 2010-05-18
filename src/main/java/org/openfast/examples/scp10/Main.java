@@ -1,4 +1,4 @@
-package org.openfast.examples.producer;
+package org.openfast.examples.scp10;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,14 +21,13 @@ public class Main extends OpenFastExample {
         options.addOption("t", MESSAGE_TEMPLATE_FILE, true, "Message template definition file");
         options.addOption("x", XML_DATA_FILE, true, "The XML data to convert to FAST");
     }
-    
     /**
      * @param args
      */
     public static void main(String[] args) {
-        CommandLine cl = parseCommandLine("producer", args, options);
+        CommandLine cl = parseCommandLine("scp10producer", args, options);
         if (cl.hasOption(HELP)) {
-            displayHelp("producer", options);
+            displayHelp("scp10producer", options);
         }
         Endpoint endpoint = null;
         boolean showStacktrace = cl.hasOption(ERROR);
@@ -52,10 +51,9 @@ public class Main extends OpenFastExample {
             System.out.println(e.getMessage());
             displayHelp("consumer", options);
         }
-        FastMessageProducer producer = new FastMessageProducer(endpoint, templatesFile);
+        ScpMessageProducer producer = new ScpMessageProducer(endpoint, templatesFile);
         try {
-            producer.start();
-            producer.encode(xmlDataFile);
+            producer.start(xmlDataFile);
             producer.stop();
         } catch (FastConnectionException e) {
             if (showStacktrace)

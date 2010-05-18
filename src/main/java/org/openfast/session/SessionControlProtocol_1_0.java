@@ -48,10 +48,10 @@ class SessionControlProtocol_1_0 extends AbstractSessionControlProtocol {
     public Session connect(String senderName, Connection connection, TemplateRegistry inboundRegistry, 
             TemplateRegistry outboundRegistry, MessageListener messageListener, SessionListener sessionListener) {
         Session session = new Session(connection, this, inboundRegistry, outboundRegistry);
-        session.setMessageHandler(messageListener);
         session.setSessionListener(sessionListener);
         session.out.writeMessage(createHelloMessage(senderName));
         Message message = session.in.readMessage();
+        session.setMessageHandler(messageListener);
         String serverName = message.getString(1);
         session.setClient(new BasicClient(serverName, "unknown"));
         return session;

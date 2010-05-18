@@ -32,6 +32,7 @@ public class IntegerValue extends NumericValue {
         this.value = value;
     }
 
+    @Override
     public boolean equals(Object obj) {
         if ((obj == null) || !(obj instanceof NumericValue)) {
             return false;
@@ -43,26 +44,31 @@ public class IntegerValue extends NumericValue {
         return value == otherValue.toLong();
     }
 
+    @Override
     public int hashCode() {
         return value;
     }
 
+    @Override
     public boolean equalsValue(String defaultValue) {
         return Integer.parseInt(defaultValue) == value;
     }
 
+    @Override
     public NumericValue increment() {
         if (value == Integer.MAX_VALUE)
             return new LongValue(value + 1L);
         return new IntegerValue(value + 1);
     }
 
+    @Override
     public NumericValue decrement() {
         if (value == Integer.MIN_VALUE)
             return new LongValue(value - 1L);
         return new IntegerValue(value - 1);
     }
 
+    @Override
     public NumericValue subtract(NumericValue subend) {
         if (subend instanceof LongValue) {
             return new LongValue(this.value - subend.toLong());
@@ -70,6 +76,7 @@ public class IntegerValue extends NumericValue {
         return new IntegerValue(this.value - subend.toInt());
     }
 
+    @Override
     public NumericValue add(NumericValue addend) {
         long total = value + addend.toLong();
         if (total <= Integer.MAX_VALUE && total >= Integer.MIN_VALUE)
@@ -77,42 +84,56 @@ public class IntegerValue extends NumericValue {
         return new LongValue(total);
     }
 
+    @Override
     public String serialize() {
         return String.valueOf(value);
     }
 
+    @Override
     public boolean equals(int value) {
         return value == this.value;
     }
 
+    @Override
     public long toLong() {
         return value;
     }
 
+    @Override
+    public Object toObject() {
+        return value;
+    }
+
+    @Override
     public int toInt() {
         return value;
     }
 
+    @Override
     public String toString() {
         return String.valueOf(value);
     }
 
+    @Override
     public byte toByte() {
         if (value > Byte.MAX_VALUE || value < Byte.MIN_VALUE)
             Global.handleError(FastConstants.R4_NUMERIC_VALUE_TOO_LARGE, "The value \"" + value + "\" is too large for a byte.");
         return (byte) value;
     }
 
+    @Override
     public short toShort() {
         if (value > Short.MAX_VALUE || value < Short.MIN_VALUE)
             Global.handleError(FastConstants.R4_NUMERIC_VALUE_TOO_LARGE, "The value \"" + value + "\" is too large for a short.");
         return (short) value;
     }
 
+    @Override
     public double toDouble() {
         return value;
     }
 
+    @Override
     public BigDecimal toBigDecimal() {
         return new BigDecimal(value);
     }

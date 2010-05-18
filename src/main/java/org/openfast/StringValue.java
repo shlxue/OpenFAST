@@ -21,7 +21,6 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 package org.openfast;
 
 import java.math.BigDecimal;
-
 import org.openfast.error.FastConstants;
 
 public class StringValue extends ScalarValue {
@@ -33,6 +32,7 @@ public class StringValue extends ScalarValue {
             throw new NullPointerException();
         this.value = value;
     }
+    @Override
     public byte toByte() {
         int value = toInt();
         if (value > Byte.MAX_VALUE || value < Byte.MIN_VALUE) {
@@ -42,6 +42,7 @@ public class StringValue extends ScalarValue {
         }
         return (byte) value;
     }
+    @Override
     public short toShort() {
         int value = toInt();
         if (value > Short.MAX_VALUE || value < Short.MIN_VALUE) {
@@ -51,6 +52,7 @@ public class StringValue extends ScalarValue {
         }
         return (short) value;
     }
+    @Override
     public int toInt() {
         try {
             return Integer.parseInt(value);
@@ -60,6 +62,7 @@ public class StringValue extends ScalarValue {
             return 0;
         }
     }
+    @Override
     public long toLong() {
         try {
             return Long.parseLong(value);
@@ -69,6 +72,7 @@ public class StringValue extends ScalarValue {
             return 0;
         }
     }
+    @Override
     public double toDouble() {
         try {
             return Double.parseDouble(value);
@@ -78,15 +82,23 @@ public class StringValue extends ScalarValue {
             return 0.0;
         }
     }
+    @Override
+    public Object toObject() {
+        return value;
+    }
+    @Override
     public byte[] getBytes() {
         return value.getBytes();
     }
+    @Override
     public BigDecimal toBigDecimal() {
         return new BigDecimal(value);
     }
+    @Override
     public String toString() {
         return value;
     }
+    @Override
     public boolean equals(Object obj) {
         if ((obj == null) || !(obj instanceof StringValue)) {
             return false;
@@ -96,9 +108,11 @@ public class StringValue extends ScalarValue {
     private boolean equals(StringValue otherValue) {
         return value.equals(otherValue.value);
     }
+    @Override
     public int hashCode() {
         return value.hashCode();
     }
+    @Override
     public boolean equalsValue(String defaultValue) {
         return value.equals(defaultValue);
     }

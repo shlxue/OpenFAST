@@ -27,7 +27,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.openfast.codec.FastEncoder;
 import org.openfast.error.FastConstants;
 import org.openfast.template.MessageTemplate;
@@ -39,6 +38,7 @@ public class MessageOutputStream implements MessageStream {
     private final Context context;
     private List handlers = Collections.EMPTY_LIST;
     private Map templateHandlers = Collections.EMPTY_MAP;
+    private MessageBlockWriter blockWriter = MessageBlockWriter.NULL;
 
     public MessageOutputStream(OutputStream outputStream) {
         this(outputStream, new Context());
@@ -53,26 +53,30 @@ public class MessageOutputStream implements MessageStream {
     }
     public void writeMessage(Message message, boolean flush) {
         try {
-            if (context.isTraceEnabled())
-                context.startTrace();
-            if (!handlers.isEmpty()) {
-                for (int i = 0; i < handlers.size(); i++) {
-                    ((MessageHandler) handlers.get(i)).handleMessage(message, context, encoder);
-                }
-            }
-            if (templateHandlers.containsKey(message.getTemplate())) {
-                ((MessageHandler) templateHandlers.get(message.getTemplate())).handleMessage(message, context, encoder);
-            }
-            byte[] data = encoder.encode(message);
+            byte[] data = encodeMessage(message);
             if ((data == null) || (data.length == 0)) {
                 return;
             }
+            blockWriter.writeBlockLength(out, data);
             out.write(data);
             if (flush)
                 out.flush();
         } catch (IOException e) {
             Global.handleError(FastConstants.IO_ERROR, "An IO error occurred while writing message " + message, e);
         }
+    }
+    private byte[] encodeMessage(Message message) {
+        if (context.isTraceEnabled())
+            context.startTrace();
+        if (!handlers.isEmpty()) {
+            for (int i = 0; i < handlers.size(); i++) {
+                ((MessageHandler) handlers.get(i)).handleMessage(message, context, encoder);
+            }
+        }
+        if (templateHandlers.containsKey(message.getTemplate())) {
+            ((MessageHandler) templateHandlers.get(message.getTemplate())).handleMessage(message, context, encoder);
+        }
+        return encoder.encode(message);
     }
     public void reset() {
         encoder.reset();
@@ -104,6 +108,14 @@ public class MessageOutputStream implements MessageStream {
     }
     public void setTemplateRegistry(TemplateRegistry registry) {
         context.setTemplateRegistry(registry);
+    }
+    /**
+     * Specify a block writer implementation that is used to prefix messages with
+     * a block size
+     * @param blockWriter
+     */
+    public void setBlockWriter(MessageBlockWriter blockWriter) {
+        this.blockWriter = blockWriter;
     }
     public TemplateRegistry getTemplateRegistry() {
         return context.getTemplateRegistry();

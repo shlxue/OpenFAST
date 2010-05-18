@@ -30,14 +30,22 @@ public class DateValue extends ScalarValue {
         this.value = date;
     }
 
+    @Override
+    public Object toObject() {
+        return value;
+    }
+
+    @Override
     public long toLong() {
         return value.getTime();
     }
 
+    @Override
     public String toString() {
         return value.toString();
     }
 
+    @Override
     public boolean equals(Object other) {
         if (other == this)
             return true;
@@ -50,6 +58,7 @@ public class DateValue extends ScalarValue {
         return other.value.equals(value);
     }
 
+    @Override
     public int hashCode() {
         return value.hashCode();
     }

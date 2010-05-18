@@ -22,7 +22,6 @@ package org.openfast;
 
 import java.math.BigDecimal;
 import java.util.Iterator;
-
 import org.openfast.template.Field;
 import org.openfast.template.Group;
 import org.openfast.template.LongValue;
@@ -45,7 +44,7 @@ public class GroupValue implements FieldValue {
 
         this.group = group;
         this.values = values;
-        
+
         for (int i=0; i<group.getFieldCount(); i++) {
             if (group.getField(i) instanceof Scalar) {
                 Scalar scalar = ((Scalar) group.getField(i));
@@ -219,11 +218,11 @@ public class GroupValue implements FieldValue {
     public void setDecimal(String fieldName, double value) {
         setFieldValue(fieldName, new DecimalValue(value));
     }
-    
+
     public void setDecimal(int fieldIndex, BigDecimal value) {
         values[fieldIndex] = new DecimalValue(value);
     }
-    
+
     public void setDecimal(String fieldName, BigDecimal value) {
         setFieldValue(fieldName, new DecimalValue(value));
     }
@@ -256,6 +255,20 @@ public class GroupValue implements FieldValue {
         setFieldValue(fieldName, group.getField(fieldName).createValue(value));
     }
 
+
+    public void setFieldValue(int fieldIndex, Object value) {
+        FieldValue fieldValue = ScalarValue.NULL;
+        if (value instanceof String) {
+            fieldValue = new StringValue(String.valueOf(value));
+        } else if (value instanceof Integer) {
+            fieldValue = new IntegerValue(((Integer) value).intValue());
+        } else if (value instanceof Long) {
+            fieldValue = new LongValue(((Long) value).longValue());
+        }
+        setFieldValue(fieldIndex, fieldValue);
+    }
+
+    @Override
     public boolean equals(Object other) {
         if (other == this) {
             return true;
@@ -285,10 +298,12 @@ public class GroupValue implements FieldValue {
         return true;
     }
 
+    @Override
     public int hashCode() {
         return values.hashCode();
     }
 
+    @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
 

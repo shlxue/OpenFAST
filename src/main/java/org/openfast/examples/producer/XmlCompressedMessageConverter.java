@@ -80,7 +80,7 @@ public class XmlCompressedMessageConverter {
                 GroupValue[] seqValues = sequenceValue.getValues();
                 for (int j=0; j<seqValues.length; j++) {
                     writer.startNode(instanceName);
-                    writeGroup(writer, seqValues[0]);
+                    writeGroup(writer, seqValues[j]);
                     writer.endNode();
                 }
             } else {
@@ -142,12 +142,12 @@ public class XmlCompressedMessageConverter {
     public boolean canConvert(Class clazz) {
         return clazz.equals(Message.class);
     }
-    
+
     protected TemplateRegistry getTemplateRegistry() {
         return templateRegistry;
     }
 
-    protected void setTemplateRegistry(TemplateRegistry templateRegistry) {
+    public void setTemplateRegistry(TemplateRegistry templateRegistry) {
         this.templateRegistry = templateRegistry;
     }
 }

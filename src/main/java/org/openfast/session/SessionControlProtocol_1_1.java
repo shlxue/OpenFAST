@@ -22,7 +22,6 @@ package org.openfast.session;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.openfast.Context;
 import org.openfast.Dictionary;
 import org.openfast.FieldValue;
@@ -58,7 +57,7 @@ public class SessionControlProtocol_1_1 extends AbstractSessionControlProtocol {
     public static final String NAMESPACE = "http://www.fixprotocol.org/ns/fast/scp/1.1";
     private static final QName RESET_PROPERTY = new QName("reset", NAMESPACE);
     private static final Map/* <MessageTemplate, SessionMessageHandler> */messageHandlers = new HashMap();
-    private ConversionContext initialContext = createInitialContext();
+    private final ConversionContext initialContext = createInitialContext();
 
     protected SessionControlProtocol_1_1() {
         messageHandlers.put(FAST_ALERT_TEMPLATE, ALERT_HANDLER);
@@ -101,7 +100,7 @@ public class SessionControlProtocol_1_1 extends AbstractSessionControlProtocol {
     public void registerSessionTemplates(TemplateRegistry registry) {
         registry.registerAll(TEMPLATE_REGISTRY);
     }
-    public Session connect(String senderName, Connection connection, TemplateRegistry inboundRegistry, 
+    public Session connect(String senderName, Connection connection, TemplateRegistry inboundRegistry,
             TemplateRegistry outboundRegistry, MessageListener messageListener, SessionListener sessionListener) {
         Session session = new Session(connection, this, inboundRegistry, outboundRegistry);
         configureSession(session);
@@ -166,7 +165,7 @@ public class SessionControlProtocol_1_1 extends AbstractSessionControlProtocol {
         templateDefinition.setInteger("Reset", reset);
         return templateDefinition;
     }
-    
+
     public MessageTemplate createTemplateFromMessage(Message templateDef, TemplateRegistry registry) {
         String name = templateDef.getString("Name");
         String namespace = "";
@@ -268,7 +267,7 @@ public class SessionControlProtocol_1_1 extends AbstractSessionControlProtocol {
                     new Sequence(qualify("ForeignAttributes"), new Field[] { new StaticTemplateReference(ATTRIBUTE) }, true),
                     new Sequence(qualify("ForeignElements"), new Field[] { new StaticTemplateReference(ELEMENT) }, true) }, true) });
     private static final MessageTemplate TEMPLATE_NAME = new MessageTemplate(new QName("TemplateName", NAMESPACE), new Field[] {
-            dict("Ns", Type.UNICODE, false, Dictionary.TEMPLATE), 
+            dict("Ns", Type.UNICODE, false, Dictionary.TEMPLATE),
             new Scalar(qualify("Name"), Type.UNICODE, Operator.NONE, null, false) });
     private static final MessageTemplate NS_NAME = new MessageTemplate(new QName("NsName", NAMESPACE), new Field[] {
             new Scalar(qualify("Ns"), Type.UNICODE, Operator.COPY, null, false),

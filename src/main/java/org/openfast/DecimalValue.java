@@ -23,7 +23,6 @@ package org.openfast;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-
 import org.openfast.error.FastConstants;
 
 public class DecimalValue extends NumericValue {
@@ -63,18 +62,27 @@ public class DecimalValue extends NumericValue {
         this.exponent = bigDecimal.scale();
     }
 
+    @Override
     public NumericValue increment() {
         return null;
     }
 
+    @Override
     public NumericValue decrement() {
         return null;
     }
 
+    @Override
+    public Object toObject() {
+        return toBigDecimal();
+    }
+
+    @Override
     public boolean isNull() {
         return false;
     }
 
+    @Override
     public boolean equals(Object obj) {
         if ((obj == null) || !(obj instanceof DecimalValue)) {
             return false;
@@ -87,28 +95,34 @@ public class DecimalValue extends NumericValue {
         return other.mantissa == this.mantissa && other.exponent == this.exponent;
     }
 
+    @Override
     public NumericValue subtract(NumericValue subtrahend) {
         return new DecimalValue(toBigDecimal().subtract(((DecimalValue)subtrahend).toBigDecimal()));
     }
 
+    @Override
     public NumericValue add(NumericValue addend) {
         return new DecimalValue(toBigDecimal().add(((DecimalValue)addend).toBigDecimal()));
     }
 
+    @Override
     public String serialize() {
         return toString();
     }
 
+    @Override
     public boolean equals(int value) {
         return false;
     }
 
+    @Override
     public long toLong() {
         if (exponent < 0)
             Global.handleError(FastConstants.R5_DECIMAL_CANT_CONVERT_TO_INT, "");
-        return (long) (getValue());
+        return (getValue());
     }
 
+    @Override
     public int toInt() {
         long value = getValue();
         if (exponent < 0 || (value) > Integer.MAX_VALUE)
@@ -116,6 +130,7 @@ public class DecimalValue extends NumericValue {
         return (int) (value);
     }
 
+    @Override
     public short toShort() {
         long value = getValue();
         if (exponent < 0 || (value) > Short.MAX_VALUE)
@@ -123,6 +138,7 @@ public class DecimalValue extends NumericValue {
         return (short) (value);
     }
 
+    @Override
     public byte toByte() {
         long value = getValue();
         if (exponent < 0 || (value) > Byte.MAX_VALUE)
@@ -137,18 +153,23 @@ public class DecimalValue extends NumericValue {
     /**
      * The double value should be rounded using a given precision by users of this method.
      */
+    @Override
     public double toDouble() {
         return mantissa * Math.pow(10.0, exponent);
     }
 
+    @Override
     public BigDecimal toBigDecimal() {
         return new BigDecimal(BigInteger.valueOf(mantissa), -exponent);
     }
 
+    @Override
     public String toString() {
+//        return "Not Calculated";
         return toBigDecimal().toPlainString();
     }
 
+    @Override
     public int hashCode() {
         return exponent * 37 + (int) mantissa;
     }

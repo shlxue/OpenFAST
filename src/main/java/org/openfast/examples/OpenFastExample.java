@@ -19,6 +19,7 @@ public class OpenFastExample {
     protected static final String OUTPUT_FILE = "output";
     protected static final String TRACE = "trace";
     protected static final String FAST_DATA_FILE = "data";
+    protected static final String XML_DATA_FILE = "xml";
 
     protected static CommandLine parseCommandLine(String name, String[] args, Options options) {
         try {

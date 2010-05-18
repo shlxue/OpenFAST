@@ -260,7 +260,7 @@ public abstract class OpenFastTestCase extends TestCase {
     protected InputStream resource(String url) {
         return this.getClass().getClassLoader().getResourceAsStream(url);
     }
-    
+
     protected ByteVectorValue bv(String hexString) {
         return byt(byt(hexString));
     }

@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 import org.openfast.debug.BasicDecodeTrace;
 import org.openfast.debug.BasicEncodeTrace;
 import org.openfast.debug.Trace;
@@ -47,14 +46,14 @@ import org.openfast.util.UnboundedCache;
 public class Context {
     private TemplateRegistry templateRegistry = new BasicTemplateRegistry();
     private int lastTemplateId;
-    private Map dictionaries = new HashMap();
+    private final Map dictionaries = new HashMap();
     private ErrorHandler errorHandler = ErrorHandler.DEFAULT;
     private QName currentApplicationType;
-    private List listeners = Collections.EMPTY_LIST;
+    private final List listeners = Collections.EMPTY_LIST;
     private boolean traceEnabled;
     private Trace encodeTrace;
     private Trace decodeTrace;
-    private Map caches = new HashMap();
+    private final Map caches = new HashMap();
 
     public Context() {
         dictionaries.put("global", new GlobalDictionary());
@@ -129,8 +128,14 @@ public class Context {
         return traceEnabled;
     }
     public void startTrace() {
-        setEncodeTrace(new BasicEncodeTrace());
-        setDecodeTrace(new BasicDecodeTrace());
+        if (isTraceEnabled()) {
+            if (decodeTrace == null) {
+                setDecodeTrace(new BasicDecodeTrace());
+            }
+            if (encodeTrace == null) {
+                setEncodeTrace(new BasicEncodeTrace());
+            }
+        }
     }
     public void setTraceEnabled(boolean enabled) {
         this.traceEnabled = enabled;

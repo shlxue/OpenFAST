@@ -27,10 +27,12 @@ public class ScalarValue implements FieldValue {
     public static final ScalarValue UNDEFINED = new ScalarValue() {
         private static final long serialVersionUID = 1L;
 
+        @Override
         public boolean isUndefined() {
             return true;
         }
 
+        @Override
         public String toString() {
             return "UNDEFINED";
         }
@@ -38,17 +40,19 @@ public class ScalarValue implements FieldValue {
     static public final ScalarValue NULL = new ScalarValue() {
         private static final long serialVersionUID = 1L;
 
+        @Override
         public boolean isNull() {
             return true;
         }
 
+        @Override
         public String toString() {
             return "NULL";
         }
     };
 
     /**
-     * 
+     *
      * @return Returns false
      */
     public boolean equalsValue(String defaultValue) {
@@ -60,7 +64,7 @@ public class ScalarValue implements FieldValue {
     }
 
     /**
-     * 
+     *
      * @return Returns false
      */
     public boolean isUndefined() {
@@ -68,7 +72,7 @@ public class ScalarValue implements FieldValue {
     }
 
     /**
-     * 
+     *
      * @return Returns false
      */
     public boolean isNull() {
@@ -91,10 +95,11 @@ public class ScalarValue implements FieldValue {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public String toString() {
         throw new UnsupportedOperationException();
     }
-    
+
     public String serialize() {
         return toString();
     }
@@ -108,6 +113,10 @@ public class ScalarValue implements FieldValue {
     }
 
     public BigDecimal toBigDecimal() {
+        throw new UnsupportedOperationException();
+    }
+
+    public Object toObject() {
         throw new UnsupportedOperationException();
     }
 }

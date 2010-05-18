@@ -37,6 +37,7 @@ public class Message extends GroupValue {
         FieldValue[] fields = new FieldValue[fieldCount];
         return fields;
     }
+    @Override
     public boolean equals(Object obj) {
         if ((obj == null) || !(obj instanceof Message)) {
             return false;
@@ -58,15 +59,18 @@ public class Message extends GroupValue {
             }
         return true;
     }
+    @Override
     public int hashCode() {
         return super.hashCode() + template.hashCode();
     }
+    @Override
     public int getFieldCount() {
         return values.length;
     }
     public MessageTemplate getTemplate() {
         return template;
     }
+    @Override
     public FieldValue copy() {
         FieldValue[] copies = new FieldValue[values.length];
         for (int i = 0; i < copies.length; i++) {

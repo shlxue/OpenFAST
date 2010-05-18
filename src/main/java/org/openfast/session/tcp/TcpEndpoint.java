@@ -59,9 +59,13 @@ public class TcpEndpoint implements Endpoint {
         closed = false;
         try {
             serverSocket = new ServerSocket(port);
-            while (true) {
+            while (!closed) {
                 Socket socket = serverSocket.accept();
-                connectionListener.onConnect(new TcpConnection(socket));
+                try {
+                    connectionListener.onConnect(new TcpConnection(socket));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         } catch (IOException e) {
             if (!closed)

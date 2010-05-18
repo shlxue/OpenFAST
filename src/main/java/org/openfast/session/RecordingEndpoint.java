@@ -26,11 +26,13 @@ import java.io.OutputStream;
 import org.openfast.util.RecordingInputStream;
 import org.openfast.util.RecordingOutputStream;
 
-public class RecordingEndpoint implements Endpoint {
+public class RecordingEndpoint implements Endpoint, ConnectionListener {
     private Endpoint underlyingEndpoint;
+    private ConnectionListener listener;
 
     public RecordingEndpoint(Endpoint endpoint) {
         this.underlyingEndpoint = endpoint;
+        underlyingEndpoint.setConnectionListener(this);
     }
 
     public void accept() throws FastConnectionException {
@@ -44,7 +46,7 @@ public class RecordingEndpoint implements Endpoint {
     }
 
     public void setConnectionListener(ConnectionListener listener) {
-        underlyingEndpoint.setConnectionListener(listener);
+        this.listener = listener;
     }
 
     private final class RecordingConnection implements Connection {
@@ -60,7 +62,10 @@ public class RecordingEndpoint implements Endpoint {
             }
         }
 
-        public void close() {}
+        public void close() {
+            System.out.println("IN: " + new String(recordingInputStream.toString()));
+            System.out.println("OUT: " + new String(recordingOutputStream.toString()));
+        }
 
         public InputStream getInputStream() throws IOException {
             return recordingInputStream;
@@ -73,5 +78,9 @@ public class RecordingEndpoint implements Endpoint {
 
     public void close() {
         underlyingEndpoint.close();
+    }
+
+    public void onConnect(Connection connection) {
+        listener.onConnect(new RecordingConnection(connection));
     }
 }

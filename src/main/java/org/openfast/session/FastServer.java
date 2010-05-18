@@ -25,7 +25,6 @@ import org.openfast.error.ErrorHandler;
 public class FastServer implements ConnectionListener {
     private ErrorHandler errorHandler = ErrorHandler.DEFAULT;
     private SessionHandler sessionHandler = SessionHandler.NULL;
-    private boolean listening;
     private final SessionProtocol sessionProtocol;
     private final Endpoint endpoint;
     private final String serverName;
@@ -41,19 +40,14 @@ public class FastServer implements ConnectionListener {
         endpoint.setConnectionListener(this);
     }
     public void listen() {
-        listening = true;
         if (serverThread == null) {
             Runnable runnable = new Runnable() {
                 public void run() {
-                    while (listening) {
-                        try {
-                            endpoint.accept();
-                        } catch (Exception e) {
-                            errorHandler.error(null, null, e);
-                        }
-                        try {
-                            Thread.sleep(20);
-                        } catch (InterruptedException e) {}
+                    try {
+                        endpoint.accept();
+                    } catch (Exception e) {
+                        errorHandler.error(null, null, e);
+                        endpoint.close();
                     }
                 }
             };
@@ -62,7 +56,6 @@ public class FastServer implements ConnectionListener {
         serverThread.start();
     }
     public void close() throws FastConnectionException {
-        listening = false;
         endpoint.close();
     }
     // ************* OPTIONAL DEPENDENCY SETTERS **************
