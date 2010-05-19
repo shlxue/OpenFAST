@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import org.openfast.codec.FastEncoder;
 import org.openfast.error.FastConstants;
+import org.openfast.logging.FastMessageLogger.Direction;
 import org.openfast.template.MessageTemplate;
 import org.openfast.template.TemplateRegistry;
 
@@ -43,14 +44,17 @@ public class MessageOutputStream implements MessageStream {
     public MessageOutputStream(OutputStream outputStream) {
         this(outputStream, new Context());
     }
+
     public MessageOutputStream(OutputStream outputStream, Context context) {
         this.out = outputStream;
         this.encoder = new FastEncoder(context);
         this.context = context;
     }
+
     public void writeMessage(Message message) {
         writeMessage(message, false);
     }
+
     public void writeMessage(Message message, boolean flush) {
         try {
             byte[] data = encodeMessage(message);
@@ -61,10 +65,12 @@ public class MessageOutputStream implements MessageStream {
             out.write(data);
             if (flush)
                 out.flush();
+            getContext().getLogger().log(message, data, Direction.OUTBOUND);
         } catch (IOException e) {
             Global.handleError(FastConstants.IO_ERROR, "An IO error occurred while writing message " + message, e);
         }
     }
+
     private byte[] encodeMessage(Message message) {
         if (context.isTraceEnabled())
             context.startTrace();
@@ -78,12 +84,15 @@ public class MessageOutputStream implements MessageStream {
         }
         return encoder.encode(message);
     }
+
     public void reset() {
         encoder.reset();
     }
+
     public void registerTemplate(int templateId, MessageTemplate template) {
         encoder.registerTemplate(templateId, template);
     }
+
     public void close() {
         try {
             out.close();
@@ -91,35 +100,43 @@ public class MessageOutputStream implements MessageStream {
             Global.handleError(FastConstants.IO_ERROR, "An error occurred while closing output stream.", e);
         }
     }
+
     public OutputStream getUnderlyingStream() {
         return out;
     }
+
     public void addMessageHandler(MessageTemplate template, MessageHandler handler) {
         if (templateHandlers == Collections.EMPTY_MAP) {
             templateHandlers = new HashMap();
         }
         templateHandlers.put(template, handler);
     }
+
     public void addMessageHandler(MessageHandler handler) {
         if (handlers == Collections.EMPTY_LIST) {
             handlers = new ArrayList(4);
         }
         handlers.add(handler);
     }
+
     public void setTemplateRegistry(TemplateRegistry registry) {
         context.setTemplateRegistry(registry);
     }
+
     /**
-     * Specify a block writer implementation that is used to prefix messages with
-     * a block size
+     * Specify a block writer implementation that is used to prefix messages
+     * with a block size
+     * 
      * @param blockWriter
      */
     public void setBlockWriter(MessageBlockWriter blockWriter) {
         this.blockWriter = blockWriter;
     }
+
     public TemplateRegistry getTemplateRegistry() {
         return context.getTemplateRegistry();
     }
+
     public Context getContext() {
         return context;
     }

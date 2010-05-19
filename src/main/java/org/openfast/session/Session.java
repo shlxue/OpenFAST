@@ -27,6 +27,7 @@ import org.openfast.Context;
 import org.openfast.Message;
 import org.openfast.MessageInputStream;
 import org.openfast.MessageOutputStream;
+import org.openfast.OpenFastContext;
 import org.openfast.QName;
 import org.openfast.error.ErrorCode;
 import org.openfast.error.ErrorHandler;
@@ -46,11 +47,15 @@ public class Session implements ErrorHandler {
     private Thread listeningThread;
     private ErrorHandler errorHandler = ErrorHandler.DEFAULT;
     private SessionListener sessionListener = SessionListener.NULL;
+    private OpenFastContext context;
 
-    public Session(Connection connection, SessionProtocol protocol, TemplateRegistry inboundRegistry, TemplateRegistry outboundRegistry) {
-        Context inContext = new Context();
+    public Session(Connection connection, SessionProtocol protocol, TemplateRegistry inboundRegistry,
+            TemplateRegistry outboundRegistry) {
+        this.context = new BasicOpenFastContext();
+        Context inContext = new Context(context);
         inContext.getTemplateRegistry().registerAll(inboundRegistry);
-        Context outContext = new Context();
+
+        Context outContext = new Context(context);
         outContext.getTemplateRegistry().registerAll(outboundRegistry);
         inContext.setErrorHandler(this);
 
@@ -109,8 +114,11 @@ public class Session implements ErrorHandler {
         if (errorHandler == null) {
             this.errorHandler = ErrorHandler.NULL;
         }
-
         this.errorHandler = errorHandler;
+    }
+
+    public OpenFastContext getContext() {
+        return context;
     }
 
     public void reset() {
@@ -145,7 +153,8 @@ public class Session implements ErrorHandler {
                             } else if (messageListener != null) {
                                 messageListener.onMessage(Session.this, message);
                             } else {
-                                throw new IllegalStateException("Received non-protocol message without a message listener.");
+                                throw new IllegalStateException(
+                                        "Received non-protocol message without a message listener.");
                             }
                         } catch (Exception e) {
                             Throwable cause = e.getCause();

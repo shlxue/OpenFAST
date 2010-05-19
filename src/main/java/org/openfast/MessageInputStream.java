@@ -27,7 +27,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.openfast.codec.FastDecoder;
+import org.openfast.logging.FastMessageLogger.Direction;
 import org.openfast.template.MessageTemplate;
 import org.openfast.template.TemplateRegisteredListener;
 import org.openfast.template.TemplateRegistry;
@@ -64,6 +66,7 @@ public class MessageInputStream implements MessageStream {
         if (message == null) {
             return null;
         }
+        getContext().getLogger().log(message, ByteUtil.EMPTY, Direction.INBOUND);
         blockReader.messageRead(in, message);
         if (!handlers.isEmpty()) {
             for (int i = 0; i < handlers.size(); i++) {

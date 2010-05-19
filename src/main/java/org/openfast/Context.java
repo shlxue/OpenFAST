@@ -30,6 +30,7 @@ import org.openfast.debug.BasicEncodeTrace;
 import org.openfast.debug.Trace;
 import org.openfast.error.ErrorHandler;
 import org.openfast.error.FastConstants;
+import org.openfast.logging.FastMessageLogger;
 import org.openfast.template.BasicTemplateRegistry;
 import org.openfast.template.Group;
 import org.openfast.template.MessageTemplate;
@@ -43,7 +44,7 @@ import org.openfast.util.UnboundedCache;
  * and contexts should never be shared.
  * @author Jacob Northey
  */
-public class Context {
+public class Context implements OpenFastContext {
     private TemplateRegistry templateRegistry = new BasicTemplateRegistry();
     private int lastTemplateId;
     private final Map dictionaries = new HashMap();
@@ -54,8 +55,14 @@ public class Context {
     private Trace encodeTrace;
     private Trace decodeTrace;
     private final Map caches = new HashMap();
+    private OpenFastContext parentContext;
+    private FastMessageLogger logger = null;
 
     public Context() {
+        this(new NullOpenFastContext());
+    }
+    public Context(OpenFastContext context) {
+        this.parentContext = context;
         dictionaries.put("global", new GlobalDictionary());
         dictionaries.put("template", new TemplateDictionary());
         dictionaries.put("type", new ApplicationTypeDictionary());
@@ -163,5 +170,17 @@ public class Context {
             caches.put(key, new UnboundedCache());
         }
         ((Cache)caches.get(key)).store(index, value);
+    }
+    @Override
+    public FastMessageLogger getLogger() {
+        if (logger == null) {
+            return parentContext.getLogger();
+        }
+        return logger;
+    }
+    
+    @Override
+    public void setLogger(FastMessageLogger logger) {
+        this.logger = logger;
     }
 }

@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.openfast</groupId>
     <artifactId>openfast</artifactId>
@@ -134,7 +135,7 @@
                 </excludes>
             </resource>
         </resources>
-        
+
         <extensions>
             <extension>
                 <groupId>org.apache.maven.wagon</groupId>
@@ -230,14 +231,14 @@
             <id>sourceforge.net</id>
             <name>Sourceforge.net Repository</name>
             <url>
-                scp://web.sourceforge.net/home/groups/o/op/openfast/htdocs/maven/release
+            scp://web.sourceforge.net/home/groups/o/op/openfast/htdocs/maven/release
             </url>
         </repository>
         <snapshotRepository>
             <id>sourceforge.net</id>
             <name>Sourceforge.net Snapshot Repository</name>
             <url>
-                scp://web.sourceforge.net/home/groups/o/op/openfast/htdocs/maven/snapshot
+           scp://web.sourceforge.net/home/groups/o/op/openfast/htdocs/maven/snapshot
             </url>
         </snapshotRepository>
         <site>

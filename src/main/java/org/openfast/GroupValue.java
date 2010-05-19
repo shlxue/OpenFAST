@@ -264,6 +264,8 @@ public class GroupValue implements FieldValue {
             fieldValue = new IntegerValue(((Integer) value).intValue());
         } else if (value instanceof Long) {
             fieldValue = new LongValue(((Long) value).longValue());
+        } else if (value instanceof Boolean) {
+            fieldValue = new IntegerValue(((Boolean) value).booleanValue() ? 1 : 0);
         }
         setFieldValue(fieldIndex, fieldValue);
     }

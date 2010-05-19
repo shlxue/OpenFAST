@@ -24,6 +24,9 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 public class ByteUtil {
+    
+    public static final byte[] EMPTY = new byte[0];
+    
     /**
      * 
      * @param bitString
