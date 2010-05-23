@@ -22,6 +22,7 @@ package org.openfast;
 
 import java.math.BigDecimal;
 import java.util.Iterator;
+
 import org.openfast.template.Field;
 import org.openfast.template.Group;
 import org.openfast.template.LongValue;
@@ -238,7 +239,7 @@ public class GroupValue implements FieldValue {
     public void setBool(String fieldName, boolean value) {
         setFieldValue(fieldName, new IntegerValue(value ? 1 : 0));
     }
-
+    
     public void setLong(String fieldName, long value) {
         setFieldValue(fieldName, new LongValue(value));
     }
@@ -266,6 +267,8 @@ public class GroupValue implements FieldValue {
             fieldValue = new LongValue(((Long) value).longValue());
         } else if (value instanceof Boolean) {
             fieldValue = new IntegerValue(((Boolean) value).booleanValue() ? 1 : 0);
+        } else if (value instanceof Double) {
+            fieldValue = new DecimalValue(((Double) value).doubleValue());
         }
         setFieldValue(fieldIndex, fieldValue);
     }
