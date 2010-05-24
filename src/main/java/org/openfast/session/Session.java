@@ -160,7 +160,7 @@ public class Session implements ErrorHandler {
                             Throwable cause = e.getCause();
 
                             if (cause != null && cause.getClass().equals(SocketException.class)
-                                    && cause.getMessage().equals("Socket closed")) {
+                                    && cause.getMessage().toLowerCase().contains("socket closed")) {
                                 listening = false;
                             } else if (e instanceof FastException) {
                                 FastException fastException = ((FastException) e);
