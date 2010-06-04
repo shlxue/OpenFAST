@@ -5,12 +5,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Date;
-
 import org.openfast.Message;
 import org.openfast.template.MessageTemplate;
 
 public class FileFastMessageLogger implements FastMessageLogger {
-    private File file;
+    private final File file;
     private OutputStream out;
 
     public FileFastMessageLogger(String filePath) {
@@ -23,7 +22,6 @@ public class FileFastMessageLogger implements FastMessageLogger {
         this.file = f;
     }
 
-    @Override
     public void log(Message message, byte[] bytes, Direction direction) {
         try {
             createOut();

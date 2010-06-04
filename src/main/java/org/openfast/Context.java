@@ -55,7 +55,7 @@ public class Context implements OpenFastContext {
     private Trace encodeTrace;
     private Trace decodeTrace;
     private final Map caches = new HashMap();
-    private OpenFastContext parentContext;
+    private final OpenFastContext parentContext;
     private FastMessageLogger logger = null;
 
     public Context() {
@@ -171,15 +171,13 @@ public class Context implements OpenFastContext {
         }
         ((Cache)caches.get(key)).store(index, value);
     }
-    @Override
     public FastMessageLogger getLogger() {
         if (logger == null) {
             return parentContext.getLogger();
         }
         return logger;
     }
-    
-    @Override
+
     public void setLogger(FastMessageLogger logger) {
         this.logger = logger;
     }

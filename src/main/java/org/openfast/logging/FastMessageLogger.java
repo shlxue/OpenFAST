@@ -7,7 +7,7 @@ public interface FastMessageLogger {
     public enum Direction {
         INBOUND("[<--]"), OUTBOUND("[-->]");
 
-        private String directionString;
+        private final String directionString;
 
         private Direction(String direction) {
             this.directionString = direction;
@@ -20,7 +20,6 @@ public interface FastMessageLogger {
     }
 
     FastMessageLogger NULL = new FastMessageLogger() {
-        @Override
         public void log(Message message, byte[] bytes, Direction direction) {
         }
     };

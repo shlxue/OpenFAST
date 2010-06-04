@@ -25,16 +25,15 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 import org.openfast.QName;
 import org.openfast.util.IntegerMap;
 import org.openfast.util.SimpleIntegerMap;
 
 public class BasicTemplateRegistry extends AbstractTemplateRegistry {
-    private Map nameMap = new HashMap();
-    private IntegerMap idMap = new SimpleIntegerMap();
-    private Map templateMap = new HashMap();
-    private List templates = new ArrayList();
+    private final Map nameMap = new HashMap();
+    private final IntegerMap idMap = new SimpleIntegerMap();
+    private final Map templateMap = new HashMap();
+    private final List templates = new ArrayList();
 
     public void register(int id, MessageTemplate template) {
         define(template);
