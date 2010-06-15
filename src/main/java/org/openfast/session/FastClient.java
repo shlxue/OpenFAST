@@ -38,6 +38,11 @@ public class FastClient {
         this.endpoint = endpoint;
     }
     
+    public FastClient(String clientName, SessionProtocol sessionProtocol, Endpoint endpoint, SessionListener sessionListener) {
+        this(clientName, sessionProtocol, endpoint);
+        this.sessionListener = sessionListener;
+    }
+    
     public void setInboundTemplateRegistry(TemplateRegistry registry) {
         this.inboundRegistry = registry;
     }

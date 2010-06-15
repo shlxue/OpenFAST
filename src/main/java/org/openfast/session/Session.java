@@ -146,6 +146,9 @@ public class Session implements ErrorHandler {
 
                             if (message == null) {
                                 listening = false;
+                                if (sessionListener != null) {
+                                    sessionListener.onClose();
+                                }
                                 break;
                             }
                             if (protocol.isProtocolMessage(message)) {
