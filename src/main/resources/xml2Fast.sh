@@ -16,3 +16,4 @@ JAVA="$JAVA_HOME/bin/java"
 CLASSPATH=$OPENFAST_HOME/lib/xstream-1.3.jar:$OPENFAST_HOME/lib/xpp3_min-1.1.4c.jar:$OPENFAST_HOME/${project.artifactId}-${project.version}.jar
 MAIN=org.openfast.examples.xml.XmlToFastMain
 $JAVA $JAVA_OPTS -classpath $CLASSPATH $MAIN $*
+

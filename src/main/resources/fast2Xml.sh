@@ -13,6 +13,7 @@ fi
 OPENFAST_HOME=$( cd -P -- "$(dirname -- "$0")" && pwd -P)/..
 JAVA="$JAVA_HOME/bin/java"
 
-CLASSPATH=$OPENFAST/lib/xstream-1.3.jar:$OPENFAST/lib/xpp3_min-1.1.4c.jar:$OPENFAST/${project.artifactId}-${project.version}.jar
+CLASSPATH=$OPENFAST_HOME/lib/xstream-1.3.jar:$OPENFAST_HOME/lib/xpp3_min-1.1.4c.jar:$OPENFAST_HOME/${project.artifactId}-${project.version}.jar
 MAIN=org.openfast.examples.xml.FastToXmlMain
 $JAVA $JAVA_OPTS -classpath $CLASSPATH $MAIN $*
+

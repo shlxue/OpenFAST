@@ -13,6 +13,7 @@ fi
 OPENFAST_HOME=$( cd -P -- "$(dirname -- "$0")" && pwd -P)/..
 JAVA="$JAVA_HOME/bin/java"
 
-CLASSPATH=$OPENFAST/lib/commons-cli-1.1.jar:$OPENFAST/${project.artifactId}-${project.version}.jar
+CLASSPATH=$OPENFAST_HOME/lib/commons-cli-1.1.jar:$OPENFAST_HOME/${project.artifactId}-${project.version}.jar
 MAIN=org.openfast.examples.tmplexch.EncodeMain
 $JAVA $JAVA_OPTS -classpath $CLASSPATH $MAIN $*
+
