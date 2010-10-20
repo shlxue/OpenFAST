@@ -16,8 +16,13 @@ import org.openfast.template.loader.XMLMessageTemplateLoader;
 public class FastMessageConsumer {
     private final Endpoint endpoint;
     private final TemplateRegistry templateRegistry;
+    private final int readOffset;
 
     public FastMessageConsumer(Endpoint endpoint, File templatesFile) {
+        this(endpoint, templatesFile, 0);
+    }
+
+    public FastMessageConsumer(Endpoint endpoint, File templatesFile, int readOffset) {
         this.endpoint = endpoint;
         XMLMessageTemplateLoader loader = new XMLMessageTemplateLoader();
         loader.setLoadTemplateIdFromAuxId(true);
@@ -27,6 +32,7 @@ public class FastMessageConsumer {
             throw new RuntimeException(e.getMessage(), e);
         }
         this.templateRegistry = loader.getTemplateRegistry();
+        this.readOffset = readOffset;
     }
 
     public void start() throws FastConnectionException, IOException {
@@ -40,7 +46,7 @@ public class FastMessageConsumer {
             }
         });
         while (true) {
-            Message message = decoder.readMessage();
+            Message message = decoder.readMessage(readOffset);
             System.out.println(message.toString());
         }
     }

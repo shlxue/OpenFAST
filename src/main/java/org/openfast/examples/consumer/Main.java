@@ -22,6 +22,7 @@ public class Main extends OpenFastExample {
         options.addOption("i", INTERFACE, true, "The ip address of the network interface to use");
         options.addOption("e", ERROR, false, "Show stacktrace information");
         options.addOption("t", MESSAGE_TEMPLATE_FILE, true, "Message template definition file");
+        options.addOption("j", READ_OFFSET, true, "The number of leading bytes that should be discarded when reading each message.");
     }
     
     /**
@@ -57,7 +58,11 @@ public class Main extends OpenFastExample {
             System.out.println(e.getMessage());
             displayHelp("consumer", options);
         }
-        FastMessageConsumer consumer = new FastMessageConsumer(endpoint, templatesFile);
+        
+
+        final int readOffset = cl.hasOption(READ_OFFSET) ? getInteger(cl, READ_OFFSET) : 0;
+        FastMessageConsumer consumer = new FastMessageConsumer(endpoint, templatesFile, readOffset);
+        
         try {
             consumer.start();
         } catch (FastConnectionException e) {

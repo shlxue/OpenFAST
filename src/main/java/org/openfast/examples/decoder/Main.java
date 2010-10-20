@@ -17,6 +17,7 @@ public class Main extends OpenFastExample {
         options.addOption("n", NAMESPACE_AWARENESS, false, "Enables namespace awareness");
         options.addOption("t", MESSAGE_TEMPLATE_FILE, true, "Message template definition file");
         options.addOption("v", TRACE, false, "Trace");
+        options.addOption("j", READ_OFFSET, true, READ_OFFSET_DESCRIPTION);
     }
     
     /**
@@ -43,7 +44,9 @@ public class Main extends OpenFastExample {
             System.out.println(e.getMessage());
             displayHelp("consumer", options);
         }
-        FastMessageDecoder consumer = new FastMessageDecoder(dataFile, templatesFile, cl.hasOption(NAMESPACE_AWARENESS));
+
+        final int readOffset = cl.hasOption(READ_OFFSET) ? getInteger(cl, READ_OFFSET) : 0;
+        FastMessageDecoder consumer = new FastMessageDecoder(dataFile, templatesFile, cl.hasOption(NAMESPACE_AWARENESS), readOffset);
         if (cl.hasOption(TRACE))
             consumer.setTraceEnabled();
         try {

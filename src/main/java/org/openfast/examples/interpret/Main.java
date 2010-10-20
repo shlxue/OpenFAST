@@ -36,6 +36,7 @@ public class Main extends OpenFastExample {
         options.addOption("x", EXPOSE, false, "Show (some) raw data for each record.");
         options.addOption("h", HEAD, true, "Process only the first 'n' records.");
         options.addOption("r", RESET, false, "Reset decoder on every record");
+        options.addOption("j", READ_OFFSET, true, READ_OFFSET_DESCRIPTION);
     }
 
     /**
@@ -102,10 +103,13 @@ public class Main extends OpenFastExample {
         }
 
         try {
+            final int readOffset = cl.hasOption(READ_OFFSET) ? getInteger(cl, READ_OFFSET) : 0;
+            
             FastMessageReader reader = new FastMessageReader(
                     new BufferedInputStream(new FileInputStream(inputFile)),
                     new BufferedInputStream(new FileInputStream(templatesFile)),
-                    consumer);
+                    consumer,
+                    readOffset);
             reader.setHead(head);
             reader.showRawData(showRawData);
             reader.resetEveryRecord(resetEveryRecord);

@@ -21,20 +21,34 @@ public class FastMessageReader {
     private final TemplateRegistry templateRegistry;
     private final InputStream messageIn;
     private final FastMessageConsumer messageOut;
+    private final int readOffset;
     private int head;
     private boolean raw = false;
     private boolean reset =false;
-
+    
     /**
      * Construct the reader.
      * @param input a data stream containing raw FAST messages
      * @param templateStream a stream from which the FAST templates can be read.
      * @param output An object to accept the decoded messages.
      */
+    public FastMessageReader(InputStream input, InputStream templateStream, FastMessageConsumer output) {
+        this(input, templateStream, output, 0);
+    }
+
+    /**
+     * Construct the reader.
+     * @param input a data stream containing raw FAST messages
+     * @param templateStream a stream from which the FAST templates can be read.
+     * @param output An object to accept the decoded messages.
+     * @param readOffset The number of leading bytes that should be discarded when reading each message.
+     */
     public FastMessageReader(
             InputStream input,
             InputStream templateStream,
-            FastMessageConsumer output) {
+            FastMessageConsumer output,
+            int readOffset) {
+        this.readOffset = readOffset;
         messageIn = input;
 
         XMLMessageTemplateLoader templateLoader = new XMLMessageTemplateLoader();
@@ -82,7 +96,7 @@ public class FastMessageReader {
                 }
             }
 
-            Message message = decoder.readMessage();
+            Message message = decoder.readMessage(readOffset);
             if(message == null){
                 more = false;
             }

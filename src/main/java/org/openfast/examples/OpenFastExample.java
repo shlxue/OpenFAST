@@ -20,6 +20,8 @@ public class OpenFastExample {
     protected static final String TRACE = "trace";
     protected static final String FAST_DATA_FILE = "data";
     protected static final String XML_DATA_FILE = "xml";
+    protected static final String READ_OFFSET = "readOffset";
+    protected static final String READ_OFFSET_DESCRIPTION = "The number of leading bytes that should be discarded when reading each message.";
 
     protected static CommandLine parseCommandLine(String name, String[] args, Options options) {
         try {
