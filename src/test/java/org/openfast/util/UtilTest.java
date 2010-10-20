@@ -56,6 +56,7 @@ public class UtilTest extends OpenFastTestCase {
             }
         } finally {
             out.close();
+            f.delete();
         }
     }
 
