@@ -29,6 +29,14 @@
             <fileMode>0755</fileMode>
         </fileSet>
         <fileSet>
+            <directory>src/test/resources/FPL</directory>
+            <outputDirectory>bin</outputDirectory>
+            <includes>
+                <include>FASTTestTemplate.xml</include>
+                <include>data.xml</include>
+            </includes>
+        </fileSet>
+        <fileSet>
             <directory>/</directory>
             <outputDirectory></outputDirectory>
             <includes>

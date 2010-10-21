@@ -112,19 +112,25 @@ public class XmlCompressedMessageConverter {
         while (reader.hasMoreChildren()) {
             reader.moveDown();
             Field field = group.getField(reader.getNodeName());
-            FieldValue value = null;
-            if (field instanceof Group) {
-                Group currentGroup = (Group) field;
-                value = currentGroup.createValue(null);
-                parseGroup(reader, currentGroup, (GroupValue) value);
-            } else if (field instanceof Sequence) {
-                Sequence currentSequence = (Sequence) field;
-                value = currentSequence.createValue(null);
-                parseSequence(reader, currentSequence, (SequenceValue) value);
-            } else {
-                value = field.createValue(reader.getValue());
+            if(field != null)
+            {
+                FieldValue value = null;
+                if (field instanceof Group) {
+                    Group currentGroup = (Group) field;
+                    value = currentGroup.createValue(null);
+                    parseGroup(reader, currentGroup, (GroupValue) value);
+                } else if (field instanceof Sequence) {
+                    Sequence currentSequence = (Sequence) field;
+                    value = currentSequence.createValue(null);
+                    parseSequence(reader, currentSequence, (SequenceValue) value);
+                } else {
+                    value = field.createValue(reader.getValue());
+                }
+                groupValue.setFieldValue(field, value);
             }
-            groupValue.setFieldValue(field, value);
+            else {
+                System.err.println("Warning: skipping unexpected field '" + reader.getNodeName() + "'");
+            }
             reader.moveUp();
         }
     }
