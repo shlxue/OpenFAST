@@ -19,10 +19,11 @@ import org.openfast.template.TemplateRegistry;
 import org.openfast.template.loader.XMLMessageTemplateLoader;
 
 public class FastMessageProducer implements ConnectionListener {
-    private final Endpoint endpoint;
-    private final TemplateRegistry templateRegistry;
-    private Thread acceptThread;
-    private List connections = new ArrayList();
+    protected final Endpoint endpoint;
+    protected final TemplateRegistry templateRegistry;
+    protected Thread acceptThread;
+    protected List connections = new ArrayList();
+    protected XmlCompressedMessageConverter converter = new XmlCompressedMessageConverter();
 
     public FastMessageProducer(Endpoint endpoint, File templatesFile) {
         Global.setErrorHandler(ErrorHandler.NULL);
@@ -35,23 +36,27 @@ public class FastMessageProducer implements ConnectionListener {
             throw new RuntimeException(e.getMessage(), e);
         }
         this.templateRegistry = loader.getTemplateRegistry();
+        this.converter.setTemplateRegistry(this.templateRegistry);
     }
 
     public void encode(File xmlDataFile) throws FastConnectionException, IOException {
-        XmlCompressedMessageConverter converter = new XmlCompressedMessageConverter();
-        converter.setTemplateRegistry(templateRegistry);
         List messages = converter.parse(new FileInputStream(xmlDataFile));
         while (true) {
-            for (int i=0; i<messages.size(); i++) {
-                Message message = (Message) messages.get(i);
-                for (int j=0; j<connections.size(); j++) {
-                    MessageOutputStream out = (MessageOutputStream) connections.get(j);
-                    out.writeMessage(message);
-                }
-            }
+            publish(messages, connections);
             try {
                 Thread.sleep(1000);
-            } catch (InterruptedException e) {
+            }
+            catch (InterruptedException e) {
+            }
+        }
+    }
+
+    protected void publish(List messages, List msgOutputStreams) {
+        for (int i = 0; i < messages.size(); ++i) {
+            Message message = (Message) messages.get(i);
+            for (int j = 0; j < msgOutputStreams.size(); ++j) {
+                MessageOutputStream out = (MessageOutputStream)msgOutputStreams.get(j);
+                out.writeMessage(message);
             }
         }
     }

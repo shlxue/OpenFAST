@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import org.openfast.Context;
 import org.openfast.Message;
+import org.openfast.error.FastException;
 import org.openfast.codec.FastDecoder;
 import org.openfast.session.Connection;
 import org.openfast.session.Endpoint;
@@ -46,8 +47,13 @@ public class FastMessageConsumer {
             }
         });
         while (true) {
-            Message message = decoder.readMessage(readOffset);
-            System.out.println(message.toString());
+            try {
+                Message message = decoder.readMessage(readOffset);
+                System.out.println(message.toString());
+            }
+            catch(final FastException e) {
+                System.err.println(e.getMessage());
+            }
         }
     }
 }

@@ -21,41 +21,29 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 package org.openfast.session.multicast;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+import java.net.SocketException;
 
 import org.openfast.session.Connection;
+import org.openfast.session.ConnectionListener;
+import org.openfast.session.FastConnectionException;
 
-public class MulticastConnection implements Connection {
-    protected MulticastOutputStream outputStream;
-    protected MulticastSocket socket;
-    protected int port;
-    protected InetAddress group;
-
-    public MulticastConnection(MulticastSocket socket, int port, InetAddress group) {
-        this.socket = socket;
-        this.port = port;
-        this.group = group;
+public class MulticastServerEndpoint extends MulticastEndpoint {
+    public MulticastServerEndpoint(int port, String group) {
+        super(port, group);
     }
-
-    public void close() {
+    
+    public MulticastServerEndpoint(int port, String group, String ifaddr) {
+    	super(port, group, ifaddr);
+    }
+    
+    public Connection connect() throws FastConnectionException {
         try {
-            socket.leaveGroup(group);
-            socket.close();
+            return new MulticastConnection(createSocket(), port, InetAddress.getByName(group));
         }
-        catch (IOException e) {
+        catch(final IOException e) {
+            throw new FastConnectionException(e);
         }
-    }
-
-    public InputStream getInputStream() throws IOException {
-        return new MulticastInputStream(socket);
-    }
-
-    public OutputStream getOutputStream() throws IOException {
-        if(outputStream == null)
-            outputStream = new MulticastOutputStream(socket, port, group);
-        return outputStream;
     }
 }

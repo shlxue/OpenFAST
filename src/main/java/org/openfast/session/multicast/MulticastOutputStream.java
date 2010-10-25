@@ -21,41 +21,40 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 package org.openfast.session.multicast;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 
-import org.openfast.session.Connection;
+public class MulticastOutputStream extends OutputStream {
+    private MulticastSocket socket;
+    private InetAddress group;
+    private int port;
+    private DatagramPacket datagramPacket;
 
-public class MulticastConnection implements Connection {
-    protected MulticastOutputStream outputStream;
-    protected MulticastSocket socket;
-    protected int port;
-    protected InetAddress group;
-
-    public MulticastConnection(MulticastSocket socket, int port, InetAddress group) {
+    public MulticastOutputStream(MulticastSocket socket, int port, InetAddress group) {
         this.socket = socket;
-        this.port = port;
         this.group = group;
+        this.port = port;
     }
+            
+    public void write(byte[] b, int off, int len) {
+        if(off != 0 || len != b.length)
+            throw new UnsupportedOperationException();
 
-    public void close() {
         try {
-            socket.leaveGroup(group);
-            socket.close();
+            socket.send(new DatagramPacket(b, len, group, port));
         }
-        catch (IOException e) {
+        catch(final IOException e) {
+            e.printStackTrace();
         }
     }
 
-    public InputStream getInputStream() throws IOException {
-        return new MulticastInputStream(socket);
+    public void write(byte[] b) {
+        write(b, 0, b.length);
     }
 
-    public OutputStream getOutputStream() throws IOException {
-        if(outputStream == null)
-            outputStream = new MulticastOutputStream(socket, port, group);
-        return outputStream;
+    public void write(int b) {
+        throw new UnsupportedOperationException();
     }
 }

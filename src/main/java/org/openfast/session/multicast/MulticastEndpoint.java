@@ -30,24 +30,22 @@ import org.openfast.session.ConnectionListener;
 import org.openfast.session.Endpoint;
 import org.openfast.session.FastConnectionException;
 
-public class MulticastEndpoint implements Endpoint {
-    private int port;
-    private String group;
-    private String ifaddr;
+public abstract class MulticastEndpoint implements Endpoint {
+    protected int port;
+    protected String group;
+    protected String ifaddr;
+    
     public MulticastEndpoint(int port, String group) {
+        this(port, group, null);
+    }
+    
+    public MulticastEndpoint(int port, String group, String ifaddr) {
         this.port = port;
         this.group = group;
-        this.ifaddr = null;
-    }
-    public MulticastEndpoint(int port, String group, String ifaddr) {
-    	this(port, group);
     	this.ifaddr = ifaddr;
     }
-    public void accept() throws FastConnectionException {
-        throw new UnsupportedOperationException();
-    }
-    public void close() {}
-    public Connection connect() throws FastConnectionException {
+ 
+    protected MulticastSocket createSocket() throws FastConnectionException {
         try {
             MulticastSocket socket = new MulticastSocket(port);
             if (ifaddr != null) {
@@ -57,14 +55,23 @@ public class MulticastEndpoint implements Endpoint {
                     throw new FastConnectionException(e);
                 }
             }
-            InetAddress groupAddress = InetAddress.getByName(group);
-            socket.joinGroup(groupAddress);
-            return new MulticastConnection(socket, groupAddress);
+            return socket;
         } catch (IOException e) {
             throw new FastConnectionException(e);
         }
     }
-    public void setConnectionListener(ConnectionListener listener) {
-        throw new UnsupportedOperationException();
+
+    public String toString() {
+        return new StringBuilder(getClass().getName())
+            .append("[").append("group=").append(group)
+            .append(",").append("port=").append(port)
+            .append(",").append("ifaddr=").append(ifaddr)
+            .append("]")
+            .toString();
     }
+
+    public abstract Connection connect() throws FastConnectionException;
+    public void accept() throws FastConnectionException { }
+    public void setConnectionListener(ConnectionListener listener) { }
+    public void close() {}
 }

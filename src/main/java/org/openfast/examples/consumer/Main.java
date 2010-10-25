@@ -9,6 +9,7 @@ import org.openfast.examples.OpenFastExample;
 import org.openfast.session.Endpoint;
 import org.openfast.session.FastConnectionException;
 import org.openfast.session.multicast.MulticastEndpoint;
+import org.openfast.session.multicast.MulticastClientEndpoint;
 import org.openfast.session.tcp.TcpEndpoint;
 
 public class Main extends OpenFastExample {
@@ -44,7 +45,7 @@ public class Main extends OpenFastExample {
             
             if (cl.hasOption(PROTOCOL)) {
                 if ("udp".equals(cl.getOptionValue(PROTOCOL))) {
-                    endpoint = new MulticastEndpoint(port, host, ifaddr);
+                    endpoint = new MulticastClientEndpoint(port, host, ifaddr);
                 }
             }
             if (endpoint == null) {
