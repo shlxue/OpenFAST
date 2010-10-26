@@ -41,12 +41,19 @@ public class FastMessageProducer implements ConnectionListener {
     }
 
     public void encode(File xmlDataFile) throws FastConnectionException, IOException {
-        encode(new FileInputStream(xmlDataFile));
+        encode(new FileInputStream(xmlDataFile), true);
     }
 
     public void encode(InputStream xmlData) throws FastConnectionException, IOException {
+        encode(xmlData, true);
+    }
+
+    public void encode(InputStream xmlData, boolean loopForever) throws FastConnectionException, IOException {
         List messages = converter.parse(xmlData);
-        while (true) {
+        if(messages == null)
+            throw new IllegalArgumentException("The XML data stream contains no FAST messages!");
+
+        do {
             publish(messages, connections);
             try {
                 Thread.sleep(1000);
@@ -54,6 +61,7 @@ public class FastMessageProducer implements ConnectionListener {
             catch (InterruptedException e) {
             }
         }
+        while(loopForever);
     }
 
     protected void publish(List messages, List msgOutputStreams) {
