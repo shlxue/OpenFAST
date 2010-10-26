@@ -1,6 +1,7 @@
 package org.openfast.examples.producer;
 
 import java.io.File;
+import java.io.InputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -40,7 +41,11 @@ public class FastMessageProducer implements ConnectionListener {
     }
 
     public void encode(File xmlDataFile) throws FastConnectionException, IOException {
-        List messages = converter.parse(new FileInputStream(xmlDataFile));
+        encode(new FileInputStream(xmlDataFile));
+    }
+
+    public void encode(InputStream xmlData) throws FastConnectionException, IOException {
+        List messages = converter.parse(xmlData);
         while (true) {
             publish(messages, connections);
             try {
