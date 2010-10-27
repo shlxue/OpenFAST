@@ -48,13 +48,24 @@ public class MulticastOutputStreamTest extends TestCase {
         }
 
         public void send(DatagramPacket packet) throws IOException {
-            packetsSent.push(packet);
+            packetsSent.addLast(packet);
         }
+
+		public String toString() {
+			StringBuffer msg = new StringBuffer("\nPackets Sent {");
+			for(Object ix: packetsSent) {
+				final DatagramPacket packet = (DatagramPacket)ix;
+				msg.append("\n  ").append(new String(Arrays.copyOf(packet.getData(), packet.getLength())));
+			}
+			msg.append("\n}");
+			return msg.toString();
+		}
     }
 
-    public static void assertPacketEquals(byte[] expected, DatagramPacket actual) {
-        final String msg = "Expected '" + new String(expected) + "', but was '" + new String(actual.getData()) + "'";
-        assertTrue(msg, Arrays.equals(expected, actual.getData()));
+    public void assertPacketEquals(byte[] expected, DatagramPacket actual) {
+        final byte[] actualData = Arrays.copyOf(actual.getData(), actual.getLength());
+        final String msg = "Expected '" + new String(expected) + "', but was '" + new String(actualData) + "'";
+		assertTrue(msg, Arrays.equals(expected, actualData));
     }
 
     public void setUp() throws Exception {
@@ -64,46 +75,35 @@ public class MulticastOutputStreamTest extends TestCase {
         multicastOutputStream = new MulticastOutputStream(socket, port, group);
     }
 
-    public void testWrite() {
+	public void testYouMustCallFlushToCauseDatagramToBeSent() {
         multicastOutputStream.write(MESSAGE_A);
-        multicastOutputStream.write(MESSAGE_B);
-        multicastOutputStream.write(MESSAGE_C);
-        assertPacketEquals(MESSAGE_A, (DatagramPacket)socket.packetsSent.removeLast());
-        assertPacketEquals(MESSAGE_B, (DatagramPacket)socket.packetsSent.removeLast());
-        assertPacketEquals(MESSAGE_C, (DatagramPacket)socket.packetsSent.removeLast());
+		assertEquals(0, socket.packetsSent.size());
+		multicastOutputStream.flush();
+
+		System.out.println(socket);
+		assertPacketEquals(MESSAGE_A, (DatagramPacket)socket.packetsSent.removeFirst());
+    }
+
+	public void testWrite() {
+        multicastOutputStream.write(MESSAGE_A);
+		multicastOutputStream.flush();
+		
+		multicastOutputStream.write(MESSAGE_B);
+		multicastOutputStream.flush();
+        
+		multicastOutputStream.write(MESSAGE_C);
+		multicastOutputStream.flush();
+
+		System.out.println(socket);
+		assertPacketEquals(MESSAGE_A, (DatagramPacket)socket.packetsSent.removeFirst());
+        assertPacketEquals(MESSAGE_B, (DatagramPacket)socket.packetsSent.removeFirst());
+        assertPacketEquals(MESSAGE_C, (DatagramPacket)socket.packetsSent.removeFirst());
     }
 
     public void testWriteSingleByteNotSupported() {
         try {
             multicastOutputStream.write('X');
             fail("Expected write of single byte to cause exception, but none was thrown.");
-        }
-        catch(final UnsupportedOperationException e) {
-        }
-    }
-
-    public void testWriteOffsetMustEqualZeroAndLengthMustEqualDataLength() throws UnsupportedOperationException {
-        multicastOutputStream.write(MESSAGE_A, 0, MESSAGE_A.length); // offset and length OK
-        multicastOutputStream.write(MESSAGE_B, 0, MESSAGE_B.length); // offset and length OK
-        multicastOutputStream.write(MESSAGE_C, 0, MESSAGE_C.length); // offset and length OK
-
-        try {
-            multicastOutputStream.write(MESSAGE_A, 1, MESSAGE_A.length);
-            fail("Expected illegal offset to cause exception, but none was thrown.");
-        }
-        catch(final UnsupportedOperationException e) {
-        }
-        
-        try {
-            multicastOutputStream.write(MESSAGE_A, 0, MESSAGE_A.length - 1);
-            fail("Expected illegal length to cause exception, but none was thrown.");
-        }
-        catch(final UnsupportedOperationException e) {
-        }
-        
-        try {
-            multicastOutputStream.write(MESSAGE_A, 0, MESSAGE_A.length + 1);
-            fail("Expected illegal length to cause exception, but none was thrown.");
         }
         catch(final UnsupportedOperationException e) {
         }

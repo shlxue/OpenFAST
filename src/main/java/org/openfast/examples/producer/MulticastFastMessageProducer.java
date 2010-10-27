@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.List;
 import org.openfast.Context;
 import org.openfast.Message;
+import org.openfast.MessageBlockWriter;
 import org.openfast.MessageOutputStream;
 import org.openfast.error.ErrorHandler;
 import org.openfast.session.Connection;
@@ -17,19 +18,24 @@ public class MulticastFastMessageProducer extends FastMessageProducer {
     private MessageOutputStream out;
 
     public MulticastFastMessageProducer(Endpoint endpoint, File templatesFile) throws IOException, FastConnectionException {
-        super(endpoint, templatesFile);
+		this(endpoint, templatesFile, 0);
+	}
+	
+	public MulticastFastMessageProducer(Endpoint endpoint, File templatesFile, int writeOffset) throws IOException, FastConnectionException {
+        super(endpoint, templatesFile, writeOffset);
         Context context = new Context();
         context.setErrorHandler(ErrorHandler.NULL);
         context.setTemplateRegistry(templateRegistry);
         out = new MessageOutputStream(endpoint.connect().getOutputStream(), context);
-    }
+		out.setBlockWriter(FastMessageProducer.createMessageBlockWriter(writeOffset));
+	}
 
     protected void publish(List messages, List msgOutputStreams) {
         if(out == null) {
             return;
         }
         for(int i = 0; i < messages.size(); ++i) {
-            out.writeMessage((Message)messages.get(i));
+            out.writeMessage((Message)messages.get(i), true);
         }
         out.reset();
     }

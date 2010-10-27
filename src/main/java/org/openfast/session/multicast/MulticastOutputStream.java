@@ -22,33 +22,46 @@ package org.openfast.session.multicast;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.ByteBuffer;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 
 public class MulticastOutputStream extends OutputStream {
+	public final static int BUFFER_SIZE = 2048;
     private MulticastSocket socket;
     private InetAddress group;
     private int port;
-    private DatagramPacket datagramPacket;
+	private byte[] packetBuffer;
+	private ByteBuffer writeBuffer;
 
     public MulticastOutputStream(MulticastSocket socket, int port, InetAddress group) {
         this.socket = socket;
         this.group = group;
         this.port = port;
+		packetBuffer = new byte[BUFFER_SIZE];
+		writeBuffer = ByteBuffer.allocate(BUFFER_SIZE);
+		writeBuffer.clear();
     }
-            
-    public void write(byte[] b, int off, int len) {
-        if(off != 0 || len != b.length)
-            throw new UnsupportedOperationException();
 
-        try {
-            socket.send(new DatagramPacket(b, len, group, port));
-        }
-        catch(final IOException e) {
-            e.printStackTrace();
-        }
-    }
+	public void flush() {
+		writeBuffer.flip();
+		if(writeBuffer.hasRemaining()) {
+			try {
+				byte[] data = new byte[writeBuffer.remaining()];
+				writeBuffer.get(data);
+				socket.send(new DatagramPacket(data, data.length, group, port));
+			}
+			catch(final IOException e) {
+				e.printStackTrace();
+			}
+		}
+		writeBuffer.clear();
+	}   
+    
+	public void write(byte[] b, int off, int len) {
+		writeBuffer.put(b, off, len);
+	}
 
     public void write(byte[] b) {
         write(b, 0, b.length);

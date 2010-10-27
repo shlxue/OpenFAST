@@ -23,6 +23,7 @@ public class Main extends OpenFastExample {
         options.addOption("e", ERROR, false, "Show stacktrace information");
         options.addOption("t", MESSAGE_TEMPLATE_FILE, true, "Message template definition file");
         options.addOption("x", XML_DATA_FILE, true, "The XML data to convert to FAST");
+        options.addOption("k", WRITE_OFFSET, true, WRITE_OFFSET_DESCRIPTION);
     }
 
     public static boolean isMulticast(CommandLine cl) {
@@ -72,9 +73,10 @@ public class Main extends OpenFastExample {
         }
         
         try {
-            FastMessageProducer producer = isMulticast(cl)
-                ? new MulticastFastMessageProducer(endpoint, templatesFile)
-                : new FastMessageProducer(endpoint, templatesFile);
+			final int writeOffset = cl.hasOption(WRITE_OFFSET) ? getInteger(cl, WRITE_OFFSET) : 0;
+			FastMessageProducer producer = isMulticast(cl)
+                ? new MulticastFastMessageProducer(endpoint, templatesFile, writeOffset)
+                : new FastMessageProducer(endpoint, templatesFile, writeOffset);
 
             producer.start();
             producer.encode(xmlDataFile);

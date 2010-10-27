@@ -2,6 +2,7 @@ package org.openfast.examples.producer;
 
 import java.io.File;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -10,6 +11,7 @@ import java.util.List;
 import org.openfast.Context;
 import org.openfast.Global;
 import org.openfast.Message;
+import org.openfast.MessageBlockWriter;
 import org.openfast.MessageOutputStream;
 import org.openfast.error.ErrorHandler;
 import org.openfast.session.Connection;
@@ -25,8 +27,13 @@ public class FastMessageProducer implements ConnectionListener {
     protected Thread acceptThread;
     protected List connections = new ArrayList();
     protected XmlCompressedMessageConverter converter = new XmlCompressedMessageConverter();
+    protected final int writeOffset;
 
     public FastMessageProducer(Endpoint endpoint, File templatesFile) {
+		this(endpoint, templatesFile, 0);
+	}
+
+	public FastMessageProducer(Endpoint endpoint, File templatesFile, int writeOffset) {
         Global.setErrorHandler(ErrorHandler.NULL);
         this.endpoint = endpoint;
         XMLMessageTemplateLoader loader = new XMLMessageTemplateLoader();
@@ -38,7 +45,24 @@ public class FastMessageProducer implements ConnectionListener {
         }
         this.templateRegistry = loader.getTemplateRegistry();
         this.converter.setTemplateRegistry(this.templateRegistry);
-    }
+		this.writeOffset = writeOffset;
+	}
+
+	public static MessageBlockWriter createMessageBlockWriter(final int offset) {
+		if(offset <= 0)
+			return MessageBlockWriter.NULL;
+
+		return new MessageBlockWriter() {
+			final byte[] PREAMBLE = new byte[offset];
+			public void writeBlockLength(OutputStream out, byte[] data) {
+				try {
+					out.write(PREAMBLE);
+				}
+				catch(final IOException e) {
+				}
+			}
+		};
+	}
 
     public void encode(File xmlDataFile) throws FastConnectionException, IOException {
         encode(new FileInputStream(xmlDataFile), true);
@@ -101,7 +125,8 @@ public class FastMessageProducer implements ConnectionListener {
             context.setTemplateRegistry(templateRegistry);
             try {
                 MessageOutputStream out = new MessageOutputStream(connection.getOutputStream(), context);
-                connections.add(out);
+				out.setBlockWriter(createMessageBlockWriter(writeOffset));
+				connections.add(out);
             } catch (IOException e) {
                 e.printStackTrace();
             }
