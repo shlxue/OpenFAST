@@ -6,6 +6,7 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 import org.openfast.examples.Assert;
 import org.openfast.examples.OpenFastExample;
+import org.openfast.examples.MessageBlockReaderFactory;
 import org.openfast.session.Endpoint;
 import org.openfast.session.FastConnectionException;
 import org.openfast.session.multicast.MulticastEndpoint;
@@ -24,6 +25,7 @@ public class Main extends OpenFastExample {
         options.addOption("e", ERROR, false, "Show stacktrace information");
         options.addOption("t", MESSAGE_TEMPLATE_FILE, true, "Message template definition file");
         options.addOption("j", READ_OFFSET, true, READ_OFFSET_DESCRIPTION);
+        options.addOption("z", VARIANT, true, VARIANT_DESCRIPTION);
     }
     
     /**
@@ -62,7 +64,9 @@ public class Main extends OpenFastExample {
         
 
         final int readOffset = cl.hasOption(READ_OFFSET) ? getInteger(cl, READ_OFFSET) : 0;
-        FastMessageConsumer consumer = new FastMessageConsumer(endpoint, templatesFile, readOffset);
+		final Variant variant = cl.hasOption(VARIANT) ? getVariant(cl) : Variant.DEFAULT;
+		final MessageBlockReaderFactory msgBlockReaderFactory = new MessageBlockReaderFactory(variant, readOffset);
+		FastMessageConsumer consumer = new FastMessageConsumer(endpoint, templatesFile, msgBlockReaderFactory);
         
         try {
             consumer.start();

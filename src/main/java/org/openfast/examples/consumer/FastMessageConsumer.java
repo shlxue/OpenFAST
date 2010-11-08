@@ -6,6 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import org.openfast.Context;
 import org.openfast.Message;
+import org.openfast.MessageInputStream;
+import org.openfast.MessageBlockReader;
 import org.openfast.error.FastException;
 import org.openfast.codec.FastDecoder;
 import org.openfast.session.Connection;
@@ -13,17 +15,18 @@ import org.openfast.session.Endpoint;
 import org.openfast.session.FastConnectionException;
 import org.openfast.template.TemplateRegistry;
 import org.openfast.template.loader.XMLMessageTemplateLoader;
+import org.openfast.examples.MessageBlockReaderFactory;
 
 public class FastMessageConsumer {
     private final Endpoint endpoint;
     private final TemplateRegistry templateRegistry;
-    private final int readOffset;
+    protected final MessageBlockReaderFactory messageBlockReaderFactory;
 
     public FastMessageConsumer(Endpoint endpoint, File templatesFile) {
-        this(endpoint, templatesFile, 0);
+        this(endpoint, templatesFile, new MessageBlockReaderFactory());
     }
 
-    public FastMessageConsumer(Endpoint endpoint, File templatesFile, int readOffset) {
+    public FastMessageConsumer(Endpoint endpoint, File templatesFile, MessageBlockReaderFactory messageBlockReaderFactory) {
         this.endpoint = endpoint;
         XMLMessageTemplateLoader loader = new XMLMessageTemplateLoader();
         loader.setLoadTemplateIdFromAuxId(true);
@@ -33,23 +36,25 @@ public class FastMessageConsumer {
             throw new RuntimeException(e.getMessage(), e);
         }
         this.templateRegistry = loader.getTemplateRegistry();
-        this.readOffset = readOffset;
+        this.messageBlockReaderFactory = messageBlockReaderFactory;
     }
 
     public void start() throws FastConnectionException, IOException {
         final Connection connection = endpoint.connect();
         Context context = new Context();
         context.setTemplateRegistry(templateRegistry);
-        FastDecoder decoder = new FastDecoder(context, connection.getInputStream());
-        Runtime.getRuntime().addShutdownHook(new Thread() {
+        MessageInputStream msgInStream = new MessageInputStream(connection.getInputStream(), context);
+        MessageBlockReader msgBlockReader = messageBlockReaderFactory.create();
+		msgInStream.setBlockReader(msgBlockReader);
+		Runtime.getRuntime().addShutdownHook(new Thread() {
             public void run() {
                 connection.close();
             }
         });
         while (true) {
             try {
-                Message message = decoder.readMessage(readOffset);
-                System.out.println(message.toString());
+                Message message = msgInStream.readMessage();
+                System.out.println(msgBlockReader.toString() + ' ' + message.toString());
             }
             catch(final FastException e) {
                 System.err.println(e.getMessage());

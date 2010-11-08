@@ -6,6 +6,7 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 import org.openfast.examples.Assert;
 import org.openfast.examples.OpenFastExample;
+import org.openfast.examples.MessageBlockWriterFactory;
 import org.openfast.session.FastConnectionException;
 import org.openfast.session.Endpoint;
 import org.openfast.session.tcp.TcpEndpoint;
@@ -24,6 +25,7 @@ public class Main extends OpenFastExample {
         options.addOption("t", MESSAGE_TEMPLATE_FILE, true, "Message template definition file");
         options.addOption("x", XML_DATA_FILE, true, "The XML data to convert to FAST");
         options.addOption("k", WRITE_OFFSET, true, WRITE_OFFSET_DESCRIPTION);
+        options.addOption("z", VARIANT, true, VARIANT_DESCRIPTION);
     }
 
     public static boolean isMulticast(CommandLine cl) {
@@ -74,9 +76,12 @@ public class Main extends OpenFastExample {
         
         try {
 			final int writeOffset = cl.hasOption(WRITE_OFFSET) ? getInteger(cl, WRITE_OFFSET) : 0;
+			final Variant variant = cl.hasOption(VARIANT) ? getVariant(cl) : Variant.DEFAULT;
+			final MessageBlockWriterFactory msgBlockWriterFactory = new MessageBlockWriterFactory(variant, writeOffset);
+			
 			FastMessageProducer producer = isMulticast(cl)
-                ? new MulticastFastMessageProducer(endpoint, templatesFile, writeOffset)
-                : new FastMessageProducer(endpoint, templatesFile, writeOffset);
+                ? new MulticastFastMessageProducer(endpoint, templatesFile, msgBlockWriterFactory)
+                : new FastMessageProducer(endpoint, templatesFile, msgBlockWriterFactory);
 
             producer.start();
             producer.encode(xmlDataFile);

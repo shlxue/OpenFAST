@@ -68,6 +68,6 @@ public class MulticastOutputStream extends OutputStream {
     }
 
     public void write(int b) {
-        throw new UnsupportedOperationException();
+        writeBuffer.put((byte)b);
     }
 }

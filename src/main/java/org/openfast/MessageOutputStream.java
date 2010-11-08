@@ -61,7 +61,7 @@ public class MessageOutputStream implements MessageStream {
             if ((data == null) || (data.length == 0)) {
                 return;
             }
-            blockWriter.writeBlockLength(out, data);
+            blockWriter.writeBlockLength(out, message, data);
             out.write(data);
             if (flush)
                 out.flush();

@@ -20,6 +20,7 @@ import org.openfast.session.Endpoint;
 import org.openfast.session.FastConnectionException;
 import org.openfast.template.TemplateRegistry;
 import org.openfast.template.loader.XMLMessageTemplateLoader;
+import org.openfast.examples.MessageBlockWriterFactory;
 
 public class FastMessageProducer implements ConnectionListener {
     protected final Endpoint endpoint;
@@ -27,13 +28,13 @@ public class FastMessageProducer implements ConnectionListener {
     protected Thread acceptThread;
     protected List connections = new ArrayList();
     protected XmlCompressedMessageConverter converter = new XmlCompressedMessageConverter();
-    protected final int writeOffset;
+    protected final MessageBlockWriterFactory messageBlockWriterFactory;
 
     public FastMessageProducer(Endpoint endpoint, File templatesFile) {
-		this(endpoint, templatesFile, 0);
+		this(endpoint, templatesFile, new MessageBlockWriterFactory());
 	}
 
-	public FastMessageProducer(Endpoint endpoint, File templatesFile, int writeOffset) {
+	public FastMessageProducer(Endpoint endpoint, File templatesFile, MessageBlockWriterFactory messageBlockWriterFactory) {
         Global.setErrorHandler(ErrorHandler.NULL);
         this.endpoint = endpoint;
         XMLMessageTemplateLoader loader = new XMLMessageTemplateLoader();
@@ -45,23 +46,7 @@ public class FastMessageProducer implements ConnectionListener {
         }
         this.templateRegistry = loader.getTemplateRegistry();
         this.converter.setTemplateRegistry(this.templateRegistry);
-		this.writeOffset = writeOffset;
-	}
-
-	public static MessageBlockWriter createMessageBlockWriter(final int offset) {
-		if(offset <= 0)
-			return MessageBlockWriter.NULL;
-
-		return new MessageBlockWriter() {
-			final byte[] PREAMBLE = new byte[offset];
-			public void writeBlockLength(OutputStream out, byte[] data) {
-				try {
-					out.write(PREAMBLE);
-				}
-				catch(final IOException e) {
-				}
-			}
-		};
+		this.messageBlockWriterFactory = messageBlockWriterFactory;
 	}
 
     public void encode(File xmlDataFile) throws FastConnectionException, IOException {
@@ -125,7 +110,7 @@ public class FastMessageProducer implements ConnectionListener {
             context.setTemplateRegistry(templateRegistry);
             try {
                 MessageOutputStream out = new MessageOutputStream(connection.getOutputStream(), context);
-				out.setBlockWriter(createMessageBlockWriter(writeOffset));
+				out.setBlockWriter(messageBlockWriterFactory.create());
 				connections.add(out);
             } catch (IOException e) {
                 e.printStackTrace();

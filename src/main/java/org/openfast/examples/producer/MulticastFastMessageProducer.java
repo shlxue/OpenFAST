@@ -13,21 +13,22 @@ import org.openfast.session.Endpoint;
 import org.openfast.session.FastConnectionException;
 import org.openfast.template.TemplateRegistry;
 import org.openfast.template.loader.XMLMessageTemplateLoader;
+import org.openfast.examples.MessageBlockWriterFactory;
 
 public class MulticastFastMessageProducer extends FastMessageProducer {
     private MessageOutputStream out;
 
     public MulticastFastMessageProducer(Endpoint endpoint, File templatesFile) throws IOException, FastConnectionException {
-		this(endpoint, templatesFile, 0);
+		this(endpoint, templatesFile, new MessageBlockWriterFactory());
 	}
 	
-	public MulticastFastMessageProducer(Endpoint endpoint, File templatesFile, int writeOffset) throws IOException, FastConnectionException {
-        super(endpoint, templatesFile, writeOffset);
+	public MulticastFastMessageProducer(Endpoint endpoint, File templatesFile, MessageBlockWriterFactory messageBlockWriterFactory) throws IOException, FastConnectionException {
+        super(endpoint, templatesFile, messageBlockWriterFactory);
         Context context = new Context();
         context.setErrorHandler(ErrorHandler.NULL);
         context.setTemplateRegistry(templateRegistry);
         out = new MessageOutputStream(endpoint.connect().getOutputStream(), context);
-		out.setBlockWriter(FastMessageProducer.createMessageBlockWriter(writeOffset));
+		out.setBlockWriter(messageBlockWriterFactory.create());
 	}
 
     protected void publish(List messages, List msgOutputStreams) {

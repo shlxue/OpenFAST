@@ -28,7 +28,12 @@ public interface MessageBlockReader {
             return true;
         }
 
-        public void messageRead(InputStream in, Message message) {}
+        public void messageRead(InputStream in, Message message) { }
+		
+		@Override
+		public String toString() {
+			return "(null block reader)";
+		}
     };
 
     boolean readBlock(InputStream in);

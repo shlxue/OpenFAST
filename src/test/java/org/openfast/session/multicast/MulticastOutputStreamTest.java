@@ -100,13 +100,23 @@ public class MulticastOutputStreamTest extends TestCase {
         assertPacketEquals(MESSAGE_C, (DatagramPacket)socket.packetsSent.removeFirst());
     }
 
-    public void testWriteSingleByteNotSupported() {
-        try {
-            multicastOutputStream.write('X');
-            fail("Expected write of single byte to cause exception, but none was thrown.");
-        }
-        catch(final UnsupportedOperationException e) {
-        }
-    }
+    public void testWriteSingleByte() {
+		for(byte b : MESSAGE_C)
+			multicastOutputStream.write(b);
+		multicastOutputStream.flush();
+		
+		for(byte b : MESSAGE_B)
+			multicastOutputStream.write(b);
+		multicastOutputStream.flush();
+		
+		for(byte b : MESSAGE_A)
+			multicastOutputStream.write(b);
+		multicastOutputStream.flush();
+		
+		System.out.println(socket);
+		assertPacketEquals(MESSAGE_C, (DatagramPacket)socket.packetsSent.removeFirst());
+        assertPacketEquals(MESSAGE_B, (DatagramPacket)socket.packetsSent.removeFirst());
+        assertPacketEquals(MESSAGE_A, (DatagramPacket)socket.packetsSent.removeFirst());
+	}
 }
 

@@ -22,8 +22,12 @@ public class OpenFastExample {
     protected static final String XML_DATA_FILE = "xml";
     protected static final String READ_OFFSET = "readOffset";
     protected static final String WRITE_OFFSET = "writeOffset";
+    protected static final String VARIANT = "variant";
     protected static final String READ_OFFSET_DESCRIPTION = "The number of leading bytes that should be discarded when reading each message.";
     protected static final String WRITE_OFFSET_DESCRIPTION = "The number of leading bytes that should be appended as padding when sending each message.";
+    protected static final String VARIANT_DESCRIPTION = "Enable exchange-specific behavior.  Valid values: CME";
+
+	public enum Variant { DEFAULT, CME }
 
     protected static CommandLine parseCommandLine(String name, String[] args, Options options) {
         try {
@@ -55,5 +59,22 @@ public class OpenFastExample {
         Assert.assertTrue(cl.hasOption(option), "The required parameter \"" + option + "\" is missing.");
         File file = new File(cl.getOptionValue(option));
         return file;
+    }
+
+    protected static Variant getVariant(CommandLine cl) {
+        Assert.assertTrue(cl.hasOption(VARIANT), "The required parameter \"" + VARIANT + "\" is missing.");
+        String optarg = cl.getOptionValue(VARIANT);
+		try {
+			return getVariant(optarg);
+		}
+		catch(final RuntimeException e) {
+			System.err.println("Invalid " + VARIANT + " argument: " + optarg); 
+			System.exit(1);
+		}
+		return null;
+    }
+    
+	protected static Variant getVariant(String value) {
+		return Enum.valueOf(Variant.class, value);
     }
 }
