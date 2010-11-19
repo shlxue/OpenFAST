@@ -27,20 +27,21 @@ import java.net.MulticastSocket;
 import java.nio.ByteBuffer;
 
 public class MulticastInputStream extends InputStream {
-    private static final int BUFFER_SIZE = 256 * 1024;
-    private MulticastSocket socket;
-    private ByteBuffer buffer;
+    private static final int BUFFER_SIZE = 64 * 1024;
+    private final MulticastSocket socket;
+    private final ByteBuffer buffer;
 
     public MulticastInputStream(MulticastSocket socket) {
         this(socket, BUFFER_SIZE);
     }
-    
+
     public MulticastInputStream(MulticastSocket socket, int bufferSize) {
         this.socket = socket;
         this.buffer = ByteBuffer.allocate(bufferSize);
         buffer.flip();
     }
 
+    @Override
     public int read() throws IOException {
         if (socket.isClosed()) return -1;
         if (!buffer.hasRemaining()) {
@@ -50,6 +51,6 @@ public class MulticastInputStream extends InputStream {
             buffer.flip();
             buffer.limit(packet.getLength());
         }
-        return (int)(buffer.get() & 0xFF);
+        return (buffer.get() & 0xFF);
     }
 }

@@ -65,9 +65,9 @@ public class NullableByteVector extends NotStopBitEncodedTypeCodec {
         if (value.isNull())
             return TypeCodec.NULLABLE_UNSIGNED_INTEGER.encodeValue(ScalarValue.NULL);
         ByteVectorValue byteVectorValue = (ByteVectorValue) value;
-        int lengthSize = IntegerCodec.getUnsignedIntegerSize(byteVectorValue.value.length);
-        byte[] encoding = new byte[byteVectorValue.value.length + lengthSize];
         byte[] length = TypeCodec.NULLABLE_UNSIGNED_INTEGER.encode(new IntegerValue(byteVectorValue.value.length));
+        int lengthSize = length.length;
+        byte[] encoding = new byte[byteVectorValue.value.length + lengthSize];
         System.arraycopy(length, 0, encoding, 0, lengthSize);
         System.arraycopy(byteVectorValue.value, 0, encoding, lengthSize, byteVectorValue.value.length);
         return encoding;
