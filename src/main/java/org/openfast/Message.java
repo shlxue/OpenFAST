@@ -76,6 +76,6 @@ public class Message extends GroupValue {
         for (int i = 0; i < copies.length; i++) {
             copies[i] = values[i].copy();
         }
-        return new Message(template, this.values);
+        return new Message(template, copies);
     }
 }
