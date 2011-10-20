@@ -59,7 +59,7 @@ public class DecimalValue extends NumericValue {
 
     public DecimalValue(BigDecimal bigDecimal) {
         this.mantissa = bigDecimal.unscaledValue().longValue();
-        this.exponent = bigDecimal.scale();
+        this.exponent = -1 * bigDecimal.scale();
     }
 
     @Override

@@ -23,7 +23,6 @@ package org.openfast;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-
 import org.openfast.error.FastConstants;
 import org.openfast.error.FastException;
 import org.openfast.test.OpenFastTestCase;
@@ -33,11 +32,15 @@ public class DecimalValueTest extends OpenFastTestCase {
         assertEquals(new BigDecimal(BigInteger.valueOf(241), -5), new DecimalValue(241, 5).toBigDecimal());
         assertEquals(new BigDecimal(BigInteger.valueOf(15), 4), new DecimalValue(15, -4).toBigDecimal());
     }
-    
+
+    public void testBigDecimalConstructor() {
+        assertEquals("1.2345", new DecimalValue(new BigDecimal("1.2345")).toString());
+    }
+
     public void testToDouble() {
         assertEquals(3.3, new DecimalValue(33, -1).toDouble(), 0.000000000001);
     }
-    
+
     public void testMaxValue() {
         DecimalValue max = new DecimalValue(Long.MAX_VALUE, 63);
         assertEquals(new BigDecimal(new BigInteger(String.valueOf(Long.MAX_VALUE)), -63), max.toBigDecimal());
@@ -51,7 +54,7 @@ public class DecimalValueTest extends OpenFastTestCase {
         value = new DecimalValue(942755, -2);
         assertEquals(BigDecimal.valueOf(9427.55), value.toBigDecimal());
     }
-    
+
 
     public void testToByte() {
         assertEquals(100, d(100.0).toByte());
