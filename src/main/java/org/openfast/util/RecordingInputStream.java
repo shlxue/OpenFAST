@@ -35,10 +35,15 @@ public class RecordingInputStream extends InputStream {
         this.in = inputStream;
     }
     
-
     public int read() throws IOException {
         int read = in.read();
         buffer[index++] = (byte) read;
+        // Buffer overflow patch submitted by Erik Svensson
+        if (index >= buffer.length){
+            byte[] tmp = new byte[buffer.length*2];
+            System.arraycopy(buffer, 0, tmp, 0, buffer.length);
+            buffer = tmp;
+        }
         return read;
     }
 
