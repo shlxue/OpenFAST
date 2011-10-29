@@ -4,10 +4,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import org.openfast.Context;
 import org.openfast.Global;
 import org.openfast.Message;
-import org.openfast.codec.FastDecoder;
+import org.openfast.MessageBlockReader;
+import org.openfast.MessageInputStream;
 import org.openfast.error.FastConstants;
 import org.openfast.template.TemplateRegistry;
 import org.openfast.template.loader.XMLMessageTemplateLoader;
@@ -17,6 +19,7 @@ public class FastMessageDecoder {
     private final File fastDataFile;
     private final int readOffset;
     private boolean trace;
+    private MessageBlockReader blockReader = MessageBlockReader.NULL;
 
     /**
      * Construct the decoder.
@@ -27,7 +30,7 @@ public class FastMessageDecoder {
     public FastMessageDecoder(File fastDataFile, File templatesFile, boolean namespaceAware) {
         this(fastDataFile, templatesFile, namespaceAware, 0);
     }
-    
+
     /**
      * Construct the decoder.
      * @param fastDataFile A file containing raw FAST messages.
@@ -54,16 +57,30 @@ public class FastMessageDecoder {
         context.setTraceEnabled(trace);
         context.startTrace();
         context.setTemplateRegistry(templateRegistry);
-        FastDecoder decoder = new FastDecoder(context, new FileInputStream(fastDataFile));
-        while (true) {
-            Message message = decoder.readMessage(readOffset);
-            if (message == null)
-                break;
-            System.out.println(message.toString());
+//        context.set
+        InputStream fileIn = null;
+        try {
+            fileIn = new FileInputStream(fastDataFile);
+            MessageInputStream messageIn = new MessageInputStream(fileIn, context);
+            messageIn.setBlockReader(blockReader);
+            while (true) {
+                Message message = messageIn.readMessage();
+                if (message == null)
+                    break;
+                System.out.println(message.toString());
+            }
+        } finally {
+            if (fileIn != null) {
+                fileIn.close();
+            }
         }
     }
 
     public void setTraceEnabled() {
         this.trace = true;
+    }
+
+    public void setBlockReader(MessageBlockReader messageBlockReader) {
+        this.blockReader = messageBlockReader;
     }
 }
