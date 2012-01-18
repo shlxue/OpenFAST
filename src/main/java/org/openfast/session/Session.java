@@ -161,10 +161,9 @@ public class Session implements ErrorHandler {
                             }
                         } catch (Exception e) {
                             Throwable cause = e.getCause();
-
-                            if (cause != null && cause.getClass().equals(SocketException.class)
-                                    && cause.getMessage().toLowerCase().contains("socket closed")) {
+                            if (cause != null && cause.getClass().equals(SocketException.class)) {
                                 listening = false;
+                                errorHandler.error(FastConstants.IO_ERROR, cause.getMessage(), cause);
                             } else if (e instanceof FastException) {
                                 FastException fastException = ((FastException) e);
                                 errorHandler.error(fastException.getCode(), fastException.getMessage(), e);
