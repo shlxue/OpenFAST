@@ -230,21 +230,21 @@
             <id>sourceforge.net</id>
             <name>Sourceforge.net Repository</name>
             <url>
-            scp://shell.sourceforge.net/home/groups/o/op/openfast/htdocs/maven/release
+            scp://web.sourceforge.net/home/project-web/openfast/htdocs/maven/release
             </url>
         </repository>
         <snapshotRepository>
             <id>sourceforge.net</id>
             <name>Sourceforge.net Snapshot Repository</name>
             <url>
-           scp://shell.sourceforge.net/home/groups/o/op/openfast/htdocs/maven/snapshot
+           scp://web.sourceforge.net/home/project-web/openfast/htdocs/maven/snapshot
             </url>
         </snapshotRepository>
         <site>
             <id>sourceforge.net</id>
             <name>Sourceforge.net OpenFAST Web Site</name>
             <url>
-                scp://shell.sourceforge.net/home/groups/o/op/openfast/htdocs/
+                scp://web.sourceforge.net/home/project-web/openfast/htdocs
             </url>
         </site>
     </distributionManagement>
