@@ -145,10 +145,7 @@ public class Session implements ErrorHandler {
                             Message message = in.readMessage();
 
                             if (message == null) {
-                                listening = false;
-                                if (sessionListener != null) {
-                                    sessionListener.onClose();
-                                }
+                                notifySessionClosed();
                                 break;
                             }
                             if (protocol.isProtocolMessage(message)) {
@@ -162,7 +159,7 @@ public class Session implements ErrorHandler {
                         } catch (Exception e) {
                             Throwable cause = e.getCause();
                             if (cause != null && cause.getClass().equals(SocketException.class)) {
-                                listening = false;
+                                notifySessionClosed();
                                 errorHandler.error(FastConstants.IO_ERROR, cause.getMessage(), cause);
                             } else if (e instanceof FastException) {
                                 FastException fastException = ((FastException) e);
@@ -171,6 +168,13 @@ public class Session implements ErrorHandler {
                                 errorHandler.error(FastConstants.GENERAL_ERROR, e.getMessage(), e);
                             }
                         }
+                    }
+                }
+
+                private void notifySessionClosed() {
+                    listening = false;
+                    if (sessionListener != null) {
+                        sessionListener.onClose();
                     }
                 }
             };
