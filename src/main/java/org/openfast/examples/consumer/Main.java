@@ -45,10 +45,8 @@ public class Main extends OpenFastExample {
             String host = cl.hasOption(HOST) ? cl.getOptionValue(HOST) : "localhost";
             String ifaddr = cl.hasOption(INTERFACE) ? cl.getOptionValue(INTERFACE) : null;
             
-            if (cl.hasOption(PROTOCOL)) {
-                if ("udp".equals(cl.getOptionValue(PROTOCOL))) {
-                    endpoint = new MulticastClientEndpoint(port, host, ifaddr);
-                }
+            if(isMulticast(cl)) {
+                endpoint = new MulticastClientEndpoint(port, host, ifaddr);
             }
             if (endpoint == null) {
                 endpoint = new TcpEndpoint(host, port);
@@ -65,7 +63,7 @@ public class Main extends OpenFastExample {
 
         final int readOffset = cl.hasOption(READ_OFFSET) ? getInteger(cl, READ_OFFSET) : 0;
 		final Variant variant = cl.hasOption(VARIANT) ? getVariant(cl) : Variant.DEFAULT;
-		final MessageBlockReaderFactory msgBlockReaderFactory = new MessageBlockReaderFactory(variant, readOffset);
+		final MessageBlockReaderFactory msgBlockReaderFactory = new MessageBlockReaderFactory(variant, readOffset, isMulticast(cl));
 		FastMessageConsumer consumer = new FastMessageConsumer(endpoint, templatesFile, msgBlockReaderFactory);
         
         try {

@@ -29,6 +29,15 @@ public class OpenFastExample {
 
 	public enum Variant { DEFAULT, CME }
 
+    public static boolean isMulticast(CommandLine cl) {
+        if (cl.hasOption(PROTOCOL)) {
+            if ("udp".equals(cl.getOptionValue(PROTOCOL))) {
+                return true;
+            }
+        }
+        return false;
+    }
+ 
     protected static CommandLine parseCommandLine(String name, String[] args, Options options) {
         try {
             BasicParser parser = new BasicParser();

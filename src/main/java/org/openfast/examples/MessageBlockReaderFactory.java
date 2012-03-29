@@ -10,26 +10,28 @@ import org.openfast.impl.*;
 public class MessageBlockReaderFactory {
 	final Variant variant;
 	final int offset;
+    final boolean isMulticast;
 		
 	public MessageBlockReaderFactory() {
-		this(Variant.DEFAULT, 0);
+		this(Variant.DEFAULT, 0, true);
 	}
 
-	public MessageBlockReaderFactory(final Variant variant, final int offset) {
+	public MessageBlockReaderFactory(final Variant variant, final int offset, boolean isMulticast) {
 		this.variant = variant;
 		this.offset = offset;
+        this.isMulticast = isMulticast;
 	}
 
 	public MessageBlockReader create() {
-		switch(variant) {
-			case CME:
-				return new CmeMessageBlockReader();
-
-			case DEFAULT:
-			default:
-				return createDefault();
-		}
-	}
+        if(Variant.CME == variant)
+        {
+            if(this.isMulticast)
+                return new CmeMessageBlockReader();
+            else
+                return new CmeTcpReplayMessageBlockReader();
+        }
+        return createDefault();
+    }
 
 	MessageBlockReader createDefault() {
 		if(offset <= 0)

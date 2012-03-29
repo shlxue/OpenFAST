@@ -10,25 +10,27 @@ import org.openfast.impl.*;
 public class MessageBlockWriterFactory {
 	final Variant variant;
 	final int offset;
+    final boolean isMulticast;
 		
 	public MessageBlockWriterFactory() {
-		this(Variant.DEFAULT, 0);
+		this(Variant.DEFAULT, 0, true);
 	}
 
-	public MessageBlockWriterFactory(final Variant variant, final int offset) {
+	public MessageBlockWriterFactory(final Variant variant, final int offset, boolean isMulticast) {
 		this.variant = variant;
 		this.offset = offset;
+        this.isMulticast = isMulticast;
 	}
 
 	public MessageBlockWriter create() {
-		switch(variant) {
-			case CME:
-				return new CmeMessageBlockWriter();
-
-			case DEFAULT:
-			default:
-				return createDefault();
-		}
+        if(Variant.CME == variant)
+        {
+            if(this.isMulticast)
+                return new CmeMessageBlockWriter();
+            else
+                return new CmeTcpReplayMessageBlockWriter();
+        }
+        return createDefault();
 	}
 
 	MessageBlockWriter createDefault() {

@@ -27,16 +27,7 @@ public class Main extends OpenFastExample {
         options.addOption("k", WRITE_OFFSET, true, WRITE_OFFSET_DESCRIPTION);
         options.addOption("z", VARIANT, true, VARIANT_DESCRIPTION);
     }
-
-    public static boolean isMulticast(CommandLine cl) {
-        if (cl.hasOption(PROTOCOL)) {
-            if ("udp".equals(cl.getOptionValue(PROTOCOL))) {
-                return true;
-            }
-        }
-        return false;
-    }
-    
+   
     /**
      * @param args
      */
@@ -77,7 +68,7 @@ public class Main extends OpenFastExample {
         try {
 			final int writeOffset = cl.hasOption(WRITE_OFFSET) ? getInteger(cl, WRITE_OFFSET) : 0;
 			final Variant variant = cl.hasOption(VARIANT) ? getVariant(cl) : Variant.DEFAULT;
-			final MessageBlockWriterFactory msgBlockWriterFactory = new MessageBlockWriterFactory(variant, writeOffset);
+			final MessageBlockWriterFactory msgBlockWriterFactory = new MessageBlockWriterFactory(variant, writeOffset, isMulticast(cl));
 			
 			FastMessageProducer producer = isMulticast(cl)
                 ? new MulticastFastMessageProducer(endpoint, templatesFile, msgBlockWriterFactory)
