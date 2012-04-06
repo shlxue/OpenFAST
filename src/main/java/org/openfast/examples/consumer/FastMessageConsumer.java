@@ -21,12 +21,14 @@ public class FastMessageConsumer {
     private final Endpoint endpoint;
     private final TemplateRegistry templateRegistry;
     protected final MessageBlockReaderFactory messageBlockReaderFactory;
+    protected final boolean shouldResetOnEveryMessage;
 
     public FastMessageConsumer(Endpoint endpoint, File templatesFile) {
-        this(endpoint, templatesFile, new MessageBlockReaderFactory());
+        this(endpoint, templatesFile, new MessageBlockReaderFactory(), false);
     }
 
-    public FastMessageConsumer(Endpoint endpoint, File templatesFile, MessageBlockReaderFactory messageBlockReaderFactory) {
+    public FastMessageConsumer(Endpoint endpoint, File templatesFile,
+            MessageBlockReaderFactory messageBlockReaderFactory, boolean shouldResetOnEveryMessage) {
         this.endpoint = endpoint;
         XMLMessageTemplateLoader loader = new XMLMessageTemplateLoader();
         loader.setLoadTemplateIdFromAuxId(true);
@@ -37,6 +39,7 @@ public class FastMessageConsumer {
         }
         this.templateRegistry = loader.getTemplateRegistry();
         this.messageBlockReaderFactory = messageBlockReaderFactory;
+        this.shouldResetOnEveryMessage = shouldResetOnEveryMessage;
     }
 
     public void start() throws FastConnectionException, IOException {
@@ -55,6 +58,9 @@ public class FastMessageConsumer {
             try {
                 Message message = msgInStream.readMessage();
                 System.out.println(msgBlockReader.toString() + ' ' + message.toString());
+                if(shouldResetOnEveryMessage) {
+                    msgInStream.reset();
+                }
             }
             catch(final FastException e) {
                 System.err.println(e.getMessage());

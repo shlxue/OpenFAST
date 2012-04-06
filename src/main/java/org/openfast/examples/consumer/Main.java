@@ -26,6 +26,7 @@ public class Main extends OpenFastExample {
         options.addOption("t", MESSAGE_TEMPLATE_FILE, true, "Message template definition file");
         options.addOption("j", READ_OFFSET, true, READ_OFFSET_DESCRIPTION);
         options.addOption("z", VARIANT, true, VARIANT_DESCRIPTION);
+        options.addOption("d", RESET, false, RESET_DESCRIPTION);
     }
     
     /**
@@ -63,8 +64,9 @@ public class Main extends OpenFastExample {
 
         final int readOffset = cl.hasOption(READ_OFFSET) ? getInteger(cl, READ_OFFSET) : 0;
 		final Variant variant = cl.hasOption(VARIANT) ? getVariant(cl) : Variant.DEFAULT;
+        final boolean shouldResetOnEveryMessage = (cl.hasOption(RESET) || (Variant.CME == variant));
 		final MessageBlockReaderFactory msgBlockReaderFactory = new MessageBlockReaderFactory(variant, readOffset, isMulticast(cl));
-		FastMessageConsumer consumer = new FastMessageConsumer(endpoint, templatesFile, msgBlockReaderFactory);
+		FastMessageConsumer consumer = new FastMessageConsumer(endpoint, templatesFile, msgBlockReaderFactory, shouldResetOnEveryMessage);
         
         try {
             consumer.start();

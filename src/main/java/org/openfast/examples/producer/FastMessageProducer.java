@@ -29,12 +29,14 @@ public class FastMessageProducer implements ConnectionListener {
     protected List connections = new ArrayList();
     protected XmlCompressedMessageConverter converter = new XmlCompressedMessageConverter();
     protected final MessageBlockWriterFactory messageBlockWriterFactory;
+    protected final boolean shouldResetOnEveryMessage;
 
     public FastMessageProducer(Endpoint endpoint, File templatesFile) {
-		this(endpoint, templatesFile, new MessageBlockWriterFactory());
+		this(endpoint, templatesFile, new MessageBlockWriterFactory(), false);
 	}
 
-	public FastMessageProducer(Endpoint endpoint, File templatesFile, MessageBlockWriterFactory messageBlockWriterFactory) {
+	public FastMessageProducer(Endpoint endpoint, File templatesFile,
+            MessageBlockWriterFactory messageBlockWriterFactory, boolean shouldResetOnEveryMessage) {
         Global.setErrorHandler(ErrorHandler.NULL);
         this.endpoint = endpoint;
         XMLMessageTemplateLoader loader = new XMLMessageTemplateLoader();
@@ -46,7 +48,8 @@ public class FastMessageProducer implements ConnectionListener {
         }
         this.templateRegistry = loader.getTemplateRegistry();
         this.converter.setTemplateRegistry(this.templateRegistry);
-		this.messageBlockWriterFactory = messageBlockWriterFactory;
+        this.messageBlockWriterFactory = messageBlockWriterFactory;
+        this.shouldResetOnEveryMessage = shouldResetOnEveryMessage;
 	}
 
     public void encode(File xmlDataFile) throws FastConnectionException, IOException {
@@ -79,6 +82,9 @@ public class FastMessageProducer implements ConnectionListener {
             for (int j = 0; j < msgOutputStreams.size(); ++j) {
                 MessageOutputStream out = (MessageOutputStream)msgOutputStreams.get(j);
                 out.writeMessage(message);
+                if(shouldResetOnEveryMessage) {
+                    out.reset();
+                }
             }
         }
     }

@@ -19,16 +19,17 @@ public class MulticastFastMessageProducer extends FastMessageProducer {
     private MessageOutputStream out;
 
     public MulticastFastMessageProducer(Endpoint endpoint, File templatesFile) throws IOException, FastConnectionException {
-		this(endpoint, templatesFile, new MessageBlockWriterFactory());
+		this(endpoint, templatesFile, new MessageBlockWriterFactory(), false);
 	}
 	
-	public MulticastFastMessageProducer(Endpoint endpoint, File templatesFile, MessageBlockWriterFactory messageBlockWriterFactory) throws IOException, FastConnectionException {
-        super(endpoint, templatesFile, messageBlockWriterFactory);
+	public MulticastFastMessageProducer(Endpoint endpoint, File templatesFile, MessageBlockWriterFactory messageBlockWriterFactory,
+            boolean shouldResetOnEveryMessage) throws IOException, FastConnectionException {
+        super(endpoint, templatesFile, messageBlockWriterFactory, shouldResetOnEveryMessage);
         Context context = new Context();
         context.setErrorHandler(ErrorHandler.NULL);
         context.setTemplateRegistry(templateRegistry);
         out = new MessageOutputStream(endpoint.connect().getOutputStream(), context);
-		out.setBlockWriter(messageBlockWriterFactory.create());
+        out.setBlockWriter(messageBlockWriterFactory.create());
 	}
 
     protected void publish(List messages, List msgOutputStreams) {
@@ -38,7 +39,9 @@ public class MulticastFastMessageProducer extends FastMessageProducer {
         for(int i = 0; i < messages.size(); ++i) {
             out.writeMessage((Message)messages.get(i), true);
         }
-        out.reset();
+        if(shouldResetOnEveryMessage) {
+            out.reset();
+        }
     }
 
     public void start() {
