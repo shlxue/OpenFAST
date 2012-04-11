@@ -165,7 +165,7 @@ public class Group extends Field {
         if (context.isTraceEnabled()) {
             context.getEncodeTrace().groupStart(this);
         }
-        BitVectorBuilder presenceMapBuilder = new BitVectorBuilder(template.getMaxPresenceMapSize());
+        BitVectorBuilder presenceMapBuilder = new BitVectorBuilder(groupValue.getGroup().getMaxPresenceMapSize());
         try {
             byte[][] fieldEncodings = new byte[fields.length][];
             for (int fieldIndex = 0; fieldIndex < fields.length; fieldIndex++) {
