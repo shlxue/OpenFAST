@@ -62,7 +62,9 @@ public class FastDecoder implements Coder {
      */
     public Message readMessage() throws FastException {
         BitVectorValue bitVectorValue = (BitVectorValue) TypeCodec.BIT_VECTOR.decode(in);
-
+        if (bitVectorValue == null) {
+            return null;
+        }
         BitVector pmap = (bitVectorValue).value;
         BitVectorReader presenceMapReader = new BitVectorReader(pmap);
 
