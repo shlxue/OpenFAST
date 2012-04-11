@@ -23,14 +23,15 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
  */
 package org.openfast.template.type.codec;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
 import org.openfast.ByteUtil;
 import org.openfast.Global;
 import org.openfast.ScalarValue;
 import org.openfast.StringValue;
 import org.openfast.error.FastConstants;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 
 final class AsciiString extends TypeCodec {
     private static final long serialVersionUID = 1L;
@@ -73,10 +74,15 @@ final class AsciiString extends TypeCodec {
         try {
             do {
                 byt = in.read();
+                if (byt < 0) {
+                    Global.handleError(FastConstants.END_OF_STREAM, "The end of the input stream has been reached.");
+                    return null; // short circuit if global error handler does not throw exception
+                }
                 buffer.write(byt);
             } while ((byt & 0x80) == 0);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            Global.handleError(FastConstants.IO_ERROR, "A IO error has been encountered while decoding.", e);
+            return null; // short circuit if global error handler does not throw exception
         }
         byte[] bytes = buffer.toByteArray();
         bytes[bytes.length - 1] &= 0x7f;

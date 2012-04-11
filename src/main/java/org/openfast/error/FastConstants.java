@@ -68,6 +68,7 @@ public interface FastConstants {
     ErrorCode IMPOSSIBLE_EXCEPTION = new ErrorCode(DYNAMIC, 101, "IMPOSSIBLE", "This should never happen.", ERROR);
     ErrorCode IO_ERROR = new ErrorCode(DYNAMIC, 102, "IOERROR", "An IO error occurred.", FATAL);
     ErrorCode PARSE_ERROR = new ErrorCode(DYNAMIC, 103, "PARSEERR", "An exception occurred while parsing.", ERROR);
+    ErrorCode END_OF_STREAM = new ErrorCode(DYNAMIC, 104, "ENDSTREAM", "There is not more data in the stream.", ERROR);
     String TEMPLATE_DEFINITION_1_1 = "http://www.fixprotocol.org/ns/fast/td/1.1";
     QName LENGTH_FIELD = new QName("length", TEMPLATE_DEFINITION_1_1);
     QName LENGTH_NAME_ATTR = new QName("name", TEMPLATE_DEFINITION_1_1);

@@ -26,6 +26,8 @@ import java.io.InputStream;
 import org.openfast.Message;
 import org.openfast.MessageBlockReader;
 import org.openfast.MessageInputStream;
+import org.openfast.error.FastConstants;
+import org.openfast.error.FastException;
 import org.openfast.template.loader.XMLMessageTemplateLoader;
 import org.openfast.test.OpenFastTestCase;
 
@@ -66,9 +68,14 @@ public class OpraFeedTest extends OpenFastTestCase {
         OpraBlockReader opraBlockReader = new OpraBlockReader();
         in.setBlockReader(opraBlockReader);
         in.setTemplateRegistry(loader.getTemplateRegistry());
-        Message msg = in.readMessage();
-        while (msg != null) {
-            msg = in.readMessage();
+        in.readMessage();
+        while (true) {
+            try {
+                in.readMessage();
+            } catch (FastException e) {
+                assertEquals(FastConstants.END_OF_STREAM, e.getCode());
+                return;
+            }
         }
     }
 }

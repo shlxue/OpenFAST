@@ -25,8 +25,11 @@ package org.openfast.template.type.codec;
 
 import java.io.IOException;
 import java.io.InputStream;
+
+import org.openfast.Global;
 import org.openfast.NumericValue;
 import org.openfast.ScalarValue;
+import org.openfast.error.FastConstants;
 
 public final class SignedInteger extends IntegerCodec {
     private static final long serialVersionUID = 1L;
@@ -65,16 +68,25 @@ public final class SignedInteger extends IntegerCodec {
         long value = 0;
         try {
             int byt = in.read();
+            if (byt < 0) {
+                Global.handleError(FastConstants.END_OF_STREAM, "The end of the input stream has been reached.");
+                return null; // short circuit if global error handler does not throw exception
+            }
             if ((byt & 0x40) > 0) {
                 value = -1;
             }
             value = (value << 7) | (byt & 0x7f);
             while ((byt & 0x80) == 0) {
                 byt = in.read();
+                if (byt < 0) {
+                    Global.handleError(FastConstants.END_OF_STREAM, "The end of the input stream has been reached.");
+                    return null; // short circuit if global error handler does not throw exception
+                }
                 value = (value << 7) | (byt & 0x7f);
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            Global.handleError(FastConstants.IO_ERROR, "A IO error has been encountered while decoding.", e);
+            return null; // short circuit if global error handler does not throw exception
         }
         return createValue(value);
     }

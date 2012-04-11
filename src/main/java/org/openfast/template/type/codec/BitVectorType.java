@@ -27,6 +27,9 @@ import org.openfast.BitVector;
 import org.openfast.BitVectorValue;
 import org.openfast.Global;
 import org.openfast.ScalarValue;
+import org.openfast.error.FastConstants;
+import org.openfast.error.FastException;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -61,10 +64,12 @@ public final class BitVectorType extends TypeCodec {
             try {
                 byt = in.read();
                 if (byt < 0) {
-                    return null;
+                    Global.handleError(FastConstants.END_OF_STREAM, "The end of the input stream has been reached.");
+                    return null; // short circuit if global error handler does not throw exception
                 }
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                Global.handleError(FastConstants.IO_ERROR, "A IO error has been encountered while decoding.", e);
+                return null; // short circuit if global error handler does not throw exception
             }
             buffer.write(byt);
         } while ((byt & 0x80) == 0);

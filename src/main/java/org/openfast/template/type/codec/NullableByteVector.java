@@ -47,9 +47,15 @@ public class NullableByteVector extends NotStopBitEncodedTypeCodec {
         byte[] encoding = new byte[length];
         for (int i = 0; i < length; i++)
             try {
-                encoding[i] = (byte) in.read();
+                int nextByte = in.read();
+                if (nextByte < 0) {
+                    Global.handleError(FastConstants.END_OF_STREAM, "The end of the input stream has been reached.");
+                    return null; // short circuit if global error handler does not throw exception
+                }
+                encoding[i] = (byte) nextByte;
             } catch (IOException e) {
                 Global.handleError(FastConstants.IO_ERROR, "An error occurred while decoding a nullable byte vector.", e);
+                return null; // short circuit if global error handler does not throw exception
             }
         return new ByteVectorValue(encoding);
     }
