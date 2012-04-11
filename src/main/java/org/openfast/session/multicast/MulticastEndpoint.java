@@ -22,6 +22,7 @@ package org.openfast.session.multicast;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.MulticastSocket;
 import java.net.SocketException;
 
@@ -47,7 +48,7 @@ public abstract class MulticastEndpoint implements Endpoint {
  
     protected MulticastSocket createSocket() throws FastConnectionException {
         try {
-            MulticastSocket socket = new MulticastSocket(port);
+            MulticastSocket socket = new MulticastSocket(new InetSocketAddress(group, port));
             if (ifaddr != null) {
                 try {
                     socket.setInterface(InetAddress.getByName(ifaddr));	
