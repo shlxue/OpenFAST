@@ -53,4 +53,9 @@ public class MulticastInputStream extends InputStream {
         }
         return (buffer.get() & 0xFF);
     }
+    
+    @Override
+    public int available() throws IOException {
+        return buffer.remaining();
+    }
 }

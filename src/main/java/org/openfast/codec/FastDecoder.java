@@ -22,12 +22,12 @@ package org.openfast.codec;
 
 import java.io.IOException;
 import java.io.InputStream;
+
 import org.openfast.BitVector;
 import org.openfast.BitVectorReader;
 import org.openfast.BitVectorValue;
 import org.openfast.Context;
 import org.openfast.Message;
-import org.openfast.error.FastConstants;
 import org.openfast.error.FastException;
 import org.openfast.template.MessageTemplate;
 import org.openfast.template.type.codec.TypeCodec;

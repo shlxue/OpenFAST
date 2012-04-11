@@ -23,16 +23,15 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
  */
 package org.openfast.template.type.codec;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
 import org.openfast.BitVector;
 import org.openfast.BitVectorValue;
 import org.openfast.Global;
 import org.openfast.ScalarValue;
 import org.openfast.error.FastConstants;
-import org.openfast.error.FastException;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 
 public final class BitVectorType extends TypeCodec {
     private static final long serialVersionUID = 1L;
