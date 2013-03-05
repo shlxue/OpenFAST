@@ -45,6 +45,7 @@ public final class BitVectorType extends TypeCodec {
      *            The ScalarValue to be encoded
      * @return Returns a byte array of the passed object
      */
+    @Override
     public byte[] encodeValue(ScalarValue value) {
         return ((BitVectorValue) value).value.getBytes();
     }
@@ -56,6 +57,7 @@ public final class BitVectorType extends TypeCodec {
      *            The InputStream to be decoded
      * @return Returns a new BitVector object with the data stream as an array
      */
+    @Override
     public ScalarValue decode(InputStream in) {
         int byt;
         ByteArrayOutputStream buffer = Global.getBuffer();
@@ -63,6 +65,10 @@ public final class BitVectorType extends TypeCodec {
             try {
                 byt = in.read();
                 if (byt < 0) {
+                    if (buffer.size() == 0) {
+                        // No more bytes encountered, assume this is the end of the message stream.
+                        return null;
+                    }
                     Global.handleError(FastConstants.END_OF_STREAM, "The end of the input stream has been reached.");
                     return null; // short circuit if global error handler does not throw exception
                 }
@@ -91,6 +97,7 @@ public final class BitVectorType extends TypeCodec {
         return new BitVectorValue(new BitVector(0));
     }
 
+    @Override
     public boolean equals(Object obj) {
         return obj != null && obj.getClass() == getClass();
     }

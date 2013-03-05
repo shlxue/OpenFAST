@@ -21,7 +21,6 @@ Contributor(s): Jacob Northey <jacob@lasalletech.com>
 
 package org.openfast.codec;
 
-import java.io.IOException;
 import java.io.InputStream;
 
 import junit.framework.TestCase;
@@ -33,7 +32,6 @@ import org.openfast.IntegerValue;
 import org.openfast.Message;
 import org.openfast.ScalarValue;
 import org.openfast.StringValue;
-import org.openfast.error.FastException;
 import org.openfast.template.Field;
 import org.openfast.template.MessageTemplate;
 import org.openfast.template.Scalar;
@@ -259,18 +257,5 @@ public class FastDecoderTest extends TestCase {
 
         readMessage = decoder.readMessage();
         assertEquals(message, readMessage);
-    }
-
-    public void testDecodeEndOfStream() {
-        FastDecoder decoder = new FastDecoder(new Context(), new InputStream() {
-            public int read() throws IOException {
-                return -1;
-            }
-        });
-        try {
-            decoder.readMessage();
-            fail("The decoder should have thrown a FAST Exception.");
-        } catch (FastException e) {
-        }
     }
 }

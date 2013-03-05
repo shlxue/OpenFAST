@@ -35,9 +35,9 @@ import org.openfast.template.TemplateRegisteredListener;
 import org.openfast.template.TemplateRegistry;
 
 public class MessageInputStream implements MessageStream {
-    private InputStream in;
-    private FastDecoder decoder;
-    private Context context;
+    private final InputStream in;
+    private final FastDecoder decoder;
+    private final Context context;
     private Map templateHandlers = Collections.EMPTY_MAP;
     private List handlers = Collections.EMPTY_LIST;
     private MessageBlockReader blockReader = MessageBlockReader.NULL;
@@ -53,8 +53,13 @@ public class MessageInputStream implements MessageStream {
     }
 
     /**
-     * @throws java.io.EOFException
-     * @return the next message in the stream
+     * Decodes the next message in the input stream if a message is found.  If no more
+     * messages are present in the stream, <code>null</code> is returned.  If a partial
+     * message is encountered a {@link org.openfast.error.FastException FastException} with error code 104
+     * is thrown (see {@link org.openfast.error.FastConstants#END_OF_STREAM FastConstants.END_OF_STREAM}).
+     * 
+     * @throws org.openfast.error.FastException
+     * @return the next message in the stream or <code>null</code> if no more messages are encountered in the stream
      */
     public Message readMessage() {
         if (context.isTraceEnabled())
