@@ -27,6 +27,13 @@
 		  </ul>
 		</div>
 		<section name="OpenFAST">
+			<subsection name="Implementation Details">
+			   <b>IMPORTANT:</b>
+			   <ul>
+			   <li>OpenFAST 1.1.1: the <a href="apidocs/org/openfast/MessageInputStream.html#readMessage()">MessageInputStream.readMessage()</a> method will throw a <a href="apidocs/org/openfast/error/FastException.html">FastException</a> when the end of the stream is encountered.</li>
+			   <li>OpenFAST 1.1.2:  the <a href="apidocs/org/openfast/MessageInputStream.html#readMessage()">MessageInputStream.readMessage()</a> method will throw a <a href="apidocs/org/openfast/error/FastException.html">FastException</a> when the end of the stream is encountered in the middle of decoding a message.  If the end of the stream is encountered immediately after reading a full message, null is returned.</li>
+			   </ul>
+			</subsection>
 			<subsection name="What is OpenFAST?">	
 				OpenFAST is a 100% Java implementation of the FAST Protocol (FIX Adapted for STreaming). 
 				The FAST protocol is used to optimize communications in the electronic exchange of financial data. 

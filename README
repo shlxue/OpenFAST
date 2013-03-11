@@ -27,3 +27,12 @@ Deploying
   For more information see http://maven.apache.org/plugins/maven-site-plugin-3.0-beta-3/examples/site-deploy-to-sourceforge.net.html
    1. ssh -t jacob_northey@shell.sourceforge.net create
    2. mvn deploy
+   
+Releasing
+=========
+  1. Check that you can successfully deploy OpenFAST by following the steps in the [Deploying] section.
+  2. Make sure all local changes are checked in.
+  3. Run the release:prepare goal and follow the steps to set the release version.
+  > mvn release:prepare
+  4. Run the release:perform goal to finalize the release.
+  5. Check http://www.openfast.org to verify that the new version information is on the website.
