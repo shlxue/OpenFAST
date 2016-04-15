@@ -53,29 +53,11 @@ public abstract class IntegerCodec extends TypeCodec {
      * @return Returns an unsigned integer
      */
     public static int getUnsignedIntegerSize(long value) {
-        if (value < 128) {
-            return 1; // 2 ^ 7
-        }
-        if (value <= 16384) {
-            return 2; // 2 ^ 14
-        }
-        if (value <= 2097152) {
-            return 3; // 2 ^ 21
-        }
-        if (value <= 268435456) {
-            return 4; // 2 ^ 28
-        }
-        if (value <= 34359738368L) {
-            return 5; // 2 ^ 35
-        }
-        if (value <= 4398046511104L) {
-            return 6; // 2 ^ 42
-        }
-        if (value <= 562949953421312L) {
-            return 7; // 2 ^ 49
-        }
-        if (value <= 72057594037927936L) {
-            return 8; // 2 ^ 56
+        long[] boundValues = new long[]{128, 16384, 2097152, 268435456, 34359738368L, 4398046511104L, 562949953421312L, 72057594037927936L};
+        for (int i = 0; i < boundValues.length; i++) {
+            if (value < boundValues[i]) {
+                return i + 1;
+            }
         }
         return 9;
     }

@@ -25,7 +25,7 @@ public class UnsignedIntegerTest extends OpenFastTestCase {
     }
 
     public void testSomeBoundValues() throws Exception {
-        List<Integer> intBounds = Arrays.asList(/* 128, */ 16384, 2097152, 268435456);
+        List<Integer> intBounds = Arrays.asList(128, 16384, 2097152, 268435456);
         List<Long> longBounds = new ArrayList<Long>(Arrays.asList(34359738368L, 4398046511104L, 562949953421312L, 72057594037927936L));
         for (int i : intBounds) {
             longBounds.add((long) i);
@@ -38,11 +38,7 @@ public class UnsignedIntegerTest extends OpenFastTestCase {
         }
         for (long i : values) {
             byte[] bytes = TypeCodec.UINT.encode(new LongValue(i));
-            if (longBounds.indexOf(i) == -1) {
-                assertEquals(i, TypeCodec.UINT.decode(new ByteArrayInputStream(bytes)).toLong());
-            } else {
-                assertTrue(i != TypeCodec.UINT.decode(new ByteArrayInputStream(bytes)).toLong());
-            }
+            assertEquals(i, TypeCodec.UINT.decode(new ByteArrayInputStream(bytes)).toLong());
         }
     }
 }
