@@ -254,7 +254,7 @@
             <distributionManagement>
                 <repository>
                     <id>releases</id>
-                    <url>https://${host}/nexus/content/repositories/releases</url>
+                    <url>https://${host}/nexus/content/repositories/thirdparty</url>
                 </repository>
             </distributionManagement>
         </profile>
