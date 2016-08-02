@@ -262,4 +262,18 @@
             </url>
         </site>
     </distributionManagement>
+    <profiles>
+        <profile>
+            <id>release</id>
+            <properties>
+                <host>172.17.1.86</host>
+            </properties>
+            <distributionManagement>
+                <repository>
+                    <id>releases</id>
+                    <url>https://${host}/nexus/content/repositories/releases</url>
+                </repository>
+            </distributionManagement>
+        </profile>
+    </profiles>
 </project>

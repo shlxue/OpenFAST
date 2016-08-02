@@ -17,7 +17,7 @@ node {
     stage 'Deploy'
     withEnv(mvnEnv) {
         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'maven.deploy', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME']]) {
-            sh 'mvn deploy -Dmaven.settings.username=${USERNAME} -Dmaven.settings.password=${PASSWORD}'
+            sh 'mvn deploy -Prelease -Dmaven.settings.username=${USERNAME} -Dmaven.settings.password=${PASSWORD}'
         }
     }
 
